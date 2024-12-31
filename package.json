@@ -9,7 +9,8 @@
     "check:types": "tsc --noEmit",
     "check:lint": "npx @biomejs/biome check",
     "fix": "bun run fix:lint",
-    "fix:lint": "npx @biomejs/biome check --write"
+    "fix:lint": "npx @biomejs/biome check --write",
+    "build": "turbo build"
   },
   "repository": {
     "type": "git",
@@ -40,7 +41,9 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "bun-types": "^1.1.42",
+    "turbo": "^2.3.3",
     "typescript": "^5.7.2"
   },
+  "packageManager": "bun@1.1.42",
   "trustedDependencies": ["@biomejs/biome"]
 }

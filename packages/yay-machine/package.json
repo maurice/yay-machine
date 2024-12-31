@@ -6,7 +6,7 @@
   "type": "module",
   "files": ["src", "dist"],
   "scripts": {
-    "build": "bun build"
+    "build": "bun build src/index.ts --outdir dist"
   },
   "repository": {
     "type": "git",

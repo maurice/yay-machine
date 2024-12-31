@@ -9,5 +9,5 @@ jobs:
 
       - run: bun install
       - run: bun check
-      - run: bun build
       - run: bun test
+      - run: bun run build
