@@ -1,12 +1,12 @@
 {
-  "name": "yay-machine",
+  "name": "@yay-machine/fsm",
   "version": "0.0.0",
   "description": "A simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server",
   "main": "index.js",
   "type": "module",
   "files": ["src", "dist"],
   "scripts": {
-    "test": "vitest"
+    "build": "bun build"
   },
   "repository": {
     "type": "git",

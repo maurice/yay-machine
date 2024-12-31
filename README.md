@@ -10,7 +10,13 @@ The State Machine with more YAY!
 
 - great TypeScript types
 - declarative JSON config
-- multiple potential transition via optional conditionals
+- multiple potential transitions via optional conditionals
 - handle events according to the current state, or fallthrough to optional catch-all event handling in any state
-- effects on machine start, machine stop, state entry, state exit, transition
+- run side-effects on machine start, machine stop, state entry, state exit, transition
 - easily compose machines into hierarchies
+
+## Show me
+
+**TODO**
+
+## 
