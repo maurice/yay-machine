@@ -1,37 +1,5 @@
 import { defineMachine } from "./defineMachine";
 
-interface OffState {
-  readonly name: "off";
-}
-
-interface OnState {
-  readonly name: "on";
-}
-
-interface OffEvent {
-  readonly type: "OFF";
-}
-
-interface OnEvent {
-  readonly type: "ON";
-}
-
-const lightMachine = defineMachine<OffState | OnState, OffEvent | OnEvent>({
-  initialState: { name: "off" },
-  states: {
-    off: {
-      on: {
-        ON: { to: "on" },
-      },
-    },
-    on: {
-      on: {
-        OFF: { to: "off" },
-      },
-    },
-  },
-});
-
 interface IdleState {
   readonly name: "idle";
 }

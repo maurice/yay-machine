@@ -92,13 +92,66 @@ export type EffectFunction<
 ) => Unsubscribe | undefined | null | void;
 
 export const defineMachine = <StateType extends MachineState<string>, EventType extends MachineEvent<string>>(
-  config: MachineDefinitionConfig<StateType, EventType>,
+  definitionConfig: MachineDefinitionConfig<StateType, EventType>,
 ): MachineDefinition<StateType, EventType> => {
-  // @ts-expect-error
   return {
-    newInstance() {
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      return {} as any;
+    newInstance(instanceConfig) {
+      let currentState = instanceConfig?.initialState ?? definitionConfig.initialState;
+      let running = false;
+      const subscribers: Array<(state: StateType, event: EventType | undefined) => void> = [];
+
+      return {
+        get currentState() {
+          return currentState;
+        },
+
+        send(event) {
+          if (!running) {
+            throw new Error("Machine is not running");
+          }
+
+          const { states } = definitionConfig;
+          const state = states[currentState.name as StateType["name"]];
+          if (state) {
+            const onEvent = state.on?.[event.type as EventType["type"]];
+            if (onEvent) {
+              const transitions = Array.isArray(onEvent) ? onEvent : [onEvent];
+              for (const transition of transitions) {
+                currentState = { name: transition.to } as StateType;
+                for (const subscriber of subscribers) {
+                  subscriber(currentState, event);
+                }
+                break;
+              }
+            }
+          }
+        },
+
+        start() {
+          if (running) {
+            throw new Error("Machine is already running");
+          }
+          running = true;
+        },
+
+        stop() {
+          if (!running) {
+            throw new Error("Machine is not running");
+          }
+          running = false;
+        },
+
+        subscribe(callback) {
+          subscribers.push(callback);
+          callback(currentState, undefined);
+          return () => {
+            const index = subscribers.indexOf(callback);
+            if (index !== -1) {
+              subscribers.splice(index, 1);
+            }
+          };
+        },
+      };
     },
   };
 };

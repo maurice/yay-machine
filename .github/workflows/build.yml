@@ -11,4 +11,3 @@ jobs:
       - run: bun check
       - run: bun build
       - run: bun test
-      
