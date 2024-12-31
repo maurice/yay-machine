@@ -1,7 +1,7 @@
 import type { MachineDefinition } from "./MachineDefinition";
-import type { MachineEvent, ExtractEvent } from "./MachineEvent";
+import type { ExtractEvent, MachineEvent } from "./MachineEvent";
 import type { MachineInstance, Unsubscribe } from "./MachineInstance";
-import type { MachineState, ExtractState, StateContext } from "./MachineState";
+import type { ExtractState, MachineState, StateContext } from "./MachineState";
 import type { OneOrMore } from "./OneOrMore";
 
 export interface MachineDefinitionConfig<
@@ -100,7 +100,27 @@ export const defineMachine = <StateType extends MachineState<string>, EventType 
       let running = false;
       const subscribers: Array<(state: StateType, event: EventType | undefined) => void> = [];
 
-      return {
+      const transitionTo = (nextState: StateType, event: EventType | undefined) => {
+        currentState = nextState;
+        const { states } = definitionConfig;
+        const onEntry = states[currentState.name as StateType["name"]]?.onEntry;
+        if (onEntry) {
+          // biome-ignore lint/suspicious/noExplicitAny: it's fine
+          onEntry(machine as any);
+        }
+        for (const subscriber of subscribers) {
+          subscriber(currentState, event);
+        }
+        const always = states[currentState.name as StateType["name"]]?.always;
+        if (always) {
+          for (const transition of Array.isArray(always) ? always : [always]) {
+            transitionTo({ name: transition.to, ...transition?.with?.(currentState, event) } as StateType, undefined);
+            break;
+          }
+        }
+      };
+
+      const machine: MachineInstance<StateType, EventType> = {
         get currentState() {
           return currentState;
         },
@@ -117,10 +137,7 @@ export const defineMachine = <StateType extends MachineState<string>, EventType 
             if (onEvent) {
               const transitions = Array.isArray(onEvent) ? onEvent : [onEvent];
               for (const transition of transitions) {
-                currentState = { name: transition.to } as StateType;
-                for (const subscriber of subscribers) {
-                  subscriber(currentState, event);
-                }
+                transitionTo({ name: transition.to, ...transition?.with?.(currentState, event) } as StateType, event);
                 break;
               }
             }
@@ -152,6 +169,7 @@ export const defineMachine = <StateType extends MachineState<string>, EventType 
           };
         },
       };
+      return machine;
     },
   };
 };

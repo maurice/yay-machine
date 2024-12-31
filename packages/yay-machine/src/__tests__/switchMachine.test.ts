@@ -1,4 +1,4 @@
-import { expect, test, mock } from "bun:test";
+import { expect, mock, test } from "bun:test";
 import { defineMachine } from "../defineMachine";
 
 interface OffState {
@@ -37,6 +37,11 @@ const switchMachine = defineMachine<OffState | OnState, OffEvent | OnEvent>({
 test("starts in off state", () => {
   const machine = switchMachine.newInstance();
   expect(machine.currentState).toEqual({ name: "off" });
+});
+
+test("can use instance config to start in another state", () => {
+  const machine = switchMachine.newInstance({ initialState: { name: "on" } });
+  expect(machine.currentState).toEqual({ name: "on" });
 });
 
 test("throws error if sent an event while stopped", () => {
