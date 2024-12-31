@@ -1,0 +1,45 @@
+{
+  "name": "@yay-machine/monorepo",
+  "version": "0.0.0",
+  "description": "A simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server",
+  "type": "module",
+  "scripts": {
+    "check": "bun run check:types && bun run check:lint",
+    "check:types": "tsc --noEmit",
+    "check:lint": "npx @biomejs/biome check",
+    "fix": "bun run fix:lint",
+    "fix:lint": "npx @biomejs/biome check --write"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maurice/yay-machine.git"
+  },
+  "keywords": [
+    "state-machine",
+    "fsm",
+    "state-management",
+    "lightweight",
+    "zero-dependency",
+    "typescript",
+    "browser",
+    "server",
+    "concise",
+    "declarative",
+    "deterministic",
+    "safe",
+    "yay"
+  ],
+  "author": "maurice@mauricenicholson.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maurice/yay-machine/issues"
+  },
+  "homepage": "https://github.com/maurice/yay-machine#readme",
+  "workspaces": ["packages/*"],
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "bun-types": "^1.1.42",
+    "typescript": "^5.7.2"
+  },
+  "trustedDependencies": ["@biomejs/biome"]
+}
