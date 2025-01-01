@@ -1,4 +1,3 @@
-import { expect, mock, test } from "bun:test";
 import { defineMachine } from "../defineMachine";
 
 interface IdleState {
@@ -32,7 +31,7 @@ interface CancelEvent {
   readonly type: "CANCEL";
 }
 
-const timerMachine = defineMachine<IdleState | RunningState | FiredState, RunEvent | FiredEvent | CancelEvent>({
+export const timerMachine = defineMachine<IdleState | RunningState | FiredState, RunEvent | FiredEvent | CancelEvent>({
   initialState: { name: "idle" },
   states: {
     idle: {
@@ -57,42 +56,4 @@ const timerMachine = defineMachine<IdleState | RunningState | FiredState, RunEve
       ],
     },
   },
-});
-
-test("starts in idle state", () => {
-  const machine = timerMachine.newInstance();
-  expect(machine.currentState).toEqual({ name: "idle" });
-});
-
-test("can start single-use a timer", async () => {
-  const machine = timerMachine.newInstance();
-  const subscriber = mock();
-  machine.subscribe(subscriber);
-  machine.start();
-  machine.send({ type: "RUN", time: 1000 });
-  expect(subscriber).toHaveReturnedTimes(2);
-  expect(subscriber).toHaveBeenLastCalledWith(
-    { name: "running", time: 1000, repeat: false },
-    { type: "RUN", time: 1000 },
-  );
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  expect(subscriber).toHaveBeenCalledTimes(4);
-  expect(subscriber).toHaveBeenNthCalledWith(
-    3,
-    {
-      name: "fired",
-      time: 1000,
-      repeat: false,
-    },
-    {
-      type: "FIRED",
-    },
-  );
-  expect(subscriber).toHaveBeenNthCalledWith(
-    4,
-    {
-      name: "idle",
-    },
-    undefined,
-  );
 });
