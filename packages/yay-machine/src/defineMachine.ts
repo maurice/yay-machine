@@ -91,6 +91,11 @@ export type EffectFunction<
   // biome-ignore lint/suspicious/noConfusingVoidType: adding void to union as we don't want to force users to explicity return
 ) => Unsubscribe | undefined | null | void;
 
+/**
+ * Defines a machine prototype. Use this when you intend to create multiple instances of the same machine.
+ * @param definitionConfig describes the machine prototype; it's states and how it responds to events
+ * @returns the machine definition, which can be used to create new machine instances
+ */
 export const defineMachine = <StateType extends MachineState<string>, EventType extends MachineEvent<string>>(
   definitionConfig: MachineDefinitionConfig<StateType, EventType>,
 ): MachineDefinition<StateType, EventType> => {
