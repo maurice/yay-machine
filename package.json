@@ -5,6 +5,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "prepare": "husky",
     "check": "bun run check:types && bun run check:lint",
     "check:types": "tsc --noEmit",
     "check:lint": "npx @biomejs/biome check",
@@ -40,7 +41,10 @@
   "workspaces": ["packages/*"],
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
     "bun-types": "^1.1.42",
+    "husky": "^9.1.7",
     "turbo": "^2.3.3",
     "typescript": "^5.7.2"
   },
