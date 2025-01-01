@@ -11,6 +11,8 @@
     "check:lint": "npx @biomejs/biome check",
     "fix": "bun run fix:lint",
     "fix:lint": "npx @biomejs/biome check --write",
+    "test": "bun test",
+    "test:coverage": "bun test --coverage",
     "build": "turbo build"
   },
   "repository": {

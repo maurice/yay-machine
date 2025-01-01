@@ -23,8 +23,9 @@ jobs:
       - name: Check PR commits
         if: github.event_name == 'pull_request'
         run: bun commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
-      - name: Test  
-        run: bun test
+
+      - name: Test
+        run: bun run test:coverage -- --coverage-reporter=lcov --coverage-reporter=text
 
       - name: Build
         run: bun run build
