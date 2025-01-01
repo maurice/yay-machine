@@ -47,32 +47,31 @@ export type TransitionConfig<
   CurrentEvent extends EventType | undefined,
 > = {
   readonly [Name in StateType["name"]]: keyof Omit<ExtractState<StateType, Name>, "name"> extends never
-    ? Transition<StateType, EventType, Name, CurrentState, CurrentEvent>
-    : Transition<StateType, EventType, Name, CurrentState, CurrentEvent> &
-        TransitionWith<StateType, EventType, CurrentState, CurrentEvent, ExtractState<StateType, Name>>;
+    ? Transition<StateType, EventType, CurrentState, CurrentEvent, ExtractState<StateType, Name>>
+    : TransitionWith<StateType, EventType, CurrentState, CurrentEvent, ExtractState<StateType, Name>>;
 }[StateType["name"]];
 
-export type Transition<
-  StateType extends MachineState<string>,
-  EventType extends MachineEvent<string>,
-  Name extends StateType["name"],
-  CurrentState extends StateType,
-  CurrentEvent extends EventType | undefined,
-> = {
-  readonly to: Name;
-  readonly when?: (currentState: CurrentState, currentEvent: CurrentEvent) => boolean;
-  readonly onTransition?: EffectFunction<StateType, EventType, CurrentState>;
-};
-
-export type TransitionWith<
+export interface Transition<
   StateType extends MachineState<string>,
   EventType extends MachineEvent<string>,
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
-> = {
+> {
+  readonly to: NextState["name"];
+  readonly when?: (currentState: CurrentState, currentEvent: CurrentEvent) => boolean;
+  readonly onTransition?: EffectFunction<StateType, EventType, CurrentState>;
+}
+
+export interface TransitionWith<
+  StateType extends MachineState<string>,
+  EventType extends MachineEvent<string>,
+  CurrentState extends StateType,
+  CurrentEvent extends EventType | undefined,
+  NextState extends StateType,
+> extends Transition<StateType, EventType, CurrentState, CurrentEvent, NextState> {
   readonly with: WithFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
-};
+}
 
 export type WithFunction<
   StateType extends MachineState<string>,
@@ -118,8 +117,32 @@ export const defineMachine = <StateType extends MachineState<string>, EventType 
         }
         const always = states[currentState.name as StateType["name"]]?.always;
         if (always) {
-          for (const transition of Array.isArray(always) ? always : [always]) {
-            transitionTo({ name: transition.to, ...transition?.with?.(currentState, event) } as StateType, undefined);
+          applyTransitions(undefined, always);
+        }
+      };
+
+      const applyTransitions = <
+        CurrentState extends StateType,
+        CurrentEvent extends EventType | undefined,
+        NextState extends StateType,
+      >(
+        event: CurrentEvent,
+        transitions: OneOrMore<Transition<StateType, EventType, CurrentState, CurrentEvent, NextState>>,
+      ) => {
+        const candidateTransitions: readonly Transition<StateType, EventType, CurrentState, CurrentEvent, NextState>[] =
+          Array.isArray(transitions) ? transitions : [transitions];
+        for (const transition of candidateTransitions) {
+          if (!("when" in transition) || transition.when(currentState as CurrentState, event as CurrentEvent)) {
+            transitionTo(
+              {
+                name: transition.to,
+                ...(transition as TransitionWith<StateType, EventType, CurrentState, CurrentEvent, NextState>)?.with?.(
+                  currentState as CurrentState,
+                  event,
+                ),
+              } as unknown as StateType,
+              event as CurrentEvent,
+            );
             break;
           }
         }
@@ -140,11 +163,8 @@ export const defineMachine = <StateType extends MachineState<string>, EventType 
           if (state) {
             const onEvent = state.on?.[event.type as EventType["type"]];
             if (onEvent) {
-              const transitions = Array.isArray(onEvent) ? onEvent : [onEvent];
-              for (const transition of transitions) {
-                transitionTo({ name: transition.to, ...transition?.with?.(currentState, event) } as StateType, event);
-                break;
-              }
+              // @ts-ignore
+              applyTransitions(event, onEvent);
             }
           }
         },
