@@ -5,16 +5,9 @@ interface IdleState {
 }
 
 interface ActiveState {
+  readonly name: "running" | "fired";
   readonly time: number;
   readonly repeat: boolean;
-}
-
-interface RunningState extends ActiveState {
-  readonly name: "running";
-}
-
-interface FiredState extends ActiveState {
-  readonly name: "fired";
 }
 
 interface RunEvent {
@@ -32,10 +25,10 @@ interface CancelEvent {
 }
 
 /**
- * Models a timer (think setTimeout) that can be started, canceled, and optionally repeat (think setInterval).
+ * Models a timer (think `setTimeout()`) that can be started, canceled, and optionally repeat (think `setInterval()`).
  * Demonstrates `onEntry` side-effects, `always` transitions and conditional transitions (`when`).
  */
-export const timerMachine = defineMachine<IdleState | RunningState | FiredState, RunEvent | FiredEvent | CancelEvent>({
+export const timerMachine = defineMachine<IdleState | ActiveState, RunEvent | FiredEvent | CancelEvent>({
   initialState: { name: "idle" },
   states: {
     idle: {
