@@ -10,8 +10,8 @@ export interface MachineDefinitionConfig<
 > {
   readonly initialState: StateType;
   readonly states: StatesConfig<StateType, EventType>;
-  readonly onStart?: EffectFunction<StateType, EventType, StateType, StateType>;
-  readonly onStop?: EffectFunction<StateType, EventType, StateType, StateType>;
+  readonly onStart?: EffectFunction<StateType, EventType, StateType>;
+  readonly onStop?: EffectFunction<StateType, EventType, StateType>;
   readonly on?: TransitionsConfig<StateType, EventType, StateType>;
 }
 
@@ -26,8 +26,8 @@ export type StateConfig<
 > = {
   readonly on?: TransitionsConfig<StateType, EventType, CurrentState>;
   readonly always?: OneOrMore<TransitionConfig<StateType, EventType, CurrentState, undefined>>;
-  readonly onEnter?: EffectFunction<StateType, EventType, CurrentState, StateType>;
-  readonly onExit?: EffectFunction<StateType, EventType, CurrentState, StateType>;
+  readonly onEnter?: EffectFunction<StateType, EventType, CurrentState>;
+  readonly onExit?: EffectFunction<StateType, EventType, CurrentState>;
 };
 
 export type TransitionsConfig<
@@ -60,7 +60,7 @@ export interface Transition<
 > {
   readonly to: NextState["name"];
   readonly when?: (currentState: CurrentState, currentEvent: CurrentEvent) => boolean;
-  readonly onTransition?: EffectFunction<StateType, EventType, CurrentState, NextState>;
+  readonly onTransition?: TransitionEffectFunction<StateType, EventType, CurrentState, NextState>;
 }
 
 export interface TransitionWith<
@@ -85,9 +85,8 @@ export type EffectFunction<
   StateType extends MachineState<string>,
   EventType extends MachineEvent<string>,
   CurrentState extends StateType,
-  NextState extends StateType,
 > = (
-  params: EffectParams<StateType, EventType, CurrentState, NextState>,
+  params: EffectParams<StateType, EventType, CurrentState>,
   // biome-ignore lint/suspicious/noConfusingVoidType: adding void to union as we don't want to force users to explicity return
 ) => Unsubscribe | undefined | null | void;
 
@@ -95,10 +94,27 @@ export type EffectParams<
   StateType extends MachineState<string>,
   EventType extends MachineEvent<string>,
   CurrentState extends StateType,
-  NextState extends StateType,
 > = Pick<MachineInstance<StateType, EventType>, "send"> & {
   readonly state: CurrentState;
-  readonly next?: NextState;
+};
+
+export type TransitionEffectFunction<
+  StateType extends MachineState<string>,
+  EventType extends MachineEvent<string>,
+  CurrentState extends StateType,
+  NextState extends StateType,
+> = (
+  params: TransitionEffectParams<StateType, EventType, CurrentState, NextState>,
+  // biome-ignore lint/suspicious/noConfusingVoidType: adding void to union as we don't want to force users to explicity return
+) => Unsubscribe | undefined | null | void;
+
+export type TransitionEffectParams<
+  StateType extends MachineState<string>,
+  EventType extends MachineEvent<string>,
+  CurrentState extends StateType,
+  NextState extends StateType,
+> = EffectParams<StateType, EventType, CurrentState> & {
+  readonly next: NextState;
 };
 
 /**
@@ -149,7 +165,7 @@ export const defineMachine = <StateType extends MachineState<string>, EventType 
       >(
         nextState: NextState,
         event: CurrentEvent | undefined,
-        onTransition: EffectFunction<StateType, EventType, CurrentState, NextState> | undefined,
+        onTransition: TransitionEffectFunction<StateType, EventType, CurrentState, NextState> | undefined,
       ) => {
         if (stateCleanup) {
           stateCleanup();
@@ -180,7 +196,7 @@ export const defineMachine = <StateType extends MachineState<string>, EventType 
       >(
         event: CurrentEvent,
         transitions: OneOrMore<Transition<StateType, EventType, CurrentState, CurrentEvent, NextState>>,
-      ) => {
+      ): boolean => {
         const candidateTransitions: readonly Transition<StateType, EventType, CurrentState, CurrentEvent, NextState>[] =
           Array.isArray(transitions) ? transitions : [transitions];
         for (const transition of candidateTransitions) {
@@ -196,9 +212,10 @@ export const defineMachine = <StateType extends MachineState<string>, EventType 
               event as CurrentEvent,
               transition.onTransition,
             );
-            break;
+            return true;
           }
         }
+        return false;
       };
 
       const machine: MachineInstance<StateType, EventType> = {
@@ -211,13 +228,19 @@ export const defineMachine = <StateType extends MachineState<string>, EventType 
             throw new Error("Machine is not running");
           }
 
-          const { states } = definitionConfig;
+          const { states, on } = definitionConfig;
           const state = states[currentState.name as StateType["name"]];
           if (state) {
-            const onEvent = state.on?.[event.type as EventType["type"]];
-            if (onEvent) {
-              // @ts-ignore
-              applyTransitions(event, onEvent);
+            let onEvent = state.on?.[event.type as EventType["type"]];
+            // @ts-ignore
+            if (onEvent && applyTransitions(event, onEvent)) {
+              return;
+            }
+
+            onEvent = on?.[event.type as EventType["type"]];
+            // @ts-ignore
+            if (onEvent && applyTransitions(event, onEvent)) {
+              return;
             }
           }
         },

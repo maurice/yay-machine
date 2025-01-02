@@ -1,14 +1,16 @@
 import { expect, mock, test } from "bun:test";
-import { type EffectParams, defineMachine } from "../defineMachine";
+import { type EffectParams, type TransitionEffectParams, defineMachine } from "../defineMachine";
 
 interface EffectsStateData {
-  readonly onStart: (params: EffectParams<EffectsState, EffectsEvent, EffectsState, EffectsState>) => void;
-  readonly onStop: (params: EffectParams<EffectsState, EffectsEvent, EffectsState, EffectsState>) => void;
-  readonly onEnterA: (params: EffectParams<EffectsState, EffectsEvent, EffectsState, EffectsState>) => void;
-  readonly onExitA: (params: EffectParams<EffectsState, EffectsEvent, EffectsState, EffectsState>) => void;
-  readonly onEnterB: (params: EffectParams<EffectsState, EffectsEvent, EffectsState, EffectsState>) => void;
-  readonly onExitB: (params: EffectParams<EffectsState, EffectsEvent, EffectsState, EffectsState>) => void;
-  readonly onTransitionAToB: (params: EffectParams<EffectsState, EffectsEvent, EffectsState, EffectsState>) => void;
+  readonly onStart: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;
+  readonly onStop: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;
+  readonly onEnterA: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;
+  readonly onExitA: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;
+  readonly onEnterB: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;
+  readonly onExitB: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;
+  readonly onTransitionAToB: (
+    params: TransitionEffectParams<EffectsState, EffectsEvent, EffectsState, EffectsState>,
+  ) => void;
 }
 
 type EffectsState = AState | BState;
