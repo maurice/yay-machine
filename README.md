@@ -15,6 +15,10 @@ The State Machine with more YAY!
 - run side-effects on machine start, machine stop, state entry, state exit, transition
 - easily compose machines into hierarchies
 
+## Current status
+
+Incomplete and in active development.
+
 ## Show me
 
 **TODO**
