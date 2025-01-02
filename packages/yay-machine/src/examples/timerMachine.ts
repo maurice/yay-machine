@@ -26,7 +26,7 @@ interface CancelEvent {
 
 /**
  * Models a timer (think `setTimeout()`) that can be started, canceled, and optionally repeat (think `setInterval()`).
- * Demonstrates `onEntry` side-effects, `always` transitions and conditional transitions (`when`).
+ * Demonstrates `onEnter` side-effects, `always` transitions and conditional transitions (`when`).
  */
 export const timerMachine = defineMachine<IdleState | ActiveState, RunEvent | FiredEvent | CancelEvent>({
   initialState: { name: "idle" },
@@ -37,8 +37,8 @@ export const timerMachine = defineMachine<IdleState | ActiveState, RunEvent | Fi
       },
     },
     running: {
-      onEntry: (machine) => {
-        const timer = setTimeout(() => machine.send({ type: "FIRED" }), machine.currentState.time);
+      onEnter: ({ state, send }) => {
+        const timer = setTimeout(() => send({ type: "FIRED" }), state.time);
         return () => clearTimeout(timer);
       },
       on: {

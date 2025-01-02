@@ -3,12 +3,14 @@ import { switchMachine } from "../switchMachine";
 
 test("starts in off state", () => {
   const machine = switchMachine.newInstance();
-  expect(machine.currentState).toEqual({ name: "off" });
+  expect(machine.state).toEqual({ name: "off" });
+  machine.start();
+  expect(machine.state).toEqual({ name: "off" });
 });
 
 test("can use instance config to start in another state", () => {
   const machine = switchMachine.newInstance({ initialState: { name: "on" } });
-  expect(machine.currentState).toEqual({ name: "on" });
+  expect(machine.state).toEqual({ name: "on" });
 });
 
 test("throws error if sent an event while stopped", () => {
@@ -35,20 +37,20 @@ test("transitions to on/off according to ON/OFF events", () => {
   const machine = switchMachine.newInstance();
   machine.start();
   machine.send({ type: "ON" });
-  expect(machine.currentState).toEqual({ name: "on" });
+  expect(machine.state).toEqual({ name: "on" });
   machine.send({ type: "OFF" });
-  expect(machine.currentState).toEqual({ name: "off" });
+  expect(machine.state).toEqual({ name: "off" });
 });
 
 test("ignores events not relevant for current state", () => {
   const machine = switchMachine.newInstance();
   machine.start();
   machine.send({ type: "OFF" });
-  expect(machine.currentState).toEqual({ name: "off" });
+  expect(machine.state).toEqual({ name: "off" });
   machine.send({ type: "ON" });
-  expect(machine.currentState).toEqual({ name: "on" });
+  expect(machine.state).toEqual({ name: "on" });
   machine.send({ type: "ON" });
-  expect(machine.currentState).toEqual({ name: "on" });
+  expect(machine.state).toEqual({ name: "on" });
 });
 
 test("multiple independent instances", () => {
@@ -57,14 +59,14 @@ test("multiple independent instances", () => {
   a.start();
   b.start();
   b.send({ type: "ON" });
-  expect(a.currentState).toEqual({ name: "off" });
-  expect(b.currentState).toEqual({ name: "on" });
+  expect(a.state).toEqual({ name: "off" });
+  expect(b.state).toEqual({ name: "on" });
   a.send({ type: "ON" });
-  expect(a.currentState).toEqual({ name: "on" });
-  expect(b.currentState).toEqual({ name: "on" });
+  expect(a.state).toEqual({ name: "on" });
+  expect(b.state).toEqual({ name: "on" });
   b.send({ type: "OFF" });
-  expect(a.currentState).toEqual({ name: "on" });
-  expect(b.currentState).toEqual({ name: "off" });
+  expect(a.state).toEqual({ name: "on" });
+  expect(b.state).toEqual({ name: "off" });
 });
 
 test("subscribe to/unsubscribe from state changes", () => {
