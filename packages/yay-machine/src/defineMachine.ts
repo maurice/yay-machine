@@ -1,7 +1,7 @@
 import type { MachineDefinition } from "./MachineDefinition";
 import type { ExtractEvent, MachineEvent } from "./MachineEvent";
 import type { MachineInstance, Unsubscribe } from "./MachineInstance";
-import type { ExtractState, MachineState, StateContext } from "./MachineState";
+import type { ExtractState, MachineState, StateData } from "./MachineState";
 import type { OneOrMore } from "./OneOrMore";
 
 export interface MachineDefinitionConfig<
@@ -70,7 +70,7 @@ export interface TransitionWith<
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
 > extends Transition<StateType, EventType, CurrentState, CurrentEvent, NextState> {
-  readonly with: WithFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
+  readonly data: WithFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
 }
 
 export type WithFunction<
@@ -79,7 +79,7 @@ export type WithFunction<
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
-> = (currentState: CurrentState, event: CurrentEvent) => StateContext<NextState, NextState["name"]>;
+> = (currentState: CurrentState, event: CurrentEvent) => StateData<NextState, NextState["name"]>;
 
 export type EffectFunction<
   StateType extends MachineState<string>,
@@ -188,7 +188,7 @@ export const defineMachine = <StateType extends MachineState<string>, EventType 
             transitionTo(
               {
                 name: transition.to,
-                ...(transition as TransitionWith<StateType, EventType, CurrentState, CurrentEvent, NextState>)?.with?.(
+                ...(transition as TransitionWith<StateType, EventType, CurrentState, CurrentEvent, NextState>)?.data?.(
                   currentState as CurrentState,
                   event,
                 ),

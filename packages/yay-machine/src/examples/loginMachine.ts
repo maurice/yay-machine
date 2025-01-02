@@ -46,16 +46,16 @@ export const loginMachine = defineMachine<LoginState, LoginEvent | LogoutEvent>(
           {
             to: "authenticated",
             when: (_, { username, password }) => username === "trustme" && password === "password123",
-            with: (_, { username, rememberMe }) => ({ username, rememberMe: !!rememberMe }),
+            data: (_, { username, rememberMe }) => ({ username, rememberMe: !!rememberMe }),
           },
           {
             to: "invalidCredentials",
             when: (_, { username }) => username === "trustme",
-            with: () => ({ errorMessage: "Incorrect password" }),
+            data: () => ({ errorMessage: "Incorrect password" }),
           },
           {
             to: "invalidCredentials",
-            with: (_, { username }) => ({ errorMessage: `Unknown username "${username}" or incorrect password` }),
+            data: (_, { username }) => ({ errorMessage: `Unknown username "${username}" or incorrect password` }),
           },
         ],
       },

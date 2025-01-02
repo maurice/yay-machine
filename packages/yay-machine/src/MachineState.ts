@@ -14,7 +14,7 @@ type ExtractComplexEventState<
   Name extends StateType["name"],
 > = StateType extends { name: infer N } ? (Name extends N ? StateType /* & { name: Name } */ : never) : never;
 
-export type StateContext<StateType extends MachineState<string>, Name extends StateType["name"]> = keyof Omit<
+export type StateData<StateType extends MachineState<string>, Name extends StateType["name"]> = keyof Omit<
   ExtractState<StateType, Name>,
   "name"
 > extends never

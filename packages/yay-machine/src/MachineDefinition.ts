@@ -10,9 +10,9 @@ export interface MachineInstanceProvider<
 }
 
 // export type MachineStateFactories<StateType extends MachineState<string>> = {
-//   [Name in StateType["name"]]: StateContext<StateType, Name> extends never
+//   [Name in StateType["name"]]: StateData<StateType, Name> extends never
 //     ? () => ExtractState<StateType, Name>
-//     : (context: StateContext<StateType, Name>) => ExtractState<StateType, Name>;
+//     : (data: StateData<StateType, Name>) => ExtractState<StateType, Name>;
 // };
 
 // export type MachineEventFactories<EventType extends MachineEvent<string>> = {

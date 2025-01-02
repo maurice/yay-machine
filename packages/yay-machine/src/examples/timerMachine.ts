@@ -33,7 +33,7 @@ export const timerMachine = defineMachine<IdleState | ActiveState, RunEvent | Fi
   states: {
     idle: {
       on: {
-        RUN: { to: "running", with: (_, { time, repeat }) => ({ time, repeat: repeat === true }) },
+        RUN: { to: "running", data: (_, { time, repeat }) => ({ time, repeat: repeat === true }) },
       },
     },
     running: {
@@ -42,14 +42,14 @@ export const timerMachine = defineMachine<IdleState | ActiveState, RunEvent | Fi
         return () => clearTimeout(timer);
       },
       on: {
-        FIRED: { to: "fired", with: ({ time, repeat }) => ({ time, repeat }) },
+        FIRED: { to: "fired", data: ({ time, repeat }) => ({ time, repeat }) },
         CANCEL: { to: "idle" },
       },
     },
     fired: {
       always: [
         { to: "idle", when: ({ repeat }) => !repeat },
-        { to: "running", with: ({ time, repeat }) => ({ time, repeat }) },
+        { to: "running", data: ({ time, repeat }) => ({ time, repeat }) },
       ],
     },
   },
