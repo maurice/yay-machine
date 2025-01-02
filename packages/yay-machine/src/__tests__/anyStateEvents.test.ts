@@ -11,7 +11,10 @@ interface OutForDeliveryState {
 
 interface DeliveredState {
   readonly name: "delivered";
-  readonly customerCollected?: boolean;
+}
+
+interface CollectedState {
+  readonly name: "collected";
 }
 
 interface CancelledState {
@@ -19,7 +22,7 @@ interface CancelledState {
   readonly onCancelled: () => void;
 }
 
-type OrderState = ProcessingState | OutForDeliveryState | DeliveredState | CancelledState;
+type OrderState = ProcessingState | OutForDeliveryState | DeliveredState | CollectedState | CancelledState;
 
 interface SubmitEvent {
   readonly type: "SUBMIT";
@@ -29,8 +32,8 @@ interface OutForDeliveryEvent {
   readonly type: "OUT_FOR_DELIVERY";
 }
 
-interface DeliverEvent {
-  readonly type: "DELIVER";
+interface CompleteEvent {
+  readonly type: "COMPLETE";
 }
 
 interface CancelEvent {
@@ -38,7 +41,7 @@ interface CancelEvent {
   readonly onCancelled: () => void;
 }
 
-type OrderEvent = SubmitEvent | OutForDeliveryEvent | DeliverEvent | CancelEvent;
+type OrderEvent = SubmitEvent | OutForDeliveryEvent | CompleteEvent | CancelEvent;
 
 const orderMachine = defineMachine<OrderState, OrderEvent>({
   initialState: { name: "processing" },
@@ -50,7 +53,7 @@ const orderMachine = defineMachine<OrderState, OrderEvent>({
     },
     outForDelivery: {
       on: {
-        DELIVER: { to: "delivered", data: () => ({ customerCollected: false }) },
+        COMPLETE: { to: "delivered" },
       },
     },
   },
@@ -60,7 +63,7 @@ const orderMachine = defineMachine<OrderState, OrderEvent>({
       data: (_, { onCancelled }) => ({ onCancelled }),
       onTransition: ({ next: { onCancelled } }) => onCancelled(),
     },
-    DELIVER: { to: "delivered", data: () => ({ customerCollected: true }) },
+    COMPLETE: { to: "collected" },
   },
 });
 
@@ -99,18 +102,18 @@ test("CANCEL event is handled in any non-cancelled state", () => {
   expect(onCancelled).toHaveBeenCalledTimes(3); // still
 });
 
-test("DELIVER event is handled in specific or any state", () => {
+test("COMPLETE event is handled in specific or any state", () => {
   let machine = newMachine();
 
   // processing -> delivered
   expect(machine.state).toEqual({ name: "processing" });
-  machine.send({ type: "DELIVER" });
-  expect(machine.state).toEqual({ name: "delivered", customerCollected: true });
+  machine.send({ type: "COMPLETE" });
+  expect(machine.state).toEqual({ name: "collected" });
 
   // outForDelivery -> delivered
   machine = newMachine();
   machine.send({ type: "OUT_FOR_DELIVERY" });
   expect(machine.state).toEqual({ name: "outForDelivery" });
-  machine.send({ type: "DELIVER" });
-  expect(machine.state).toEqual({ name: "delivered", customerCollected: false });
+  machine.send({ type: "COMPLETE" });
+  expect(machine.state).toEqual({ name: "delivered" });
 });
