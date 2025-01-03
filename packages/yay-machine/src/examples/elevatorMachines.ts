@@ -12,7 +12,7 @@ import { type EffectParams, defineMachine } from "../defineMachine";
 export interface ElevatorState {
   readonly name: "doorsClosing" | "doorsClosed" | "doorsOpening" | "doorsOpen" | "goingUp" | "goingDown";
   readonly currentFloor: number;
-  readonly fractionalFloor: number; // workaround for JS number precision; we're just using two integers instead of a float
+  readonly fractionalFloor: number; // workaround for JS number precision; using two integers instead of a float
   readonly floorsToVisit: readonly number[];
 }
 
@@ -87,13 +87,14 @@ const insertFloor = (state: ElevatorState, floor: number): ElevatorState => {
 const isAtFloor = (state: ElevatorState, floor: number) => floor === state.currentFloor && state.fractionalFloor === 0;
 
 export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
+  enableCopyDataOnTransition: true, // most transitions don't change the state-data, so copy it by default
   initialState: { name: "doorsClosed", currentFloor: 1, fractionalFloor: 0, floorsToVisit: [] },
   states: {
     doorsClosing: {
       onEnter: sleepThen({ type: "CLOSED_DOORS" }),
       on: {
-        OPEN_DOORS: { to: "doorsOpening", data: ({ state }) => state },
-        CLOSED_DOORS: { to: "doorsClosed", data: ({ state }) => state },
+        OPEN_DOORS: { to: "doorsOpening" },
+        CLOSED_DOORS: { to: "doorsClosed" },
       },
     },
     doorsClosed: {
@@ -104,20 +105,18 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
         {
           to: "goingUp",
           when: ({ state }) => !!state.floorsToVisit[0] && state.floorsToVisit[0] > state.currentFloor,
-          data: ({ state }) => state,
         },
         {
           to: "goingDown",
           when: ({ state }) => !!state.floorsToVisit[0] && state.floorsToVisit[0] < state.currentFloor,
-          data: ({ state }) => state,
         },
       ],
     },
     doorsOpening: {
       onEnter: sleepThen({ type: "OPENED_DOORS" }),
       on: {
-        OPENED_DOORS: { to: "doorsOpen", data: ({ state }) => state },
-        CLOSE_DOORS: { to: "doorsClosing", data: ({ state }) => state },
+        OPENED_DOORS: { to: "doorsOpen" },
+        CLOSE_DOORS: { to: "doorsClosing" },
       },
     },
     doorsOpen: {
@@ -125,11 +124,9 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
       on: {
         VISIT_FLOOR: {
           to: "doorsOpen",
-          data: ({ state }) => state,
         },
         CLOSE_DOORS: {
           to: "doorsClosing",
-          data: ({ state }) => state,
         },
       },
     },
@@ -183,7 +180,6 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
       {
         to: "doorsOpening",
         when: ({ state, event }) => isAtFloor(state, event.floor),
-        data: ({ state }) => state,
       },
       {
         // to: *current-state*
@@ -254,6 +250,7 @@ export interface ElevatorArrivedEvent {
 export type ControllerEvent = RequestElevatorEvent | RequestingEvent | ElevatorArrivedEvent;
 
 export const controllerMachine = defineMachine<ControllerState, ControllerEvent>({
+  enableCopyDataOnTransition: true, // most transitions don't change the state-data, so copy it by default
   initialState: { name: "idle", elevators: undefined!, pendingRequests: [] },
   onStart: ({ state, send }) => {
     const unsubscribes = state.elevators.map((elevator, index) =>
@@ -295,7 +292,6 @@ export const controllerMachine = defineMachine<ControllerState, ControllerEvent>
       always: {
         to: "idle",
         when: ({ state }) => state.pendingRequests.length === 0,
-        data: ({ state }) => state,
       },
     },
   },
@@ -303,12 +299,10 @@ export const controllerMachine = defineMachine<ControllerState, ControllerEvent>
     REQUEST_ELEVATOR: [
       {
         to: "busy",
-        data: ({ state }) => state,
         when: ({ state, event }) => state.pendingRequests.some((request) => event.floor === request.floor),
       },
       {
         to: "requesting",
-        data: ({ state }) => state,
         onTransition: ({ state, event, send }) => {
           // find the best elevator
           const elevator = findBestElevatorForRequestedFloor(state.elevators, event.floor);
