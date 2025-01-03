@@ -9,7 +9,7 @@ interface EffectsStateData {
   readonly onEnterB: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;
   readonly onExitB: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;
   readonly onTransitionAToB: (
-    params: TransitionEffectParams<EffectsState, EffectsEvent, EffectsState, EffectsState>,
+    params: TransitionEffectParams<EffectsState, EffectsEvent, EffectsState, EffectsEvent, EffectsState>,
   ) => void;
 }
 
@@ -254,6 +254,7 @@ test("effect functions receive current state and send function plus next state w
   expect(initialState.onTransitionAToB).toHaveBeenCalledWith({
     state: expect.objectContaining({ name: "a", onlyExistsInA: true }),
     send: expect.any(Function),
+    event: { type: "TO_B" },
     next: expect.objectContaining({ name: "b", onlyExistsInB: true }),
   });
   expect(initialState.onEnterB).toHaveBeenCalledWith({

@@ -10,7 +10,12 @@ export interface MachineInstance<StateType extends MachineState<string>, EventTy
   start(): void;
   stop(): void;
   send(event: EventType): void;
-  subscribe(callback: (state: StateType, event: EventType | undefined) => void): Unsubscribe;
+  subscribe(subscriber: Subscriber<StateType, EventType>): Unsubscribe;
 }
+
+export type Subscriber<StateType extends MachineState<string>, EventType extends MachineEvent<string>> = (
+  state: StateType,
+  event: EventType | undefined,
+) => void;
 
 export type Unsubscribe = () => void;

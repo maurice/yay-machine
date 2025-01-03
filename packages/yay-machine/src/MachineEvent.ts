@@ -18,9 +18,9 @@ export type ExtractEvent<EventType extends MachineEvent<string>, Type extends Ev
 /**
  * Extracts the "payload" (ie, everything but the `type` field) of a specific event type.
  */
-export type EventPayload<EventType extends MachineEvent<string>, Type extends EventType["type"]> = keyof Omit<
-  ExtractEvent<EventType, Type>,
-  "type"
-> extends never
+export type EventPayload<
+  EventType extends MachineEvent<string>,
+  Type extends EventType["type"] = EventType["type"],
+> = keyof Omit<ExtractEvent<EventType, Type>, "type"> extends never
   ? never
   : Omit<ExtractEvent<EventType, Type>, "type">;
