@@ -1,19 +1,37 @@
 import type { MachineDefinition } from "./MachineDefinition";
 import type { ExtractEvent, MachineEvent } from "./MachineEvent";
 import type { MachineInstance, Unsubscribe } from "./MachineInstance";
-import type { ExtractState, MachineState, StateData } from "./MachineState";
+import type { ExtractState, IsStateDataHomogenous, MachineState, StateData } from "./MachineState";
 import type { OneOrMore } from "./OneOrMore";
 
-export interface MachineDefinitionConfig<
+export type MachineDefinitionConfig<
   StateType extends MachineState<string>,
   EventType extends MachineEvent<string>,
-> {
+> = MaybeHomogenousStateMachineDefinitionConfig<StateType> & {
   readonly initialState: StateType;
   readonly states: StatesConfig<StateType, EventType>;
   readonly onStart?: EffectFunction<StateType, EventType, StateType>;
   readonly onStop?: EffectFunction<StateType, EventType, StateType>;
   readonly on?: AnyStateTransitionsConfig<StateType, EventType, StateType>;
-}
+};
+
+export type MaybeHomogenousStateMachineDefinitionConfig<StateType extends MachineState<string>> =
+  // biome-ignore lint/complexity/noBannedTypes: seems to be the only way to get it working :(
+  IsStateDataHomogenous<StateType> extends true ? HomogenousStateMachineDefinitionConfig : {};
+
+/**
+ * For machines whose states have the same data structure
+ */
+export type HomogenousStateMachineDefinitionConfig = {
+  /**
+   * If `true`, data is automatically copied between states when transitioning, and the
+   * transition does not provide its own `data()` callback implementation.
+   * This avoids boilerplate `data()` callbacks config, like `{ to: 'foo', data: ({ state }) => state }`.
+   * @property {boolean} [enableCopyDataOnTransition] automatically copy data between states when transitioning?
+   * @default false
+   */
+  readonly enableCopyDataOnTransition?: boolean;
+};
 
 export type StatesConfig<StateType extends MachineState<string>, EventType extends MachineEvent<string>> = {
   readonly [Name in StateType["name"]]?: StateConfig<StateType, EventType, ExtractState<StateType, Name>>;
@@ -69,15 +87,26 @@ export interface Transition<
   >;
 }
 
-export interface TransitionWith<
+export type TransitionWith<
   StateType extends MachineState<string>,
   EventType extends MachineEvent<string>,
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
-> extends Transition<StateType, EventType, CurrentState, CurrentEvent, NextState> {
+> = Transition<StateType, EventType, CurrentState, CurrentEvent, NextState> &
+  (IsStateDataHomogenous<StateType> extends true
+    ? Partial<TransitionData<StateType, EventType, CurrentState, CurrentEvent, NextState>>
+    : TransitionData<StateType, EventType, CurrentState, CurrentEvent, NextState>);
+
+export type TransitionData<
+  StateType extends MachineState<string>,
+  EventType extends MachineEvent<string>,
+  CurrentState extends StateType,
+  CurrentEvent extends EventType | undefined,
+  NextState extends StateType,
+> = {
   readonly data: DataFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
-}
+};
 
 export type DataFunction<
   StateType extends MachineState<string>,
@@ -177,15 +206,16 @@ export interface AnyStateTransition<
   >;
 }
 
-export interface AnyStateTransitionWith<
+export type AnyStateTransitionWith<
   StateType extends MachineState<string>,
   EventType extends MachineEvent<string>,
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
-> extends AnyStateTransition<StateType, EventType, CurrentState, CurrentEvent, NextState> {
-  readonly data: DataFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
-}
+> = AnyStateTransition<StateType, EventType, CurrentState, CurrentEvent, NextState> &
+  (IsStateDataHomogenous<StateType> extends true
+    ? Partial<TransitionData<StateType, EventType, CurrentState, CurrentEvent, NextState>>
+    : TransitionData<StateType, EventType, CurrentState, CurrentEvent, NextState>);
 
 /**
  * Defines a machine prototype. Use this when you intend to create multiple instances of the same machine.
@@ -199,6 +229,8 @@ export const defineMachine = <StateType extends MachineState<string>, EventType 
 
   return {
     newInstance(instanceConfig) {
+      const enableCopyDataOnTransition = (definitionConfig as HomogenousStateMachineDefinitionConfig)
+        .enableCopyDataOnTransition;
       const initialState = instanceConfig?.initialState ?? definitionConfig.initialState;
       let currentState = initialState;
 
@@ -264,17 +296,22 @@ export const defineMachine = <StateType extends MachineState<string>, EventType 
       ): boolean => {
         const candidateTransitions: readonly Transition<StateType, EventType, CurrentState, CurrentEvent, NextState>[] =
           Array.isArray(transitions) ? transitions : [transitions];
-        for (const transition of candidateTransitions) {
+        for (const candidateTransition of candidateTransitions) {
+          const transition = candidateTransition as TransitionWith<
+            StateType,
+            EventType,
+            CurrentState,
+            CurrentEvent,
+            NextState
+          >;
           if (
             !("when" in transition) ||
             transition.when({ state: currentState as CurrentState, event: event as CurrentEvent })
           ) {
             transitionTo(
               {
-                ...(transition as TransitionWith<StateType, EventType, CurrentState, CurrentEvent, NextState>)?.data?.({
-                  state: currentState as CurrentState,
-                  event,
-                }),
+                ...transition.data?.({ state: currentState as CurrentState, event }),
+                ...(!transition.data && enableCopyDataOnTransition ? currentState : {}),
                 name: transition.to ?? currentState.name,
               } as unknown as NextState,
               event as CurrentEvent,

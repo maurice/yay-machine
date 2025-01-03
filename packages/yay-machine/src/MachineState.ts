@@ -20,3 +20,19 @@ export type StateData<StateType extends MachineState<string>, Name extends State
 > extends never
   ? never
   : Omit<ExtractState<StateType, Name>, "name">;
+
+type ExpandStateDataTypes<StateType extends MachineState<string>> = {
+  [Name in StateType["name"]]: StateData<StateType, Name>;
+};
+
+type Values<T> = T[keyof T];
+
+type AllValuesCompatible<T> = Values<T> extends infer V
+  ? { [K in keyof T]: V extends T[K] ? true : false }[keyof T] extends true
+    ? true
+    : false
+  : false;
+
+export type IsStateDataHomogenous<StateType extends MachineState<string>> = AllValuesCompatible<
+  ExpandStateDataTypes<StateType>
+>;
