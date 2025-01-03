@@ -23,4 +23,6 @@ Incomplete and in active development.
 
 **TODO**
 
-## 
+## Releases
+
+Done manually with `semantic-release` as per https://dev.to/sahanonp/how-to-setup-semantic-release-with-github-actions-31f3

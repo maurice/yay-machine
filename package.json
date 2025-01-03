@@ -1,9 +1,10 @@
 {
-  "name": "@yay-machine/monorepo",
+  "name": "yay-machine-monorepo",
   "version": "0.0.0",
   "description": "A modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server",
   "type": "module",
   "private": true,
+  "files": ["src", "dist"],
   "scripts": {
     "prepare": "husky",
     "check": "bun run check:types && bun run check:lint",

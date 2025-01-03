@@ -1,12 +1,17 @@
 {
-  "name": "@yay-machine/fsm",
+  "name": "yay-machine",
   "version": "0.0.0",
   "description": "A modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server",
-  "main": "index.js",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
   "files": ["src", "dist"],
   "scripts": {
-    "build": "bun build src/index.ts --outdir dist"
+    "build": "rimraf dist && bun run build:esm && bun run build:cjs && bun run build:types",
+    "build:esm": "bun build src/index.ts --outfile dist/index.js --format esm",
+    "build:cjs": "bun build src/index.ts --outfile dist/index.cjs --format cjs",
+    "build:types": "tsc --emitDeclarationOnly --declaration --declarationMap"
   },
   "repository": {
     "type": "git",
@@ -29,5 +34,8 @@
   "bugs": {
     "url": "https://github.com/maurice/yay-machine/issues"
   },
-  "homepage": "https://github.com/maurice/yay-machine#readme"
+  "homepage": "https://github.com/maurice/yay-machine#readme",
+  "devDependencies": {
+    "rimraf": "^6.0.1"
+  }
 }
