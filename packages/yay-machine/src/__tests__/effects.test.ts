@@ -1,5 +1,5 @@
 import { expect, mock, test } from "bun:test";
-import { type EffectParams, type TransitionEffectParams, defineMachine } from "../defineMachine";
+import { type EffectParams, defineMachine } from "../defineMachine";
 
 interface EffectsStateData {
   readonly onStart: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;
@@ -9,7 +9,7 @@ interface EffectsStateData {
   readonly onEnterB: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;
   readonly onExitB: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;
   readonly onTransitionAToB: (
-    params: TransitionEffectParams<EffectsState, EffectsEvent, EffectsState, EffectsEvent, EffectsState>,
+    params: EffectParams<EffectsState, EffectsEvent, EffectsState, EffectsEvent, EffectsState>,
   ) => void;
 }
 

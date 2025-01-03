@@ -82,7 +82,7 @@ export interface Transition<
 > {
   readonly to: NextState["name"];
   readonly when?: (params: CallbackParams<CurrentState, CurrentEvent>) => boolean;
-  readonly onTransition?: TransitionEffectFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
+  readonly onTransition?: EffectFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
 }
 
 export type TransitionWithData<
@@ -128,8 +128,10 @@ export type EffectFunction<
   StateType extends MachineState,
   EventType extends MachineEvent,
   CurrentState extends StateType,
+  CurrentEvent extends EventType | undefined = undefined,
+  NextState extends StateType | undefined = undefined,
 > = (
-  params: EffectParams<StateType, EventType, CurrentState>,
+  params: EffectParams<StateType, EventType, CurrentState, CurrentEvent, NextState>,
   // biome-ignore lint/suspicious/noConfusingVoidType: adding void to union as we don't want to force users to explicity return
 ) => Unsubscribe | undefined | null | void;
 
@@ -137,33 +139,21 @@ export type EffectParams<
   StateType extends MachineState,
   EventType extends MachineEvent,
   CurrentState extends StateType,
-> = Pick<MachineInstance<StateType, EventType>, "send"> & {
-  readonly state: CurrentState;
-};
-
-export type TransitionEffectFunction<
-  StateType extends MachineState,
-  EventType extends MachineEvent,
-  CurrentState extends StateType,
-  CurrentEvent extends EventType | undefined,
-  NextState extends StateType,
-> = (
-  params: TransitionEffectParams<StateType, EventType, CurrentState, CurrentEvent, NextState>,
-  // biome-ignore lint/suspicious/noConfusingVoidType: adding void to union as we don't want to force users to explicity return
-) => Unsubscribe | undefined | null | void;
-
-export type TransitionEffectParams<
-  StateType extends MachineState,
-  EventType extends MachineEvent,
-  CurrentState extends StateType,
-  CurrentEvent extends EventType | undefined,
-  NextState extends StateType,
-> = WithEvent<
-  EffectParams<StateType, EventType, CurrentState> & {
-    readonly next: NextState;
-  },
-  CurrentEvent
+  CurrentEvent extends EventType | undefined = undefined,
+  NextState extends StateType | undefined = undefined,
+> = WithNextState<
+  WithEvent<
+    Pick<MachineInstance<StateType, EventType>, "send"> & {
+      readonly state: CurrentState;
+    },
+    CurrentEvent
+  >,
+  NextState
 >;
+
+export type WithNextState<Type, NextState extends MachineState | undefined = undefined> = NextState extends undefined
+  ? Type
+  : Type & { readonly next: NextState };
 
 export type WithEvent<Type, EventType extends MachineEvent | undefined> = EventType extends undefined
   ? Type
@@ -199,7 +189,7 @@ export interface AnyStateTransition<
 > {
   readonly to?: NextState["name"]; // current state if not specified
   readonly when?: (params: CallbackParams<CurrentState, CurrentEvent>) => boolean;
-  readonly onTransition?: TransitionEffectFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
+  readonly onTransition?: EffectFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
 }
 
 export type AnyStateTransitionWith<
@@ -253,7 +243,7 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
       >(
         nextState: NextState,
         event: CurrentEvent | undefined,
-        onTransition: TransitionEffectFunction<StateType, EventType, CurrentState, CurrentEvent, NextState> | undefined,
+        onTransition: EffectFunction<StateType, EventType, CurrentState, CurrentEvent, NextState> | undefined,
       ) => {
         if (stateCleanup) {
           stateCleanup();
