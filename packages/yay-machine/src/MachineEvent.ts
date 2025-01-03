@@ -13,7 +13,17 @@ export interface MachineEvent<Type extends string> {
 export type ExtractEvent<EventType extends MachineEvent<string>, Type extends EventType["type"]> = Extract<
   EventType,
   { type: Type }
->;
+> extends never
+  ? ExtractComplexEvent<EventType, Type>
+  : Extract<EventType, { type: Type }>;
+
+type ExtractComplexEvent<EventType extends MachineEvent<string>, Type extends EventType["type"]> = EventType extends {
+  type: infer N;
+}
+  ? Type extends N
+    ? EventType /* & { type: Type } */
+    : never
+  : never;
 
 /**
  * Extracts the "payload" (ie, everything but the `type` field) of a specific event type.

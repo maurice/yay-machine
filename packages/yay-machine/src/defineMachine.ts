@@ -82,13 +82,7 @@ export interface Transition<
 > {
   readonly to: NextState["name"];
   readonly when?: (params: CallbackParams<CurrentState, CurrentEvent>) => boolean;
-  readonly onTransition?: TransitionEffectFunction<
-    StateType,
-    EventType,
-    CurrentState,
-    NonNullable<CurrentEvent>,
-    NextState
-  >;
+  readonly onTransition?: TransitionEffectFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
 }
 
 export type TransitionWithData<
@@ -149,7 +143,7 @@ export type TransitionEffectFunction<
   StateType extends MachineState<string>,
   EventType extends MachineEvent<string>,
   CurrentState extends StateType,
-  CurrentEvent extends EventType,
+  CurrentEvent extends EventType | undefined,
   NextState extends StateType,
 > = (
   params: TransitionEffectParams<StateType, EventType, CurrentState, CurrentEvent, NextState>,
@@ -160,11 +154,11 @@ export type TransitionEffectParams<
   StateType extends MachineState<string>,
   EventType extends MachineEvent<string>,
   CurrentState extends StateType,
-  CurrentEvent extends EventType,
+  CurrentEvent extends EventType | undefined,
   NextState extends StateType,
 > = EffectParams<StateType, EventType, CurrentState> & {
-  readonly event: CurrentEvent;
   readonly next: NextState;
+  readonly event: CurrentEvent;
 };
 
 export type AnyStateTransitionsConfig<
@@ -197,13 +191,7 @@ export interface AnyStateTransition<
 > {
   readonly to?: NextState["name"]; // current state if not specified
   readonly when?: (params: CallbackParams<CurrentState, CurrentEvent>) => boolean;
-  readonly onTransition?: TransitionEffectFunction<
-    StateType,
-    EventType,
-    CurrentState,
-    NonNullable<CurrentEvent>,
-    NextState
-  >;
+  readonly onTransition?: TransitionEffectFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
 }
 
 export type AnyStateTransitionWith<
@@ -252,7 +240,7 @@ export const defineMachine = <StateType extends MachineState<string>, EventType 
 
       const transitionTo = <
         CurrentState extends StateType,
-        CurrentEvent extends EventType,
+        CurrentEvent extends EventType | undefined,
         NextState extends StateType,
       >(
         nextState: NextState,
