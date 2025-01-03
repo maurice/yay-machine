@@ -16,14 +16,3 @@ The State Machine with more YAY!
 - run side-effects that interact with the outside world on machine start, machine stop, state entry, state exit, and transition
 - easily compose machines into hierarchies
 
-## Current status
-
-Incomplete and in active development.
-
-## Show me
-
-**TODO**
-
-## Releases
-
-Done manually with `semantic-release` as per https://dev.to/sahanonp/how-to-setup-semantic-release-with-github-actions-31f3
