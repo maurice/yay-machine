@@ -114,13 +114,15 @@ export type DataFunction<
   NextState extends StateType,
 > = (params: CallbackParams<CurrentState, CurrentEvent>) => StateData<NextState, NextState["name"]>;
 
-export interface CallbackParams<
+export type CallbackParams<
   CurrentState extends MachineState<string>,
   CurrentEvent extends MachineEvent<string> | undefined,
-> {
-  readonly state: CurrentState;
-  readonly event: CurrentEvent;
-}
+> = WithEvent<
+  {
+    readonly state: CurrentState;
+  },
+  CurrentEvent
+>;
 
 export type EffectFunction<
   StateType extends MachineState<string>,
@@ -156,10 +158,16 @@ export type TransitionEffectParams<
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
-> = EffectParams<StateType, EventType, CurrentState> & {
-  readonly next: NextState;
-  readonly event: CurrentEvent;
-};
+> = WithEvent<
+  EffectParams<StateType, EventType, CurrentState> & {
+    readonly next: NextState;
+  },
+  CurrentEvent
+>;
+
+export type WithEvent<Type, EventType extends MachineEvent<string> | undefined> = EventType extends undefined
+  ? Type
+  : Type & { readonly event: EventType };
 
 export type AnyStateTransitionsConfig<
   StateType extends MachineState<string>,
@@ -253,12 +261,8 @@ export const defineMachine = <StateType extends MachineState<string>, EventType 
         }
 
         if (onTransition) {
-          onTransition({
-            state: currentState as CurrentState,
-            event: event as CurrentEvent,
-            next: nextState,
-            send: machine.send,
-          })?.();
+          // @ts-ignore
+          onTransition({ state: currentState, next: nextState, send: machine.send, ...(event && { event }) })?.();
         }
 
         currentState = nextState;
@@ -294,11 +298,13 @@ export const defineMachine = <StateType extends MachineState<string>, EventType 
           >;
           if (
             !("when" in transition) ||
-            transition.when({ state: currentState as CurrentState, event: event as CurrentEvent })
+            // @ts-ignore
+            transition.when({ state: currentState, ...(event && { event }) })
           ) {
             transitionTo(
               {
-                ...transition.data?.({ state: currentState as CurrentState, event }),
+                // @ts-ignore
+                ...transition.data?.({ state: currentState, ...(event && { event }) }),
                 ...(!transition.data && enableCopyDataOnTransition ? currentState : {}),
                 name: transition.to ?? currentState.name,
               } as unknown as NextState,
