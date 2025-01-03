@@ -7,17 +7,21 @@ import type { OneOrMore } from "./OneOrMore";
 export type MachineDefinitionConfig<
   StateType extends MachineState<string>,
   EventType extends MachineEvent<string>,
-> = MaybeHomogenousStateMachineDefinitionConfig<StateType> & {
-  readonly initialState: StateType;
-  readonly states: StatesConfig<StateType, EventType>;
-  readonly onStart?: EffectFunction<StateType, EventType, StateType>;
-  readonly onStop?: EffectFunction<StateType, EventType, StateType>;
-  readonly on?: AnyStateTransitionsConfig<StateType, EventType, StateType>;
-};
+> = WithHomogenousStateMachineDefinitionConfig<
+  {
+    readonly initialState: StateType;
+    readonly states: StatesConfig<StateType, EventType>;
+    readonly onStart?: EffectFunction<StateType, EventType, StateType>;
+    readonly onStop?: EffectFunction<StateType, EventType, StateType>;
+    readonly on?: AnyStateTransitionsConfig<StateType, EventType, StateType>;
+  },
+  StateType
+>;
 
-export type MaybeHomogenousStateMachineDefinitionConfig<StateType extends MachineState<string>> =
-  // biome-ignore lint/complexity/noBannedTypes: seems to be the only way to get it working :(
-  IsStateDataHomogenous<StateType> extends true ? HomogenousStateMachineDefinitionConfig : {};
+export type WithHomogenousStateMachineDefinitionConfig<
+  Type,
+  StateType extends MachineState<string>,
+> = IsStateDataHomogenous<StateType> extends true ? Type & HomogenousStateMachineDefinitionConfig : Type;
 
 /**
  * For machines whose states have the same data structure
