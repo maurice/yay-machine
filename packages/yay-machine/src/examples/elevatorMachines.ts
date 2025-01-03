@@ -92,32 +92,32 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
     doorsClosing: {
       onEnter: sleepThen({ type: "CLOSED_DOORS" }),
       on: {
-        OPEN_DOORS: { to: "doorsOpening", data: (state) => state },
-        CLOSED_DOORS: { to: "doorsClosed", data: (state) => state },
+        OPEN_DOORS: { to: "doorsOpening", data: ({ state }) => state },
+        CLOSED_DOORS: { to: "doorsClosed", data: ({ state }) => state },
       },
     },
     doorsClosed: {
       on: {
-        OPEN_DOORS: { to: "doorsOpening", data: (state) => state },
+        OPEN_DOORS: { to: "doorsOpening", data: ({ state }) => state },
       },
       always: [
         {
           to: "goingUp",
-          when: (state) => !!state.floorsToVisit[0] && state.floorsToVisit[0] > state.currentFloor,
-          data: (state) => state,
+          when: ({ state }) => !!state.floorsToVisit[0] && state.floorsToVisit[0] > state.currentFloor,
+          data: ({ state }) => state,
         },
         {
           to: "goingDown",
-          when: (state) => !!state.floorsToVisit[0] && state.floorsToVisit[0] < state.currentFloor,
-          data: (state) => state,
+          when: ({ state }) => !!state.floorsToVisit[0] && state.floorsToVisit[0] < state.currentFloor,
+          data: ({ state }) => state,
         },
       ],
     },
     doorsOpening: {
       onEnter: sleepThen({ type: "OPENED_DOORS" }),
       on: {
-        OPENED_DOORS: { to: "doorsOpen", data: (state) => state },
-        CLOSE_DOORS: { to: "doorsClosing", data: (state) => state },
+        OPENED_DOORS: { to: "doorsOpen", data: ({ state }) => state },
+        CLOSE_DOORS: { to: "doorsClosing", data: ({ state }) => state },
       },
     },
     doorsOpen: {
@@ -125,11 +125,11 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
       on: {
         VISIT_FLOOR: {
           to: "doorsOpen",
-          data: (state) => state,
+          data: ({ state }) => state,
         },
         CLOSE_DOORS: {
           to: "doorsClosing",
-          data: (state) => state,
+          data: ({ state }) => state,
         },
       },
     },
@@ -138,7 +138,7 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
       on: {
         MOVE_UP: {
           to: "goingUp",
-          data: (state) => ({
+          data: ({ state }) => ({
             ...state,
             currentFloor: state.fractionalFloor === 9 ? state.currentFloor + 1 : state.currentFloor,
             fractionalFloor: state.fractionalFloor === 9 ? 0 : state.fractionalFloor + 1,
@@ -147,8 +147,8 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
       },
       always: {
         to: "doorsOpening",
-        when: (state) => state.currentFloor === state.floorsToVisit[0]!,
-        data: (state) => ({
+        when: ({ state }) => state.currentFloor === state.floorsToVisit[0]!,
+        data: ({ state }) => ({
           ...state,
           currentFloor: state.floorsToVisit[0]!,
           floorsToVisit: state.floorsToVisit.toSpliced(0, 1),
@@ -160,7 +160,7 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
       on: {
         MOVE_DOWN: {
           to: "goingDown",
-          data: (state) => ({
+          data: ({ state }) => ({
             ...state,
             currentFloor: state.fractionalFloor === 0 ? state.currentFloor - 1 : state.currentFloor,
             fractionalFloor: state.fractionalFloor === 0 ? 9 : state.fractionalFloor - 1,
@@ -169,8 +169,8 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
       },
       always: {
         to: "doorsOpening",
-        when: (state) => state.currentFloor === state.floorsToVisit[0]! && state.fractionalFloor === 0,
-        data: (state) => ({
+        when: ({ state }) => state.currentFloor === state.floorsToVisit[0]! && state.fractionalFloor === 0,
+        data: ({ state }) => ({
           ...state,
           currentFloor: state.floorsToVisit[0]!,
           floorsToVisit: state.floorsToVisit.toSpliced(0, 1),
@@ -182,12 +182,12 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
     VISIT_FLOOR: [
       {
         to: "doorsOpening",
-        when: (state, { floor }) => isAtFloor(state, floor),
-        data: (state) => state,
+        when: ({ state, event }) => isAtFloor(state, event.floor),
+        data: ({ state }) => state,
       },
       {
         // to: *current-state*
-        data: (state, { floor }) => insertFloor(state, floor),
+        data: ({ state, event }) => insertFloor(state, event.floor),
       },
     ],
   },
@@ -270,7 +270,7 @@ export const controllerMachine = defineMachine<ControllerState, ControllerEvent>
       on: {
         REQUESTING_ELEVATOR: {
           to: "busy",
-          data: (state, event) => ({
+          data: ({ state, event }) => ({
             ...state,
             pendingRequests: [...state.pendingRequests, { floor: event.floor, elevatorIndex: event.elevatorIndex }],
           }),
@@ -284,7 +284,7 @@ export const controllerMachine = defineMachine<ControllerState, ControllerEvent>
       on: {
         ELEVATOR_ARRIVED: {
           to: "busy",
-          data: (state, event) => ({
+          data: ({ state, event }) => ({
             ...state,
             pendingRequests: state.pendingRequests.filter(
               (request) => request.floor === event.floor && request.elevatorIndex === event.elevatorIndex,
@@ -294,8 +294,8 @@ export const controllerMachine = defineMachine<ControllerState, ControllerEvent>
       },
       always: {
         to: "idle",
-        when: (state) => state.pendingRequests.length === 0,
-        data: (state) => state,
+        when: ({ state }) => state.pendingRequests.length === 0,
+        data: ({ state }) => state,
       },
     },
   },
@@ -303,12 +303,12 @@ export const controllerMachine = defineMachine<ControllerState, ControllerEvent>
     REQUEST_ELEVATOR: [
       {
         to: "busy",
-        data: (data) => data,
-        when: (state, event) => state.pendingRequests.some((request) => event.floor === request.floor),
+        data: ({ state }) => state,
+        when: ({ state, event }) => state.pendingRequests.some((request) => event.floor === request.floor),
       },
       {
         to: "requesting",
-        data: (data) => data,
+        data: ({ state }) => state,
         onTransition: ({ state, event, send }) => {
           // find the best elevator
           const elevator = findBestElevatorForRequestedFloor(state.elevators, event.floor);

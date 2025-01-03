@@ -59,7 +59,7 @@ export interface Transition<
   NextState extends StateType,
 > {
   readonly to: NextState["name"];
-  readonly when?: (currentState: CurrentState, currentEvent: CurrentEvent) => boolean;
+  readonly when?: (params: CallbackParams<StateType, EventType, CurrentState, CurrentEvent>) => boolean;
   readonly onTransition?: TransitionEffectFunction<
     StateType,
     EventType,
@@ -76,16 +76,28 @@ export interface TransitionWith<
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
 > extends Transition<StateType, EventType, CurrentState, CurrentEvent, NextState> {
-  readonly data: WithFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
+  readonly data: DataFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
 }
 
-export type WithFunction<
+export type DataFunction<
   StateType extends MachineState<string>,
   EventType extends MachineEvent<string>,
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
-> = (currentState: CurrentState, event: CurrentEvent) => StateData<NextState, NextState["name"]>;
+> = (
+  params: CallbackParams<StateType, EventType, CurrentState, CurrentEvent>,
+) => StateData<NextState, NextState["name"]>;
+
+export interface CallbackParams<
+  StateType extends MachineState<string>,
+  EventType extends MachineEvent<string>,
+  CurrentState extends StateType,
+  CurrentEvent extends EventType | undefined,
+> {
+  readonly state: CurrentState;
+  readonly event: CurrentEvent;
+}
 
 export type EffectFunction<
   StateType extends MachineState<string>,
@@ -155,7 +167,7 @@ export interface AnyStateTransition<
   NextState extends StateType,
 > {
   readonly to?: NextState["name"]; // current state if not specified
-  readonly when?: (currentState: CurrentState, currentEvent: CurrentEvent) => boolean;
+  readonly when?: (params: CallbackParams<StateType, EventType, CurrentState, CurrentEvent>) => boolean;
   readonly onTransition?: TransitionEffectFunction<
     StateType,
     EventType,
@@ -172,7 +184,7 @@ export interface AnyStateTransitionWith<
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
 > extends AnyStateTransition<StateType, EventType, CurrentState, CurrentEvent, NextState> {
-  readonly data: WithFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
+  readonly data: DataFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
 }
 
 /**
@@ -253,13 +265,16 @@ export const defineMachine = <StateType extends MachineState<string>, EventType 
         const candidateTransitions: readonly Transition<StateType, EventType, CurrentState, CurrentEvent, NextState>[] =
           Array.isArray(transitions) ? transitions : [transitions];
         for (const transition of candidateTransitions) {
-          if (!("when" in transition) || transition.when(currentState as CurrentState, event as CurrentEvent)) {
+          if (
+            !("when" in transition) ||
+            transition.when({ state: currentState as CurrentState, event: event as CurrentEvent })
+          ) {
             transitionTo(
               {
-                ...(transition as TransitionWith<StateType, EventType, CurrentState, CurrentEvent, NextState>)?.data?.(
-                  currentState as CurrentState,
+                ...(transition as TransitionWith<StateType, EventType, CurrentState, CurrentEvent, NextState>)?.data?.({
+                  state: currentState as CurrentState,
                   event,
-                ),
+                }),
                 name: transition.to ?? currentState.name,
               } as unknown as NextState,
               event as CurrentEvent,

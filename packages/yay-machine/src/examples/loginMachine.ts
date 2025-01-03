@@ -42,20 +42,22 @@ export const loginMachine = defineMachine<LoginState, LoginEvent | LogoutEvent>(
     unauthenticated: {
       on: {
         LOGIN: [
-          { to: "banned", when: (_, { username }) => username === "hackerman" },
+          { to: "banned", when: ({ event }) => event.username === "hackerman" },
           {
             to: "authenticated",
-            when: (_, { username, password }) => username === "trustme" && password === "password123",
-            data: (_, { username, rememberMe }) => ({ username, rememberMe: !!rememberMe }),
+            when: ({ event: { username, password } }) => username === "trustme" && password === "password123",
+            data: ({ event: { username, rememberMe } }) => ({ username, rememberMe: !!rememberMe }),
           },
           {
             to: "invalidCredentials",
-            when: (_, { username }) => username === "trustme",
+            when: ({ event: { username } }) => username === "trustme",
             data: () => ({ errorMessage: "Incorrect password" }),
           },
           {
             to: "invalidCredentials",
-            data: (_, { username }) => ({ errorMessage: `Unknown username "${username}" or incorrect password` }),
+            data: ({ event: { username } }) => ({
+              errorMessage: `Unknown username "${username}" or incorrect password`,
+            }),
           },
         ],
       },
@@ -68,7 +70,7 @@ export const loginMachine = defineMachine<LoginState, LoginEvent | LogoutEvent>(
       on: {
         LOGOUT: {
           to: "unauthenticated",
-          when: ({ rememberMe }, { fromSystem }) => !fromSystem || !rememberMe,
+          when: ({ state: { rememberMe }, event: { fromSystem } }) => !fromSystem || !rememberMe,
         },
       },
     },

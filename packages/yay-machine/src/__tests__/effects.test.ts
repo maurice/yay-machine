@@ -50,7 +50,7 @@ const effectMachine = defineMachine<AState | BState, EffectsEvent>({
       on: {
         TO_B: {
           to: "b",
-          data: ({ name, ...effects }) => ({ ...effects, onlyExistsInB: true }),
+          data: ({ state: { name, ...effects } }) => ({ ...effects, onlyExistsInB: true }),
           onTransition: (params) => params.state.onTransitionAToB(params),
         },
       },
@@ -59,7 +59,7 @@ const effectMachine = defineMachine<AState | BState, EffectsEvent>({
       onEnter: (params) => params.state.onEnterB(params),
       onExit: (params) => params.state.onExitB(params),
       on: {
-        TO_A: { to: "a", data: ({ name, ...effects }) => ({ ...effects, onlyExistsInA: true }) },
+        TO_A: { to: "a", data: ({ state: { name, ...effects } }) => ({ ...effects, onlyExistsInA: true }) },
       },
     },
   },
