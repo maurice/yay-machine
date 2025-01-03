@@ -5,8 +5,8 @@ import type { ExtractState, IsStateDataHomogenous, MachineState, StateData } fro
 import type { OneOrMore } from "./OneOrMore";
 
 export type MachineDefinitionConfig<
-  StateType extends MachineState<string>,
-  EventType extends MachineEvent<string>,
+  StateType extends MachineState,
+  EventType extends MachineEvent,
 > = WithHomogenousStateMachineDefinitionConfig<
   {
     readonly initialState: StateType;
@@ -20,7 +20,7 @@ export type MachineDefinitionConfig<
 
 export type WithHomogenousStateMachineDefinitionConfig<
   Type,
-  StateType extends MachineState<string>,
+  StateType extends MachineState,
 > = IsStateDataHomogenous<StateType> extends true ? Type & HomogenousStateMachineDefinitionConfig : Type;
 
 /**
@@ -37,13 +37,13 @@ export type HomogenousStateMachineDefinitionConfig = {
   readonly enableCopyDataOnTransition?: boolean;
 };
 
-export type StatesConfig<StateType extends MachineState<string>, EventType extends MachineEvent<string>> = {
+export type StatesConfig<StateType extends MachineState, EventType extends MachineEvent> = {
   readonly [Name in StateType["name"]]?: StateConfig<StateType, EventType, ExtractState<StateType, Name>>;
 };
 
 export type StateConfig<
-  StateType extends MachineState<string>,
-  EventType extends MachineEvent<string>,
+  StateType extends MachineState,
+  EventType extends MachineEvent,
   CurrentState extends StateType,
 > = {
   readonly on?: TransitionsConfig<StateType, EventType, CurrentState>;
@@ -53,8 +53,8 @@ export type StateConfig<
 };
 
 export type TransitionsConfig<
-  StateType extends MachineState<string>,
-  EventType extends MachineEvent<string>,
+  StateType extends MachineState,
+  EventType extends MachineEvent,
   CurrentState extends StateType,
 > = {
   readonly [Type in EventType["type"]]?: OneOrMore<
@@ -63,8 +63,8 @@ export type TransitionsConfig<
 };
 
 export type TransitionConfig<
-  StateType extends MachineState<string>,
-  EventType extends MachineEvent<string>,
+  StateType extends MachineState,
+  EventType extends MachineEvent,
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
 > = {
@@ -74,8 +74,8 @@ export type TransitionConfig<
 }[StateType["name"]];
 
 export interface Transition<
-  StateType extends MachineState<string>,
-  EventType extends MachineEvent<string>,
+  StateType extends MachineState,
+  EventType extends MachineEvent,
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
@@ -86,8 +86,8 @@ export interface Transition<
 }
 
 export type TransitionWithData<
-  StateType extends MachineState<string>,
-  EventType extends MachineEvent<string>,
+  StateType extends MachineState,
+  EventType extends MachineEvent,
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
@@ -97,8 +97,8 @@ export type TransitionWithData<
     : TransitionData<StateType, EventType, CurrentState, CurrentEvent, NextState>);
 
 export type TransitionData<
-  StateType extends MachineState<string>,
-  EventType extends MachineEvent<string>,
+  StateType extends MachineState,
+  EventType extends MachineEvent,
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
@@ -107,16 +107,16 @@ export type TransitionData<
 };
 
 export type DataFunction<
-  StateType extends MachineState<string>,
-  EventType extends MachineEvent<string>,
+  StateType extends MachineState,
+  EventType extends MachineEvent,
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
 > = (params: CallbackParams<CurrentState, CurrentEvent>) => StateData<NextState, NextState["name"]>;
 
 export type CallbackParams<
-  CurrentState extends MachineState<string>,
-  CurrentEvent extends MachineEvent<string> | undefined,
+  CurrentState extends MachineState,
+  CurrentEvent extends MachineEvent | undefined,
 > = WithEvent<
   {
     readonly state: CurrentState;
@@ -125,8 +125,8 @@ export type CallbackParams<
 >;
 
 export type EffectFunction<
-  StateType extends MachineState<string>,
-  EventType extends MachineEvent<string>,
+  StateType extends MachineState,
+  EventType extends MachineEvent,
   CurrentState extends StateType,
 > = (
   params: EffectParams<StateType, EventType, CurrentState>,
@@ -134,16 +134,16 @@ export type EffectFunction<
 ) => Unsubscribe | undefined | null | void;
 
 export type EffectParams<
-  StateType extends MachineState<string>,
-  EventType extends MachineEvent<string>,
+  StateType extends MachineState,
+  EventType extends MachineEvent,
   CurrentState extends StateType,
 > = Pick<MachineInstance<StateType, EventType>, "send"> & {
   readonly state: CurrentState;
 };
 
 export type TransitionEffectFunction<
-  StateType extends MachineState<string>,
-  EventType extends MachineEvent<string>,
+  StateType extends MachineState,
+  EventType extends MachineEvent,
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
@@ -153,8 +153,8 @@ export type TransitionEffectFunction<
 ) => Unsubscribe | undefined | null | void;
 
 export type TransitionEffectParams<
-  StateType extends MachineState<string>,
-  EventType extends MachineEvent<string>,
+  StateType extends MachineState,
+  EventType extends MachineEvent,
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
@@ -165,13 +165,13 @@ export type TransitionEffectParams<
   CurrentEvent
 >;
 
-export type WithEvent<Type, EventType extends MachineEvent<string> | undefined> = EventType extends undefined
+export type WithEvent<Type, EventType extends MachineEvent | undefined> = EventType extends undefined
   ? Type
   : Type & { readonly event: EventType };
 
 export type AnyStateTransitionsConfig<
-  StateType extends MachineState<string>,
-  EventType extends MachineEvent<string>,
+  StateType extends MachineState,
+  EventType extends MachineEvent,
   CurrentState extends StateType,
 > = {
   readonly [Type in EventType["type"]]?: OneOrMore<
@@ -180,8 +180,8 @@ export type AnyStateTransitionsConfig<
 };
 
 export type AnyStateTransitionConfig<
-  StateType extends MachineState<string>,
-  EventType extends MachineEvent<string>,
+  StateType extends MachineState,
+  EventType extends MachineEvent,
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
 > = {
@@ -191,8 +191,8 @@ export type AnyStateTransitionConfig<
 }[StateType["name"]];
 
 export interface AnyStateTransition<
-  StateType extends MachineState<string>,
-  EventType extends MachineEvent<string>,
+  StateType extends MachineState,
+  EventType extends MachineEvent,
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
@@ -203,8 +203,8 @@ export interface AnyStateTransition<
 }
 
 export type AnyStateTransitionWith<
-  StateType extends MachineState<string>,
-  EventType extends MachineEvent<string>,
+  StateType extends MachineState,
+  EventType extends MachineEvent,
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
@@ -218,7 +218,7 @@ export type AnyStateTransitionWith<
  * @param definitionConfig describes the machine prototype; it's states and how it responds to events
  * @returns the machine definition, which can be used to create new machine instances
  */
-export const defineMachine = <StateType extends MachineState<string>, EventType extends MachineEvent<string>>(
+export const defineMachine = <StateType extends MachineState, EventType extends MachineEvent>(
   definitionConfig: MachineDefinitionConfig<StateType, EventType>,
 ): MachineDefinition<StateType, EventType> => {
   type Cleanup = () => void;

@@ -1,11 +1,11 @@
 import type { MachineEvent } from "./MachineEvent";
 import type { MachineState } from "./MachineState";
 
-export interface MachineInstanceConfig<StateType extends MachineState<string>> {
+export interface MachineInstanceConfig<StateType extends MachineState> {
   readonly initialState?: StateType;
 }
 
-export interface MachineInstance<StateType extends MachineState<string>, EventType extends MachineEvent<string>> {
+export interface MachineInstance<StateType extends MachineState, EventType extends MachineEvent> {
   readonly state: StateType;
   start(): void;
   stop(): void;
@@ -13,7 +13,7 @@ export interface MachineInstance<StateType extends MachineState<string>, EventTy
   subscribe(subscriber: Subscriber<StateType, EventType>): Unsubscribe;
 }
 
-export type Subscriber<StateType extends MachineState<string>, EventType extends MachineEvent<string>> = (
+export type Subscriber<StateType extends MachineState, EventType extends MachineEvent> = (
   state: StateType,
   event: EventType | undefined,
 ) => void;

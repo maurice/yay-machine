@@ -1,15 +1,15 @@
-export interface MachineState<Name extends string> {
+export interface MachineState<Name extends string = string> {
   readonly name: Name;
 }
 
-export type ExtractState<StateType extends MachineState<string>, Name extends StateType["name"]> = Extract<
+export type ExtractState<StateType extends MachineState, Name extends StateType["name"]> = Extract<
   StateType,
   { name: Name }
 > extends never
   ? ExtractComplexState<StateType, Name>
   : Extract<StateType, { name: Name }>;
 
-type ExtractComplexState<StateType extends MachineState<string>, Name extends StateType["name"]> = StateType extends {
+type ExtractComplexState<StateType extends MachineState, Name extends StateType["name"]> = StateType extends {
   name: infer N;
 }
   ? Name extends N
@@ -17,14 +17,14 @@ type ExtractComplexState<StateType extends MachineState<string>, Name extends St
     : never
   : never;
 
-export type StateData<StateType extends MachineState<string>, Name extends StateType["name"]> = keyof Omit<
+export type StateData<StateType extends MachineState, Name extends StateType["name"]> = keyof Omit<
   ExtractState<StateType, Name>,
   "name"
 > extends never
   ? never
   : Omit<ExtractState<StateType, Name>, "name">;
 
-type ExpandStateDataTypes<StateType extends MachineState<string>> = {
+type ExpandStateDataTypes<StateType extends MachineState> = {
   [Name in StateType["name"]]: StateData<StateType, Name>;
 };
 
@@ -36,6 +36,6 @@ type AllValuesCompatible<T> = Values<T> extends infer V
     : false
   : false;
 
-export type IsStateDataHomogenous<StateType extends MachineState<string>> = AllValuesCompatible<
+export type IsStateDataHomogenous<StateType extends MachineState> = AllValuesCompatible<
   ExpandStateDataTypes<StateType>
 >;
