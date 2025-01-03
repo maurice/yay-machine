@@ -8,11 +8,12 @@ The State Machine with more YAY!
 
 ## Features
 
-- TypeScript-first: strong types to give you compile-time confidence
+- TypeScript-first: strong types for compile-time confidence
+- homogenous and heterogenous state-types, for expressing a wide variety of models
 - concise, declarative JSON config
-- multiple potential transitions via optional conditionals
-- handle events according to the current state, or fall-through to optional catch-all event handlers in any state
-- run side-effects on machine start, machine stop, state entry, state exit, transition
+- conditional transitions, according to current machine state and event data
+- state-specific event handling, and catch-all event handlers for any state
+- run side-effects that interact with the outside world on machine start, machine stop, state entry, state exit, and transition
 - easily compose machines into hierarchies
 
 ## Current status
