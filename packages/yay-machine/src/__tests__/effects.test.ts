@@ -1,5 +1,6 @@
 import { expect, mock, test } from "bun:test";
-import { type EffectParams, defineMachine } from "../defineMachine";
+import type { EffectParams } from "../MachineDefinitionConfig";
+import { defineMachine } from "../defineMachine";
 
 interface EffectsStateData {
   readonly onStart: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;

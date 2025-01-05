@@ -1,7 +1,8 @@
+import type { MachineDefinitionConfig } from "./MachineDefinitionConfig";
 import type { MachineEvent } from "./MachineEvent";
 import type { MachineInstance } from "./MachineInstance";
 import type { MachineState } from "./MachineState";
-import { type MachineDefinitionConfig, defineMachine } from "./defineMachine";
+import { defineMachine } from "./defineMachine";
 
 /**
  * Creates a machine instance. Use this for singleton machines.

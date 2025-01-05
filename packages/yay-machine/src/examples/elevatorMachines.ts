@@ -1,5 +1,6 @@
+import type { EffectParams } from "../MachineDefinitionConfig";
 import type { MachineInstance } from "../MachineInstance";
-import { type EffectParams, defineMachine } from "../defineMachine";
+import { defineMachine } from "../defineMachine";
 
 /*
  * This file contains two machines: one for the elevator and one for the elevator controller.
