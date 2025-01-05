@@ -1,19 +1,21 @@
-# `yay-machine` 🦾
+# yay-machine
 
-The State Machine with more YAY!
+The State Machine with more YAY! 🦾
 
 ## What is it?
 
-`yay-machine` is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.
+**yay-machine** is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.
+
+## Project status
+
+* MVP feature-set is implemented and ready for use ✅
+* [Deployed to public NPM registry][npm] and available to install now 📦
+* Ready for testing in real projects and feedback 📢
+* Docs and live examples are being worked on right now 🚧
 
 ## Packages
 
-- [`yay-machine`](./packages/yay-machine/README.md) - the core state-machine library
+- [**yay-machine**](./packages/yay-machine/README.md) - the core state-machine library
 
-## Current status
 
-Incomplete and in active development.
-
-## Releases
-
-Done manually with `semantic-release` as per https://dev.to/sahanonp/how-to-setup-semantic-release-with-github-actions-31f3
+[npm]: https://www.npmjs.com/package/yay-machine

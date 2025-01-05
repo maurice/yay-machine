@@ -16,6 +16,10 @@ The State Machine with more YAY!
 - run side-effects that interact with the outside world on machine start, machine stop, state entry, state exit, and transition
 - easily compose machines into hierarchies
 
+## Show me
+
+
+
 ## Status
 
 In development.
