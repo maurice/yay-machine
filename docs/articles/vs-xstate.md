@@ -172,6 +172,7 @@ In **yay-machine** we have a dedicated per-transition `data()` callback to updat
 | Eventless (always) transitions | ✅ | ✅ |
 | Delayed (after) transitions | ✅ | ❌ (easy via side-effect + `setTimeout()`) |
 | Guards (conditional transitions) | ✅ | ✅ |
+| Reenter (aka internal) transitions | ✅ | ❌ (planned) |
 | Parent/child states | ✅ | ❌ (not yet, for now just flatten them) |
 | Parallel states | ✅ | ❌ (not yet, for now compose child machines) |
 | Final states | ✅ | ❌ (nothing formal) |
