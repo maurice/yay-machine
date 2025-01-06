@@ -14,8 +14,12 @@ export interface MachineInstance<StateType extends MachineState, EventType exten
 }
 
 export type Subscriber<StateType extends MachineState, EventType extends MachineEvent> = (
-  state: StateType,
-  event: EventType | undefined,
+  params: SubscriberParams<StateType, EventType>,
 ) => void;
+
+export interface SubscriberParams<StateType extends MachineState, EventType extends MachineEvent> {
+  readonly state: StateType;
+  readonly event: EventType | undefined;
+}
 
 export type Unsubscribe = () => void;

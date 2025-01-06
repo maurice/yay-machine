@@ -75,15 +75,15 @@ test("subscribe to/unsubscribe from state changes", () => {
   const unsubscribe = machine.subscribe(subscriber);
   machine.start();
   expect(subscriber).toHaveBeenCalledTimes(1);
-  expect(subscriber).toHaveBeenNthCalledWith(1, { name: "off" }, undefined);
+  expect(subscriber).toHaveBeenNthCalledWith(1, { state: { name: "off" }, event: undefined });
   machine.send({ type: "ON" });
   expect(subscriber).toHaveBeenCalledTimes(2);
-  expect(subscriber).toHaveBeenNthCalledWith(2, { name: "on" }, { type: "ON" });
+  expect(subscriber).toHaveBeenNthCalledWith(2, { state: { name: "on" }, event: { type: "ON" } });
   machine.send({ type: "ON" }); // ignored
   expect(subscriber).toHaveBeenCalledTimes(2); // still
   machine.send({ type: "OFF" });
   expect(subscriber).toHaveBeenCalledTimes(3);
-  expect(subscriber).toHaveBeenNthCalledWith(3, { name: "off" }, { type: "OFF" });
+  expect(subscriber).toHaveBeenNthCalledWith(3, { state: { name: "off" }, event: { type: "OFF" } });
 
   unsubscribe();
   machine.send({ type: "ON" });
@@ -97,26 +97,26 @@ test("independent subscribers", () => {
   machine.start();
   const unsubscribeA = machine.subscribe(a);
   expect(a).toHaveBeenCalledTimes(1);
-  expect(a).toHaveBeenNthCalledWith(1, { name: "off" }, undefined);
+  expect(a).toHaveBeenNthCalledWith(1, { state: { name: "off" }, event: undefined });
   machine.send({ type: "ON" });
   expect(a).toHaveBeenCalledTimes(2);
-  expect(a).toHaveBeenNthCalledWith(2, { name: "on" }, { type: "ON" });
+  expect(a).toHaveBeenNthCalledWith(2, { state: { name: "on" }, event: { type: "ON" } });
 
   const unsubscribeB = machine.subscribe(b);
   expect(b).toHaveBeenCalledTimes(1);
-  expect(b).toHaveBeenNthCalledWith(1, { name: "on" }, undefined);
+  expect(b).toHaveBeenNthCalledWith(1, { state: { name: "on" }, event: undefined });
 
   machine.send({ type: "OFF" });
   expect(a).toHaveBeenCalledTimes(3);
-  expect(a).toHaveBeenNthCalledWith(3, { name: "off" }, { type: "OFF" });
+  expect(a).toHaveBeenNthCalledWith(3, { state: { name: "off" }, event: { type: "OFF" } });
   expect(b).toHaveBeenCalledTimes(2);
-  expect(b).toHaveBeenNthCalledWith(2, { name: "off" }, { type: "OFF" });
+  expect(b).toHaveBeenNthCalledWith(2, { state: { name: "off" }, event: { type: "OFF" } });
 
   unsubscribeA();
   machine.send({ type: "ON" });
   expect(a).toHaveBeenCalledTimes(3); // still
   expect(b).toHaveBeenCalledTimes(3);
-  expect(b).toHaveBeenNthCalledWith(3, { name: "on" }, { type: "ON" });
+  expect(b).toHaveBeenNthCalledWith(3, { state: { name: "on" }, event: { type: "ON" } });
 
   unsubscribeB();
   machine.send({ type: "OFF" });

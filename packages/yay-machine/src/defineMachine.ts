@@ -7,7 +7,7 @@ import type {
   TransitionWithData,
 } from "./MachineDefinitionConfig";
 import type { MachineEvent } from "./MachineEvent";
-import type { MachineInstance } from "./MachineInstance";
+import type { MachineInstance, SubscriberParams } from "./MachineInstance";
 import type { MachineState } from "./MachineState";
 import type { OneOrMore } from "./OneOrMore";
 
@@ -42,7 +42,7 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
         };
       };
 
-      const subscribers: Array<(state: StateType, event: EventType | undefined) => void> = [];
+      const subscribers: Array<(params: SubscriberParams<StateType, EventType>) => void> = [];
 
       const transitionTo = <
         CurrentState extends StateType,
@@ -67,7 +67,7 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
         initState();
 
         for (const subscriber of subscribers) {
-          subscriber(currentState, event);
+          subscriber({ state: currentState, event });
         }
 
         applyAlwaysTransitions();
@@ -215,7 +215,7 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
 
         subscribe(callback) {
           subscribers.push(callback);
-          callback(currentState, undefined);
+          callback({ state: currentState, event: undefined });
 
           return () => {
             const index = subscribers.indexOf(callback);

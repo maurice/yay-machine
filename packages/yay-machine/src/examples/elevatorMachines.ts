@@ -255,7 +255,7 @@ export const controllerMachine = defineMachine<ControllerState, ControllerEvent>
   initialState: { name: "idle", elevators: undefined!, pendingRequests: [] },
   onStart: ({ state, send }) => {
     const unsubscribes = state.elevators.map((elevator, index) =>
-      elevator.subscribe((elevatorState) => {
+      elevator.subscribe(({ state: elevatorState }) => {
         if (elevatorState.name === "doorsOpen") {
           send({ type: "ELEVATOR_ARRIVED", elevatorIndex: index, floor: elevatorState.currentFloor });
         }

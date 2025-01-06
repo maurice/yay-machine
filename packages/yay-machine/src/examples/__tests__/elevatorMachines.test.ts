@@ -28,7 +28,7 @@ afterAll(() => {
  */
 
 const summarize = (subscriber: Mock<Subscriber<ElevatorState, ElevatorEvent>>) =>
-  subscriber.mock.calls.map(([state]) => {
+  subscriber.mock.calls.map(([{ state }]) => {
     switch (state.name) {
       case "doorsClosing":
       case "doorsClosed":
@@ -39,6 +39,9 @@ const summarize = (subscriber: Mock<Subscriber<ElevatorState, ElevatorEvent>>) =
       case "goingUp":
       case "goingDown":
         return `${state.name} @ ${state.currentFloor}${state.fractionalFloor ? `.${state.fractionalFloor}` : ""} to ${state.floorsToVisit[0]}${state.floorsToVisit.length > 1 ? ` (then ${state.floorsToVisit.slice(1).join(", ")})` : ""}`;
+
+      default:
+        throw new Error(`invalid state: ${state.name}`);
     }
   });
 
