@@ -1,5 +1,5 @@
-import { defineMachine } from "../defineMachine";
 import type { CallbackParams } from "../MachineDefinitionConfig";
+import { defineMachine } from "../defineMachine";
 
 interface GuessState {
   readonly name: "init" | "playing" | "guessedCorrectly" | "tooManyIncorrectGuesses";
