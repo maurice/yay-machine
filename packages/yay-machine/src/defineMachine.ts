@@ -99,13 +99,19 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
             // @ts-ignore
             transition.when({ state: currentState, ...(event && { event }) })
           ) {
+            let nextData =
+              // @ts-ignore
+              transition.data?.({ state: currentState, ...(event && { event }) }) ??
+              (!transition.data && enableCopyDataOnTransition ? currentState : undefined);
+            if (nextData) {
+              // @ts-ignore
+              const { name, ...justData } = nextData;
+              // @ts-ignore
+              nextData = justData;
+            }
             transitionTo(
-              {
-                // @ts-ignore
-                ...transition.data?.({ state: currentState, ...(event && { event }) }),
-                ...(!transition.data && enableCopyDataOnTransition ? currentState : {}),
-                name: transition.to ?? currentState.name,
-              } as unknown as NextState,
+              // @ts-ignore
+              { name: transition.to ?? currentState.name, ...nextData },
               event as CurrentEvent,
               transition.onTransition,
             );
