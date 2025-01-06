@@ -1,10 +1,10 @@
-# `yay-machine` 🦾
+# **yay-machine**
 
-The State Machine with more YAY!
+The State Machine with more YAY! 🦾
 
 ## What is it?
 
-`yay-machine` is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.
+**yay-machine** is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.
 
 ## Features
 
