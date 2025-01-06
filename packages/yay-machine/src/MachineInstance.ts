@@ -7,7 +7,7 @@ export interface MachineInstanceConfig<StateType extends MachineState> {
 
 export interface MachineInstance<StateType extends MachineState, EventType extends MachineEvent> {
   readonly state: StateType;
-  start(): void;
+  start(): this;
   stop(): void;
   send(event: EventType): void;
   subscribe(subscriber: Subscriber<StateType, EventType>): Unsubscribe;

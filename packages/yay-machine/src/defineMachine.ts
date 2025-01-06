@@ -70,6 +70,10 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
           subscriber(currentState, event);
         }
 
+        applyAlwaysTransitions();
+      };
+
+      const applyAlwaysTransitions = () => {
         const always = definitionConfig.states[currentState.name as StateType["name"]]?.always;
         if (always) {
           applyTransitions(undefined, always);
@@ -191,6 +195,9 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
           running = true;
           initMachine();
           initState();
+          applyAlwaysTransitions();
+
+          return machine;
         },
 
         stop() {
