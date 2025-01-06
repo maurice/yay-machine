@@ -71,7 +71,7 @@ console.log(actor.getSnapshot());
 
 However the **context** object must have the same TypeScript type in every named state.
 
-This works well for some domains, but in others you might want to have different "context" per logical state.
+This works well for some domains, but in others you might want to have different context per logical state.
 
 So even though the machine is in the `'question'` state - presumably prompting the user to enter feedback - the `context` is `{ feedback: '' }` as if the user's feedback is an empty string 🤷?
 
@@ -127,6 +127,26 @@ Of course this is enforced in all the types, so you can be sure that you'll neve
 
 And you are still free to model your state-data with optional fields or empty strings if you prefer.
 
+## Multiple ways vs single way to define something
+
+Let's take "persistence" as an example feature.
+
+[**XState** supports persisting machines](https://stately.ai/docs/persistence) (effectively freezing them in time and re-creating them later, ie, serialization and deserialization), although it requires authors to build their machines a certain way.
+
+So in order to support persistence, **XState** sometimes offers several ways to define something, eg, an "action" could be defined by an inline function (can't be persisted) or as a JSON config object that refers to a function defined elsewhere (the action JSON config can now be persisted as the function is provided at runtime).
+
+Having multiple ways to do something is nice, but does add add complexity and cost in many ways.
+
+In general **yay-machine** tries to offer a single way to do something, although there are still obviously multiple ways to write a machine that achieves the same outcomes.
+
+## Actions
+
+[**XState**'s actions](https://stately.ai/docs/actions) are used to update the machine's context, do logging, interact with external services, spawn child machines, send events to spawned processes, or parent machines, to the current machine, etc, etc.
+
+It's a nice abstraction, but the issue is that users don't get a lot of value from the "abstraction" itself. To actually do anything, you need to use one of the concrete action-creator functions, which all have unique APIs. So users need to review the documentation and learn all of the different built-in actions (and there are quite a lot), to decide which one to use in any given situation. It's either a commitment of time to memorize them, or rely on AI, or read the docs fairly often. (Code completion and existing code helps of course, if you know the name of the action, that's half the battle.)
+
+In **yay-machine** we have a dedicated per-transition `data()` callback to update the state-data (akin to [**XState**'s `assign(...)`](https://stately.ai/docs/actions#assign-action)) and for everything else (logging, fetching data, sending events, ...) we have generic side-effect functions, which you can implement however you like. Here the user is getting a lot of value from the abstractions, because there is so much less to learn, and much more flexibility in how to use it.
+
 ## Ecosystem at a glance
 
 |          | **XState** | **yay-machine** |
@@ -149,13 +169,16 @@ And you are still free to model your state-data with optional fields or empty st
 | Invoke/spawn Actors within machine | ✅ | ✅ (covered by our "side-effects") |
 | Actions | ✅ | ✅ (yes, our `data()` callback and/or "side-effects") |
 | Native `Promise`, `Observable`, `EventObservable` Actors | ✅ | ❌ (not native, but easily done) |
-| Eventless (always) transitions | ✅ | ✅ (we say "immediate") |
+| Eventless (always) transitions | ✅ | ✅ |
 | Delayed (after) transitions | ✅ | ❌ (easy via side-effect + `setTimeout()`) |
 | Guards (conditional transitions) | ✅ | ✅ |
 | Parent/child states | ✅ | ❌ (not yet, for now just flatten them) |
 | Parallel states | ✅ | ❌ (not yet, for now compose child machines) |
 | Final states | ✅ | ❌ (nothing formal) |
-| History states | ✅ | ❌ (user-land concern) |
-| Persistence (serialization/deserialization)| ✅ | ❌ (not a goal) |
+| History states | ✅ | ❌ (not a project goal) |
+| Persistence (serialization/deserialization) | ✅ | ❌ (not a project goal) |
+| SCXML | ✅ | ❌ (not a project goal) |
+
+## Coming soon...
 
 We're working on adding documentation. We aim to provide examples of the above existing features and suggest ways to deal with some of the features that **XState** has and **yay-machine** doesn't have.

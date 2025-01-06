@@ -26,7 +26,7 @@ bun build           # transpile TypeScript to dist/*.js, generate .d.ts files
 
 External contributions are welcome but please raise an issue or start a discussion first to ensure the idea aligns with our [philosophy](./articles/why-yay-machine.md#philosophy) and [goals](./articles/why-yay-machine.md#goals).
 
-# Releases
+## Releases
 
 To make a new release, start the manual [**release**](https://github.com/maurice/yay-machine/actions/workflows/release.yml) job in the project's Github Actions.
 

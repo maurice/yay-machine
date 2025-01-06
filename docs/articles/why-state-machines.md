@@ -4,7 +4,7 @@
 
 State machines have some very desirable properties
 
-* they can model a variety of domains including business logic, workflows, physical objects, app state and UI components
+* they can model a variety of domains including business-logic, workflows, physical objects, UI or game components, and app state
 * they make the **“current state” a first class concept**, rather than some derived value, and that is almost always useful
 * they are **declarative** (not imperative): you define the "rules" at compile-time, while the library provides the run-time
 * state-machine definitions are usually **concise**; it is often possible to describe quite complex workflows in one typical-length source file, and therefore comprehend the whole workflow in one place, rather than referring to multiple sources. In this way they have *great signal to noise ratio*

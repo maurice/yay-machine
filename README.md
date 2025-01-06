@@ -17,5 +17,9 @@ The State Machine with more YAY! 🦾
 
 - [**yay-machine**](./packages/yay-machine/README.md) - the core state-machine library
 
+## Documentation
+
+See [docs](./docs/)
+
 
 [npm]: https://www.npmjs.com/package/yay-machine
