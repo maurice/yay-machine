@@ -18,8 +18,4 @@ The State Machine with more YAY! 🦾
 
 ## Show me
 
-
-
-## Status
-
-In development.
+TODO
