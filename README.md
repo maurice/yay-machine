@@ -10,7 +10,7 @@ The State Machine with more YAY! 🦾
 
 * MVP feature-set is implemented and ready for use ✅
 * [Deployed to public NPM registry][npm] and available to install now 📦
-* Ready for testing in real projects and feedback 📢
+* Ready for testing in real projects and open to feedback 📢
 * Docs and live examples are being worked on right now 🚧
 
 ## Packages

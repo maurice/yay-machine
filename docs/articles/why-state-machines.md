@@ -14,7 +14,7 @@ State machines have some very desirable properties
 
 ## Example
 
-Here's an example state machine diagram for a "buy tickets" journey, which could be used to drive a web app
+Here's an example state machine diagram for a "buy tickets" user-journey
 
 ```mermaid
 stateDiagram-v2 
@@ -40,17 +40,19 @@ Next we're going to cover the basics of state-machines.
 
 State-machine definitions model all the possible states in which the machine can exist. 
 
-In the above example those states are `selectTickets`, `validateTickets`, `basket`, `yourDetails`, `payment` and `confirmation`.
+In the above example the state-names are `selectTickets`, `validateTickets` (a transient decision-state rendered as a diamond), `basket`, `applyingVoucher`, `yourDetails`, `payment`, `paymentProcessing` and `confirmation`.
 
 State-machine states are finite and known at the time the machine is defined (usually compile-time).
 
-**yay-machine** (like some other state-machine libraries) provides the ability to associate dynamic data for each state, so in the above example we would want the state-machine to store the various form entries (selected tickets, user-details, etc) to complete the purchase.†
+In this example we could easily use the machine's current-state name with UI router, to determine the correct page to render.
+
+**yay-machine** (like some other state-machine libraries) provides the ability to associate dynamic data for each state, so in the above example we would want the state-machine to store the various form entries (selected tickets, user-details, etc) to complete the purchase, or show error messages.†
 
 ## Events
 
 State-machines are event-driven and require events to move between states.
 
-In the above example the events are `ADD_TO_BASKET`, `CONTINUE_SHOPPING`, `APPLY_VOUCHER`, `CHECKOUT`, `PAY_NOW`, `COMPLETE_PURCHASE`, `PAYMENT_SUCCESS` and `PAYMENT_FAILURE`.
+In the above example the event-types are `ADD_TO_BASKET`, `CONTINUE_SHOPPING`, `APPLY_VOUCHER`, `CHECKOUT`, `PAY_NOW`, `COMPLETE_PURCHASE`, `PAYMENT_SUCCESS` and `PAYMENT_FAILURE`.
 
 Events are also finite and known at compile-time.
 
@@ -70,10 +72,10 @@ When the state-machine moves from one state to another, we call this a transitio
 
 **yay-machine** supports a number of ways to transition from state to state†
 
-* transitions can be event-driven, by sending an event to the machine in a certain state. In the above example the machine transitions from `yourDetails` to `payment` when sent the `PAY_NOW` event
-* transitions can be event-driven, by sending an event to the machine in *any state*. This means the that events could be handled in a specific first, or else in any state if that config is provided
-* transitions can be immediate, meaning when entering a state we might immediately transition to another state. In the above example the `applyingVoucher` state immediately transitions back the the `basket` state
-* transitions can be conditional, meaning we have multiple potential transitions, where predicate functions determine whether the transition is taken. In the above example the `selectTickets` state either transitions to `basket` or back to `selectTickets` if the selection is invalid
+* by sending an event to the machine in a certain state, if the machine has a matching transition for that state and event. In the above example the machine transitions from `yourDetails` to `payment` when sent the `PAY_NOW` event
+* by sending an event to the machine in *any state*, if the machine does have a matching transition for the current state, but has a generic transition that works in *any state*. You can therefore model your machine with transitions that only handle specific events in specific states, and/or handle specific events in any state.
+* transitions can be "immediate", on entering a state, we may immediately transition to another state. In the above example the `applyingVoucher` state immediately transitions back the the `basket` state
+* transitions can be conditional, meaning we have multiple potential transitions, where predicate functions determine which transition (if any) is taken. In the above example the `selectTickets` state either transitions to `basket` or back to `selectTickets` if the selection is invalid
 * transitions can also run side-effects (see below)
 
 **yay-machine**'s transitions allow you to (optionally) update the next-state's associated data and run some side-effect (eg, do some logging or interact with an external service)†
@@ -95,8 +97,8 @@ This is where state-data comes in; it allows us to store arbitrary data in the m
 
 We could store these externally but there are several advantages to keeping it in the state machine
 
-* Transition condition predicates can query state data
-* Transitions update state (name + data) atomically, so the machine's current state is always valid and always has integrity
+* Transition condition predicates can query the current state's data (and the event if any) to determine whether the transition should be taken
+* Transitions update state (name + data) atomically, so the machine's current state (name + data) is always valid and type-safe
 
 ## Side-effects
 
@@ -104,11 +106,21 @@ State-machines would have limited use with only states, events and transitions. 
 
 **yay-machine** state-machines can execute arbitrary side-effect code†
 
-* on the machine started or stopped
-* on a state entered or exited
-* on a transition
+* when the machine is started or stopped
+* when a state is entered or exited
+* during a transition
 
 Side-effects can be short-lived or long-lived and can send events to the machine instance as required.
+
+## Putting it all together
+
+State-machines are a one-stop-shop for state-management.
+
+They work well with modern paradigms like the trend towards immutable data and functional-reactive programming.
+
+They include everything you need to model a variety of domains.
+
+A [good TypeScript state-machine library](./why-yay-machine.md) will also give you great type-safety 😉.
 
 ---
 
