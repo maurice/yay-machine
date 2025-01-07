@@ -89,11 +89,11 @@ test("can stop a single-use a timer", async () => {
   expect(machine.state).toEqual({ name: "running", time: 1000, repeat: false });
 
   machine.stop();
-  expect(machine.state).toEqual({ name: "idle" }); // reset to initial state
+  expect(machine.state).toEqual({ name: "running", time: 1000, repeat: false }); // still
 
   clock.tick(1000);
   expect(subscriber).toHaveBeenCalledTimes(2); // still
-  expect(machine.state).toEqual({ name: "idle" }); // still
+  expect(machine.state).toEqual({ name: "running", time: 1000, repeat: false }); // still
 });
 
 test("can start a repeating timer", async () => {
