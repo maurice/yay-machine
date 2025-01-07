@@ -191,7 +191,6 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
             throw new Error("Machine is already running");
           }
 
-          currentState = initialState;
           running = true;
           initMachine();
           initState();
@@ -210,7 +209,6 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
           machineCleanup?.();
           machineCleanup = undefined;
           running = false;
-          currentState = initialState;
         },
 
         subscribe(callback) {
