@@ -15,12 +15,6 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Check types
-        run: bun check:types
-
-      - name: Check lint
-        run: bun check:lint
-
       - name: Check pushed commit
         if: github.event_name == 'push'
         run: bun commitlint --last --verbose
@@ -31,6 +25,12 @@ jobs:
 
       - name: Build
         run: bun run build
+
+      - name: Check types
+        run: bun check:types
+
+      - name: Check lint
+        run: bun check:lint
 
       - name: Test
         run: bun run test:coverage -- --coverage-reporter=lcov --coverage-reporter=text
