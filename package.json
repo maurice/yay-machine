@@ -4,7 +4,7 @@
   "description": "A modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server",
   "type": "module",
   "private": true,
-  "files": ["src", "dist"],
+  "files": ["src", "dist", "assets", "docs"],
   "scripts": {
     "prepare": "husky",
     "all": "bun run build && bun run check && bun run test",
