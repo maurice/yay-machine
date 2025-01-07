@@ -1,6 +1,4 @@
-import type { EffectParams } from "../MachineDefinitionConfig";
-import type { MachineInstance } from "../MachineInstance";
-import { defineMachine } from "../defineMachine";
+import { type EffectParams, type MachineInstance, defineMachine } from "yay-machine";
 
 /*
  * This file contains two machines: one for the elevator and one for the elevator controller.

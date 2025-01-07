@@ -1,4 +1,4 @@
-import { defineMachine } from "../defineMachine";
+import { defineMachine } from "yay-machine";
 
 export type ResultState =
   | { readonly name: "pending" }
@@ -26,3 +26,17 @@ export const resultMachine = defineMachine<ResultState, ResultEvent>({
     },
   },
 });
+
+// Usage
+
+const result = resultMachine.newInstance().start();
+
+// ... use the machine ...
+
+// type-safe access to state-specific-data
+const state: ResultState = result.state;
+if (state.name === "result") {
+  console.log("OK, result is", state.result);
+} else if (state.name === "error") {
+  console.log("OH NO, error is", state.errorMessage);
+}

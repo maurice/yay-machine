@@ -1,0 +1,23 @@
+{
+  "name": "@yay-machine/example-machines",
+  "version": "0.0.0",
+  "description": "Example state-machines with yay-machine",
+  "private": true,
+  "type": "module",
+  "files": ["src"],
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maurice/yay-machine.git"
+  },
+  "author": "maurice@mauricenicholson.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maurice/yay-machine/issues"
+  },
+  "homepage": "https://github.com/maurice/yay-machine#readme",
+  "dependencies": {
+    "assert": "^2.1.0",
+    "yay-machine": "*"
+  }
+}

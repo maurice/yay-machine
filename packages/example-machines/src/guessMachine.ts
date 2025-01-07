@@ -1,5 +1,5 @@
-import type { CallbackParams } from "../MachineDefinitionConfig";
-import { defineMachine } from "../defineMachine";
+import assert from "assert";
+import { type CallbackParams, defineMachine } from "yay-machine";
 
 interface GuessState {
   readonly name: "init" | "playing" | "guessedCorrectly" | "tooManyIncorrectGuesses";
@@ -57,3 +57,19 @@ export const guessMachine = defineMachine<GuessState, GuessEvent | NewGameEvent>
     NEW_GAME: { to: "init" },
   },
 });
+
+// Usage
+
+const guess = guessMachine.newInstance().start();
+
+for (let i = 0; guess.state.name === "playing"; i++) {
+  guess.send({ type: "GUESS", guess: i + 1 });
+}
+
+if (guess.state.name === "guessedCorrectly") {
+  console.log("yay, we won :)");
+} else if (guess.state.name === "tooManyIncorrectGuesses") {
+  console.log("boo, we lost :(");
+} else {
+  assert.fail(`Invalid state: ${guess.state.name}`);
+}

@@ -1,13 +1,4 @@
-# Quick start
-
-```sh
-npm install yay-machine         # or your package-manager of choice
-```
-
-## Define your machine at compile-time
-
-```typescript
-import assert from "assert"; 
+import assert from "assert";
 import { defineMachine } from "yay-machine";
 
 type HealthState = Readonly<{
@@ -109,11 +100,9 @@ export const healthMachine = defineMachine<HealthState, HealthEvent>({
     },
   },
 });
-```
 
-## Create instances and operate them at run-time
+// Usage
 
-```typescript
 const health = healthMachine.newInstance().start();
 health.subscribe(({ state }) => {
   if (state.name === "expired") {
@@ -148,4 +137,3 @@ health.send({ type: "HUMAN_AGAIN" }); // test usage - it's supposed to be sent f
 assert.deepStrictEqual(health.state, { name: "moderate", strength: 8, stamina: 6, invincibilityStarted: 0 });
 
 // etc ...
-```

@@ -1,4 +1,4 @@
-import { defineMachine } from "../defineMachine";
+import { defineMachine } from "yay-machine";
 
 interface UnauthenticatedState {
   readonly name: "unauthenticated";

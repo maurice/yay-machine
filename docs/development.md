@@ -37,3 +37,9 @@ This job uses [semantic-release](https://github.com/semantic-release/semantic-re
 * builds the package and publishes it to the public NPM registry,
 
 Credit goes to [this article](https://dev.to/sahanonp/how-to-setup-semantic-release-with-github-actions-31f3) for the steps used to set this up.
+
+## Renovate
+
+This project is onboarded with Renovate for automatic dependency update PRs.
+
+* [Dashboard](https://developer.mend.io/github/maurice/yay-machine)

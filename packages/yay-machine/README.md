@@ -1,26 +1,100 @@
-# **yay-machine**
+<p align="center">
+  <a href="https://github.com/maurice/yay-machine"><img src="../../assets/yay-machine.png" alt="Logo"></a>
+</p>
 
-The State Machine with more YAY! 🦾
+[**yay-machine** is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.](../../docs/about.md)
 
-## What is it?
+This package is the core state-machine library.
 
-**yay-machine** is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.
+# Example
 
-## Features
+## Define the machine at compile-time
 
-* TypeScript-first: strong types for compile-time confidence
-* homogenous and heterogenous state-types, for expressing a wide variety of models
-* concise, declarative JSON config
-* conditional transitions, according to current machine state and event data
-* state-specific event handling, and catch-all event handlers for any state
-* immediate transitions
-* run side-effects that interact with the outside world on machine start, machine stop, state entry, state exit, and transition
-* easily compose machines into hierarchies
+```typescript
+import { type CallbackParams, defineMachine } from 'yay-machine';
 
-## This package
+interface GuessState {
+  readonly name: "init" | "playing" | "guessedCorrectly" | "tooManyIncorrectGuesses";
+  readonly answer: number;
+  readonly numGuesses: number;
+  readonly maxGuesses: number;
+}
 
-This is the core state-machine library.
+interface GuessEvent {
+  readonly type: "GUESS";
+  readonly guess: number;
+}
 
-## What now...?
+interface NewGameEvent {
+  readonly type: "NEW_GAME";
+}
 
-More docs coming soon 🚧
+const incrementNumGuesses = ({ state }: CallbackParams<GuessState, GuessEvent>): GuessState => ({
+  ...state,
+  numGuesses: state.numGuesses + 1,
+});
+
+/**
+ * Guess a number from 1 to 10
+ */
+export const guessMachine = defineMachine<GuessState, GuessEvent | NewGameEvent>({
+  initialState: { name: "init", answer: 0, numGuesses: 0, maxGuesses: 5 },
+  states: {
+    init: {
+      always: {
+        to: "playing",
+        data: ({ state }) => ({ ...state, answer: Math.ceil(Math.random() * 10), numGuesses: 0 }),
+      },
+    },
+    playing: {
+      on: {
+        GUESS: [
+          {
+            to: "tooManyIncorrectGuesses",
+            when: ({ state }) => state.numGuesses + 1 === state.maxGuesses,
+            data: incrementNumGuesses,
+          },
+          {
+            to: "guessedCorrectly",
+            when: ({ state, event }) => state.answer === event.guess,
+            data: incrementNumGuesses,
+          },
+          {
+            to: "playing",
+            data: incrementNumGuesses,
+          },
+        ],
+      },
+    },
+  },
+  on: {
+    NEW_GAME: { to: "init" },
+  },
+});
+```
+
+## Create instances and operate them at run-time
+
+```typescript
+const guess = guessMachine.newInstance().start();
+
+for (let i = 0; guess.state.name === "playing"; i++) {
+  guess.send({ type: "GUESS", guess: i + 1 });
+}
+
+if (guess.state.name === "guessedCorrectly") {
+  console.log("yay, we won :)");
+}
+if (guess.state.name === "tooManyIncorrectGuesses") {
+  console.log("boo, we lost :(");
+}
+```
+
+# Next...
+
+* [About **yay-machine**](../../docs/about.md)
+* [Quick Start](../../docs/quick-start.md)
+* [Reference docs](../../docs/reference/index.md)
+* [Why state-machines?](../../docs/articles/why-state-machines.md)
+* [Why **yay-machine**?](../../docs/articles/why-yay-machine.md)
+* [**yay-machine** vs **XState**?](../../docs/articles/vs-xstate.md)

@@ -28,11 +28,24 @@
   },
   "overrides": [
     {
-      "include": ["packages/yay-machine/src/examples/**/*.ts", "**/*.test.ts"],
+      "include": ["packages/example-machines", "**/*.test.ts"],
       "linter": {
         "rules": {
           "style": {
             "noNonNullAssertion": "off"
+          }
+        }
+      }
+    },
+    {
+      "include": ["packages/example-machines"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useNodejsImportProtocol": "off"
+          },
+          "suspicious": {
+            "noConsoleLog": "off"
           }
         }
       }

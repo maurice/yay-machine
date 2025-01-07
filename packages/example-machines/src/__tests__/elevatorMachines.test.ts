@@ -1,6 +1,6 @@
 import { type Mock, afterAll, beforeAll, beforeEach, expect, mock, test } from "bun:test";
 import { type InstalledClock, install } from "@sinonjs/fake-timers";
-import type { Subscriber } from "../../MachineInstance";
+import type { Subscriber } from "yay-machine";
 import {
   type ElevatorEvent,
   type ElevatorState,
