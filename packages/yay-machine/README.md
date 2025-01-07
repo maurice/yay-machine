@@ -94,7 +94,7 @@ if (guess.state.name === "tooManyIncorrectGuesses") {
 
 * [About **yay-machine**](../../docs/about.md)
 * [Quick Start](../../docs/quick-start.md)
-* [Reference docs](../../docs/reference/index.md)
+* [Reference docs](../../docs/reference/readme.md)
 * [Why state-machines?](../../docs/articles/why-state-machines.md)
 * [Why **yay-machine**?](../../docs/articles/why-yay-machine.md)
 * [**yay-machine** vs **XState**?](../../docs/articles/vs-xstate.md)
