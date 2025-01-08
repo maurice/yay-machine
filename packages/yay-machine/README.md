@@ -1,10 +1,10 @@
 <p align="center">
-  <a href="https://github.com/maurice/yay-machine"><img src="../../assets/yay-machine.png" alt="Logo"></a>
+  <a href="https://github.com/maurice/yay-machine"><img src="https://github.com/user-attachments/assets/03dd78c1-4396-42c4-a32c-aaa7c927f09e" alt="Logo"></a>
 </p>
 
-[**yay-machine** is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.](../../docs/about.md)
+[**yay-machine** is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.](https://github.com/maurice/yay-machine/blob/main/docs/about.md)
 
-This package is the core state-machine library.
+*This package is the core state-machine library.*
 
 # Example
 
@@ -92,9 +92,9 @@ if (guess.state.name === "tooManyIncorrectGuesses") {
 
 # Next...
 
-* [About **yay-machine**](../../docs/about.md)
-* [Quick Start](../../docs/quick-start.md)
-* [Reference docs](../../docs/reference/readme.md)
-* [Why state-machines?](../../docs/articles/why-state-machines.md)
-* [Why **yay-machine**?](../../docs/articles/why-yay-machine.md)
-* [**yay-machine** vs **XState**?](../../docs/articles/vs-xstate.md)
+* [About **yay-machine**](https://github.com/maurice/yay-machine/blob/main/docs/about.md)
+* [Quick Start](https://github.com/maurice/yay-machine/blob/main/docs/quick-start.md)
+* [Reference docs](https://github.com/maurice/yay-machine/blob/main/docs/reference/readme.md)
+* [Why state-machines?](https://github.com/maurice/yay-machine/blob/main/docs/articles/why-state-machines.md)
+* [Why **yay-machine**?](https://github.com/maurice/yay-machine/blob/main/docs/articles/why-yay-machine.md)
+* [**yay-machine** vs **XState**?](https://github.com/maurice/yay-machine/blob/main/docs/articles/vs-xstate.md)
