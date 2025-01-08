@@ -65,6 +65,16 @@ test("multiple independent subscribers", () => {
   expect(s2).toHaveBeenCalledTimes(2); // still
 });
 
+test("state transition has always completed when subscriber is called", () => {
+  const toggle = toggleMachine.newInstance().start();
+  toggle.subscribe(({ state }) => {
+    expect(toggle.state).toBe(state);
+  });
+  toggle.send({ type: "TOGGLE" });
+  toggle.send({ type: "TOGGLE" });
+  toggle.send({ type: "TOGGLE" });
+});
+
 test("removing the same subscriber again is harmless", () => {
   const subscriber = mock();
   const toggle = toggleMachine.newInstance().start();

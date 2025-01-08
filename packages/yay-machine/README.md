@@ -78,8 +78,8 @@ export const guessMachine = defineMachine<GuessState, GuessEvent | NewGameEvent>
 ```typescript
 const guess = guessMachine.newInstance().start();
 
-for (let i = 0; guess.state.name === "playing"; i++) {
-  guess.send({ type: "GUESS", guess: i + 1 });
+while (guess.state.name === "playing") {
+  guess.send({ type: "GUESS", guess: Math.ceil(Math.random() * 10) });
 }
 
 if (guess.state.name === "guessedCorrectly") {

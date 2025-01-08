@@ -100,17 +100,16 @@ We could store these externally but there are several advantages to keeping it i
 * Transition condition predicates can query the current state's data (and the event if any) to determine whether the transition should be taken
 * Transitions update state (name + data) atomically, so the machine's current state (name + data) is always valid and type-safe
 
-## Side-effects
+## Interacting with the outside world
 
-State-machines would have limited use with only states, events and transitions. Eventually we need to interact with the outside world and that's where side-effects come in.
+States, events and transitions give us a lot already.
 
-**yay-machine** state-machines can execute arbitrary side-effect code†
+But it isn't enough to build complex real-world systems. At some point we need to interact with a web API, or query the database, or do some logging.
 
-* when the machine is started or stopped
-* when a state is entered or exited
-* during a transition
+A good state-machine library will allow you to express these interactions within the machine definition, and actually perform those interactions (run the code) when operating machine instances.
 
-Side-effects can be short-lived or long-lived and can send events to the machine instance as required.
+**yay-machine** state-machines can execute [arbitrary side-effect code](../reference/side-effects.md)† at several machine and state lifecycle stages.
+
 
 ## Putting it all together
 

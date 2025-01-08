@@ -19,7 +19,7 @@ It will feel familiar to **XState** users, with features including
 
 **yay-machine** also brings new ideas of its own
 
-- states are type (think: `interface`). They are an `object` with a `name` and any associated data. Different states may have different associated data
+- states are types (think: `interface`). They are an `object` with a `name` and any associated data. Different states may have different associated data
 - side-effects are all you need for sync/async interactions with the current machine and outside world
 
 We use modern, accessible language, rather than traditional academic terms.
@@ -30,7 +30,7 @@ We use modern, accessible language, rather than traditional academic terms.
 
 - states
 - events
-- transitions (including immediate and conditional)
+- transitions
 - side-effects
 
 These features can be combined to model just about anything.
@@ -57,7 +57,7 @@ It won't bloat your `node_modules/` and you won't have to worry about having to 
 
 We ❤️ TypeScript and want the best experience for TypeScript developers with state-machines.
 
-A [**state** in **yay-machine**](./reference/state.md) is a first-class type, giving you a lot of compile-time confidence in your machines.
+A [**state** in **yay-machine**](./reference/state.md) is a type, giving you new ways to express your machine models with compile-time confidence.
 
 # Continue
 

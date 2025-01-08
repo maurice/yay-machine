@@ -2,17 +2,17 @@
 
 Why do we need another state-machine library?
 
-Here at yay-machine HQ, [we ❤️ state machines](./why-state-machines.md) and think they suit a wide variety of domains, and want to see them used in more TypeScript code.
+Here at **yay-machine** HQ, [we ❤️ state machines](./why-state-machines.md) and think they suit a wide variety of domains, and want to see them used in more TypeScript code.
 
-While there are already other well established state-machine libraries, are quite what we want.
+While there are already other well established state-machine libraries, none are quite what we want.
 
 ## Too little
 
 Some other state machine libraries are too simplistic. For example they might lack state-data, side-effects, conditional transitions or immediate transitions.
 
-This limits their ability to model many real-world use cases.
+This makes it harder or impossible to model many real-world use cases.
 
-Or else it moves the burden to implement such features to the user of the library but this may be impossible in some cases. Eg, a machine’s logical “current state” and any associated data should be updated atomically but if they are managed in different places at different times that’s asking for synchronization headaches and race issues.
+Or else it moves the burden to implement such features to user-land. For some missing features it may be a blocker. Eg, a machine’s logical “current state” and any associated data should be updated atomically but if they are managed in different places at different times that’s asking for synchronization headaches and race issues.
 
 Sometimes it's the TypeScript types that are insufficient. Eg the state-names might just be `string`s that we can't trust and force us to cast (rather than the exact names we define in our own code), or the fact that you are forced to share a single associated state-data type (aka "context") across all states.
 
@@ -23,6 +23,8 @@ Some state-machine libraries are too complicated.
 They have a vast matrix of features and concepts. They have so much documentation. 
 
 But they take weeks to learn and months to master.
+
+It might be hard to find existing examples using the features you are interested in. And if you work on a project with other people and start using some new advanced features, your code may quickly become the thing that nobody else understands or wants to touch!
 
 They might only work with additional code-generation tools or IDE extensions; more complexity you don't need.
 
@@ -47,9 +49,7 @@ Our official project goals are
 
 ### Keep it simple
 
-Firstly we're not trying to be the most feature-rich TypeScript state-machine library (if you want that, use [XState](https://xstate.js.org/)). It's not that we don't like lots of features, but every features has a cost that the library maintainers bear; implementing a feature in a library may be trivial, but making it work with other existing features, documenting it, teaching it with examples, supporting it etc, take 100s more hours.
-
-There's also a cost for developers using the library: more features means more time reading the docs, looking for examples, trying to get it working etc. And if you work on a project with other people and start using some new advanced features, your code may quickly become the thing that nobody else understands or wants to touch!
+Firstly we're not trying to be the most feature-rich TypeScript state-machine library (if you want that, use [**XState**](https://xstate.js.org/)). It's not that we don't like lots of features, but every features has a cost that the library maintainers bear; implementing a feature in a library may be trivial, but making it work with other existing features, documenting it, teaching it with examples, supporting it etc, take 100s more hours.
 
 We believe a few powerful primitives go a long way; it's faster to learn and get working.
 

@@ -35,39 +35,39 @@ Read more about [our philosophy here](./why-yay-machine.md#philosophy).
 
 The current state of an **XState** machine is a combination of a state name (like `'playing'`) or nested object (like `{ paused: 'buffering' }`) PLUS a **context** object (aka extended state). (There is also a `meta` property which we ignore for now). Here's an example [from their docs](https://stately.ai/docs/states#state-object)
 
-```typescript
-const feedbackMachine = createMachine({
-  id: 'feedback',
-  initial: 'question',
-  context: {
-    feedback: '',
-  },
-  states: {
-    question: {
-      meta: {
-        question: 'How was your experience?',
-      },
-    },
-  },
-});
-
-const actor = createActor(feedbackMachine);
-actor.start();
-
-console.log(actor.getSnapshot());
-// Logs an object containing:
-// {
-//   value: 'question',
-//   context: {
-//     feedback: ''
-//   },
-//   meta: {
-//     'feedback.question': {
-//       question: 'How was your experience?'
-//     }
-//   }
-// }
-```
+> ```typescript
+> const feedbackMachine = createMachine({
+>   id: 'feedback',
+>   initial: 'question',
+>   context: {
+>     feedback: '',
+>   },
+>   states: {
+>     question: {
+>       meta: {
+>         question: 'How was your experience?',
+>       },
+>     },
+>   },
+> });
+> 
+> const actor = createActor(feedbackMachine);
+> actor.start();
+> 
+> console.log(actor.getSnapshot());
+> // Logs an object containing:
+> // {
+> //   value: 'question',
+> //   context: {
+> //     feedback: ''
+> //   },
+> //   meta: {
+> //     'feedback.question': {
+> //       question: 'How was your experience?'
+> //     }
+> //   }
+> // }
+> ```
 
 However the **context** object must have the same TypeScript type in every named state.
 
@@ -77,7 +77,7 @@ So even though the machine is in the `'question'` state - presumably prompting t
 
 Another example might be that your machine has a final `'fatalError'` state which adds an `errorMessage` to the context (eg, from an event). But because the error is only relevant to one state, the context type's `errorMessage` property must be optional, even if **we know** it should exist in a specific state. In this case we need to use the TypeScript non-null assertion operator and incur the rath of linters. This type-ambiguity and subversion of the type-system bothers us.
 
-In **yay-machine** we use the term "state data" and our states are free to have **homogenous state-data** (all states share the same state-data type) or **heterogenous state-data** (some or all states have different state-data types).
+In **yay-machine** we use the term "state data" [and our states](../reference/state.md) are free to have **homogenous state-data** (all states share the same state-data type) or **heterogenous state-data** (some or all states have different state-data types).
 
 In **yay-machine** we could expand the above like this
 
@@ -127,6 +127,16 @@ Of course this is enforced in all the types, so you can be sure that you'll neve
 
 And you are still free to model your state-data with optional fields or empty strings if you prefer.
 
+## Actions
+
+[**XState**'s actions](https://stately.ai/docs/actions) are used to update the machine's context, do logging, interact with external services, spawn child machines, send events to spawned processes, or parent machines, to the current machine, etc, etc.
+
+It's a nice abstraction, but the issue is that users don't get a lot of value from the *abstraction itself*. To actually do anything, you need to use one of the concrete action-creator functions, which all have unique APIs. So users need to review the documentation and learn all of the different built-in actions (and there are quite a lot), to decide which one to use in any given situation. It's either a commitment of time to memorize them, or rely on AI, or read the docs fairly often. 
+
+In fairness, code completion and existing working code helps. And most likely you only use a few most of the time, and only need reach for something exotic in rare cases. But it's still additional complexity that end users ultimately pay for with their time.
+
+In **yay-machine** we have a dedicated per-transition `data()` callback to update the state-data (akin to [**XState**'s `assign(...)`](https://stately.ai/docs/actions#assign-action)) and for everything else (logging, fetching data, sending events, ...) we have generic side-effect functions, which you can implement however you like. Here the user is getting a lot of value from the abstractions, because there is so much less to learn, and much more flexibility in how to use it.
+
 ## Multiple ways vs single way to define something
 
 Let's take "persistence" as an example feature.
@@ -138,14 +148,6 @@ So in order to support persistence, **XState** sometimes offers several ways to 
 Having multiple ways to do something is nice, but does add add complexity and cost in many ways.
 
 In general **yay-machine** tries to offer a single way to do something, although there are still obviously multiple ways to write a machine that achieves the same outcomes.
-
-## Actions
-
-[**XState**'s actions](https://stately.ai/docs/actions) are used to update the machine's context, do logging, interact with external services, spawn child machines, send events to spawned processes, or parent machines, to the current machine, etc, etc.
-
-It's a nice abstraction, but the issue is that users don't get a lot of value from the "abstraction" itself. To actually do anything, you need to use one of the concrete action-creator functions, which all have unique APIs. So users need to review the documentation and learn all of the different built-in actions (and there are quite a lot), to decide which one to use in any given situation. It's either a commitment of time to memorize them, or rely on AI, or read the docs fairly often. (Code completion and existing code helps of course, if you know the name of the action, that's half the battle.)
-
-In **yay-machine** we have a dedicated per-transition `data()` callback to update the state-data (akin to [**XState**'s `assign(...)`](https://stately.ai/docs/actions#assign-action)) and for everything else (logging, fetching data, sending events, ...) we have generic side-effect functions, which you can implement however you like. Here the user is getting a lot of value from the abstractions, because there is so much less to learn, and much more flexibility in how to use it.
 
 ## Ecosystem at a glance
 

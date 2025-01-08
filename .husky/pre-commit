@@ -1,2 +1,1 @@
-bun run check
-bun test
+bun run all

@@ -2,16 +2,14 @@
 
 TODO
 
-define
-newInstance
-start
-send
-subscribe x many
-unsubscribe
+- define
+- newInstance
+- start
+- send
+- subscribe x many
+- unsubscribe
 
 
 ---
 
-| Previous | Next |
-| --- | --- |
-| [⬅️  **Side-effects**](./side-effects.md) | &nbsp;  |
+*| [⬅️ Previous: **Side-effects**](./side-effects.md)

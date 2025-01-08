@@ -1,11 +1,11 @@
 # State
 
-State is the primary concept of state-machines and represents all the possible states in which a machine can exist.
+State represents all the possible states in which a machine can exist.
 
 > 💡 Remember: machines can model business-logic, workflows, game or UI components, app state, ... lots of things.
 > So when we say *"all the possible states in which a machine can exist"* we mean "all the possible states in which **the thing you are modelling** can exist".
 
-## States a are finite
+## States are finite
 
 This means that we know all the states when the machine is defined.
 
@@ -36,7 +36,7 @@ interface ConnectionState {
   readonly name: 'disconnected' | 'connecting' | 'connected' | 'connectionError';
 }
 
-interface ConnectEvent {
+interface ConnectionEvent {
   readonly type: '???'; // we'll cover this next
 }
 
@@ -46,25 +46,28 @@ const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
 });
 ```
 
+## Getting a machine's current state
+
 When we have an instance of a machine we can query its current state
 
 ```typescript
 const connection = connectionMachine.newInstance().start();
 
 // `machine.state` is a property getter that always returns the machine's current state.
-// Note that the `const state` has the type `ConnectionState`, our state type
+// Note the `const state: ConnectionState` - our state type
 const state: ConnectionState = connection.state;
 
 assert(state).deepStrictEqual({ name: 'disconnected' });
 ```
 
-## Subscribing for state changes
+## Subscribing to a machine's state changes
 
 We can subscribe to machine's state, to be notified about state changes as they happen
 
 ```typescript
 const connection = connectionMachine.newInstance().start();
 
+// the type of `state` is `ConnectionState` - our state type
 const unsubscribe = connection.subscribe(({ state }) => {
   switch (state.name) {
     'disconnected':
@@ -90,101 +93,120 @@ const unsubscribe = connection.subscribe(({ state }) => {
 unsubscribe(); // callback no longer receives state changes
 ```
 
-## States can have associated data
+## States can have associated data (homogenous)
 
-It's quite convenient to store any data associated with the machine *within the machine's state types*.
+As well as a `name`, state types can have additional data properties
 
 ```typescript
-export interface CalculatorState {
-  /**
-   * equals: we're currently displaying the memory (last result)
-   * plus: we will add the memory to the next complete input number
-   * times: we will multiply the memory to the next complete input number
-   */
-  readonly name: "equals" | "plus" | "times";
-  /**
-   * The last result that we are either displaying, or going to calculate with
-   */
-  readonly memory?: number;
-  /**
-   * The current user-input
-   */
-  readonly input?: string;
+interface ConnectionState {
+  readonly name: 'disconnected' | 'connecting' | 'connected' | 'connectionError';
+  readonly connectingStartedAt: number; // Date.now();
+  readonly connectionEstablishedAt: number; // Date.now();
 }
 ```
 
-Doing this means we can create [conditional transitions](./transitions.md) based on the current state-data
+The machine manages the data as it runs, by providing a `data()` callback to generate data for the next state
 
 ```typescript
-  on: {
-    KEY: [
-      {
-        to: "equals",
-        when: ({ state, event }) => event.key === "=" && state.memory !== undefined && state.input !== undefined,
-        data: ({ state }) => ({ memory: calc(state.memory!, state.name, Number.parseInt(state.input!, 10)) }),
-      },
-      {
-        to: "equals",
-        when: ({ state, event }) => event.key === "=" && state.memory !== undefined,
-        data: ({ state }) => ({ memory: state.memory! }),
-      },
-      // ...
-    ]
-  }
-```
----
-
-TODO
-
-- state-data (two kinds)
-
-
-
-The example below demonstrates our this with state-specific-data (aka heterogenous state-data), but we also support state-common-data (aka homogenous state-data).
-
-```typescript
-export type ResultState =
-  | { readonly name: "pending" }
-  | { readonly name: "result"; readonly result: unknown }
-  | { readonly name: "error"; readonly errorMessage: string };
-
-export type ResultEvent =
-  | { readonly type: "RESULT"; readonly result: unknown }
-  | { readonly type: "ERROR"; readonly error: Error };
-
-export const resultMachine = defineMachine<ResultState, ResultEvent>({
-  initialState: { name: "pending" },
+const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
+  initialState: { name: 'disconnected', connectingStartedAt: -1, connectionEstablishedAt: -1 },
   states: {
-    pending: {
+    disconnected: {
       on: {
-        RESULT: {
-          to: "result",
-          data: ({ event }) => ({ result: event.result }),
+        CONNECT: { to: 'connecting', data: () => ({ connectingStartedAt: Date.now(), connectionEstablishedAt: -1 }) },
+      },
+    },
+    connecting: {
+      on: {
+        CONNECTED: { 
+          to: 'connected', 
+          data: ({ state }) => ({ connectingStartedAt: state.connectingStartedAt, connectionEstablishedAt: -1 })
+        },
+      },
+    },
+    // ...
+  },
+});
+```
+
+Later we could query the data
+
+```typescript
+const connection = connectionMachine.newInstance().start();
+
+// ... use the machine ...
+
+if (connection.state.name === 'connected') {
+  console.log(
+    'It took %s milliseconds to establish the connection, and its uptime is %s millis', 
+    connection.state.connectionEstablishedAt - connection.state.connectingStartedAt
+    Date.now() - connection.state.connectionEstablishedAt
+  );
+}
+```
+
+We can also define [conditional transitions](./transitions.md) that query both state-data and event-payloads to decide which transition to take.
+
+
+## States can have associated data (heterogenous)
+
+If we like, we can define state types with different data
+
+```typescript
+type ConnectionState = 
+  | { readonly name: 'disconnected' }
+  | { readonly name: 'connecting'; readonly connectingStartedAt: number; /* Date.now(); */ }
+  | { readonly name: 'connected'; readonly connectingStartedAt: number; /* Date.now(); */; readonly connectionEstablishedAt: number; /* Date.now() */ }
+  | { readonly name: 'connectionError'; readonly errorMessage: string };
+```
+
+The machine manages the data as it runs, by providing a `data()` callback to generate data for the next state
+
+```typescript
+const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
+  initialState: { name: "disconnected" },
+  states: {
+    disconnected: {
+      on: {
+        CONNECT: { to: "connecting", data: () => ({ connectingStartedAt: Date.now() }) },
+      },
+    },
+    connecting: {
+      on: {
+        CONNECTED: {
+          to: "connected",
+          data: ({ state }) => ({ connectingStartedAt: state.connectingStartedAt, connectionEstablishedAt: -1 }),
         },
         ERROR: {
-          to: "error",
+          to: "connectionError",
           data: ({ event }) => ({ errorMessage: String(event.error) }),
         },
       },
     },
+    // ...
   },
 });
+```
 
-const result = resultMachine.newInstance().start();
+Later we could query the data with complete type-safety
+
+```typescript
+const connection = connectionMachine.newInstance().start();
 
 // ... use the machine ...
 
-// type-safe access to state-specific-data
-const state: ResultState = result.state;
-if (state.name === "result") {
-  console.log("OK, result is", state.result);           
-} else if (state.name === "error") {
-  console.log("OH NO, error is", state.errorMessage);
+if (connection.state.name === 'connected') {
+  console.log(
+    'It took %s milliseconds to establish the connection, and its uptime is %s millis', 
+    connection.state.connectionEstablishedAt - connection.state.connectingStartedAt
+    Date.now() - connection.state.connectionEstablishedAt
+  );
+} else if (connection.state.name === 'connectionError') {
+  console.log('Connection failed: %s', connection.state.errorMessage);
 }
 ```
 
 ---
 
-| Previous | Next |
-| --- | --- |
-| [⬅️  **Docs**](./readme.md) | [**Events** ➡️](./events.md)  |
+* [⬅️ Previous: **Docs**](./readme.md)
+* [Next: **Events** ➡️](./events.md)
