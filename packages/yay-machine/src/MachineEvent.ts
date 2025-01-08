@@ -1,9 +1,12 @@
 /**
- * The base interface for all machine events.
- * User-defined events do not need to extend this interface, just conform to its shape,
+ * The base type for all machine states.
+ * User-defined states do not need to extend this interface, just conform to its shape,
  * and can also have their own arbitrary properties.
  */
 export interface MachineEvent<Type extends string = string> {
+  /**
+   * The unique type (or types if a string-union) of the state.
+   */
   readonly type: Type;
 }
 
@@ -17,6 +20,9 @@ export type ExtractEvent<EventType extends MachineEvent, Type extends EventType[
   ? ExtractComplexEvent<EventType, Type>
   : Extract<EventType, { type: Type }>;
 
+/**
+ * Extracts a concrete event type from type whose `type` field is a `string` union
+ */
 type ExtractComplexEvent<EventType extends MachineEvent, Type extends EventType["type"]> = EventType extends {
   type: infer N;
 }

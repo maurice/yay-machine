@@ -3,15 +3,45 @@ import type { MachineInstance, Unsubscribe } from "./MachineInstance";
 import type { ExtractState, IsStateDataHomogenous, MachineState, StateData } from "./MachineState";
 import type { OneOrMore } from "./OneOrMore";
 
+/**
+ * Machine definition configuration - the blueprint for the machine instances.
+ */
 export type MachineDefinitionConfig<
   StateType extends MachineState,
   EventType extends MachineEvent,
 > = WithHomogenousStateMachineDefinitionConfig<
   {
+    /**
+     * Default initial state of each new machine.
+     * Can be overriden by optional `MachineInstanceConfig` passed to
+     * `MachineDefinition.newInstance()`
+     */
     readonly initialState: StateType;
+
+    /**
+     * The machine states configuration.
+     * Defines state-specific event- and/or immediate-transitions
+     */
     readonly states: StatesConfig<StateType, EventType>;
+
+    /**
+     * Optional side-effect, run when a machine instance is started.
+     * Should return a tear-down function so any resources can be freed when
+     * the machine is stopped.
+     */
     readonly onStart?: EffectFunction<StateType, EventType, StateType>;
+
+    /**
+     * Optional side-effect, run when a machine instance is stopped.
+     * May return a tear-down function so any resources can be freed when
+     * the machine is stopped.
+     */
     readonly onStop?: EffectFunction<StateType, EventType, StateType>;
+
+    /**
+     * Any states configuration.
+     * Defines state-agnostic event-transitions
+     */
     readonly on?: AnyStateTransitionsConfig<StateType, EventType, StateType>;
   },
   StateType
@@ -30,7 +60,6 @@ export type HomogenousStateMachineDefinitionConfig = {
    * If `true`, data is automatically copied between states when transitioning, and the
    * transition does not provide its own `data()` callback implementation.
    * This avoids boilerplate `data()` callbacks config, like `{ to: 'foo', data: ({ state }) => state }`.
-   * @property {boolean} [enableCopyDataOnTransition] automatically copy data between states when transitioning?
    * @default false
    */
   readonly enableCopyDataOnTransition?: boolean;
@@ -40,14 +69,38 @@ export type StatesConfig<StateType extends MachineState, EventType extends Machi
   readonly [Name in StateType["name"]]?: StateConfig<StateType, EventType, ExtractState<StateType, Name>>;
 };
 
+/**
+ * Configuration for a machine-state:
+ * * event- and immediate-transitions
+ * * side-effects
+ */
 export type StateConfig<
   StateType extends MachineState,
   EventType extends MachineEvent,
   CurrentState extends StateType,
 > = {
+  /**
+   * Define a map of transitions keyed by event `type`
+   */
   readonly on?: TransitionsConfig<StateType, EventType, CurrentState>;
+
+  /**
+   * Define one or more immediate transitions, that are always attempted when entering the state
+   */
   readonly always?: OneOrMore<TransitionConfig<StateType, EventType, CurrentState, undefined>>;
+
+  /**
+   * Optional side-effect, run when the state is entered.
+   * Should return a tear-down function so any resources can be freed when
+   * the state is exited.
+   */
   readonly onEnter?: EffectFunction<StateType, EventType, CurrentState>;
+
+  /**
+   * Optional side-effect, run when the state is exited.
+   * May return a tear-down function so any resources can be freed when
+   * the state is exited.
+   */
   readonly onExit?: EffectFunction<StateType, EventType, CurrentState>;
 };
 
@@ -72,6 +125,9 @@ export type TransitionConfig<
     : TransitionWithData<StateType, EventType, CurrentState, CurrentEvent, ExtractState<StateType, Name>>;
 }[StateType["name"]];
 
+/**
+ * Defines a potential transition from the current state to the next state
+ */
 export interface Transition<
   StateType extends MachineState,
   EventType extends MachineEvent,
@@ -79,8 +135,23 @@ export interface Transition<
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
 > {
+  /**
+   * The name of the next state
+   */
   readonly to: NextState["name"];
+
+  /**
+   * Optional predicate function if the transition is conditional
+   * @param params the current state and event
+   * @returns true if the transition should be taken
+   */
   readonly when?: (params: CallbackParams<CurrentState, CurrentEvent>) => boolean;
+
+  /**
+   * Optional side-effect, run when the transition is taken.
+   * May return a tear-down function so any resources can be freed when
+   * the state is exited.
+   */
   readonly onTransition?: EffectFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
 }
 
@@ -102,6 +173,10 @@ export type TransitionData<
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
 > = {
+  /**
+   * Generate state-data for the next state,
+   * usually by combining existing state-data with the event-payload
+   */
   readonly data: DataFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
 };
 
@@ -186,8 +261,23 @@ export interface AnyStateTransition<
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
 > {
+  /**
+   * The name of the next state
+   */
   readonly to?: NextState["name"]; // current state if not specified
+
+  /**
+   * Optional predicate function if the transition is conditional
+   * @param params the current state and event
+   * @returns true if the transition should be taken
+   */
   readonly when?: (params: CallbackParams<CurrentState, CurrentEvent>) => boolean;
+
+  /**
+   * Optional side-effect, run when the transition is taken.
+   * May return a tear-down function so any resources can be freed when
+   * the state is exited.
+   */
   readonly onTransition?: EffectFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
 }
 

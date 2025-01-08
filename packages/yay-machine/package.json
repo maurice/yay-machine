@@ -11,7 +11,8 @@
     "build": "rimraf dist && bun run build:esm && bun run build:cjs && bun run build:types",
     "build:esm": "bun build src/index.ts --outfile dist/index.js --format esm",
     "build:cjs": "bun build src/index.ts --outfile dist/index.cjs --format cjs",
-    "build:types": "tsc --emitDeclarationOnly --declaration --declarationMap"
+    "build:types": "tsc --emitDeclarationOnly --declaration --declarationMap",
+    "api-docs": "typedoc --cleanOutputDir --plugin typedoc-github-theme --out api-docs src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,8 @@
   },
   "homepage": "https://github.com/maurice/yay-machine#readme",
   "devDependencies": {
-    "rimraf": "^6.0.1"
+    "rimraf": "^6.0.1",
+    "typedoc": "^0.27.6",
+    "typedoc-github-theme": "^0.2.1"
   }
 }

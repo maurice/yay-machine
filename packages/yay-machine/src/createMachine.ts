@@ -5,7 +5,8 @@ import type { MachineState } from "./MachineState";
 import { defineMachine } from "./defineMachine";
 
 /**
- * Creates a machine instance. Use this for singleton machines.
+ * Creates a machine instance.
+ * Wrapper around `defineMachine(...).newInstance()`
  * @param definitionConfig describes the machine prototype; it's states and how it responds to events
  * @returns the machine definition, which can be used to create new machine instances
  */

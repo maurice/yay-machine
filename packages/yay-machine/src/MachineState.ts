@@ -1,4 +1,12 @@
+/**
+ * The base type for all machine events.
+ * User-defined events do not need to extend this interface, just conform to its shape,
+ * and can also have their own arbitrary properties.
+ */
 export interface MachineState<Name extends string = string> {
+  /**
+   * The unique name (or names if a string-union) of the event.
+   */
   readonly name: Name;
 }
 

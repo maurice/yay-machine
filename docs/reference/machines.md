@@ -12,4 +12,4 @@ TODO
 
 ---
 
-*| [⬅️ Previous: **Side-effects**](./side-effects.md)
+[⬅️ Previous: **Side-effects**](./side-effects.md)
