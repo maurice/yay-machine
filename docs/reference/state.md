@@ -185,7 +185,6 @@ if (state.name === "result") {
 
 ---
 
-<div style="margin-top: 10px; display: flex; flex-direction: row; gap: 10px">
-  <div style="display: inline-block; width: 50%; flex: 1">&nbsp;</div>
-  <a style="display: inline-block; width: 50%; flex: 1; border: 1px solid lightgray; border-radius: 5px; padding: 10px; text-align: center" href="./events.md">Next: <strong>Events</strong> ➡️</a>
-</div>
+| Previous | Next |
+| --- | --- |
+| [⬅️  **Docs**](./readme.md) | [**Events** ➡️](./events.md)  |

@@ -8,7 +8,7 @@
 
 **yay-machine** borrows the best ideas from other JS/TypeScript state-machine and state-management libraries.
 
-**yay-machine** will feel familiar to **XState** users, with features including
+It will feel familiar to **XState** users, with features including
 
 - JSON config
 - state-data (context / extended-state)
@@ -19,8 +19,10 @@
 
 **yay-machine** also brings new ideas of its own
 
-- states are `type`s (or `interface`s). They are a `name` and any associated data. Different states may have different associated data
+- states are type (think: `interface`). They are an `object` with a `name` and any associated data. Different states may have different associated data
 - side-effects are all you need for sync/async interactions with the current machine and outside world
+
+We use modern, accessible language, rather than traditional academic terms.
 
 # Simple
 
@@ -31,7 +33,9 @@
 - transitions (including immediate and conditional)
 - side-effects
 
-**yay-machine** should be quick to learn, master, and have a low ongoing cost-of-ownership.
+These features can be combined to model just about anything.
+
+It should be quick to learn, master, and have a low ongoing cost-of-ownership.
 
 # Lightweight
 
@@ -55,9 +59,8 @@ We ❤️ TypeScript and want the best experience for TypeScript developers with
 
 A [**state** in **yay-machine**](./reference/state.md) is a first-class type, giving you a lot of compile-time confidence in your machines.
 
-# Dive in
+# Continue
 
 Read our [introduction to state-machines](./articles/why-state-machines.md) if you're new to them, or learn [why **yay-machine** exists](./articles/why-yay-machine.md) and a [comparison with **XState**](./articles/vs-xstate.md) if you are already familiar.
 
 Get up and running fast with our [quick start guide](./quick-start.md) or head over to the [reference docs](./reference/).
-

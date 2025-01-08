@@ -149,3 +149,7 @@ assert.deepStrictEqual(health.state, { name: "moderate", strength: 8, stamina: 6
 
 // etc ...
 ```
+
+# Reference docs
+
+Read the [reference docs](./reference/readme.md) to find out more.
