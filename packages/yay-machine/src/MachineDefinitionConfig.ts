@@ -9,64 +9,94 @@ import type { OneOrMore } from "./OneOrMore";
 export type MachineDefinitionConfig<
   StateType extends MachineState,
   EventType extends MachineEvent,
-> = WithHomogenousStateMachineDefinitionConfig<
-  {
-    /**
-     * Default initial state of each new machine.
-     * Can be overriden by optional `MachineInstanceConfig` passed to
-     * `MachineDefinition.newInstance()`
-     */
-    readonly initialState: StateType;
+> = IsStateDataHomogenous<StateType> extends true
+  ?
+      | HomogenousStateMachineDefinitionConfigCopyDataOnTransitionTrue<StateType, EventType>
+      | HomogenousStateMachineDefinitionConfigCopyDataOnTransitionFalse<StateType, EventType>
+  : HeterogenousStateMachineDefinitionConfig<StateType, EventType, false>;
 
-    /**
-     * The machine states configuration.
-     * Defines state-specific event- and/or immediate-transitions
-     */
-    readonly states: StatesConfig<StateType, EventType>;
-
-    /**
-     * Optional side-effect, run when a machine instance is started.
-     * Should return a tear-down function so any resources can be freed when
-     * the machine is stopped.
-     */
-    readonly onStart?: EffectFunction<StateType, EventType, StateType>;
-
-    /**
-     * Optional side-effect, run when a machine instance is stopped.
-     * May return a tear-down function so any resources can be freed when
-     * the machine is stopped.
-     */
-    readonly onStop?: EffectFunction<StateType, EventType, StateType>;
-
-    /**
-     * Any states configuration.
-     * Defines state-agnostic event-transitions
-     */
-    readonly on?: AnyStateTransitionsConfig<StateType, EventType, StateType>;
-  },
-  StateType
->;
-
-export type WithHomogenousStateMachineDefinitionConfig<
-  Type,
+export interface HeterogenousStateMachineDefinitionConfig<
   StateType extends MachineState,
-> = IsStateDataHomogenous<StateType> extends true ? Type & HomogenousStateMachineDefinitionConfig : Type;
+  EventType extends MachineEvent,
+  CopyDataOnTransition extends boolean | undefined,
+> {
+  /**
+   * Default initial state of each new machine.
+   * Can be overriden by optional `MachineInstanceConfig` passed to
+   * `MachineDefinition.newInstance()`
+   */
+  readonly initialState: StateType;
+
+  /**
+   * The machine states configuration.
+   * Defines state-specific event- and/or immediate-transitions
+   */
+  readonly states: StatesConfig<StateType, EventType, CopyDataOnTransition>;
+
+  /**
+   * Optional side-effect, run when a machine instance is started.
+   * Should return a tear-down function so any resources can be freed when
+   * the machine is stopped.
+   */
+  readonly onStart?: EffectFunction<StateType, EventType, StateType>;
+
+  /**
+   * Optional side-effect, run when a machine instance is stopped.
+   * May return a tear-down function so any resources can be freed when
+   * the machine is stopped.
+   */
+  readonly onStop?: EffectFunction<StateType, EventType, StateType>;
+
+  /**
+   * Any states configuration.
+   * Defines state-agnostic event-transitions
+   */
+  readonly on?: AnyStateTransitionsConfig<StateType, EventType, StateType>;
+}
 
 /**
  * For machines whose states have the same data structure
  */
-export type HomogenousStateMachineDefinitionConfig = {
+export interface HomogenousStateMachineDefinitionConfigCopyDataOnTransitionTrue<
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+> extends HeterogenousStateMachineDefinitionConfig<StateType, EventType, true> {
   /**
    * If `true`, data is automatically copied between states when transitioning, and the
    * transition does not provide its own `data()` callback implementation.
    * This avoids boilerplate `data()` callbacks config, like `{ to: 'foo', data: ({ state }) => state }`.
    * @default false
    */
-  readonly enableCopyDataOnTransition?: boolean;
-};
+  readonly enableCopyDataOnTransition: true;
+}
 
-export type StatesConfig<StateType extends MachineState, EventType extends MachineEvent> = {
-  readonly [Name in StateType["name"]]?: StateConfig<StateType, EventType, ExtractState<StateType, Name>>;
+/**
+ * For machines whose states have the same data structure
+ */
+export interface HomogenousStateMachineDefinitionConfigCopyDataOnTransitionFalse<
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+> extends HeterogenousStateMachineDefinitionConfig<StateType, EventType, false> {
+  /**
+   * If `true`, data is automatically copied between states when transitioning, and the
+   * transition does not provide its own `data()` callback implementation.
+   * This avoids boilerplate `data()` callbacks config, like `{ to: 'foo', data: ({ state }) => state }`.
+   * @default false
+   */
+  readonly enableCopyDataOnTransition?: false;
+}
+
+export type StatesConfig<
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+  CopyDataOnTransition extends boolean | undefined,
+> = {
+  readonly [Name in StateType["name"]]?: StateConfig<
+    StateType,
+    EventType,
+    ExtractState<StateType, Name>,
+    CopyDataOnTransition
+  >;
 };
 
 /**
@@ -78,16 +108,17 @@ export type StateConfig<
   StateType extends MachineState,
   EventType extends MachineEvent,
   CurrentState extends StateType,
+  CopyDataOnTransition extends boolean | undefined,
 > = {
   /**
    * Define a map of transitions keyed by event `type`
    */
-  readonly on?: TransitionsConfig<StateType, EventType, CurrentState>;
+  readonly on?: TransitionsConfig<StateType, EventType, CurrentState, CopyDataOnTransition>;
 
   /**
    * Define one or more immediate transitions, that are always attempted when entering the state
    */
-  readonly always?: OneOrMore<TransitionConfig<StateType, EventType, CurrentState, undefined>>;
+  readonly always?: OneOrMore<TransitionConfig<StateType, EventType, CurrentState, undefined, CopyDataOnTransition>>;
 
   /**
    * Optional side-effect, run when the state is entered.
@@ -108,9 +139,10 @@ export type TransitionsConfig<
   StateType extends MachineState,
   EventType extends MachineEvent,
   CurrentState extends StateType,
+  CopyDataOnTransition extends boolean | undefined,
 > = {
   readonly [Type in EventType["type"]]?: OneOrMore<
-    TransitionConfig<StateType, EventType, CurrentState, ExtractEvent<EventType, Type>>
+    TransitionConfig<StateType, EventType, CurrentState, ExtractEvent<EventType, Type>, CopyDataOnTransition>
   >;
 };
 
@@ -119,10 +151,18 @@ export type TransitionConfig<
   EventType extends MachineEvent,
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
+  CopyDataOnTransition extends boolean | undefined,
 > = {
   readonly [Name in StateType["name"]]: keyof Omit<ExtractState<StateType, Name>, "name"> extends never
     ? Transition<StateType, EventType, CurrentState, CurrentEvent, ExtractState<StateType, Name>>
-    : TransitionWithData<StateType, EventType, CurrentState, CurrentEvent, ExtractState<StateType, Name>>;
+    : TransitionWithData<
+        StateType,
+        EventType,
+        CurrentState,
+        CurrentEvent,
+        ExtractState<StateType, Name>,
+        CopyDataOnTransition
+      >;
 }[StateType["name"]];
 
 /**
@@ -161,8 +201,9 @@ export type TransitionWithData<
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
+  CopyDataOnTransition extends boolean | undefined,
 > = Transition<StateType, EventType, CurrentState, CurrentEvent, NextState> &
-  (IsStateDataHomogenous<StateType> extends true
+  (CopyDataOnTransition extends true
     ? Partial<TransitionData<StateType, EventType, CurrentState, CurrentEvent, NextState>>
     : TransitionData<StateType, EventType, CurrentState, CurrentEvent, NextState>);
 

@@ -1,7 +1,7 @@
 import type { MachineDefinition } from "./MachineDefinition";
 import type {
   EffectFunction,
-  HomogenousStateMachineDefinitionConfig,
+  HomogenousStateMachineDefinitionConfigCopyDataOnTransitionTrue,
   MachineDefinitionConfig,
   Transition,
   TransitionWithData,
@@ -23,8 +23,9 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
 
   return {
     newInstance(instanceConfig) {
-      const enableCopyDataOnTransition = (definitionConfig as HomogenousStateMachineDefinitionConfig)
-        .enableCopyDataOnTransition;
+      const enableCopyDataOnTransition = (
+        definitionConfig as HomogenousStateMachineDefinitionConfigCopyDataOnTransitionTrue<StateType, EventType>
+      ).enableCopyDataOnTransition;
       const initialState = instanceConfig?.initialState ?? definitionConfig.initialState;
       let currentState = initialState;
 
@@ -96,7 +97,8 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
             EventType,
             CurrentState,
             CurrentEvent,
-            NextState
+            NextState,
+            boolean
           >;
           if (
             !("when" in transition) ||
