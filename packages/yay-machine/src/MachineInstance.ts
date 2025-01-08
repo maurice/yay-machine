@@ -74,4 +74,7 @@ export interface SubscriberParams<StateType extends MachineState, EventType exte
   readonly event: EventType | undefined;
 }
 
+/**
+ * Unsubscribe function: removes the subscriber.
+ */
 export type Unsubscribe = () => void;
