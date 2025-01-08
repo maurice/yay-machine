@@ -4,7 +4,7 @@
 
 [**yay-machine** is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.](https://github.com/maurice/yay-machine/blob/main/docs/about.md)
 
-*This package is the core state-machine library.*
+*📦 This package is the core state-machine library.*
 
 # Example
 
