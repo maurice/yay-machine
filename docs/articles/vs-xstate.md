@@ -27,7 +27,13 @@ In a nutshell, we want **yay-machine** to be simple to learn, quick to get runni
 
 We feel that size of the **XState** ecosystem, feature-set, documentation, etc, is actually a barrier to entry, and the more advanced features you adopt, the higher the ongoing cost-of-ownership. **XState** has  introduced some major (sometimes breaking) changes over the last few years, it can be hard to stay up-to-date.
 
-Additionally we value library size and performance, and keeping things small and simple means **yay-machine** outperforms **XState** here \*\*CITATIONS NEEDED!\*\*.
+Additionally we value library size and performance, and keeping things small and simple means **yay-machine** outperforms **XState** here.
+
+| `xstate@5.19.1` | `yay-machine@1.1.3` |
+| ---------- | --------------- |
+| ![XState bundlephobia stats](../assets/xstate-bundlephobia-stats.png) | ![yay-machine bundlephobia stats](../assets/yay-machine-bundlephobia-stats.png) |
+
+Thanks to [![https://bundlephobia.com/](../assets/bundlephobia-logo.png "BUNDLEPHOPIA")](https://bundlephobia.com/) for the stats.
 
 Read more about [our philosophy here](./why-yay-machine.md#philosophy).
 
