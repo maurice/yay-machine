@@ -29,7 +29,7 @@ We feel that size of the **XState** ecosystem, feature-set, documentation, etc, 
 
 Additionally we value library size and performance, and keeping things small and simple means **yay-machine** outperforms **XState** here.
 
-### Bundle size comparison
+### Bundle size
 
 | `xstate@5.19.1` | `yay-machine@1.1.3` |
 | ---------- | --------------- |
