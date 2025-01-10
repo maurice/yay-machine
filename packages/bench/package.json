@@ -1,0 +1,33 @@
+{
+  "name": "@yay-machine/bench",
+  "version": "0.0.0",
+  "description": "Example state-machines with yay-machine",
+  "private": true,
+  "type": "module",
+  "files": ["src"],
+  "scripts": {
+    "bench": "bun run src/bench.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maurice/yay-machine.git"
+  },
+  "author": "maurice@mauricenicholson.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maurice/yay-machine/issues"
+  },
+  "homepage": "https://github.com/maurice/yay-machine#readme",
+  "dependencies": {
+    "benchmark": "^2.1.4",
+    "benny": "^3.7.1",
+    "lodash": "^4.17.21",
+    "microtime": "^3.1.1",
+    "platform": "^1.3.6",
+    "xstate": "^5.19.1",
+    "yay-machine": "*"
+  },
+  "devDependencies": {
+    "@types/benchmark": "^2.1.5"
+  }
+}

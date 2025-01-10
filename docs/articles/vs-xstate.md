@@ -29,11 +29,17 @@ We feel that size of the **XState** ecosystem, feature-set, documentation, etc, 
 
 Additionally we value library size and performance, and keeping things small and simple means **yay-machine** outperforms **XState** here.
 
+### Bundle size comparison
+
 | `xstate@5.19.1` | `yay-machine@1.1.3` |
 | ---------- | --------------- |
 | [![XState bundlephobia stats](../assets/xstate-bundlephobia-stats.png "https://bundlephobia.com/package/xstate@5.19.1")](https://bundlephobia.com/package/xstate@5.19.1) | [![yay-machine bundlephobia stats](../assets/yay-machine-bundlephobia-stats.png "https://bundlephobia.com/package/yay-machine@1.1.3")](https://bundlephobia.com/package/yay-machine@1.1.3) |
 
 Thanks to [![https://bundlephobia.com/](../assets/bundlephobia-logo.png "bundlephobia.com")](https://bundlephobia.com/) for the stats.
+
+### Runtime performance
+
+[![bench tests](../assets/bench.png)](https://github.com/maurice/yay-machine/blob/main/packages/bench/src/bench.ts)
 
 Read more about [our philosophy here](./why-yay-machine.md#philosophy).
 

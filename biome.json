@@ -62,6 +62,16 @@
           }
         }
       }
+    },
+    {
+      "include": ["packages/bench"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConsoleLog": "off"
+          }
+        }
+      }
     }
   ]
 }
