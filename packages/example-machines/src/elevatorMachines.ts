@@ -1,4 +1,4 @@
-import { type EffectParams, type MachineInstance, defineMachine } from "yay-machine";
+import { type MachineInstance, type StateLifecycleSideEffectFunction, defineMachine } from "yay-machine";
 
 /*
  * This file contains two machines: one for the elevator and one for the elevator controller.
@@ -54,8 +54,8 @@ export type ElevatorEvent =
   | MoveDownEvent;
 
 const sleepThen =
-  (doneEvent: ElevatorEvent, time = 5000) =>
-  ({ send }: EffectParams<ElevatorState, ElevatorEvent, ElevatorState>) => {
+  (doneEvent: ElevatorEvent, time = 5000): StateLifecycleSideEffectFunction<ElevatorState, ElevatorEvent> =>
+  ({ send }) => {
     const timer = setTimeout(() => send(doneEvent), time);
     return () => clearTimeout(timer);
   };

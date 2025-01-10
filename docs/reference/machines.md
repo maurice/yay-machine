@@ -2,7 +2,7 @@
 
 TODO
 
-- define
+- defineMachine
 - newInstance
 - start
 - send

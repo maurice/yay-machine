@@ -28,6 +28,19 @@
   },
   "overrides": [
     {
+      "include": ["**/*.test.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noNonNullAssertion": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off"
+          }
+        }
+      }
+    },
+    {
       "include": ["packages/example-machines", "**/*.test.ts"],
       "linter": {
         "rules": {

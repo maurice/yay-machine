@@ -1,5 +1,5 @@
 import type { ExtractEvent, MachineEvent } from "./MachineEvent";
-import type { MachineInstance, Unsubscribe } from "./MachineInstance";
+import type { Unsubscribe } from "./MachineInstance";
 import type { ExtractState, IsStateDataHomogenous, MachineState, StateData } from "./MachineState";
 import type { OneOrMore } from "./OneOrMore";
 
@@ -18,11 +18,11 @@ export type MachineDefinitionConfig<
 export interface HeterogenousStateMachineDefinitionConfig<
   StateType extends MachineState,
   EventType extends MachineEvent,
-  CopyDataOnTransition extends boolean | undefined,
+  CopyDataOnTransition extends boolean,
 > {
   /**
    * Default initial state of each new machine.
-   * Can be overriden by optional `MachineInstanceConfig` passed to
+   * Can be overridden by optional `MachineInstanceConfig` passed to
    * `MachineDefinition.newInstance()`
    */
   readonly initialState: StateType;
@@ -38,14 +38,14 @@ export interface HeterogenousStateMachineDefinitionConfig<
    * Should return a tear-down function so any resources can be freed when
    * the machine is stopped.
    */
-  readonly onStart?: EffectFunction<StateType, EventType, StateType>;
+  readonly onStart?: MachineLifecycleSideEffectFunction<StateType, EventType>;
 
   /**
    * Optional side-effect, run when a machine instance is stopped.
    * May return a tear-down function so any resources can be freed when
    * the machine is stopped.
    */
-  readonly onStop?: EffectFunction<StateType, EventType, StateType>;
+  readonly onStop?: MachineLifecycleSideEffectFunction<StateType, EventType>;
 
   /**
    * Any states configuration.
@@ -53,6 +53,14 @@ export interface HeterogenousStateMachineDefinitionConfig<
    */
   readonly on?: AnyStateTransitionsConfig<StateType, EventType, StateType>;
 }
+
+export type MachineLifecycleSideEffectFunction<
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+> = (param: {
+  readonly state: StateType;
+  readonly send: SendFunction<EventType>;
+}) => EffectReturnValue;
 
 /**
  * For machines whose states have the same data structure
@@ -89,7 +97,7 @@ export interface HomogenousStateMachineDefinitionConfigCopyDataOnTransitionFalse
 export type StatesConfig<
   StateType extends MachineState,
   EventType extends MachineEvent,
-  CopyDataOnTransition extends boolean | undefined,
+  CopyDataOnTransition extends boolean,
 > = {
   readonly [Name in StateType["name"]]?: StateConfig<
     StateType,
@@ -108,41 +116,51 @@ export type StateConfig<
   StateType extends MachineState,
   EventType extends MachineEvent,
   CurrentState extends StateType,
-  CopyDataOnTransition extends boolean | undefined,
+  CopyDataOnTransition extends boolean,
 > = {
   /**
    * Define a map of transitions keyed by event `type`
    */
-  readonly on?: TransitionsConfig<StateType, EventType, CurrentState, CopyDataOnTransition>;
+  readonly on?: StateTransitionsConfig<StateType, EventType, CurrentState, CopyDataOnTransition>;
 
   /**
    * Define one or more immediate transitions, that are always attempted when entering the state
    */
-  readonly always?: OneOrMore<TransitionConfig<StateType, EventType, CurrentState, undefined, CopyDataOnTransition>>;
+  readonly always?: OneOrMore<
+    TransitionConfig<StateType, EventType, CurrentState, undefined, CopyDataOnTransition, true>
+  >;
 
   /**
    * Optional side-effect, run when the state is entered.
    * Should return a tear-down function so any resources can be freed when
    * the state is exited.
    */
-  readonly onEnter?: EffectFunction<StateType, EventType, CurrentState>;
+  readonly onEnter?: StateLifecycleSideEffectFunction<CurrentState, EventType>;
 
   /**
    * Optional side-effect, run when the state is exited.
    * May return a tear-down function so any resources can be freed when
    * the state is exited.
    */
-  readonly onExit?: EffectFunction<StateType, EventType, CurrentState>;
+  readonly onExit?: StateLifecycleSideEffectFunction<CurrentState, EventType>;
 };
 
-export type TransitionsConfig<
+export type StateLifecycleSideEffectFunction<
+  CurrentState extends MachineState,
+  EventType extends MachineEvent,
+> = (param: {
+  readonly state: CurrentState;
+  readonly send: SendFunction<EventType>;
+}) => EffectReturnValue;
+
+export type StateTransitionsConfig<
   StateType extends MachineState,
   EventType extends MachineEvent,
   CurrentState extends StateType,
-  CopyDataOnTransition extends boolean | undefined,
+  CopyDataOnTransition extends boolean,
 > = {
   readonly [Type in EventType["type"]]?: OneOrMore<
-    TransitionConfig<StateType, EventType, CurrentState, ExtractEvent<EventType, Type>, CopyDataOnTransition>
+    TransitionConfig<StateType, EventType, CurrentState, ExtractEvent<EventType, Type>, CopyDataOnTransition, false>
   >;
 };
 
@@ -151,24 +169,44 @@ export type TransitionConfig<
   EventType extends MachineEvent,
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
-  CopyDataOnTransition extends boolean | undefined,
+  CopyDataOnTransition extends boolean,
+  IsImmediateTransition extends boolean,
 > = {
-  readonly [Name in StateType["name"]]: keyof Omit<ExtractState<StateType, Name>, "name"> extends never
-    ? Transition<StateType, EventType, CurrentState, CurrentEvent, ExtractState<StateType, Name>>
-    : TransitionWithData<
-        StateType,
-        EventType,
-        CurrentState,
-        CurrentEvent,
-        ExtractState<StateType, Name>,
-        CopyDataOnTransition
-      >;
+  readonly [Name in StateType["name"]]: Transition<
+    StateType,
+    EventType,
+    CurrentState,
+    CurrentEvent,
+    ExtractState<StateType, Name>,
+    CopyDataOnTransition,
+    IsImmediateTransition
+  >;
 }[StateType["name"]];
+
+export type Transition<
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+  CurrentState extends StateType,
+  CurrentEvent extends EventType | undefined,
+  NextState extends StateType,
+  CopyDataOnTransition extends boolean,
+  IsImmediateTransition extends boolean,
+> = keyof Omit<NextState, "name"> extends never
+  ? BasicTransition<StateType, EventType, CurrentState, CurrentEvent, NextState>
+  : OtherTransition<
+      StateType,
+      EventType,
+      CurrentState,
+      CurrentEvent,
+      NextState,
+      CopyDataOnTransition,
+      IsImmediateTransition
+    >;
 
 /**
  * Defines a potential transition from the current state to the next state
  */
-export interface Transition<
+export interface BasicTransition<
   StateType extends MachineState,
   EventType extends MachineEvent,
   CurrentState extends StateType,
@@ -182,30 +220,67 @@ export interface Transition<
 
   /**
    * Optional predicate function if the transition is conditional
-   * @param params the current state and event
+   * @param param an object containing the current state and event
    * @returns true if the transition should be taken
    */
-  readonly when?: (params: CallbackParams<CurrentState, CurrentEvent>) => boolean;
+  readonly when?: (param: { readonly state: CurrentState; readonly event: CurrentEvent }) => boolean;
 
   /**
    * Optional side-effect, run when the transition is taken.
    * May return a tear-down function so any resources can be freed when
    * the state is exited.
    */
-  readonly onTransition?: EffectFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
+  readonly onTransition?: OnTransitionSideEffectFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
 }
 
-export type TransitionWithData<
+export type OnTransitionSideEffectFunction<
   StateType extends MachineState,
   EventType extends MachineEvent,
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
-  CopyDataOnTransition extends boolean | undefined,
-> = Transition<StateType, EventType, CurrentState, CurrentEvent, NextState> &
-  (CopyDataOnTransition extends true
-    ? Partial<TransitionData<StateType, EventType, CurrentState, CurrentEvent, NextState>>
-    : TransitionData<StateType, EventType, CurrentState, CurrentEvent, NextState>);
+> = (param: {
+  readonly state: CurrentState;
+  readonly event: CurrentEvent;
+  readonly next: NextState;
+  readonly send: SendFunction<EventType>;
+}) => EffectReturnValue;
+
+export type OtherTransition<
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+  CurrentState extends StateType,
+  CurrentEvent extends EventType | undefined,
+  NextState extends StateType,
+  CopyDataOnTransition extends boolean,
+  IsImmediateTransition extends boolean,
+> = BasicTransition<StateType, EventType, CurrentState, CurrentEvent, NextState> &
+  (NextState["name"] extends CurrentState["name"]
+    ? IsImmediateTransition extends false
+      ?
+          | ReenterTransition<false>
+          | DataTransition<StateType, EventType, CurrentState, CurrentEvent, NextState, CopyDataOnTransition>
+      : DataTransition<StateType, EventType, CurrentState, CurrentEvent, NextState, CopyDataOnTransition>
+    : DataTransition<StateType, EventType, CurrentState, CurrentEvent, NextState, CopyDataOnTransition>);
+
+export type DataTransition<
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+  CurrentState extends StateType,
+  CurrentEvent extends EventType | undefined,
+  NextState extends StateType,
+  CopyDataOnTransition extends boolean,
+> = CopyDataOnTransition extends true
+  ? Partial<TransitionData<StateType, EventType, CurrentState, CurrentEvent, NextState>>
+  : TransitionData<StateType, EventType, CurrentState, CurrentEvent, NextState>;
+
+export interface ReenterTransition<Reenter extends boolean> {
+  /**
+   * If false, the transition does not re-enter the current state, so side-effects are not stopped/re-started
+   * @default true
+   */
+  readonly reenter: Reenter;
+}
 
 export type TransitionData<
   StateType extends MachineState,
@@ -218,61 +293,16 @@ export type TransitionData<
    * Generate state-data for the next state,
    * usually by combining existing state-data with the event-payload
    */
-  readonly data: DataFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
+  readonly data: (param: { readonly state: CurrentState; readonly event: CurrentEvent }) => StateData<
+    NextState,
+    NextState["name"]
+  >;
 };
 
-export type DataFunction<
-  StateType extends MachineState,
-  EventType extends MachineEvent,
-  CurrentState extends StateType,
-  CurrentEvent extends EventType | undefined,
-  NextState extends StateType,
-> = (params: CallbackParams<CurrentState, CurrentEvent>) => StateData<NextState, NextState["name"]>;
+export type SendFunction<EventType extends MachineEvent> = (event: EventType) => void;
 
-export type CallbackParams<
-  CurrentState extends MachineState,
-  CurrentEvent extends MachineEvent | undefined,
-> = WithEvent<
-  {
-    readonly state: CurrentState;
-  },
-  CurrentEvent
->;
-
-export type EffectFunction<
-  StateType extends MachineState,
-  EventType extends MachineEvent,
-  CurrentState extends StateType,
-  CurrentEvent extends EventType | undefined = undefined,
-  NextState extends StateType | undefined = undefined,
-> = (
-  params: EffectParams<StateType, EventType, CurrentState, CurrentEvent, NextState>,
-  // biome-ignore lint/suspicious/noConfusingVoidType: adding void to union as we don't want to force users to explicity return
-) => Unsubscribe | undefined | null | void;
-
-export type EffectParams<
-  StateType extends MachineState,
-  EventType extends MachineEvent,
-  CurrentState extends StateType,
-  CurrentEvent extends EventType | undefined = undefined,
-  NextState extends StateType | undefined = undefined,
-> = WithNextState<
-  WithEvent<
-    Pick<MachineInstance<StateType, EventType>, "send"> & {
-      readonly state: CurrentState;
-    },
-    CurrentEvent
-  >,
-  NextState
->;
-
-export type WithNextState<Type, NextState extends MachineState | undefined = undefined> = NextState extends undefined
-  ? Type
-  : Type & { readonly next: NextState };
-
-export type WithEvent<Type, EventType extends MachineEvent | undefined> = EventType extends undefined
-  ? Type
-  : Type & { readonly event: EventType };
+// biome-ignore lint/suspicious/noConfusingVoidType: adding void to union as we don't want to force users to explicity return
+type EffectReturnValue = Unsubscribe | undefined | null | void;
 
 export type AnyStateTransitionsConfig<
   StateType extends MachineState,
@@ -309,17 +339,17 @@ export interface AnyStateTransition<
 
   /**
    * Optional predicate function if the transition is conditional
-   * @param params the current state and event
+   * @param param the current state and event
    * @returns true if the transition should be taken
    */
-  readonly when?: (params: CallbackParams<CurrentState, CurrentEvent>) => boolean;
+  readonly when?: (param: { readonly state: CurrentState; readonly event: CurrentEvent }) => boolean;
 
   /**
    * Optional side-effect, run when the transition is taken.
    * May return a tear-down function so any resources can be freed when
    * the state is exited.
    */
-  readonly onTransition?: EffectFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
+  readonly onTransition?: OnTransitionSideEffectFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
 }
 
 export type AnyStateTransitionWith<

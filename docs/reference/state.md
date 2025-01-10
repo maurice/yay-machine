@@ -19,7 +19,7 @@ stateDiagram
     connected --> disconnected
 ```
 
-In this "connection" state-machine, the states are `'disconnected'`, `'connecting'`, `'connected'` and `'connectionError'`.
+In this "connection" state-machine, the states are `disconnected`, `connecting`, `connected` and `connectionError`.
 
 Finite means the machine will only ever be in one of these states; new states cannot be created dynamically (at run-time).
 
@@ -105,6 +105,9 @@ interface ConnectionState {
 }
 ```
 
+In this case we say the state-data is homogenous, because for all states  - 
+`disconnected`, `connecting`, `connected` and `connectionError` - the associated state-data has the same shape (type).
+
 The machine manages the data as it runs, by providing a `data()` callback to generate data for the next state
 
 ```typescript
@@ -147,6 +150,62 @@ if (connection.state.name === 'connected') {
 
 We can also define [conditional transitions](./transitions.md) that query both state-data and event-payloads to decide which transition to take.
 
+### The `enableCopyDataOnTransition` setting for homogenous state-data
+
+For machines with homogenous state-data and a lot of transitions, you might find you are writing a lot of
+boilerplate `data()` callbacks that simply copy the state, eg
+
+```typescript
+interface ToggleState {
+  readonly name: 'off' | 'on';
+  readonly onTimes: number;
+}
+
+interface ToggleEvent {
+  readonly type: 'TOGGLE';
+}
+
+const toggleMachine = defineMachine<ToggleState, ToggleEvent>({
+  initialState: { name: 'off', onTimes: 0 },
+  states: {
+    off: {
+      on: {
+        TOGGLE: { to: 'on', data: ({ state }) => ({ onTimes: state.onTimes + 1 }) }, // data in `on` state will be updated
+      },
+    },
+    on: {
+      on: {
+        TOGGLE: { to: 'off', data: ({ state }) => state }, // :-( this isn't adding any value
+      },
+    },
+  },
+});
+```
+
+If your machine has a lot of transitions that don't actually change the state-data, this means a lot of extra boilerplate and a lot of noise.
+
+In this case you can do
+
+```typescript
+const toggleMachine = defineMachine<ToggleState, ToggleEvent>({
+  enableCopyDataOnTransition: true, // <== ADD THIS
+  initialState: { name: 'off', onTimes: 0 },
+  states: {
+    off: {
+      on: {
+        TOGGLE: { to: 'on', data: ({ state }) => ({ onTimes: state.onTimes + 1 }) }, // data in `on` state will be updated
+      },
+    },
+    on: {
+      on: {
+        TOGGLE: { to: 'off' }, // :-) state is now copied from `off` to `on`
+      },
+    },
+  },
+});
+```
+
+> 💡 See the [`healthMachine` example](../../packages/example-machines/src/healthMachine.ts) for more realistic usage.
 
 ## States can have associated data (heterogenous)
 
@@ -159,6 +218,9 @@ type ConnectionState =
   | { readonly name: 'connected'; readonly connectingStartedAt: number; /* Date.now(); */; readonly connectionEstablishedAt: number; /* Date.now() */ }
   | { readonly name: 'connectionError'; readonly errorMessage: string };
 ```
+
+
+In this case we say the state-data is heterogenous, because for some or all states the associated state-data has a different shape (type).
 
 The machine manages the data as it runs, by providing a `data()` callback to generate data for the next state
 
@@ -204,6 +266,30 @@ if (connection.state.name === 'connected') {
 } else if (connection.state.name === 'connectionError') {
   console.log('Connection failed: %s', connection.state.errorMessage);
 }
+```
+
+## State data is immutable
+
+**⚠️ IMPORTANT:** never mutate state data in a `data()` callback.
+
+Always generate and return a new data object.
+
+## State lifecycle side-effects
+
+States may define two optional [side-effect](./side-effects.md) callbacks that are executed when the state is entered and exited respectively
+
+```typescript
+const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
+  initialState: { name: "disconnected" },
+  states: {
+    // ...
+    connected: {
+      onEnter: ({ state }) => { console.log('now connected to %s', state.url )},
+      onExit: ({ state }) => { console.log('no longer connected to %s', state.url )},
+    },
+    // ...
+  },
+});
 ```
 
 ---

@@ -75,7 +75,7 @@ export const healthMachine = defineMachine<HealthState, HealthEvent>({
           to: "invincible",
           data: ({ state, event }) => applyFirstAid(state, event),
         },
-        DAMAGE: { to: "invincible" },
+        DAMAGE: { to: "invincible", reenter: false },
         HUMAN_AGAIN: { to: "checkHealth", data: ({ state }) => ({ ...state, invincibilityStarted: 0 }) },
       },
     },

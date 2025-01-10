@@ -174,7 +174,7 @@ In general **yay-machine** tries to offer a single way to do something, although
 | Eventless (always) transitions | ✅ | ✅ |
 | Delayed (after) transitions | ✅ | ❌ (easy via side-effect + `setTimeout()`) |
 | Guards (conditional transitions) | ✅ | ✅ |
-| Reenter (aka internal) transitions | ✅ | ❌ (planned) |
+| Reenter (aka internal) transitions | ✅ | ✅ |
 | Parent/child states | ✅ | ❌ (not yet, for now just flatten them) |
 | Parallel states | ✅ | ❌ (not yet, for now compose child machines) |
 | Final states | ✅ | ❌ (nothing formal) |

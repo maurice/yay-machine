@@ -1,10 +1,13 @@
 import type { MachineDefinition } from "./MachineDefinition";
 import type {
-  EffectFunction,
+  BasicTransition,
+  HomogenousStateMachineDefinitionConfigCopyDataOnTransitionFalse,
   HomogenousStateMachineDefinitionConfigCopyDataOnTransitionTrue,
   MachineDefinitionConfig,
-  Transition,
-  TransitionWithData,
+  ReenterTransition,
+  StateConfig,
+  TransitionConfig,
+  TransitionData,
 } from "./MachineDefinitionConfig";
 import type { MachineEvent } from "./MachineEvent";
 import type { MachineInstance, SubscriberParams } from "./MachineInstance";
@@ -15,22 +18,63 @@ import type { OneOrMore } from "./OneOrMore";
  * Defines a machine prototype. Use this when you intend to create multiple instances of the same machine.
  * @param definitionConfig describes the machine prototype; it's states and how it responds to events
  * @returns the machine definition, which can be used to create new machine instances
+ * @throws {Error} if the definition is invalid
  */
 export const defineMachine = <StateType extends MachineState, EventType extends MachineEvent>(
   definitionConfig: MachineDefinitionConfig<StateType, EventType>,
 ): MachineDefinition<StateType, EventType> => {
   type Cleanup = () => void;
 
+  // basic validation - the TypeScript types should catch all of these but just in case the user is not using
+  // TypeScript or is liberal with `any` etc...
+  for (const [name, config] of Object.entries(definitionConfig.states) as readonly [
+    StateType["name"],
+    StateConfig<StateType, EventType, StateType, boolean>,
+  ][]) {
+    if (config.always) {
+      for (const transition of Array.isArray(config.always) ? config.always : [config.always]) {
+        if ("reenter" in transition) {
+          throw new Error(`Cannot use 'reenter' with immediate transitions (state ${name})`);
+        }
+      }
+    }
+    if (config.on) {
+      for (const [type, tx] of Object.entries(config.on) as readonly [
+        EventType["type"],
+        TransitionConfig<StateType, EventType, StateType, EventType, boolean, false>,
+      ][]) {
+        for (const transition of Array.isArray(tx) ? tx : [tx]) {
+          if ("reenter" in transition && transition.reenter === false) {
+            if (transition.to !== name) {
+              throw new Error(
+                `Cannot use \`reenter: false\` and to another state (${transition.to}) for transition in state ${name} for event ${type}`,
+              );
+            }
+            if (transition.data) {
+              throw new Error(
+                `Cannot use \`reenter: false\` with \`data()\` for transition in state ${name} for event ${type}`,
+              );
+            }
+          }
+        }
+      }
+    }
+  }
+
   return {
     newInstance(instanceConfig) {
       const enableCopyDataOnTransition = (
-        definitionConfig as HomogenousStateMachineDefinitionConfigCopyDataOnTransitionTrue<StateType, EventType>
+        definitionConfig as
+          | HomogenousStateMachineDefinitionConfigCopyDataOnTransitionTrue<StateType, EventType>
+          | HomogenousStateMachineDefinitionConfigCopyDataOnTransitionFalse<StateType, EventType>
       ).enableCopyDataOnTransition;
       const initialState = instanceConfig?.initialState ?? definitionConfig.initialState;
       let currentState = initialState;
 
-      // biome-ignore lint/suspicious/noExplicitAny: happens because we can't guarantee that `currentState` matches the generic `CurrentState` type
-      const getEffectParams = () => ({ state: currentState as any, send: machine.send });
+      const getEffectParams = <CurrentState extends StateType>() => ({
+        state: currentState as CurrentState,
+        send: machine.send,
+      });
 
       let stateCleanup: Cleanup | undefined;
 
@@ -52,7 +96,7 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
       >(
         nextState: NextState,
         event: CurrentEvent | undefined,
-        onTransition: EffectFunction<StateType, EventType, CurrentState, CurrentEvent, NextState> | undefined,
+        onTransition: BasicTransition<StateType, EventType, CurrentState, CurrentEvent, NextState>["onTransition"],
       ) => {
         if (stateCleanup) {
           stateCleanup();
@@ -87,42 +131,48 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
         NextState extends StateType,
       >(
         event: CurrentEvent,
-        transitions: OneOrMore<Transition<StateType, EventType, CurrentState, CurrentEvent, NextState>>,
+        transitions: OneOrMore<BasicTransition<StateType, EventType, CurrentState, CurrentEvent, NextState>>,
       ): boolean => {
-        const candidateTransitions: readonly Transition<StateType, EventType, CurrentState, CurrentEvent, NextState>[] =
-          Array.isArray(transitions) ? transitions : [transitions];
+        const candidateTransitions: readonly BasicTransition<
+          StateType,
+          EventType,
+          CurrentState,
+          CurrentEvent,
+          NextState
+        >[] = Array.isArray(transitions) ? transitions : [transitions];
         for (const candidateTransition of candidateTransitions) {
-          const transition = candidateTransition as TransitionWithData<
-            StateType,
-            EventType,
-            CurrentState,
-            CurrentEvent,
-            NextState,
-            boolean
-          >;
           if (
-            !("when" in transition) ||
-            // @ts-ignore
-            transition.when({ state: currentState, ...(event && { event }) })
+            "when" in candidateTransition &&
+            !candidateTransition.when({ state: currentState as CurrentState, event })
           ) {
-            let nextData =
-              // @ts-ignore
-              transition.data?.({ state: currentState, ...(event && { event }) }) ??
-              (!transition.data && enableCopyDataOnTransition ? currentState : undefined);
-            if (nextData) {
-              // @ts-ignore
-              const { name, ...justData } = nextData;
-              // @ts-ignore
-              nextData = justData;
+            continue;
+          }
+
+          // @ts-ignore
+          if (isReenterTransitionFalse(candidateTransition)) {
+            if (candidateTransition.onTransition) {
+              candidateTransition.onTransition({
+                state: currentState as CurrentState,
+                event,
+                next: currentState as NextState,
+                send: machine.send,
+              })?.();
             }
-            transitionTo(
-              // @ts-ignore
-              { name: transition.to ?? currentState.name, ...nextData },
-              event as CurrentEvent,
-              transition.onTransition,
-            );
             return true;
           }
+
+          let nextState: NextState;
+          if (isTransitionData(candidateTransition)) {
+            const { name, ...nextData } = candidateTransition.data({ state: currentState, event }) as NextState;
+            nextState = { name: candidateTransition.to ?? currentState.name, ...nextData } as NextState;
+          } else if (enableCopyDataOnTransition) {
+            const { name, ...nextData } = currentState;
+            nextState = { name: candidateTransition.to ?? currentState.name, ...nextData } as NextState;
+          } else {
+            nextState = { name: candidateTransition.to ?? currentState.name } as NextState;
+          }
+          transitionTo(nextState, event as CurrentEvent, candidateTransition.onTransition);
+          return true;
         }
         return false;
       };
@@ -229,3 +279,16 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
     },
   };
 };
+
+const isTransitionData = <
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+  CurrentState extends StateType,
+  CurrentEvent extends EventType | undefined,
+  NextState extends StateType,
+>(
+  transition: object,
+): transition is TransitionData<StateType, EventType, CurrentState, CurrentEvent, NextState> => "data" in transition;
+
+const isReenterTransitionFalse = (transition: object): transition is ReenterTransition<false> =>
+  "reenter" in transition && transition.reenter === false;

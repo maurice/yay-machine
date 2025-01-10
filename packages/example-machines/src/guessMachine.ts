@@ -1,5 +1,5 @@
 import assert from "assert";
-import { type CallbackParams, defineMachine } from "yay-machine";
+import { defineMachine } from "yay-machine";
 
 interface GuessState {
   readonly name: "init" | "playing" | "guessedCorrectly" | "tooManyIncorrectGuesses";
@@ -17,7 +17,7 @@ interface NewGameEvent {
   readonly type: "NEW_GAME";
 }
 
-const incrementNumGuesses = ({ state }: CallbackParams<GuessState, GuessEvent>): GuessState => ({
+const incrementNumGuesses = ({ state }: { readonly state: GuessState }): GuessState => ({
   ...state,
   numGuesses: state.numGuesses + 1,
 });

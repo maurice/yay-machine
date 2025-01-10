@@ -8,6 +8,8 @@ TODO
 
 Side-effects can be short-lived or long-lived and can send events to the machine instance as required.
 
+return cleanup function
+
 
 ---
 

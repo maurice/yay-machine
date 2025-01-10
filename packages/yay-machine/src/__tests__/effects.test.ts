@@ -1,17 +1,15 @@
 import { expect, mock, test } from "bun:test";
-import type { EffectParams } from "../MachineDefinitionConfig";
+import type { MachineLifecycleSideEffectFunction, StateLifecycleSideEffectFunction } from "../MachineDefinitionConfig";
 import { defineMachine } from "../defineMachine";
 
 interface EffectsStateData {
-  readonly onStart: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;
-  readonly onStop: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;
-  readonly onEnterA: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;
-  readonly onExitA: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;
-  readonly onEnterB: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;
-  readonly onExitB: (params: EffectParams<EffectsState, EffectsEvent, EffectsState>) => void;
-  readonly onTransitionAToB: (
-    params: EffectParams<EffectsState, EffectsEvent, EffectsState, EffectsEvent, EffectsState>,
-  ) => void;
+  readonly onStart: MachineLifecycleSideEffectFunction<EffectsState, EffectsEvent>;
+  readonly onStop: MachineLifecycleSideEffectFunction<EffectsState, EffectsEvent>;
+  readonly onEnterA: StateLifecycleSideEffectFunction<EffectsState, EffectsEvent>;
+  readonly onExitA: StateLifecycleSideEffectFunction<EffectsState, EffectsEvent>;
+  readonly onEnterB: StateLifecycleSideEffectFunction<EffectsState, EffectsEvent>;
+  readonly onExitB: StateLifecycleSideEffectFunction<EffectsState, EffectsEvent>;
+  readonly onTransitionAToB: (param: any) => void;
 }
 
 type EffectsState = AState | BState;
@@ -30,7 +28,7 @@ interface EffectsEvent {
   readonly type: "TO_A" | "TO_B";
 }
 
-const effectMachine = defineMachine<AState | BState, EffectsEvent>({
+const effectMachine = defineMachine<EffectsState, EffectsEvent>({
   initialState: {
     name: "a",
     onlyExistsInA: true,
@@ -42,23 +40,23 @@ const effectMachine = defineMachine<AState | BState, EffectsEvent>({
     onExitB: () => {},
     onTransitionAToB: () => {},
   },
-  onStart: (params) => params.state.onStart(params),
-  onStop: (params) => params.state.onStop(params),
+  onStart: (param) => param.state.onStart(param),
+  onStop: (param) => param.state.onStop(param),
   states: {
     a: {
-      onEnter: (params) => params.state.onEnterA(params),
-      onExit: (params) => params.state.onExitA(params),
+      onEnter: (param) => param.state.onEnterA(param),
+      onExit: (param) => param.state.onExitA(param),
       on: {
         TO_B: {
           to: "b",
           data: ({ state: { name, ...effects } }) => ({ ...effects, onlyExistsInB: true }),
-          onTransition: (params) => params.state.onTransitionAToB(params),
+          onTransition: (param) => param.state.onTransitionAToB(param),
         },
       },
     },
     b: {
-      onEnter: (params) => params.state.onEnterB(params),
-      onExit: (params) => params.state.onExitB(params),
+      onEnter: (param) => param.state.onEnterB(param),
+      onExit: (param) => param.state.onExitB(param),
       on: {
         TO_A: { to: "a", data: ({ state: { name, ...effects } }) => ({ ...effects, onlyExistsInA: true }) },
       },
