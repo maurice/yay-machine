@@ -39,7 +39,7 @@ It should be quick to learn, master, and have a low ongoing cost-of-ownership.
 
 # Lightweight
 
-**yay-machine** is a tiny package and won't bloat your app bundles.
+**yay-machine** is [a tiny package](https://bundlephobia.com/package/yay-machine@1.1.3) and won't bloat your app bundles.
 
 [![yay-machine bundlephobia stats](./assets/yay-machine-bundlephobia-stats.png "https://bundlephobia.com/package/yay-machine@1.1.3")](https://bundlephobia.com/package/yay-machine@1.1.3)
 
