@@ -31,9 +31,9 @@ Additionally we value library size and performance, and keeping things small and
 
 | `xstate@5.19.1` | `yay-machine@1.1.3` |
 | ---------- | --------------- |
-| ![XState bundlephobia stats](../assets/xstate-bundlephobia-stats.png) | ![yay-machine bundlephobia stats](../assets/yay-machine-bundlephobia-stats.png) |
+| [![XState bundlephobia stats](../assets/xstate-bundlephobia-stats.png "https://bundlephobia.com/package/xstate@5.19.1")](https://bundlephobia.com/package/xstate@5.19.1) | [![yay-machine bundlephobia stats](../assets/yay-machine-bundlephobia-stats.png "https://bundlephobia.com/package/yay-machine@1.1.3")](https://bundlephobia.com/package/yay-machine@1.1.3) |
 
-Thanks to [![https://bundlephobia.com/](../assets/bundlephobia-logo.png "BUNDLEPHOPIA")](https://bundlephobia.com/) for the stats.
+Thanks to [![https://bundlephobia.com/](../assets/bundlephobia-logo.png "bundlephobia.com")](https://bundlephobia.com/) for the stats.
 
 Read more about [our philosophy here](./why-yay-machine.md#philosophy).
 

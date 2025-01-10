@@ -33,7 +33,7 @@ const takeScreenshot = async (locator: Locator, fileName: string) => {
     await takeScreenshot(statsContainer, `${name}-bundlephobia-stats.png`);
     Bun.write(
       `${assetsDir}/${name}-bundlephobia-metadata.json`,
-      JSON.stringify({ name, version, time: new Date().toISOString() }, undefined, "  "),
+      JSON.stringify({ url: page.url(), name, version, time: new Date().toISOString() }, undefined, "  "),
     );
   }
 
