@@ -41,11 +41,11 @@ It should be quick to learn, master, and have a low ongoing cost-of-ownership.
 
 **yay-machine** is a tiny package and won't bloat your app bundles.
 
-- TODO include size stats
+[![yay-machine bundlephobia stats](./assets/yay-machine-bundlephobia-stats.png "https://bundlephobia.com/package/yay-machine@1.1.3")](https://bundlephobia.com/package/yay-machine@1.1.3)
 
 Minimal implementation means minimal overhead and you can trust **yay-machine** with your high-performance workloads.
 
-- TODO include bench tests
+[![bench tests](./assets/bench.png)](https://github.com/maurice/yay-machine/blob/main/packages/bench/src/bench.ts)
 
 # Zero-dependency
 
