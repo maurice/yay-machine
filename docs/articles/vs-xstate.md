@@ -6,7 +6,7 @@ How does **yay-machine** stack-up against [**XState**](https://xstate.js.org/)?
 
 Let's be clear **XState** is amazing is so many ways.
 
-- it's a feature-rich state-machine and state-chart library with nearly 1 million weekly downloads [from npmjs.com](https://www.npmjs.com/package/xstate)
+- it's a feature-rich state-machine and state-chart library with ~1.5 million weekly downloads [from npmjs.com](https://www.npmjs.com/package/xstate)
 - it is well documented and supported by an active team of core and community contributors
 - it has an online editor and visualizer
 - it has IDE extensions
