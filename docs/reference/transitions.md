@@ -282,7 +282,7 @@ stateDiagram
 These types of transitions are defined at `states[stateName].on[EVENT_NAME]` in the definition config
 
 ```typescript
-{
+const machine = defineMachine<State, Event>({
   states: {
     [stateName]: {
       on: {
@@ -295,7 +295,7 @@ These types of transitions are defined at `states[stateName].on[EVENT_NAME]` in 
     },
     // ...
   },
-}
+});
 ```
 
 ### Add `reenter: false` to remain in the same state
@@ -315,7 +315,7 @@ This can be used to perform some **transition side-effect** and still keep any p
 Simply add `reenter: false` to the transition
 
 ```typescript
-{
+const machine = defineMachine<State, Event>({
   states: {
     [stateName]: {
       on: {
@@ -329,7 +329,7 @@ Simply add `reenter: false` to the transition
     },
     // ...
   },
-}
+});
 ```
 
 ## Any State, On Event
@@ -347,7 +347,7 @@ stateDiagram
 These types of transitions are defined at `on[EVENT_NAME]` in the definition config
 
 ```typescript
-{
+const machine = defineMachine<State, Event>({
   // ...
   on {
     [EVENT_NAME]: { 
@@ -355,7 +355,7 @@ These types of transitions are defined at `on[EVENT_NAME]` in the definition con
       /* ... other options ... */ 
     },
   },
-}
+});
 ```
 
 ### `to` is optional in *any state* transitions
@@ -374,14 +374,14 @@ This technique is typically used to update state-data (eg, in the connection mac
 
 
 ```typescript
-{
+const machine = defineMachine<State, Event>({
   // ...
   on {
     [EVENT_NAME]: { 
       data: ({ state, event }) => ({ ...state, /* ... */ }),
     },
   },
-}
+});
 ```
 
 ## Conditional transitions: the `when()` callback
@@ -404,7 +404,7 @@ The `when()` callback takes the current `state` and `event`, and SHOULD be pure 
 Transitions are attempted in order and the first `when()` to return `true`, or first transition without a `when()`, is taken. If no `when()`s return true, no transitions are taken.
 
 ```typescript
-{
+const machine = defineMachine<State, Event>({
   states: {
     [stateName]: {
       on: {
@@ -423,7 +423,7 @@ Transitions are attempted in order and the first `when()` to return `true`, or f
       // array of potential transitions
     ],
   },
-}
+});
 ```
 
 ## Immediate (always) transitions
@@ -443,14 +443,14 @@ stateDiagram
 Immediate transitions are optionally defined in state nodes in the definition config at `states[stateName].always`
 
 ```typescript
-{
+const machine = defineMachine<State, Event>({
   states: {
     [stateName]: {
       always: [{ /* transition(s) */ }] 
     }
   },
   // ...
-}
+});
 ```
 
 ## Generating data for the next state: the `data()` callback

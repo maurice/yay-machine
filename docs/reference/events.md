@@ -16,7 +16,7 @@ stateDiagram
     connected --> disconnected: DISCONNECTED
 ```
 
-In this "connection" state-machine, the events are `'CONNECT'`, `'CONNECTED'`, `'DISCONNECTED'` and `'ERROR'`.
+In this "connection" state-machine, the events are `CONNECT`, `CONNECTED`, `DISCONNECTED` and `ERROR`.
 
 Finite means the machine will only respond to these events; the machine would ignore any other events.
 
