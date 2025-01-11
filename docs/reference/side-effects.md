@@ -68,7 +68,7 @@ Like machine-lifecycle side-effects, they receive a single parameter containing 
 
 > 💡 **Tip:** Return a cleanup function to free resources (clear timers, disconnect subscriptions, ....)
 
-> 💡 **Tip:** See the section on [`reenter: false` in the states documentation](./state.md) if you need to keep `onEnter()` side-effects alive while transition from a state back to the same state.
+> 💡 **Tip:** See the section on [`reenter: false` in the states documentation](./state.md) if you need to keep `onEnter()` side-effects alive while transitioning from a state back to the same state.
 
 ## Transition side-effect: `onTransition()`
 
