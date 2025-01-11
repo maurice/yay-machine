@@ -39,9 +39,9 @@ It should be quick to learn, master, and have a low ongoing cost-of-ownership.
 
 # Lightweight
 
-**yay-machine** is [a tiny package](https://bundlephobia.com/package/yay-machine@1.1.3) and won't bloat your app bundles.
+**yay-machine** is [a tiny package](https://bundlephobia.com/package/yay-machine@1.2.0) and won't bloat your app bundles.
 
-[![yay-machine bundlephobia stats](./assets/yay-machine-bundlephobia-stats.png "https://bundlephobia.com/package/yay-machine@1.1.3")](https://bundlephobia.com/package/yay-machine@1.1.3)
+[![yay-machine bundlephobia stats](./assets/bundlephobia-yay-machine.png "https://bundlephobia.com/package/yay-machine@1.2.0")](https://bundlephobia.com/package/yay-machine@1.2.0) 
 
 Minimal implementation means minimal overhead and you can trust **yay-machine** with your high-performance workloads.
 
@@ -64,3 +64,5 @@ A [**state** in **yay-machine**](./reference/state.md) is a type, giving you new
 Read our [introduction to state-machines](./articles/why-state-machines.md) if you're new to them, or learn [why **yay-machine** exists](./articles/why-yay-machine.md) and a [comparison with **XState**](./articles/vs-xstate.md) if you are already familiar.
 
 Get up and running fast with our [quick start guide](./quick-start.md) or head over to the [reference docs](./reference/).
+
+There are [more examples](../packages/example-machines/) to demonstrate and test the core library.

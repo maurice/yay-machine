@@ -16,7 +16,7 @@
     "test": "bun test",
     "test:coverage": "bun test --coverage",
     "build": "turbo build",
-    "docs:sync": "bun run scripts/scrape-bundle-sizes.ts"
+    "docs:sync": "bun run scripts/sync-docs.ts"
   },
   "repository": {
     "type": "git",
