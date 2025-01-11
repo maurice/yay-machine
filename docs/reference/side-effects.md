@@ -80,15 +80,23 @@ const machine = defineMachine<State, Event>({
     [stateName]: {
       on: {
         [EVENT_TYPE]: {
-          to: 'anotherStateName',
+          to: 'nextStateName',
           onTransition: ({ state, event, next, send }) => { /* ... */ },
         },
       },
     },
   },
+  // ...
+});
+```
+
+And/or
+
+```typescript
+const machine = defineMachine<State, Event>({
   on: {
     [EVENT_TYPE]: {
-      to: 'anotherStateName',
+      to: 'nextStateName',
       onTransition: ({ state, event, next, send }) => { /* ... */ },
     },
   }
