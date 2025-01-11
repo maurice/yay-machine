@@ -1,4 +1,4 @@
-import { readdir, readFile, writeFile } from "node:fs/promises";
+import { readFile, readdir, writeFile } from "node:fs/promises";
 import { type Locator, chromium, devices } from "playwright";
 
 interface PackageMetadata {
