@@ -38,14 +38,14 @@ export interface HeterogenousStateMachineDefinitionConfig<
    * Should return a tear-down function so any resources can be freed when
    * the machine is stopped.
    */
-  readonly onStart?: MachineLifecycleSideEffectFunction<StateType, EventType>;
+  readonly onStart?: MachineOnStartSideEffectFunction<StateType, EventType>;
 
   /**
    * Optional side-effect, run when a machine instance is stopped.
    * May return a tear-down function so any resources can be freed when
    * the machine is stopped.
    */
-  readonly onStop?: MachineLifecycleSideEffectFunction<StateType, EventType>;
+  readonly onStop?: MachineOnStopSideEffectFunction<StateType>;
 
   /**
    * Any states configuration.
@@ -54,13 +54,22 @@ export interface HeterogenousStateMachineDefinitionConfig<
   readonly on?: AnyStateTransitionsConfig<StateType, EventType, StateType>;
 }
 
-export type MachineLifecycleSideEffectFunction<
-  StateType extends MachineState,
-  EventType extends MachineEvent,
-> = (param: {
+export type MachineOnStartSideEffectFunction<StateType extends MachineState, EventType extends MachineEvent> = (
+  param: MachineOnStartSideEffectParam<StateType, EventType>,
+) => EffectReturnValue;
+
+export type MachineOnStartSideEffectParam<StateType extends MachineState, EventType extends MachineEvent> = {
   readonly state: StateType;
   readonly send: SendFunction<EventType>;
-}) => EffectReturnValue;
+};
+
+export type MachineOnStopSideEffectFunction<StateType extends MachineState> = (
+  param: MachineOnStopSideEffectParam<StateType>,
+) => EffectReturnValue;
+
+export type MachineOnStopSideEffectParam<StateType extends MachineState> = {
+  readonly state: StateType;
+};
 
 /**
  * For machines whose states have the same data structure
@@ -145,13 +154,14 @@ export type StateConfig<
   readonly onExit?: StateLifecycleSideEffectFunction<CurrentState, EventType>;
 };
 
-export type StateLifecycleSideEffectFunction<
-  CurrentState extends MachineState,
-  EventType extends MachineEvent,
-> = (param: {
+export type StateLifecycleSideEffectFunction<CurrentState extends MachineState, EventType extends MachineEvent> = (
+  param: StateLifecycleSideEffectParam<CurrentState, EventType>,
+) => EffectReturnValue;
+
+export type StateLifecycleSideEffectParam<CurrentState extends MachineState, EventType extends MachineEvent> = {
   readonly state: CurrentState;
   readonly send: SendFunction<EventType>;
-}) => EffectReturnValue;
+};
 
 export type StateTransitionsConfig<
   StateType extends MachineState,
@@ -239,12 +249,22 @@ export type OnTransitionSideEffectFunction<
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
-> = (param: {
+> = (
+  param: OnTransitionSideEffectParam<StateType, CurrentState, CurrentEvent, NextState, EventType>,
+) => EffectReturnValue;
+
+type OnTransitionSideEffectParam<
+  StateType extends MachineState,
+  CurrentState extends StateType,
+  CurrentEvent extends EventType | undefined,
+  NextState extends StateType,
+  EventType extends MachineEvent,
+> = {
   readonly state: CurrentState;
   readonly event: CurrentEvent;
   readonly next: NextState;
   readonly send: SendFunction<EventType>;
-}) => EffectReturnValue;
+};
 
 export type OtherTransition<
   StateType extends MachineState,
