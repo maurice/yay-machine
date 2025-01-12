@@ -33,7 +33,7 @@ Additionally we value library size and performance, and keeping things small and
 
 | `xstate@5.19.1` | `yay-machine@1.2.0` |
 | ---------- | --------------- |
-| [![XState bundlephobia stats, 2025-01-11T21:01:14.216Z](../assets/bundlephobia-xstate.png "https://bundlephobia.com/package/xstate@5.19.1 (2025-01-11T21:01:14.216Z)")](https://bundlephobia.com/package/xstate@5.19.1) | [![yay-machine bundlephobia stats, 2025-01-11T21:01:15.129Z](../assets/bundlephobia-yay-machine.png "https://bundlephobia.com/package/yay-machine@1.2.0 (2025-01-11T21:01:15.129Z)")](https://bundlephobia.com/package/yay-machine@1.2.0) |
+| [![XState bundlephobia stats](../assets/bundlephobia-xstate.png "https://bundlephobia.com/package/xstate@5.19.1")](https://bundlephobia.com/package/xstate@5.19.1) | [![yay-machine bundlephobia stats](../assets/bundlephobia-yay-machine.png "https://bundlephobia.com/package/yay-machine@1.2.0")](https://bundlephobia.com/package/yay-machine@1.2.0) |
 
 Stats from [![https://bundlephobia.com/](../assets/bundlephobia-logo.png "bundlephobia.com")](https://bundlephobia.com/) 🙏.
 

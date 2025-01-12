@@ -41,7 +41,7 @@ It should be quick to learn, master, and have a low ongoing cost-of-ownership.
 
 **yay-machine** is [a tiny package](https://bundlephobia.com/package/yay-machine@1.2.0) and won't bloat your app bundles.
 
-[![yay-machine bundlephobia stats, 2025-01-11T21:01:15.129Z](./assets/bundlephobia-yay-machine.png "https://bundlephobia.com/package/yay-machine@1.2.0 (2025-01-11T21:01:15.129Z)")](https://bundlephobia.com/package/yay-machine@1.2.0)
+[![yay-machine bundlephobia stats](./assets/bundlephobia-yay-machine.png "https://bundlephobia.com/package/yay-machine@1.2.0")](https://bundlephobia.com/package/yay-machine@1.2.0)
 
 Minimal implementation means minimal overhead and you can trust **yay-machine** with your high-performance workloads.
 
