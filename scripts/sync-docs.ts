@@ -15,6 +15,7 @@ const metadataFile = `${assetsDir}/bundlephobia-metadata.json`;
 
 const args = process.argv.slice(2);
 const dryRun = args.includes("--dryRun");
+const skipBundlephobia = args.includes("--skipBundlephobia");
 
 // biome-ignore lint/suspicious/noExplicitAny: CLI output
 const log = (message: string, ...args: any[]) => console.log(message, ...args);
@@ -76,20 +77,18 @@ const captureBundlephobiaStats = async (): Promise<PackagesMetadata> => {
 const previousMetadata = await readMetadata();
 log("previous metadata", previousMetadata, indexMetadata(previousMetadata));
 
-const newMetadata = await captureBundlephobiaStats();
+const newMetadata = skipBundlephobia ? previousMetadata : await captureBundlephobiaStats();
 
 let didChange = false;
-for (const file of await readdir(docsDir, { recursive: true, withFileTypes: true })) {
-  if (!file.isFile()) {
-    continue;
-  }
-  if (file.name.startsWith("assets") || !file.name.endsWith(".md")) {
-    continue;
-  }
-
-  const fileName = `${file.parentPath}/${file.name}`;
-  const content = (await readFile(fileName, { encoding: "utf8" })).toString();
+const files = (await readdir(docsDir, { recursive: true, withFileTypes: true }))
+  .filter((it) => it.isFile() && it.name.endsWith(".md"))
+  .map((it) => `${it.parentPath}/${it.name}`)
+  .concat(["packages/yay-machine/README.md"]);
+for (const fileName of files) {
   log(fileName);
+  const content = (await readFile(fileName, { encoding: "utf8" })).toString();
+
+  // update any scraped text
   let newContent = content;
   for (const [text, [packageName, key]] of Object.entries(indexMetadata(previousMetadata))) {
     if (newContent.includes(text)) {
@@ -100,6 +99,42 @@ for (const file of await readdir(docsDir, { recursive: true, withFileTypes: true
       log(`${fileName}: "${text}" => "${replacement}`);
       newContent = newContent.replaceAll(text, replacement);
       didChange = true;
+    }
+  }
+
+  // update example code
+  /*
+  > 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/healthMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/healthMachine.test.ts" target="_blank">test</a> on GitHub
+  */
+  const index = newContent.indexOf("> 💡 View this example's <a href");
+  if (index !== -1) {
+    const result = newContent.match(
+      /View this example's <a href="https:\/\/github.com\/maurice\/yay-machine\/blob\/main\/([^"]+)" target="_blank"/,
+    );
+    if (!result) {
+      log(`${fileName}: seems corrupted - no example match`);
+    } else {
+      const exampleFile = result[1];
+      log("found embedded example", exampleFile);
+      const exampleSource = await readFile(exampleFile, { encoding: "utf8" });
+      const [definition, usage] = exampleSource.split("// Usage").map((it) => it.trim());
+
+      const startDefinition = newContent.indexOf("```typescript", index);
+      const endDefinition = newContent.indexOf("```", startDefinition + 3);
+      const startUsage = newContent.indexOf("```typescript", endDefinition + 3);
+      const endUsage = newContent.indexOf("```", startUsage + 3);
+
+      newContent = [
+        newContent.slice(0, startDefinition),
+        "```typescript\n",
+        definition,
+        "\n",
+        newContent.slice(endDefinition, startUsage),
+        "```typescript\n",
+        usage,
+        "\n",
+        newContent.slice(endUsage),
+      ].join("");
     }
   }
 

@@ -34,3 +34,9 @@ jobs:
 
       - name: Test
         run: bun run test:coverage -- --coverage-reporter=lcov --coverage-reporter=text
+
+      - name: Check docs
+        run: |
+          bun run docs:sync -- --skipBundlephobia
+          git diff --exit-code
+        

@@ -10,6 +10,8 @@ We will expand on the "connection machine" example we used when explaining [stat
 
 First, here is the complete machine. In the following sections we explore the various different transition techniques it uses.
 
+> 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/connectionMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/connectionMachine.test.ts" target="_blank">test</a> on GitHub
+
 ```typescript
 import { defineMachine } from "yay-machine";
 
@@ -240,6 +242,7 @@ const connection = connectionMachine
       log: console.log.bind(console),
       transport,
       onReceive,
+      lastHeartbeatTime: -1,
     },
   })
   .start();

@@ -22,7 +22,9 @@ const incrementNumGuesses = ({ state }: { readonly state: GuessState }): GuessSt
   numGuesses: state.numGuesses + 1,
 });
 
-// guess a number from 1 to 10
+/**
+ * Guess a number from 1 to 10
+ */
 export const guessMachine = defineMachine<GuessState, GuessEvent | NewGameEvent>({
   initialState: { name: "init", answer: 0, numGuesses: 0, maxGuesses: 5 },
   states: {
