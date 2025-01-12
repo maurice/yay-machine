@@ -8,9 +8,9 @@
 
 # Example
 
-<smaller>View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/guessMachine.ts" target="_blank">source ↗</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/guessMachine.test.ts" target="_blank">test ↗</a> on GitHub</smaller>
-
 ## Define the machine at compile-time
+
+> 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/guessMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/guessMachine.test.ts" target="_blank">test</a> on GitHub
 
 ```typescript
 import { type CallbackParams, defineMachine } from 'yay-machine';

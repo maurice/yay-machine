@@ -6,6 +6,8 @@ npm install yay-machine         # or your package-manager of choice
 
 ## Define your machine at compile-time
 
+> 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/healthMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/healthMachine.test.ts" target="_blank">test</a> on GitHub
+
 ```typescript
 import assert from "assert"; 
 import { defineMachine } from "yay-machine";
