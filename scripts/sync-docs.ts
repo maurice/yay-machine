@@ -68,11 +68,6 @@ const captureBundlephobiaStats = async (): Promise<PackagesMetadata> => {
     };
   }
 
-  log("writing metadata", metadataFile, newMetadata);
-  if (!dryRun) {
-    await writeFile(`${assetsDir}/bundlephobia-metadata.json`, JSON.stringify(newMetadata, undefined, "  "));
-  }
-
   await context.close();
   await browser.close();
   return newMetadata;
@@ -83,6 +78,7 @@ log("previous metadata", previousMetadata, indexMetadata(previousMetadata));
 
 const newMetadata = await captureBundlephobiaStats();
 
+let didChange = false;
 for (const file of await readdir(docsDir, { recursive: true, withFileTypes: true })) {
   if (!file.isFile()) {
     continue;
@@ -98,10 +94,15 @@ for (const file of await readdir(docsDir, { recursive: true, withFileTypes: true
   for (const [text, [packageName, key]] of Object.entries(indexMetadata(previousMetadata))) {
     if (newContent.includes(text)) {
       const replacement = newMetadata[packageName][key];
+      if (text === replacement) {
+        continue;
+      }
       log(`${fileName}: "${text}" => "${replacement}`);
       newContent = newContent.replaceAll(text, replacement);
+      didChange = true;
     }
   }
+
   if (newContent !== content) {
     log(`writing ${fileName}`);
     if (!dryRun) {
@@ -109,5 +110,12 @@ for (const file of await readdir(docsDir, { recursive: true, withFileTypes: true
     }
   } else {
     log("up-to-date");
+  }
+}
+
+if (didChange) {
+  log("writing metadata", metadataFile, newMetadata);
+  if (!dryRun) {
+    await writeFile(metadataFile, JSON.stringify(newMetadata, undefined, "  "));
   }
 }
