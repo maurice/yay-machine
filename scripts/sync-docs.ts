@@ -83,7 +83,7 @@ for (const file of await readdir(docsDir, { recursive: true, withFileTypes: true
   if (!file.isFile()) {
     continue;
   }
-  if (file.name.startsWith("assets") || !file.name.endsWith(".md")) {
+  if (!file.name.endsWith(".md")) {
     continue;
   }
 
