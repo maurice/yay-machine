@@ -118,7 +118,6 @@ for (const fileName of files) {
       log("found embedded example", exampleFile);
       const exampleSource = await readFile(exampleFile, { encoding: "utf8" });
       const [definition, usage] = exampleSource.split("// Usage").map((it) => it.trim());
-      log(`${exampleFile} has definition:\n\n${definition}\n\nUsage:\n\n${usage}`);
 
       const startDefinition = newContent.indexOf("```typescript", index);
       const endDefinition = newContent.indexOf("```", startDefinition + 3);
