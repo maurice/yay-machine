@@ -13,7 +13,8 @@
 > 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/guessMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/guessMachine.test.ts" target="_blank">test</a> on GitHub
 
 ```typescript
-import { type CallbackParams, defineMachine } from 'yay-machine';
+import assert from "assert";
+import { defineMachine } from "yay-machine";
 
 interface GuessState {
   readonly name: "init" | "playing" | "guessedCorrectly" | "tooManyIncorrectGuesses";
@@ -31,7 +32,7 @@ interface NewGameEvent {
   readonly type: "NEW_GAME";
 }
 
-const incrementNumGuesses = ({ state }: CallbackParams<GuessState, GuessEvent>): GuessState => ({
+const incrementNumGuesses = ({ state }: { readonly state: GuessState }): GuessState => ({
   ...state,
   numGuesses: state.numGuesses + 1,
 });
@@ -86,9 +87,10 @@ while (guess.state.name === "playing") {
 
 if (guess.state.name === "guessedCorrectly") {
   console.log("yay, we won :)");
-}
-if (guess.state.name === "tooManyIncorrectGuesses") {
+} else if (guess.state.name === "tooManyIncorrectGuesses") {
   console.log("boo, we lost :(");
+} else {
+  assert.fail(`Invalid state: ${guess.state.name}`);
 }
 ```
 

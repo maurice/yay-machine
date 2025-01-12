@@ -9,7 +9,7 @@ npm install yay-machine         # or your package-manager of choice
 > 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/healthMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/healthMachine.test.ts" target="_blank">test</a> on GitHub
 
 ```typescript
-import assert from "assert"; 
+import assert from "assert";
 import { defineMachine } from "yay-machine";
 
 type HealthState = Readonly<{
@@ -86,7 +86,7 @@ export const healthMachine = defineMachine<HealthState, HealthEvent>({
           to: "invincible",
           data: ({ state, event }) => applyFirstAid(state, event),
         },
-        DAMAGE: { to: "invincible" },
+        DAMAGE: { to: "invincible", reenter: false },
         HUMAN_AGAIN: { to: "checkHealth", data: ({ state }) => ({ ...state, invincibilityStarted: 0 }) },
       },
     },

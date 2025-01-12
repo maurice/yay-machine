@@ -242,6 +242,7 @@ const connection = connectionMachine
       log: console.log.bind(console),
       transport,
       onReceive,
+      lastHeartbeatTime: -1,
     },
   })
   .start();
