@@ -216,6 +216,8 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
       };
 
       let running = false;
+      let starting = false;
+      let stopping = false;
 
       let disposeMachine: Cleanup | undefined;
 
@@ -245,13 +247,18 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
           if (running) {
             throw new Error("Machine is already running");
           }
+          if (stopping) {
+            throw new Error("Machine is already stopping");
+          }
 
+          starting = true;
           running = true;
           handlingEvent = true;
           initMachine();
           initState();
           applyAlwaysTransitions();
 
+          starting = false;
           handlingEvent = false;
           handleNextQueuedEvent();
 
@@ -262,7 +269,11 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
           if (!running) {
             throw new Error("Machine is not running");
           }
+          if (starting) {
+            throw new Error("Machine is already starting");
+          }
 
+          stopping = true;
           handlingEvent = true;
           disposeState?.();
           disposeState = undefined;
@@ -270,6 +281,7 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
           disposeMachine = undefined;
           running = false;
 
+          stopping = false;
           handlingEvent = false;
           queuedEvents.length = 0;
         },

@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test";
+import type { MachineInstance } from "../MachineInstance";
 import { defineMachine } from "../defineMachine";
 
 test("when sending an event to the machine in onStart, the event is only handled after the machine has evaluated the initial state first", () => {
@@ -186,4 +187,36 @@ test("when sending an event to a machine in the current-state's onExit while the
 
   machine.start();
   expect(machine.state).toEqual({ name: "b" }); // still
+});
+
+test("error thrown if stopped while starting", () => {
+  type State = { name: "a" | "b" | "c" };
+  type Event = { type: "NEXT" };
+  // biome-ignore lint/style/useConst: no other way
+  let instance: MachineInstance<State, Event>;
+  const machine = defineMachine<State, Event>({
+    initialState: { name: "a" },
+    states: {},
+    onStart() {
+      instance.stop();
+    },
+  });
+  instance = machine.newInstance();
+  expect(() => instance.start()).toThrow();
+});
+
+test("error thrown if started while stopping", () => {
+  type State = { name: "a" | "b" | "c" };
+  type Event = { type: "NEXT" };
+  // biome-ignore lint/style/useConst: no other way
+  let instance: MachineInstance<State, Event>;
+  const machine = defineMachine<State, Event>({
+    initialState: { name: "a" },
+    states: {},
+    onStop() {
+      instance.start();
+    },
+  });
+  instance = machine.newInstance().start();
+  expect(() => instance.stop()).toThrow();
 });
