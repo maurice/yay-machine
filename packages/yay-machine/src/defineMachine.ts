@@ -76,13 +76,13 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
         send: machine.send,
       });
 
-      let stateCleanup: Cleanup | undefined;
+      let disposeState: Cleanup | undefined;
 
       const initState = () => {
         const { onEnter, onExit } = definitionConfig.states[currentState.name as StateType["name"]] || {};
-        const cleanupEnter = onEnter?.(getEffectParams());
-        stateCleanup = () => {
-          cleanupEnter?.();
+        const disposeEnter = onEnter?.(getEffectParams());
+        disposeState = () => {
+          disposeEnter?.();
           onExit?.(getEffectParams())?.();
         };
       };
@@ -98,9 +98,9 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
         event: CurrentEvent | undefined,
         onTransition: BasicTransition<StateType, EventType, CurrentState, CurrentEvent, NextState>["onTransition"],
       ) => {
-        if (stateCleanup) {
-          stateCleanup();
-          stateCleanup = undefined;
+        if (disposeState) {
+          disposeState();
+          disposeState = undefined;
         }
 
         if (onTransition) {
@@ -148,7 +148,6 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
             continue;
           }
 
-          // @ts-ignore
           if (isReenterTransitionFalse(candidateTransition)) {
             if (candidateTransition.onTransition) {
               candidateTransition.onTransition({
@@ -205,22 +204,26 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
           }
         } finally {
           handlingEvent = false;
-          if (queuedEvents.length) {
-            // biome-ignore lint/style/noNonNullAssertion: length checked in previous line
-            handleEvent(queuedEvents.shift()!);
-          }
+          handleNextQueuedEvent();
+        }
+      };
+
+      const handleNextQueuedEvent = () => {
+        const event = queuedEvents.shift();
+        if (event) {
+          handleEvent(event);
         }
       };
 
       let running = false;
 
-      let machineCleanup: Cleanup | undefined;
+      let disposeMachine: Cleanup | undefined;
 
       const initMachine = () => {
         const { onStart, onStop } = definitionConfig;
-        const cleanupStart = onStart?.(getEffectParams());
-        machineCleanup = () => {
-          cleanupStart?.();
+        const disposeStart = onStart?.(getEffectParams());
+        disposeMachine = () => {
+          disposeStart?.();
           onStop?.(getEffectParams())?.();
         };
       };
@@ -244,9 +247,13 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
           }
 
           running = true;
+          handlingEvent = true;
           initMachine();
           initState();
           applyAlwaysTransitions();
+
+          handlingEvent = false;
+          handleNextQueuedEvent();
 
           return machine;
         },
@@ -256,11 +263,15 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
             throw new Error("Machine is not running");
           }
 
-          stateCleanup?.();
-          stateCleanup = undefined;
-          machineCleanup?.();
-          machineCleanup = undefined;
+          handlingEvent = true;
+          disposeState?.();
+          disposeState = undefined;
+          disposeMachine?.();
+          disposeMachine = undefined;
           running = false;
+
+          handlingEvent = false;
+          queuedEvents.length = 0;
         },
 
         subscribe(callback) {

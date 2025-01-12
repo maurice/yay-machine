@@ -39,7 +39,7 @@ These two optional side-effects are performed when the machine is started/stoppe
 ```typescript
 const machine = defineMachine<State, Event>({
   onStart: ({ state, send }) => { /* ... */ },
-  onStop: ({ state, send }) => { /* ... */ },
+  onStop: ({ state }) => { /* ... */ },
   // ...
 });
 ```

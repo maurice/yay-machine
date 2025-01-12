@@ -1,10 +1,14 @@
 import { expect, mock, test } from "bun:test";
-import type { MachineLifecycleSideEffectFunction, StateLifecycleSideEffectFunction } from "../MachineDefinitionConfig";
+import type {
+  MachineOnStartSideEffectFunction,
+  MachineOnStopSideEffectFunction,
+  StateLifecycleSideEffectFunction,
+} from "../MachineDefinitionConfig";
 import { defineMachine } from "../defineMachine";
 
 interface EffectsStateData {
-  readonly onStart: MachineLifecycleSideEffectFunction<EffectsState, EffectsEvent>;
-  readonly onStop: MachineLifecycleSideEffectFunction<EffectsState, EffectsEvent>;
+  readonly onStart: MachineOnStartSideEffectFunction<EffectsState, EffectsEvent>;
+  readonly onStop: MachineOnStopSideEffectFunction<EffectsState>;
   readonly onEnterA: StateLifecycleSideEffectFunction<EffectsState, EffectsEvent>;
   readonly onExitA: StateLifecycleSideEffectFunction<EffectsState, EffectsEvent>;
   readonly onEnterB: StateLifecycleSideEffectFunction<EffectsState, EffectsEvent>;
