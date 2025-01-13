@@ -1,12 +1,12 @@
 {
   "xstate": {
-    "url": "https://bundlephobia.com/package/xstate@5.19.1",
-    "package": "xstate@5.19.1",
-    "time": "2025-01-11T21:01:14.216Z"
+    "url": "https://bundlephobia.com/package/xstate@5.19.2",
+    "package": "xstate@5.19.2",
+    "time": "2025-01-13T21:00:32.859Z"
   },
   "yay-machine": {
-    "url": "https://bundlephobia.com/package/yay-machine@1.2.0",
-    "package": "yay-machine@1.2.0",
-    "time": "2025-01-11T21:01:15.129Z"
+    "url": "https://bundlephobia.com/package/yay-machine@1.2.1",
+    "package": "yay-machine@1.2.1",
+    "time": "2025-01-13T21:00:34.701Z"
   }
 }

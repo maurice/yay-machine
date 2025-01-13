@@ -1,17 +1,3 @@
-# Machines
-
-To build state-machines with **yay-machine**
-
-1. first we need to describe the behaviour of the machine at compile-time
-2. then we can create instances and operate the machines at run-time
-
-## Define the machine at compile-time
-
-We describe a state-machine's behaviour - it's potential [states](./state.md), [events](./events.md), [transitions](./transitions.md) and [side-effects](./side-effects.md) with `defineMachine<StateType, EventType>({ /* ... */ })`, like so
-
-> 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/tapeMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/tapeMachine.test.ts" target="_blank">test</a> on GitHub
-
-```typescript
 import { defineMachine } from "yay-machine";
 
 /*
@@ -147,15 +133,9 @@ export const tapeMachine = defineMachine<TapeState, TapeEvent>({
     },
   },
 });
-```
 
-This creates a "blueprint" for machine instances.
+// Usage
 
-## Instantiating and operating machines at run-time
-
-Once we have a machine-definition, we can easily create any number of machine-instances, start them, subscribe to their state, send them events, and eventually stop them.
-
-```typescript
 // no-op implementation for demonstration only
 const hardware: HardwareInterface = {
   engageHead() {},
@@ -190,8 +170,3 @@ tape.send({ type: "SCRUB", direction: "backward" });
 
 tape.stop();
 unsubscribe();
-```
-
----
-
-[⬅️ Previous: **Side-effects**](./side-effects.md)

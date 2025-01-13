@@ -10,7 +10,7 @@ import type {
   TransitionData,
 } from "./MachineDefinitionConfig";
 import type { MachineEvent } from "./MachineEvent";
-import type { MachineInstance, SubscriberParams } from "./MachineInstance";
+import type { MachineInstance, Subscriber } from "./MachineInstance";
 import type { MachineState } from "./MachineState";
 import type { OneOrMore } from "./OneOrMore";
 
@@ -87,7 +87,7 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
         };
       };
 
-      const subscribers: Array<(params: SubscriberParams<StateType, EventType>) => void> = [];
+      const subscribers: Array<Subscriber<StateType, EventType>> = [];
 
       const transitionTo = <
         CurrentState extends StateType,
@@ -133,47 +133,50 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
         event: CurrentEvent,
         transitions: OneOrMore<BasicTransition<StateType, EventType, CurrentState, CurrentEvent, NextState>>,
       ): boolean => {
-        const candidateTransitions: readonly BasicTransition<
-          StateType,
-          EventType,
-          CurrentState,
-          CurrentEvent,
-          NextState
-        >[] = Array.isArray(transitions) ? transitions : [transitions];
-        for (const candidateTransition of candidateTransitions) {
-          if (
-            "when" in candidateTransition &&
-            !candidateTransition.when({ state: currentState as CurrentState, event })
-          ) {
-            continue;
-          }
-
-          if (isReenterTransitionFalse(candidateTransition)) {
-            if (candidateTransition.onTransition) {
-              candidateTransition.onTransition({
-                state: currentState as CurrentState,
-                event,
-                next: currentState as NextState,
-                send: machine.send,
-              })?.();
-            }
+        for (const transition of Array.isArray(transitions) ? transitions : [transitions]) {
+          if (tryTransition(event, transition)) {
             return true;
           }
-
-          let nextState: NextState;
-          if (isTransitionData(candidateTransition)) {
-            const { name, ...nextData } = candidateTransition.data({ state: currentState, event }) as NextState;
-            nextState = { name: candidateTransition.to ?? currentState.name, ...nextData } as NextState;
-          } else if (enableCopyDataOnTransition) {
-            const { name, ...nextData } = currentState;
-            nextState = { name: candidateTransition.to ?? currentState.name, ...nextData } as NextState;
-          } else {
-            nextState = { name: candidateTransition.to ?? currentState.name } as NextState;
-          }
-          transitionTo(nextState, event as CurrentEvent, candidateTransition.onTransition);
-          return true;
         }
         return false;
+      };
+
+      const tryTransition = <
+        CurrentState extends StateType,
+        CurrentEvent extends EventType | undefined,
+        NextState extends StateType,
+      >(
+        event: CurrentEvent,
+        transition: BasicTransition<StateType, EventType, CurrentState, CurrentEvent, NextState>,
+      ): boolean => {
+        if ("when" in transition && !transition.when({ state: currentState as CurrentState, event })) {
+          return false;
+        }
+
+        if (isReenterTransitionFalse(transition)) {
+          if (transition.onTransition) {
+            transition.onTransition({
+              state: currentState as CurrentState,
+              event,
+              next: currentState as NextState,
+              send: machine.send,
+            })?.();
+          }
+          return true;
+        }
+
+        let nextState: NextState;
+        if (isTransitionData(transition)) {
+          const { name, ...nextData } = transition.data({ state: currentState, event }) as NextState;
+          nextState = { name: transition.to ?? currentState.name, ...nextData } as NextState;
+        } else if (enableCopyDataOnTransition) {
+          const { name, ...nextData } = currentState;
+          nextState = { name: transition.to ?? currentState.name, ...nextData } as NextState;
+        } else {
+          nextState = { name: transition.to ?? currentState.name } as NextState;
+        }
+        transitionTo(nextState, event as CurrentEvent, transition.onTransition);
+        return true;
       };
 
       let handlingEvent = false;

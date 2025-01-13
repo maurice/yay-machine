@@ -31,9 +31,9 @@ Additionally we value library size and performance, and keeping things small and
 
 ### Bundle size
 
-| `xstate@5.19.1` | `yay-machine@1.2.0` |
+| `xstate@5.19.2` | `yay-machine@1.2.1` |
 | ---------- | --------------- |
-| [![XState bundlephobia stats](../assets/bundlephobia-xstate.png "https://bundlephobia.com/package/xstate@5.19.1")](https://bundlephobia.com/package/xstate@5.19.1) | [![yay-machine bundlephobia stats](../assets/bundlephobia-yay-machine.png "https://bundlephobia.com/package/yay-machine@1.2.0")](https://bundlephobia.com/package/yay-machine@1.2.0) |
+| [![XState bundlephobia stats](../assets/bundlephobia-xstate.png "https://bundlephobia.com/package/xstate@5.19.2")](https://bundlephobia.com/package/xstate@5.19.2) | [![yay-machine bundlephobia stats](../assets/bundlephobia-yay-machine.png "https://bundlephobia.com/package/yay-machine@1.2.1")](https://bundlephobia.com/package/yay-machine@1.2.1) |
 
 Stats from [![https://bundlephobia.com/](../assets/bundlephobia-logo.png "bundlephobia.com")](https://bundlephobia.com/) 🙏.
 
@@ -154,6 +154,9 @@ In **yay-machine** we have a dedicated per-transition `data()` callback to updat
 Let's take "persistence" as an example feature.
 
 [**XState** supports persisting machines](https://stately.ai/docs/persistence) (effectively freezing them in time and re-creating them later, ie, serialization and deserialization), although it requires authors to build their machines a certain way.
+
+> 🦉 **Note:** We are talking here about *persisting machine definitions*, and later *re-creating machine definitions*.\
+> *Persisting a machine instance's state* on the other hand - and later creating a new machine with that state and "resuming" it - is a much simpler problem and easily done in either library.
 
 So in order to support persistence, **XState** sometimes offers several ways to define something, eg, an "action" could be defined by an inline function (can't be persisted) or as a JSON config object that refers to a function defined elsewhere (the action JSON config can now be persisted as the function is provided at runtime).
 
