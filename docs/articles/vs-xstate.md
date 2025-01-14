@@ -171,8 +171,8 @@ In general **yay-machine** tries to offer a single way to do something, although
 | Discord | ✅ | ❌    |
 | Visualizer | ✅ | ❌    |
 | Online editor | ✅ | ❌    |
-| View library bindings (React, Vue, Svelte) | ✅ | ❌ (planned) |
-| Docs | ✅ | 🚧 (in progress) |
+| View library bindings (React, Vue, Svelte) | ✅ | ⏳ <sup>(planned)</sup> |
+| Docs | ✅ | 🚧 <sup>(in progress)</sup> |
 
 ## State-machine and state-chart features at a glance
 
@@ -183,19 +183,20 @@ In general **yay-machine** tries to offer a single way to do something, although
 | Create independent machine instances | ✅ | ✅    |
 | Initial state (and context/state-data) overridable per machine-instance | ✅ | ✅ |
 | Machine instance lifecycle: subscribe-to, start, send events, and stop | ✅ | ✅    |
-| Invoke/spawn Actors within machine | ✅ | ✅ (covered by our "side-effects") |
-| Actions | ✅ | ✅ (yes, our `data()` callback and/or "side-effects") |
-| Native `Promise`, `Observable`, `EventObservable` Actors | ✅ | ❌ (not native, but easily done) |
+| Context | ✅ | ✅ <sup>(equivalent: [state data](../reference/state.md)) |
+| Actions | ✅ | ✅ <sup>(equivalent: [side-effects](../reference/side-effects.md))</sup> |
+| Invoke/spawn Actors within machine | ✅ | ✅ <sup>(equivalent: [side-effects](../reference/side-effects.md))</sup> |
+| Native `Promise`, `Observable`, `EventObservable` Actors | ✅ | ❌ <sup>(not native, but easily done)</sup> |
 | Eventless (always) transitions | ✅ | ✅ |
-| Delayed (after) transitions | ✅ | ❌ (easy via side-effect + `setTimeout()`) |
+| Delayed (after) transitions | ✅ | ❌ <sup>(easy via [side-effect](../reference/side-effects.md) + `setTimeout()`)</sup> |
 | Guards (conditional transitions) | ✅ | ✅ |
 | Reenter (aka internal) transitions | ✅ | ✅ |
-| Parent/child states | ✅ | ❌ (not yet, for now just flatten them) |
-| Parallel states | ✅ | ❌ (not yet, for now compose child machines) |
-| Final states | ✅ | ❌ (nothing formal) |
-| History states | ✅ | ❌ (not a project goal) |
-| Persistence (serialization/deserialization) | ✅ | ❌ (not a project goal) |
-| SCXML | ✅ | ❌ (not a project goal) |
+| Parent/child states | ✅ | ❌ <sup>(not yet, for now just flatten them)</sup> |
+| Parallel states | ✅ | ❌ <sup>(not yet, for now compose child machines)</sup> |
+| Final states | ✅ | ❌ <sup>(nothing formal)</sup> |
+| History states | ✅ | ❌ <sup>(not a project goal)</sup> |
+| Persistence (serialization/deserialization) | ✅ | ❌ <sup>(not a project goal)</sup> |
+| SCXML | ✅ | ❌ <sup>(not a project goal)</sup> |
 
 ## Coming soon...
 
