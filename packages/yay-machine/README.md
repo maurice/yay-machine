@@ -2,7 +2,17 @@
   <a href="https://github.com/maurice/yay-machine"><img src="https://github.com/user-attachments/assets/03dd78c1-4396-42c4-a32c-aaa7c927f09e" alt="Logo"></a>
 </p>
 
-[**yay-machine** is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.](https://github.com/maurice/yay-machine/blob/main/docs/about.md)
+
+<p align="center">
+<a href="https://github.com/maurice/yay-machine/actions/workflows/build.yml" title="build"><img src="https://github.com/maurice/yay-machine/workflows/build/badge.svg"/></a>
+<a href="https://www.npmjs.com/package/yay-machine" title="NPM"><img src="https://img.shields.io/npm/v/yay-machine"/></a>
+</p>
+
+<p align="center">
+<a href="https://github.com/maurice/yay-machine/blob/main/docs/about.md"><strong>yay-machine</strong> is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.</a>
+</p>
+
+---
 
 *📦 This package is the core state-machine library.*
 
