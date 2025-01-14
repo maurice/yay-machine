@@ -3,6 +3,8 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment:
+      name: build
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,7 +35,10 @@ jobs:
         run: bun check:lint
 
       - name: Test
-        run: bun run test:coverage -- --coverage-reporter=lcov --coverage-reporter=text
+        run: bun run test:ci
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@v2
 
       - name: Check docs
         run: |

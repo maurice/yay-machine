@@ -12,6 +12,7 @@
     "build:esm": "bun build src/index.ts --outfile dist/index.js --format esm",
     "build:cjs": "bun build src/index.ts --outfile dist/index.cjs --format cjs",
     "build:types": "tsc --emitDeclarationOnly --declaration --declarationMap",
+    "test:ci": "bun test --coverage --coverage-reporter=lcov --coverage-reporter=text",
     "api-docs": "typedoc --cleanOutputDir --plugin typedoc-github-theme --out api-docs src/index.ts"
   },
   "repository": {

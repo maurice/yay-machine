@@ -5,7 +5,9 @@
   "private": true,
   "type": "module",
   "files": ["src"],
-  "scripts": {},
+  "scripts": {
+    "test:ci": "bun test"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/maurice/yay-machine.git"
