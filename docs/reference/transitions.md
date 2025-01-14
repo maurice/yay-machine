@@ -115,18 +115,11 @@ export const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>
       },
     },
     connecting: {
-      onEnter: ({ state: { log, transport, url, onReceive }, send }) => {
+      onEnter: ({ state: { log, transport, url }, send }) => {
         log(`connecting to ${url}`);
         const connection = transport.connect(url);
         connection.onconnect = (connectionId) => send({ type: "CONNECTED", connectionId, connection });
         connection.onerror = (error) => send({ type: "CONNECTION_ERROR", ...error });
-        connection.onmessage = (data) => {
-          if (data === "❤️ HEARTBEAT") {
-            send({ type: "HEARTBEAT" });
-          } else {
-            onReceive(data);
-          }
-        };
       },
       on: {
         CONNECTED: {
@@ -151,8 +144,16 @@ export const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>
       },
     },
     connected: {
-      onEnter: ({ state }) => {
-        state.log(`connected to ${state.url}`);
+      onEnter: ({ state: { log, url, connection, onReceive }, send }) => {
+        log(`connected to ${url}`);
+        connection.onerror = (error) => send({ type: "CONNECTION_ERROR", ...error });
+        connection.onmessage = (data) => {
+          if (data === "❤️ HEARTBEAT") {
+            send({ type: "HEARTBEAT" });
+          } else {
+            onReceive(data);
+          }
+        };
       },
       onExit: ({ state }) => {
         state.log(`disconnecting from ${state.url}`);

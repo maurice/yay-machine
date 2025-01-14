@@ -322,7 +322,7 @@ export type TransitionData<
 export type SendFunction<EventType extends MachineEvent> = (event: EventType) => void;
 
 // biome-ignore lint/suspicious/noConfusingVoidType: adding void to union as we don't want to force users to explicity return
-type EffectReturnValue = Unsubscribe | undefined | null | void;
+export type EffectReturnValue = Unsubscribe | undefined | null | void;
 
 export type AnyStateTransitionsConfig<
   StateType extends MachineState,
