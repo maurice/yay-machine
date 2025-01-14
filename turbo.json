@@ -7,6 +7,10 @@
     },
     "check:types": {
       "dependsOn": ["^check:types"]
+    },
+    "bench": {
+      "cache": false,
+      "dependsOn": ["build"]
     }
   }
 }
