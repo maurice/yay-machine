@@ -73,6 +73,19 @@
           }
         }
       }
+    },
+    {
+      "include": ["scripts/"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noNonNullAssertion": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off"
+          }
+        }
+      }
     }
   ]
 }

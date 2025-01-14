@@ -470,7 +470,7 @@ For *homogenous* state-data you also have the option to set `enableCopyDataOnTra
 
 ## Combining different types of transition and options
 
-Many of the above options are able to be combined, eg
+We can mix-n-match most of the above, eg
 
 - all the different transition configuration nodes (state + event, *any state* + event, always) all support single and multiple transitions
 - all the different transition configuration nodes support `when()`, `data()` and `onTransition()`
@@ -493,6 +493,8 @@ In the above state machine there are transition side effects when handling
 The `onTransition()` function receives the current `state`, `event`, the `next` state and a `send` function which can be used to send events back to the machine instance. It MAY return a cleanup function to release any associated resources, and if so that is called immediately after the `onTransition()` itself.
 
 ---
+
+<!-- GUIDED PATH NAVIGATION -->
 
 * [⬅️ Previous: **Events**](./events.md)
 * [Next: **Side-effects** ➡️](./side-effects.md)

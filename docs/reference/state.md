@@ -205,7 +205,7 @@ const toggleMachine = defineMachine<ToggleState, ToggleEvent>({
 });
 ```
 
-> 💡 See the [`healthMachine` example](../../packages/example-machines/src/healthMachine.ts) for more realistic usage.
+> 💡 See the [`healthMachine` example](https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/healthMachine.ts) for more realistic usage.
 
 ## States can have associated data (heterogenous)
 
@@ -250,7 +250,7 @@ const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
 });
 ```
 
-Later we could query the data with complete type-safety
+Later we can query the data with complete type-safety
 
 ```typescript
 const connection = connectionMachine.newInstance().start();
@@ -270,7 +270,7 @@ if (connection.state.name === 'connected') {
 
 ## State data is immutable
 
-**⚠️ IMPORTANT:** never mutate state data in a `data()` callback.
+> **⚠️ IMPORTANT:** never mutate state data in a `data()` callback.
 
 Always generate and return a new data object.
 
@@ -293,6 +293,8 @@ const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
 ```
 
 ---
+
+<!-- GUIDED PATH NAVIGATION -->
 
 * [⬅️ Previous: **Docs**](./readme.md)
 * [Next: **Events** ➡️](./events.md)

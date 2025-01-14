@@ -17,7 +17,6 @@ const args = process.argv.slice(2);
 const dryRun = args.includes("--dryRun");
 const skipBundlephobia = args.includes("--skipBundlephobia");
 
-// biome-ignore lint/suspicious/noExplicitAny: CLI output
 const log = (message: string, ...args: any[]) => console.log(message, ...args);
 
 const readMetadata = async (): Promise<PackagesMetadata> => await Bun.file(metadataFile).json();

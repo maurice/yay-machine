@@ -194,4 +194,6 @@ unsubscribe();
 
 ---
 
-[⬅️ Previous: **Side-effects**](./side-effects.md)
+<!-- GUIDED PATH NAVIGATION -->
+
+* [⬅️ Previous: **Side-effects**](./side-effects.md)

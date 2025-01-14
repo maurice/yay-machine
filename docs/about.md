@@ -65,4 +65,4 @@ Read our [introduction to state-machines](./articles/why-state-machines.md) if y
 
 Get up and running fast with our [quick start guide](./quick-start.md) or head over to the [reference docs](./reference/).
 
-There are [more examples](../packages/example-machines/) to demonstrate and test the core library.
+There are [more examples](https://github.com/maurice/yay-machine/blob/main/packages/example-machines/) to demonstrate and test the core library.
