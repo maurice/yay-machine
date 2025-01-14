@@ -149,7 +149,7 @@ test("error for reenter on state immediate transition", () => {
   ).toThrow();
 });
 
-test("error for reenter on state + event transition with data", () => {
+test("no error for reenter:true on state + event transition with data", () => {
   expect(() =>
     defineMachine<MachineState, MachineEvent>({
       initialState: { name: "machine", data: 0 },
@@ -197,9 +197,10 @@ test("error for reenter:false on state + event transition with data", () => {
         machine: {
           on: {
             EVENT: {
-              to: "otherState",
-              // @ts-expect-error: reenter not allowed here
+              to: "machine",
               reenter: false,
+              // oops this should be a type error !?
+              data: () => ({ data: 0 }),
             },
           },
         },
@@ -218,6 +219,48 @@ test("error for reenter:false on state + event transition with data", () => {
                 to: "otherState",
                 // @ts-expect-error: reenter not allowed here
                 reenter: false,
+                // oops this should be a type error !?
+                data: () => ({ data: 0 }),
+              },
+            ],
+          },
+        },
+      },
+    }),
+  ).toThrow();
+});
+
+test("error for reenter:false on state + event transition with data to another state", () => {
+  expect(() =>
+    defineMachine<MachineState | { name: "otherState" }, MachineEvent>({
+      initialState: { name: "machine", data: 0 },
+      states: {
+        machine: {
+          on: {
+            EVENT: {
+              to: "otherState",
+              // @ts-expect-error: reenter not allowed here
+              reenter: false,
+              data: () => ({ data: 0 }),
+            },
+          },
+        },
+      },
+    }),
+  ).toThrow();
+
+  expect(() =>
+    defineMachine<MachineState | { name: "otherState" }, MachineEvent>({
+      initialState: { name: "machine", data: 0 },
+      states: {
+        machine: {
+          on: {
+            EVENT: [
+              {
+                to: "otherState",
+                // @ts-expect-error: reenter not allowed here
+                reenter: false,
+                data: () => ({ data: 0 }),
               },
             ],
           },

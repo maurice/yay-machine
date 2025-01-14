@@ -33,6 +33,9 @@ const setup = () => {
   const getNthTransportConnection = (nth: number) => {
     return transport.connect.mock.results[nth - 1].value as any;
   };
+  const getLastTransportConnection = () => {
+    return getNthTransportConnection(transport.connect.mock.results.length);
+  };
   const onReceive = mock();
   const connection = connectionMachine
     .newInstance({
@@ -47,7 +50,7 @@ const setup = () => {
     })
     .start();
 
-  return { connection, log, transport, onReceive, getNthTransportConnection };
+  return { connection, log, transport, onReceive, getNthTransportConnection, getLastTransportConnection };
 };
 
 test("connect happy path", () => {
@@ -163,15 +166,14 @@ test("does not attempt reconnection if the connection fails with an auth error",
 });
 
 test("attempt reconnection and succeed within the max attempts limit", () => {
-  const { connection, transport, getNthTransportConnection } = setup();
+  const { connection, transport, getLastTransportConnection } = setup();
   expect(connection.state.name).toBe("disconnected");
 
   connection.send({ type: "CONNECT", url: "foo://bar" });
   expect(transport.connect).toHaveBeenCalledTimes(1);
 
-  const transportConnection = getNthTransportConnection(1);
   const temporaryError = { code: 500, errorMessage: "Temporary error" };
-  transportConnection.onerror(temporaryError);
+  getLastTransportConnection().onerror(temporaryError);
   expect(connection.state).toMatchObject({
     name: "reattemptConnection",
     url: "foo://bar",
@@ -186,7 +188,7 @@ test("attempt reconnection and succeed within the max attempts limit", () => {
     connectionAttemptNum: 2,
   });
 
-  transportConnection.onerror(temporaryError);
+  getLastTransportConnection().onerror(temporaryError);
   expect(connection.state).toMatchObject({
     name: "reattemptConnection",
     url: "foo://bar",
@@ -201,7 +203,7 @@ test("attempt reconnection and succeed within the max attempts limit", () => {
     connectionAttemptNum: 3,
   });
 
-  transportConnection.onerror(temporaryError);
+  getLastTransportConnection().onerror(temporaryError);
   expect(connection.state).toMatchObject({
     name: "reattemptConnection",
     url: "foo://bar",
@@ -217,7 +219,7 @@ test("attempt reconnection and succeed within the max attempts limit", () => {
   });
 
   // this time it works
-  transportConnection.onconnect("abc123");
+  getLastTransportConnection().onconnect("abc123");
   expect(connection.state).toMatchObject({
     name: "connected",
     url: "foo://bar",
@@ -226,17 +228,16 @@ test("attempt reconnection and succeed within the max attempts limit", () => {
 });
 
 test("attempt reconnection and exceed the max attempts limit", () => {
-  const { connection, transport, getNthTransportConnection } = setup();
+  const { connection, transport, getLastTransportConnection } = setup();
   expect(connection.state.name).toBe("disconnected");
 
   connection.send({ type: "CONNECT", url: "foo://bar" });
   expect(transport.connect).toHaveBeenCalledTimes(1);
 
-  const transportConnection = getNthTransportConnection(1);
   const temporaryError = { code: 500, errorMessage: "Temporary error" };
 
   for (let i = 1; i < 10; i++) {
-    transportConnection.onerror(temporaryError);
+    getLastTransportConnection().onerror(temporaryError);
     expect(connection.state).toMatchObject({
       name: "reattemptConnection",
       url: "foo://bar",
@@ -252,7 +253,7 @@ test("attempt reconnection and exceed the max attempts limit", () => {
     });
   }
 
-  transportConnection.onerror(temporaryError);
+  getLastTransportConnection().onerror(temporaryError);
   expect(connection.state).toMatchObject({
     name: "connectionError",
     url: "foo://bar",
@@ -262,15 +263,14 @@ test("attempt reconnection and exceed the max attempts limit", () => {
 });
 
 test("disconnect after successful reconnection resets attempt num", () => {
-  const { connection, transport, getNthTransportConnection } = setup();
+  const { connection, transport, getLastTransportConnection } = setup();
   expect(connection.state.name).toBe("disconnected");
 
   connection.send({ type: "CONNECT", url: "foo://bar" });
   expect(transport.connect).toHaveBeenCalledTimes(1);
 
-  const transportConnection = getNthTransportConnection(1);
   const temporaryError = { code: 500, errorMessage: "Temporary error" };
-  transportConnection.onerror(temporaryError);
+  getLastTransportConnection().onerror(temporaryError);
   expect(connection.state).toMatchObject({
     name: "reattemptConnection",
     url: "foo://bar",
@@ -285,7 +285,7 @@ test("disconnect after successful reconnection resets attempt num", () => {
     connectionAttemptNum: 2,
   });
 
-  transportConnection.onerror(temporaryError);
+  getLastTransportConnection().onerror(temporaryError);
   expect(connection.state).toMatchObject({
     name: "reattemptConnection",
     url: "foo://bar",
@@ -301,7 +301,7 @@ test("disconnect after successful reconnection resets attempt num", () => {
   });
 
   // this time it works
-  transportConnection.onconnect("abc123");
+  getLastTransportConnection().onconnect("abc123");
   expect(connection.state).toMatchObject({
     name: "connected",
     url: "foo://bar",
@@ -309,7 +309,7 @@ test("disconnect after successful reconnection resets attempt num", () => {
   });
 
   // remote connection error
-  transportConnection.onerror(temporaryError);
+  getLastTransportConnection().onerror(temporaryError);
   expect(connection.state).toMatchObject({
     name: "reattemptConnection",
     url: "foo://bar",
