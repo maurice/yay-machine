@@ -38,6 +38,12 @@ This job uses [semantic-release](https://github.com/semantic-release/semantic-re
 
 Credit goes to [this article](https://dev.to/sahanonp/how-to-setup-semantic-release-with-github-actions-31f3) for the steps used to set this up.
 
+## Coveralls
+
+Coverage is published to COVERALLS
+
+* [Dashboard](https://coveralls.io/github/maurice/yay-machine)
+
 ## Renovate
 
 This project is onboarded with Renovate for automatic dependency update PRs.
