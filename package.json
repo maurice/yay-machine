@@ -15,6 +15,7 @@
     "fix:lint": "npx @biomejs/biome check --write",
     "test": "bun test",
     "test:coverage": "bun test --coverage",
+    "bench": "turbo bench",
     "build": "turbo build",
     "docs:sync": "bun run scripts/sync-docs.ts"
   },
