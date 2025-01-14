@@ -17,7 +17,8 @@
     "test:ci": "turbo run test:ci",
     "bench": "turbo bench",
     "build": "turbo build",
-    "docs:sync": "bun run scripts/sync-docs.ts"
+    "docs:sync": "bun run scripts/sync-docs.ts",
+    "pages": "bun run scripts/build-pages.ts"
   },
   "repository": {
     "type": "git",
@@ -52,8 +53,12 @@
     "@sinonjs/fake-timers": "^14.0.0",
     "@types/sinonjs__fake-timers": "^8.1.5",
     "bun-types": "^1.1.42",
+    "highlight.js": "^11.11.1",
     "husky": "^9.1.7",
+    "marked": "^15.0.6",
+    "marked-highlight": "^2.2.1",
     "playwright": "^1.49.1",
+    "title-case": "^4.3.2",
     "turbo": "^2.3.3",
     "typescript": "^5.7.2"
   },

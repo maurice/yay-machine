@@ -108,5 +108,7 @@ Transition side-effects receive a single parameter containing the machine's curr
 
 ---
 
+<!-- GUIDED PATH NAVIGATION -->
+
 * [⬅️ Previous: **Transitions**](./transitions.md)
 * [Next: **Machines** ➡️](./machines.md)
