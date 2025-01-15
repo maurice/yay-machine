@@ -23,4 +23,3 @@
 
 - [**yay-machine**](https://github.com/maurice/yay-machine/tree/main/packages/yay-machine) - the core state-machine library
 - [**example-machines**](https://github.com/maurice/yay-machine/tree/main/packages/example-machines) - various example state-machines to demonstrate usage
-
