@@ -107,9 +107,9 @@ if (guess.state.name === "guessedCorrectly") {
 
 # Next...
 
-* [About **yay-machine**](https://github.com/maurice/yay-machine/blob/main/docs/about.md)
-* [Quick Start](https://github.com/maurice/yay-machine/blob/main/docs/quick-start.md)
-* [Reference docs](https://github.com/maurice/yay-machine/blob/main/docs/reference/state.md)
-* [Why state-machines?](https://github.com/maurice/yay-machine/blob/main/docs/articles/why-state-machines.md)
-* [Why **yay-machine**?](https://github.com/maurice/yay-machine/blob/main/docs/articles/why-yay-machine.md)
-* [**yay-machine** vs **XState**?](https://github.com/maurice/yay-machine/blob/main/docs/articles/vs-xstate.md)
+* [About **yay-machine**](https://maurice.github.io/yay-machine/)
+* [Quick Start](https://maurice.github.io/yay-machine/quick-start.html)
+* [Reference docs](https://maurice.github.io/yay-machine/reference/state.html)
+* [Why state-machines?](https://maurice.github.io/yay-machine/articles/why-state-machines.html)
+* [Why **yay-machine**?](https://maurice.github.io/yay-machine/articles/why-yay-machine.html)
+* [**yay-machine** vs **XState**](https://maurice.github.io/yay-machine/articles/vs-xstate.html)
