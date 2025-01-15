@@ -45,7 +45,7 @@ header {
     display: flex;
     justify-content: end;
     margin-right: 4em;
-    gap: 0.5em;
+    gap: 0.3em;
 
     img.icon-link {
       /* this colour matches our --theme-dark-yellow and was generated with https://codepen.io/sosuke/pen/Pjoqqp */
