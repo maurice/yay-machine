@@ -101,6 +101,7 @@ for (const file of files) {
     <title>${title} - yay-machine</title>
     <!-- todo extract this from metadata -->
     <meta name="description" content="yay-machine" />
+    <link rel="icon" href="${assetsPath}/icon.png" />
     <link href="${assetsPath}/styles.css" rel="stylesheet" />
     <link href="${assetsPath}/highlight_js/rose-pine-dawn.css" rel="stylesheet" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -116,7 +117,7 @@ for (const file of files) {
       <a href="https://maurice.github.io/yay-machine/"><img src="${assetsPath}/yay-machine.png" alt="Logo" width="300px"></a>
       <aside>
         <a href="https://github.com/maurice/yay-machine" title="GitHub"><img src="${assetsPath}/github-logo.svg" class="icon-link"></a>
-        <a href="https://www.npmjs.com/package/yay-machine" title="npmjs.com"><img src="${assetsPath}/package.svg" class="icon-link"></a>
+        <a href="https://www.npmjs.com/package/yay-machine" title="NPM"><img src="${assetsPath}/package.svg" class="icon-link"></a>
       </aside>
     </header>
     <section>
