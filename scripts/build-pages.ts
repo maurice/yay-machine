@@ -113,7 +113,7 @@ for (const file of files) {
   </head>
   <body>
     <header>
-      <a href="https://maurice.github.io/yay-machine/"><img src="https://github.com/user-attachments/assets/03dd78c1-4396-42c4-a32c-aaa7c927f09e" alt="Logo" width="300px"></a>
+      <a href="https://maurice.github.io/yay-machine/"><img src="${assetsPath}/yay-machine.png" alt="Logo" width="300px"></a>
       <aside>
         <a href="https://github.com/maurice/yay-machine" title="GitHub"><img src="${assetsPath}/github-logo.svg" class="icon-link"></a>
         <a href="https://www.npmjs.com/package/yay-machine" title="npmjs.com"><img src="${assetsPath}/package.svg" class="icon-link"></a>
