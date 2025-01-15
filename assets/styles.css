@@ -48,6 +48,7 @@ header {
     gap: 0.5em;
 
     img.icon-link {
+      /* this colour matches our --theme-dark-yellow and was generated with https://codepen.io/sosuke/pen/Pjoqqp */
       filter: invert(63%) sepia(79%) saturate(1336%) hue-rotate(10deg) brightness(93%) contrast(101%);
     }
   }
