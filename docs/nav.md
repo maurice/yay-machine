@@ -15,4 +15,4 @@
 
 * [Why state-machines?](./articles/why-state-machines.md)
 * [Why **yay-machine**?](./articles/why-yay-machine.md)
-* [vs **XState**?](./articles/vs-xstate.md)
+* [vs **XState**](./articles/vs-xstate.md)
