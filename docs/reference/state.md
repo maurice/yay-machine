@@ -2,7 +2,9 @@
 
 State represents all the possible states in which a machine can exist.
 
-> 💡 Remember: machines can model business-logic, workflows, game or UI components, app state, ... lots of things.
+> 💡 **Remember**
+>
+> Machines can model business-logic, workflows, game or UI components, app state, ... lots of things.
 > So when we say *"all the possible states in which a machine can exist"* we mean "all the possible states in which **the thing you are modelling** can exist".
 
 ## States are finite
@@ -270,9 +272,11 @@ if (connection.state.name === 'connected') {
 
 ## State data is immutable
 
-> **⚠️ IMPORTANT:** never mutate state data in a `data()` callback.
-
-Always generate and return a new data object.
+> **⚠️ Important**
+>
+> Never mutate state data in a `data()` callback.
+>
+> Always generate and return a new data object.
 
 ## State lifecycle side-effects
 
@@ -296,5 +300,5 @@ const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
 
 <!-- GUIDED PATH NAVIGATION -->
 
-* [⬅️ Previous: **Docs**](./readme.md)
-* [Next: **Events** ➡️](./events.md)
+* [Previous page: **Docs**](./readme.md)
+* [Next page: **Events**](./events.md)

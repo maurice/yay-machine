@@ -497,5 +497,5 @@ The `onTransition()` function receives the current `state`, `event`, the `next` 
 
 <!-- GUIDED PATH NAVIGATION -->
 
-* [⬅️ Previous: **Events**](./events.md)
-* [Next: **Side-effects** ➡️](./side-effects.md)
+* [Previous page: **Events**](./events.md)
+* [Next page: **Side-effects**](./side-effects.md)
