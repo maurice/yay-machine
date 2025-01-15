@@ -132,5 +132,5 @@ In these other cases `event` will be `undefined`:
 
 <!-- GUIDED PATH NAVIGATION -->
 
-* [⬅️ Previous: **States**](./state.md)
-* [Next: **Transitions** ➡️](./transitions.md)
+* [Previous page: **States**](./state.md)
+* [Next page: **Transitions**](./transitions.md)

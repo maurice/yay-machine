@@ -46,7 +46,9 @@ const machine = defineMachine<State, Event>({
 
 They receive a single parameter containing the machine's current `state` and a `send()` function, which can be used to send events to the machine instance.
 
-> 💡 **Tip:** Return a cleanup function to free resources (clear timers, disconnect subscriptions, ....)
+> 💡 **Tip** 
+>
+> Return a cleanup function to free resources (clear timers, disconnect subscriptions, ....)
 
 ## State lifecycle side-effects: `onEnter()`, `onExit()`
 
@@ -66,9 +68,13 @@ const machine = defineMachine<State, Event>({
 
 Like machine-lifecycle side-effects, they receive a single parameter containing the machine's current `state` and a `send()` function, which can be used to send events to the machine instance.
 
-> 💡 **Tip:** Return a cleanup function to free resources (clear timers, disconnect subscriptions, ....)
+> 💡 **Tip** 
+>
+> Return a cleanup function to free resources (clear timers, disconnect subscriptions, ....)
 
-> 💡 **Tip:** See the section on [`reenter: false` in the states documentation](./state.md) if you need to keep `onEnter()` side-effects alive while transitioning from a state back to the same state.
+> 💡 **Tip** 
+>
+> See the section on [`reenter: false` in the states documentation](./state.md) if you need to keep `onEnter()` side-effects alive while transitioning from a state back to the same state.
 
 ## Transition side-effect: `onTransition()`
 
@@ -110,5 +116,5 @@ Transition side-effects receive a single parameter containing the machine's curr
 
 <!-- GUIDED PATH NAVIGATION -->
 
-* [⬅️ Previous: **Transitions**](./transitions.md)
-* [Next: **Machines** ➡️](./machines.md)
+* [Previous page: **Transitions**](./transitions.md)
+* [Next page: **Machines**](./machines.md)

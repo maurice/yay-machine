@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/maurice/yay-machine"><img src="https://github.com/user-attachments/assets/03dd78c1-4396-42c4-a32c-aaa7c927f09e" alt="Logo"></a>
+  <a href="https://maurice.github.io/yay-machine/"><img src="https://github.com/user-attachments/assets/03dd78c1-4396-42c4-a32c-aaa7c927f09e" alt="Logo"></a>
 </p>
 
 **yay-machine** is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.
@@ -63,6 +63,6 @@ A [**state** in **yay-machine**](./reference/state.md) is a type, giving you new
 
 Read our [introduction to state-machines](./articles/why-state-machines.md) if you're new to them, or learn [why **yay-machine** exists](./articles/why-yay-machine.md) and a [comparison with **XState**](./articles/vs-xstate.md) if you are already familiar.
 
-Get up and running fast with our [quick start guide](./quick-start.md) or head over to the [reference docs](./reference/).
+Get up and running fast with our [quick start guide](./quick-start.md) or head over to the [reference docs](./reference/state.md).
 
 There are [more examples](https://github.com/maurice/yay-machine/blob/main/packages/example-machines/) to demonstrate and test the core library.

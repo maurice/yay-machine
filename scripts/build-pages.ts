@@ -2,6 +2,7 @@ import { cp, exists, mkdir, readFile, readdir, rename, rm, writeFile } from "nod
 import { dirname } from "node:path";
 import hljs from "highlight.js";
 import { Marked } from "marked";
+import { gfmHeadingId } from "marked-gfm-heading-id";
 import { markedHighlight } from "marked-highlight";
 import { titleCase } from "title-case";
 
@@ -26,25 +27,52 @@ const marked = new Marked(
     emptyLangClass: "hljs",
     langPrefix: "hljs language-",
     highlight(code, lang) {
+      if (lang === "mermaid") {
+        return `<pre class="mermaid">${code}</pre>`;
+      }
       const language = hljs.getLanguage(lang) ? lang : "plaintext";
       return hljs.highlight(code, { language }).value;
     },
   }),
 );
 
+const nav = (await marked.parse((await readFile(`${docsDir}/nav.md`)).toString())).replaceAll('.md"', '.html"');
+
+marked.setOptions({
+  gfm: true,
+});
+
+marked.use(gfmHeadingId());
+
 for (const file of files) {
+  if (file.name === "nav.md") {
+    continue;
+  }
   const sourceFile = `${file.parentPath}/${file.name}`;
   const contents = (await readFile(sourceFile)).toString();
-  let title: string = titleCase(file.name);
+  let title: string = titleCase(file.name.slice(0, -3));
   if (contents.startsWith("#")) {
     const titleStart = contents.indexOf(" ");
     const titleEnd = contents.indexOf("\n");
-    title = contents.slice(titleStart, titleEnd);
+    title = contents.slice(titleStart, titleEnd).replace(/[*`]/g, "");
   }
+  title = file.parentPath
+    .split("/")
+    .slice(1)
+    .map((it) => titleCase(it))
+    .toSpliced(0, 0, title)
+    .join(" - ")
+    .trim();
 
-  const destFile = `${pagesDir}/${sourceFile.substring(5).replace(".md", ".html")}`;
+  const destFile = `${sourceFile.substring(5).replace(".md", ".html")}`;
   const depth = destFile.split("/").length - 1;
-  const assetsPath = `${depth === 1 ? "./" : "../".repeat(depth - 1)}assets`;
+  const relativeRoot = `${depth === 0 ? "./" : "../".repeat(depth)}`;
+  const assetsPath = `${relativeRoot}assets`;
+
+  const pageNav = nav
+    .replace("about.html", "")
+    .replace(`<a href="./${destFile}">`, `<a class="menu-selected" href="./${destFile}">`)
+    .replaceAll('href="./', `href="${relativeRoot}`);
 
   let html = await marked.parse(contents);
   html = html.replace(/href="[^"]+.md"/g, (match) => {
@@ -52,10 +80,17 @@ for (const file of files) {
     return `href="${link}.html"`;
   });
 
+  html = html.replace(/<h[12345] id="[^"]+">(.+)<\/h[12345]>/g, (match) => {
+    const [, level, id, title] = /<h([12345]) id="([^"]+)">(.+)<\/h[12345]>/.exec(match)!;
+    return `<h${level} id="${id}">${title}<a class="header-anchor" href="#${id}">#</a></h${level}>`;
+  });
+
   const guidedPathNavigationStart = html.indexOf("<!-- GUIDED PATH NAVIGATION -->");
   if (guidedPathNavigationStart !== -1) {
     const ulStart = html.indexOf("<ul>", guidedPathNavigationStart);
     html = `${html.slice(0, ulStart)}<ul class="guided-path-navigation">${html.slice(ulStart + 4)}`;
+    html = html.replace("Previous page:", '<p class="prev-next">Previous page</p>');
+    html = html.replace("Next page:", '<p class="prev-next">Next page</p>');
   }
 
   html = `
@@ -67,131 +102,46 @@ for (const file of files) {
     <!-- todo extract this from metadata -->
     <meta name="description" content="yay-machine" />
     <link href="${assetsPath}/styles.css" rel="stylesheet" />
-    <link href="${assetsPath}/rose-pine-dawn.css" rel="stylesheet" />
+    <link href="${assetsPath}/highlight_js/rose-pine-dawn.css" rel="stylesheet" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true });
+</script>
   </head>
   <body>
-${html}
+    <header>
+      <a href="https://maurice.github.io/yay-machine/"><img src="https://github.com/user-attachments/assets/03dd78c1-4396-42c4-a32c-aaa7c927f09e" alt="Logo" width="300px"></a>
+      <aside>
+        <a href="https://github.com/maurice/yay-machine" title="GitHub"><img src="${assetsPath}/github-logo.svg" class="icon-link"></a>
+        <a href="https://www.npmjs.com/package/yay-machine" title="npmjs.com"><img src="${assetsPath}/package.svg" class="icon-link"></a>
+      </aside>
+    </header>
+    <section>
+      <nav>
+        <div class="nav-spacer"></div>
+        <div class="menu">
+        ${pageNav}
+        </div>
+      </nav>
+      <div class="body-content">
+        <article>
+          ${html}
+        </article>
+      </div>
+    </section>
   </body>
 </html>
 `;
   const destDir = dirname(destFile);
-  await mkdir(destDir, { recursive: true });
-  await writeFile(destFile, html);
+  await mkdir(`pages/${destDir}`, { recursive: true });
+  await writeFile(`pages/${destFile}`, html);
 }
 
-await cp("./node_modules/highlight.js/styles", pagesAssetsDir, { recursive: true });
+await cp("assets", pagesAssetsDir, { recursive: true });
+const highlightStylesDir = `${pagesAssetsDir}/highlight_js`;
+await mkdir(highlightStylesDir, { recursive: true });
+await cp("./node_modules/highlight.js/styles", highlightStylesDir, { recursive: true });
 await rename(`${pagesDir}/about.html`, `${pagesDir}/index.html`);
-await rename(`${pagesDir}/reference/readme.html`, `${pagesDir}/reference/index.html`);
-await writeFile(
-  `${pagesAssetsDir}/styles.css`,
-  `
-* {
-    box-sizing: border-box;
-}
-    
-body {
-  font-family: sans-serif;
-  padding: 3em;
-  color: #1f2e28;
-  line-height: 1.5;
-}
-
-h1, h2, h3, h4, h5 {
-  font-family: "Pacifico", serif;
-  font-weight: 400;
-  font-style: normal;
-}
-
-h1 {
-  font-size: 2.8em;
-}
-
-h2 {
-  font-size: 2em;
-}
-
-h3 {
-  font-size: 1.5em;
-}
-
-h4 {
-  font-size: 1.17em;
-}
-
-h5 {
-  font-size: 1em;
-}
-
-h1, h2 {
-  border-bottom: 1px solid #ffde59;
-  padding-bottom: 0.1em;
-}
-
-blockquote {
-  margin: 0;
-  padding: 0 1em;
-  border-left: 3px solid #ffde59;
-}
-
-hr {
-  height: 1px;
-  background-color: #ffde59;
-  border: none;
-}
-
-code:not(.hljs) {
-  background-color: #faf4ed; /* TODO sync with highlight.js theme */
-  padding: 0 0.3em;
-}
-
-pre {
-  line-height: 1.45;
-}
-
-ul:not(.guided-path-navigation) {
-  padding-left: 2em;
-  margin-top: 0;
-  margin-bottom: 1em;
-
-  li+li {
-    margin-top: .5em;
-  }
-}
-
-a {
-  color: chocolate;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-ul.guided-path-navigation {
-  list-style: none;
-  display: flex;
-  gap: 1em;
-  justify-content: center;
-
-  li {
-    display: inline-block;
-
-    a {
-      padding: 0.4em;
-      border: 1px solid #ffde59;
-      border-radius: 4px;
-      text-decoration: none;
-      color: #1f2e28;
-      transition: background 0.5s;
-      
-      &:hover {
-        background: #ffde59;
-      }
-    }
-  }
-}
-`,
-);

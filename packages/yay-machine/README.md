@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/maurice/yay-machine"><img src="https://github.com/user-attachments/assets/03dd78c1-4396-42c4-a32c-aaa7c927f09e" alt="Logo"></a>
+  <a href="https://maurice.github.io/yay-machine/"><img src="https://github.com/user-attachments/assets/03dd78c1-4396-42c4-a32c-aaa7c927f09e" alt="Logo"></a>
 </p>
 
 

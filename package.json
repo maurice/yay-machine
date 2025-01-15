@@ -56,6 +56,7 @@
     "highlight.js": "^11.11.1",
     "husky": "^9.1.7",
     "marked": "^15.0.6",
+    "marked-gfm-heading-id": "^4.1.1",
     "marked-highlight": "^2.2.1",
     "playwright": "^1.49.1",
     "title-case": "^4.3.2",
