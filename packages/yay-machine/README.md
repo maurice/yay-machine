@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://maurice.github.io/yay-machine/"><img src="https://github.com/user-attachments/assets/03dd78c1-4396-42c4-a32c-aaa7c927f09e" alt="Logo"></a>
+  <a href="https://yay-machine.js.org/"><img src="https://github.com/user-attachments/assets/03dd78c1-4396-42c4-a32c-aaa7c927f09e" alt="Logo"></a>
 </p>
 
 
@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-<a href="https://maurice.github.io/yay-machine/"><strong>yay-machine</strong> is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.</a>
+<a href="https://yay-machine.js.org/"><strong>yay-machine</strong> is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.</a>
 </p>
 
 ---
@@ -107,9 +107,9 @@ if (guess.state.name === "guessedCorrectly") {
 
 # Next...
 
-* [About **yay-machine**](https://maurice.github.io/yay-machine/)
-* [Quick Start](https://maurice.github.io/yay-machine/quick-start.html)
-* [Reference docs](https://maurice.github.io/yay-machine/reference/state.html)
-* [Why state-machines?](https://maurice.github.io/yay-machine/articles/why-state-machines.html)
-* [Why **yay-machine**?](https://maurice.github.io/yay-machine/articles/why-yay-machine.html)
-* [**yay-machine** vs **XState**](https://maurice.github.io/yay-machine/articles/vs-xstate.html)
+* [About **yay-machine**](https://yay-machine.js.org/)
+* [Quick Start](https://yay-machine.js.org/quick-start.html)
+* [Reference docs](https://yay-machine.js.org/reference/state.html)
+* [Why state-machines?](https://yay-machine.js.org/articles/why-state-machines.html)
+* [Why **yay-machine**?](https://yay-machine.js.org/articles/why-yay-machine.html)
+* [**yay-machine** vs **XState**](https://yay-machine.js.org/articles/vs-xstate.html)

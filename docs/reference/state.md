@@ -300,5 +300,5 @@ const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
 
 <!-- GUIDED PATH NAVIGATION -->
 
-* [Previous page: **Docs**](./readme.md)
+* [Previous page: **Quick start**](../quick-start.md)
 * [Next page: **Events**](./events.md)
