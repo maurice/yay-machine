@@ -1,7 +1,10 @@
 import { expect, test } from "bun:test";
 import { type CalculatorState, calculatorMachine } from "../calculatorMachine1";
 
-const sendKeys = (calculator: ReturnType<typeof calculatorMachine.newInstance>, keys: string) => {
+const sendKeys = (
+  calculator: ReturnType<typeof calculatorMachine.newInstance>,
+  keys: string,
+) => {
   const split = keys.trim().split(/\s/);
   for (const key of split) {
     calculator.send({ type: "KEY", key });

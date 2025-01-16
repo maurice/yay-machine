@@ -44,7 +44,10 @@ test("can start single-use a timer", async () => {
     state: { name: "fired", time: 1000, repeat: false },
     event: { type: "FIRED" },
   });
-  expect(subscriber).toHaveBeenNthCalledWith(4, { state: { name: "idle" }, event: undefined });
+  expect(subscriber).toHaveBeenNthCalledWith(4, {
+    state: { name: "idle" },
+    event: undefined,
+  });
   expect(machine.state).toEqual({ name: "idle" });
 });
 
@@ -65,7 +68,10 @@ test("can cancel a single-use a timer", async () => {
 
   machine.send({ type: "CANCEL" });
   expect(subscriber).toHaveBeenCalledTimes(3);
-  expect(subscriber).toHaveBeenNthCalledWith(3, { state: { name: "idle" }, event: { type: "CANCEL" } });
+  expect(subscriber).toHaveBeenNthCalledWith(3, {
+    state: { name: "idle" },
+    event: { type: "CANCEL" },
+  });
   expect(machine.state).toEqual({ name: "idle" });
 
   clock.tick(1000);
@@ -163,7 +169,10 @@ test("can cancel a repeating timer", async () => {
 
   machine.send({ type: "CANCEL" });
   expect(subscriber).toHaveBeenCalledTimes(5);
-  expect(subscriber).toHaveBeenNthCalledWith(5, { state: { name: "idle" }, event: { type: "CANCEL" } });
+  expect(subscriber).toHaveBeenNthCalledWith(5, {
+    state: { name: "idle" },
+    event: { type: "CANCEL" },
+  });
   expect(machine.state).toEqual({ name: "idle" });
 
   clock.tick(1000);

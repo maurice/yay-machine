@@ -50,7 +50,14 @@ const setup = () => {
     })
     .start();
 
-  return { connection, log, transport, onReceive, getNthTransportConnection, getLastTransportConnection };
+  return {
+    connection,
+    log,
+    transport,
+    onReceive,
+    getNthTransportConnection,
+    getLastTransportConnection,
+  };
 };
 
 test("connect happy path", () => {
@@ -74,7 +81,8 @@ test("connect happy path", () => {
 });
 
 test("connect then receive data and heartbeats", () => {
-  const { connection, log, transport, getNthTransportConnection, onReceive } = setup();
+  const { connection, log, transport, getNthTransportConnection, onReceive } =
+    setup();
   expect(connection.state.name).toBe("disconnected");
   expect(log).not.toHaveBeenCalled();
   expect(transport.connect).not.toHaveBeenCalled();
@@ -96,7 +104,10 @@ test("connect then receive data and heartbeats", () => {
   expect(onReceive).not.toHaveBeenCalled();
   transportConnection.onmessage("oh, hi there!");
   transportConnection.onmessage("how are you?");
-  expect(onReceive.mock.calls.map((it) => it[0])).toEqual(["oh, hi there!", "how are you?"]);
+  expect(onReceive.mock.calls.map((it) => it[0])).toEqual([
+    "oh, hi there!",
+    "how are you?",
+  ]);
   expect(connection.state).toMatchObject({
     name: "connected",
     lastHeartbeatTime: -1,
@@ -135,7 +146,10 @@ test("connect send, receive, disconnect", () => {
     "how are you today?",
     "ready to receive some data?",
   ]);
-  expect(log.mock.calls.map((it) => it[0])).toEqual(["connecting to foo://bar", "connected to foo://bar"]);
+  expect(log.mock.calls.map((it) => it[0])).toEqual([
+    "connecting to foo://bar",
+    "connected to foo://bar",
+  ]);
 
   expect(transportConnection.send).toHaveBeenCalledTimes(1); // still
   connection.send({ type: "SEND", data: "GOODBYE!" });

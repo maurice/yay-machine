@@ -18,7 +18,10 @@ interface HomogenousEvent {
 /**
  * `enableCopyDataOnTransition: true` means transitions don't need to provide `data()` - it will be copied by default
  */
-export const homogenousMachineCopyDataOnTransitionOK = defineMachine<HomogenousState, HomogenousEvent>({
+export const homogenousMachineCopyDataOnTransitionOK = defineMachine<
+  HomogenousState,
+  HomogenousEvent
+>({
   enableCopyDataOnTransition: true,
   initialState: { name: "a", data: "" },
   states: {
@@ -38,8 +41,11 @@ export const homogenousMachineCopyDataOnTransitionOK = defineMachine<HomogenousS
 /**
  * `enableCopyDataOnTransition` is not defined but transitions don't have `data()` callbacks either
  */
-// @ts-expect-error: either set `enableCopyDataOnTransition: true` or provide `data()` callbacks
-export const homogenousMachineCopyDataOnTransitionError = defineMachine<HomogenousState, HomogenousEvent>({
+export const homogenousMachineCopyDataOnTransitionError = defineMachine<
+  HomogenousState,
+  HomogenousEvent
+  // @ts-expect-error: either set `enableCopyDataOnTransition: true` or provide `data()` callbacks
+>({
   initialState: { name: "a", data: "" },
   states: {
     a: {
@@ -58,7 +64,10 @@ export const homogenousMachineCopyDataOnTransitionError = defineMachine<Homogeno
 /**
  * `enableCopyDataOnTransition` is not defined and all transitions have `data()` callbacks
  */
-export const homogenousMachineNoCopyDataOnTransitionOK = defineMachine<HomogenousState, HomogenousEvent>({
+export const homogenousMachineNoCopyDataOnTransitionOK = defineMachine<
+  HomogenousState,
+  HomogenousEvent
+>({
   initialState: { name: "a", data: "" },
   states: {
     a: {
@@ -77,7 +86,10 @@ export const homogenousMachineNoCopyDataOnTransitionOK = defineMachine<Homogenou
 /**
  * `enableCopyDataOnTransition` is `false` and all transitions have `data()` callbacks
  */
-export const homogenousMachineNoCopyDataOnTransitionOK2 = defineMachine<HomogenousState, HomogenousEvent>({
+export const homogenousMachineNoCopyDataOnTransitionOK2 = defineMachine<
+  HomogenousState,
+  HomogenousEvent
+>({
   enableCopyDataOnTransition: false,
   initialState: { name: "a", data: "" },
   states: {
@@ -97,8 +109,11 @@ export const homogenousMachineNoCopyDataOnTransitionOK2 = defineMachine<Homogeno
 /**
  * `enableCopyDataOnTransition` is not defined but one transitions doesn't have `data()` callback
  */
-// @ts-expect-error: `enableCopyDataOnTransition` is not `true` but one of the transitions is missing `data()` callback
-export const homogenousMachineNoCopyDataOnTransitionError = defineMachine<HomogenousState, HomogenousEvent>({
+export const homogenousMachineNoCopyDataOnTransitionError = defineMachine<
+  HomogenousState,
+  HomogenousEvent
+  // @ts-expect-error: `enableCopyDataOnTransition` is not `true` but one of the transitions is missing `data()` callback
+>({
   initialState: { name: "a", data: "" },
   states: {
     a: {

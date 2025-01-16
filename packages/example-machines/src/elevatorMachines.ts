@@ -1,4 +1,8 @@
-import { type MachineInstance, type StateLifecycleSideEffectFunction, defineMachine } from "yay-machine";
+import {
+  type MachineInstance,
+  type StateLifecycleSideEffectFunction,
+  defineMachine,
+} from "yay-machine";
 
 /*
  * This file contains two machines: one for the elevator and one for the elevator controller.
@@ -9,7 +13,13 @@ import { type MachineInstance, type StateLifecycleSideEffectFunction, defineMach
  */
 
 export interface ElevatorState {
-  readonly name: "doorsClosing" | "doorsClosed" | "doorsOpening" | "doorsOpen" | "goingUp" | "goingDown";
+  readonly name:
+    | "doorsClosing"
+    | "doorsClosed"
+    | "doorsOpening"
+    | "doorsOpen"
+    | "goingUp"
+    | "goingDown";
   readonly currentFloor: number;
   readonly fractionalFloor: number; // workaround for JS number precision; using two integers instead of a float
   readonly floorsToVisit: readonly number[];
@@ -54,7 +64,10 @@ export type ElevatorEvent =
   | MoveDownEvent;
 
 const sleepThen =
-  (doneEvent: ElevatorEvent, time = 5000): StateLifecycleSideEffectFunction<ElevatorState, ElevatorEvent> =>
+  (
+    doneEvent: ElevatorEvent,
+    time = 5000,
+  ): StateLifecycleSideEffectFunction<ElevatorState, ElevatorEvent> =>
   ({ send }) => {
     const timer = setTimeout(() => send(doneEvent), time);
     return () => clearTimeout(timer);
@@ -66,12 +79,18 @@ const insertFloor = (state: ElevatorState, floor: number): ElevatorState => {
   floorsToVisit.sort((a, b) => a - b);
   if (nextFloor !== undefined) {
     if (nextFloor > state.currentFloor) {
-      const splitIndex = floorsToVisit.findLastIndex((floor) => floor <= state.currentFloor);
+      const splitIndex = floorsToVisit.findLastIndex(
+        (floor) => floor <= state.currentFloor,
+      );
       if (splitIndex !== -1) {
-        floorsToVisit = floorsToVisit.slice(splitIndex + 1).concat(floorsToVisit.slice(0, splitIndex + 1).toReversed());
+        floorsToVisit = floorsToVisit
+          .slice(splitIndex + 1)
+          .concat(floorsToVisit.slice(0, splitIndex + 1).toReversed());
       }
     } else if (nextFloor < state.currentFloor) {
-      const splitIndex = floorsToVisit.findLastIndex((floor) => floor < state.currentFloor);
+      const splitIndex = floorsToVisit.findLastIndex(
+        (floor) => floor < state.currentFloor,
+      );
       if (splitIndex !== -1) {
         floorsToVisit = floorsToVisit
           .slice(0, splitIndex + 1)
@@ -83,11 +102,17 @@ const insertFloor = (state: ElevatorState, floor: number): ElevatorState => {
   return { ...state, floorsToVisit };
 };
 
-const isAtFloor = (state: ElevatorState, floor: number) => floor === state.currentFloor && state.fractionalFloor === 0;
+const isAtFloor = (state: ElevatorState, floor: number) =>
+  floor === state.currentFloor && state.fractionalFloor === 0;
 
 export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
   enableCopyDataOnTransition: true, // most transitions don't change the state-data, so copy it by default
-  initialState: { name: "doorsClosed", currentFloor: 1, fractionalFloor: 0, floorsToVisit: [] },
+  initialState: {
+    name: "doorsClosed",
+    currentFloor: 1,
+    fractionalFloor: 0,
+    floorsToVisit: [],
+  },
   states: {
     doorsClosing: {
       onEnter: sleepThen({ type: "CLOSED_DOORS" }),
@@ -103,11 +128,15 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
       always: [
         {
           to: "goingUp",
-          when: ({ state }) => !!state.floorsToVisit[0] && state.floorsToVisit[0] > state.currentFloor,
+          when: ({ state }) =>
+            !!state.floorsToVisit[0] &&
+            state.floorsToVisit[0] > state.currentFloor,
         },
         {
           to: "goingDown",
-          when: ({ state }) => !!state.floorsToVisit[0] && state.floorsToVisit[0] < state.currentFloor,
+          when: ({ state }) =>
+            !!state.floorsToVisit[0] &&
+            state.floorsToVisit[0] < state.currentFloor,
         },
       ],
     },
@@ -136,8 +165,12 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
           to: "goingUp",
           data: ({ state }) => ({
             ...state,
-            currentFloor: state.fractionalFloor === 9 ? state.currentFloor + 1 : state.currentFloor,
-            fractionalFloor: state.fractionalFloor === 9 ? 0 : state.fractionalFloor + 1,
+            currentFloor:
+              state.fractionalFloor === 9
+                ? state.currentFloor + 1
+                : state.currentFloor,
+            fractionalFloor:
+              state.fractionalFloor === 9 ? 0 : state.fractionalFloor + 1,
           }),
         },
       },
@@ -158,14 +191,20 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
           to: "goingDown",
           data: ({ state }) => ({
             ...state,
-            currentFloor: state.fractionalFloor === 0 ? state.currentFloor - 1 : state.currentFloor,
-            fractionalFloor: state.fractionalFloor === 0 ? 9 : state.fractionalFloor - 1,
+            currentFloor:
+              state.fractionalFloor === 0
+                ? state.currentFloor - 1
+                : state.currentFloor,
+            fractionalFloor:
+              state.fractionalFloor === 0 ? 9 : state.fractionalFloor - 1,
           }),
         },
       },
       always: {
         to: "doorsOpening",
-        when: ({ state }) => state.currentFloor === state.floorsToVisit[0]! && state.fractionalFloor === 0,
+        when: ({ state }) =>
+          state.currentFloor === state.floorsToVisit[0]! &&
+          state.fractionalFloor === 0,
         data: ({ state }) => ({
           ...state,
           currentFloor: state.floorsToVisit[0]!,
@@ -203,12 +242,16 @@ const proximityScore = (state: ElevatorState, floor: number) => {
   return absoluteDistance;
 };
 
-const findBestElevatorForRequestedFloor = (elevators: Elevators, floor: number) => {
+const findBestElevatorForRequestedFloor = (
+  elevators: Elevators,
+  floor: number,
+) => {
   // rank elevators by their current queue-length and proximity from the requested floor
   const scores = new Map(
     elevators.map((elevator) => [
       elevator,
-      elevator.state.floorsToVisit.length + proximityScore(elevator.state, floor),
+      elevator.state.floorsToVisit.length +
+        proximityScore(elevator.state, floor),
     ]),
   );
   const scored = [...scores.entries()].sort((a, b) => a[1] - b[1]);
@@ -228,7 +271,9 @@ interface PendingRequest {
 
 type NonEmptyArray<T> = readonly [T, ...T[]];
 
-export type Elevators = NonEmptyArray<MachineInstance<ElevatorState, ElevatorEvent>>;
+export type Elevators = NonEmptyArray<
+  MachineInstance<ElevatorState, ElevatorEvent>
+>;
 
 export interface RequestElevatorEvent {
   readonly type: "REQUEST_ELEVATOR";
@@ -246,16 +291,26 @@ export interface ElevatorArrivedEvent {
   readonly floor: number;
 }
 
-export type ControllerEvent = RequestElevatorEvent | RequestingEvent | ElevatorArrivedEvent;
+export type ControllerEvent =
+  | RequestElevatorEvent
+  | RequestingEvent
+  | ElevatorArrivedEvent;
 
-export const controllerMachine = defineMachine<ControllerState, ControllerEvent>({
+export const controllerMachine = defineMachine<
+  ControllerState,
+  ControllerEvent
+>({
   enableCopyDataOnTransition: true, // most transitions don't change the state-data, so copy it by default
   initialState: { name: "idle", elevators: undefined!, pendingRequests: [] },
   onStart: ({ state, send }) => {
     const unsubscribes = state.elevators.map((elevator, index) =>
       elevator.subscribe(({ state: elevatorState }) => {
         if (elevatorState.name === "doorsOpen") {
-          send({ type: "ELEVATOR_ARRIVED", elevatorIndex: index, floor: elevatorState.currentFloor });
+          send({
+            type: "ELEVATOR_ARRIVED",
+            elevatorIndex: index,
+            floor: elevatorState.currentFloor,
+          });
         }
       }),
     );
@@ -268,7 +323,10 @@ export const controllerMachine = defineMachine<ControllerState, ControllerEvent>
           to: "busy",
           data: ({ state, event }) => ({
             ...state,
-            pendingRequests: [...state.pendingRequests, { floor: event.floor, elevatorIndex: event.elevatorIndex }],
+            pendingRequests: [
+              ...state.pendingRequests,
+              { floor: event.floor, elevatorIndex: event.elevatorIndex },
+            ],
           }),
           onTransition: ({ event: { elevator, floor } }) => {
             elevator.send({ type: "VISIT_FLOOR", floor: floor });
@@ -283,7 +341,9 @@ export const controllerMachine = defineMachine<ControllerState, ControllerEvent>
           data: ({ state, event }) => ({
             ...state,
             pendingRequests: state.pendingRequests.filter(
-              (request) => request.floor === event.floor && request.elevatorIndex === event.elevatorIndex,
+              (request) =>
+                request.floor === event.floor &&
+                request.elevatorIndex === event.elevatorIndex,
             ),
           }),
         },
@@ -298,17 +358,28 @@ export const controllerMachine = defineMachine<ControllerState, ControllerEvent>
     REQUEST_ELEVATOR: [
       {
         to: "busy",
-        when: ({ state, event }) => state.pendingRequests.some((request) => event.floor === request.floor),
+        when: ({ state, event }) =>
+          state.pendingRequests.some(
+            (request) => event.floor === request.floor,
+          ),
       },
       {
         to: "requesting",
         onTransition: ({ state, event, send }) => {
           // find the best elevator
-          const elevator = findBestElevatorForRequestedFloor(state.elevators, event.floor);
+          const elevator = findBestElevatorForRequestedFloor(
+            state.elevators,
+            event.floor,
+          );
           const elevatorIndex = state.elevators.indexOf(elevator);
           // send the elevator to the requested floor;
           // once inside the passenger can request their destination floor
-          send({ type: "REQUESTING_ELEVATOR", elevator, elevatorIndex, floor: event.floor });
+          send({
+            type: "REQUESTING_ELEVATOR",
+            elevator,
+            elevatorIndex,
+            floor: event.floor,
+          });
         },
       },
     ],

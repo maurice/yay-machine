@@ -22,7 +22,11 @@ export interface CalculatorEvent {
   readonly key: string;
 }
 
-const calc = (lhs: number, operand: CalculatorState["name"], rhs: number): number => {
+const calc = (
+  lhs: number,
+  operand: CalculatorState["name"],
+  rhs: number,
+): number => {
   if (Number.isNaN(rhs)) {
     return lhs;
   }
@@ -36,7 +40,10 @@ const calc = (lhs: number, operand: CalculatorState["name"], rhs: number): numbe
   }
 };
 
-export const calculatorMachine = defineMachine<CalculatorState, CalculatorEvent>({
+export const calculatorMachine = defineMachine<
+  CalculatorState,
+  CalculatorEvent
+>({
   initialState: { name: "equals", memory: 0 },
   states: {
     equals: {
@@ -45,17 +52,23 @@ export const calculatorMachine = defineMachine<CalculatorState, CalculatorEvent>
           {
             to: "equals",
             when: ({ event }) => !Number.isNaN(Number.parseInt(event.key, 10)),
-            data: ({ state, event }) => ({ input: (state.input ?? "") + event.key }),
+            data: ({ state, event }) => ({
+              input: (state.input ?? "") + event.key,
+            }),
           },
           {
             to: "plus",
             when: ({ state, event }) => event.key === "+" && !!state.input,
-            data: ({ state }) => ({ memory: Number.parseInt(state.input!, 10) }),
+            data: ({ state }) => ({
+              memory: Number.parseInt(state.input!, 10),
+            }),
           },
           {
             to: "times",
             when: ({ state, event }) => event.key === "*" && !!state.input,
-            data: ({ state }) => ({ memory: Number.parseInt(state.input!, 10) }),
+            data: ({ state }) => ({
+              memory: Number.parseInt(state.input!, 10),
+            }),
           },
         ],
       },
@@ -65,27 +78,52 @@ export const calculatorMachine = defineMachine<CalculatorState, CalculatorEvent>
     KEY: [
       {
         to: "equals",
-        when: ({ state, event }) => event.key === "=" && state.memory !== undefined && state.input !== undefined,
-        data: ({ state }) => ({ memory: calc(state.memory!, state.name, Number.parseInt(state.input!, 10)) }),
+        when: ({ state, event }) =>
+          event.key === "=" &&
+          state.memory !== undefined &&
+          state.input !== undefined,
+        data: ({ state }) => ({
+          memory: calc(
+            state.memory!,
+            state.name,
+            Number.parseInt(state.input!, 10),
+          ),
+        }),
       },
       {
         to: "equals",
-        when: ({ state, event }) => event.key === "=" && state.memory !== undefined,
+        when: ({ state, event }) =>
+          event.key === "=" && state.memory !== undefined,
         data: ({ state }) => ({ memory: state.memory! }),
       },
       {
         to: "plus",
         when: ({ event }) => event.key === "+",
-        data: ({ state }) => ({ memory: calc(state.memory!, state.name, Number.parseInt(state.input!, 10)) }),
+        data: ({ state }) => ({
+          memory: calc(
+            state.memory!,
+            state.name,
+            Number.parseInt(state.input!, 10),
+          ),
+        }),
       },
       {
         to: "times",
         when: ({ event }) => event.key === "*",
-        data: ({ state }) => ({ memory: calc(state.memory!, state.name, Number.parseInt(state.input!, 10)) }),
+        data: ({ state }) => ({
+          memory: calc(
+            state.memory!,
+            state.name,
+            Number.parseInt(state.input!, 10),
+          ),
+        }),
       },
       {
         when: ({ event }) => !Number.isNaN(Number.parseInt(event.key, 10)),
-        data: ({ state, event }) => ({ memory: state.memory!, input: (state.input ?? "") + event.key }),
+        data: ({ state, event }) => ({
+          memory: state.memory!,
+          input: (state.input ?? "") + event.key,
+        }),
       },
     ],
   },

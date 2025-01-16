@@ -14,7 +14,10 @@ interface HeterogenousEvent {
   readonly type: "NEXT";
 }
 
-export const heterogenousMachineOK = defineMachine<HeterogenousState, HeterogenousEvent>({
+export const heterogenousMachineOK = defineMachine<
+  HeterogenousState,
+  HeterogenousEvent
+>({
   initialState: { name: "a", aData: "" },
   states: {
     a: {
@@ -33,7 +36,10 @@ export const heterogenousMachineOK = defineMachine<HeterogenousState, Heterogeno
 /**
  * `enableCopyDataOnTransition` is not allowed when the state-data is heterogenous
  */
-export const heterogenousMachineCopyDataOnTransitionError = defineMachine<HeterogenousState, HeterogenousEvent>({
+export const heterogenousMachineCopyDataOnTransitionError = defineMachine<
+  HeterogenousState,
+  HeterogenousEvent
+>({
   // @ts-expect-error: `enableCopyDataOnTransition` not allowed for heterogenous state
   enableCopyDataOnTransition: true,
   initialState: { name: "a", aData: "" },
@@ -54,7 +60,10 @@ export const heterogenousMachineCopyDataOnTransitionError = defineMachine<Hetero
 /**
  * `enableCopyDataOnTransition` is not allowed when the state-data is heterogenous
  */
-export const heterogenousMachineCopyDataOnTransitionError2 = defineMachine<HeterogenousState, HeterogenousEvent>({
+export const heterogenousMachineCopyDataOnTransitionError2 = defineMachine<
+  HeterogenousState,
+  HeterogenousEvent
+>({
   // @ts-expect-error: `enableCopyDataOnTransition` not allowed for heterogenous state
   enableCopyDataOnTransition: false,
   initialState: { name: "a", aData: "" },
@@ -75,7 +84,10 @@ export const heterogenousMachineCopyDataOnTransitionError2 = defineMachine<Heter
 /**
  * `data()` callback missing for some transition
  */
-export const heterogenousMachineMissingDataError = defineMachine<HeterogenousState, HeterogenousEvent>({
+export const heterogenousMachineMissingDataError = defineMachine<
+  HeterogenousState,
+  HeterogenousEvent
+>({
   initialState: { name: "a", aData: "blah" },
   states: {
     a: {

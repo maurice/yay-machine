@@ -53,6 +53,9 @@
     },
     {
       "include": ["packages/example-machines"],
+      "formatter": {
+        "lineWidth": 80
+      },
       "linter": {
         "rules": {
           "style": {

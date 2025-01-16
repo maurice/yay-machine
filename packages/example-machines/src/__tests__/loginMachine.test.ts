@@ -24,19 +24,30 @@ test("conditionals are evaluated in order", () => {
 
   login = loginMachine.newInstance().start();
   login.send({ type: "LOGIN", username: "trustme", password: "password123" });
-  expect(login.state).toEqual({ name: "authenticated", username: "trustme", rememberMe: false });
+  expect(login.state).toEqual({
+    name: "authenticated",
+    username: "trustme",
+    rememberMe: false,
+  });
   login.send({ type: "LOGOUT" });
   expect(login.state).toEqual({ name: "unauthenticated" });
 
   login = loginMachine.newInstance().start();
   login.send({ type: "LOGIN", username: "trustme", password: "password123" });
-  expect(login.state).toEqual({ name: "authenticated", username: "trustme", rememberMe: false });
+  expect(login.state).toEqual({
+    name: "authenticated",
+    username: "trustme",
+    rememberMe: false,
+  });
   clock.tick(1000 * 60 * 5); // user is automatically logged out after 5 minutes
   expect(login.state).toEqual({ name: "unauthenticated" });
 
   login = loginMachine.newInstance().start();
   login.send({ type: "LOGIN", username: "trustme", password: "wrong" });
-  expect(login.state).toEqual({ name: "invalidCredentials", errorMessage: "Incorrect password" });
+  expect(login.state).toEqual({
+    name: "invalidCredentials",
+    errorMessage: "Incorrect password",
+  });
 
   login = loginMachine.newInstance().start();
   login.send({ type: "LOGIN", username: "someone", password: "whatever" });

@@ -19,7 +19,11 @@ interface BannedState {
   readonly name: "banned";
 }
 
-type LoginState = UnauthenticatedState | AuthenticatedState | InvalidCredentialsState | BannedState;
+type LoginState =
+  | UnauthenticatedState
+  | AuthenticatedState
+  | InvalidCredentialsState
+  | BannedState;
 
 interface LoginEvent {
   readonly type: "LOGIN";
@@ -36,44 +40,57 @@ interface LogoutEvent {
 /**
  * A silly example mainly demonstrating the use of conditional transitions.
  */
-export const loginMachine = defineMachine<LoginState, LoginEvent | LogoutEvent>({
-  initialState: { name: "unauthenticated" },
-  states: {
-    unauthenticated: {
-      on: {
-        LOGIN: [
-          { to: "banned", when: ({ event }) => event.username === "hackerman" },
-          {
-            to: "authenticated",
-            when: ({ event: { username, password } }) => username === "trustme" && password === "password123",
-            data: ({ event: { username, rememberMe } }) => ({ username, rememberMe: !!rememberMe }),
-          },
-          {
-            to: "invalidCredentials",
-            when: ({ event: { username } }) => username === "trustme",
-            data: () => ({ errorMessage: "Incorrect password" }),
-          },
-          {
-            to: "invalidCredentials",
-            data: ({ event: { username } }) => ({
-              errorMessage: `Unknown username "${username}" or incorrect password`,
-            }),
-          },
-        ],
-      },
-    },
-    authenticated: {
-      onEnter: ({ send }) => {
-        const timer = setTimeout(() => send({ type: "LOGOUT", fromSystem: true }), 1000 * 60 * 5); // automatically log out after 5 minutes
-        return () => clearTimeout(timer);
-      },
-      on: {
-        LOGOUT: {
-          to: "unauthenticated",
-          when: ({ state: { rememberMe }, event: { fromSystem } }) => !fromSystem || !rememberMe,
+export const loginMachine = defineMachine<LoginState, LoginEvent | LogoutEvent>(
+  {
+    initialState: { name: "unauthenticated" },
+    states: {
+      unauthenticated: {
+        on: {
+          LOGIN: [
+            {
+              to: "banned",
+              when: ({ event }) => event.username === "hackerman",
+            },
+            {
+              to: "authenticated",
+              when: ({ event: { username, password } }) =>
+                username === "trustme" && password === "password123",
+              data: ({ event: { username, rememberMe } }) => ({
+                username,
+                rememberMe: !!rememberMe,
+              }),
+            },
+            {
+              to: "invalidCredentials",
+              when: ({ event: { username } }) => username === "trustme",
+              data: () => ({ errorMessage: "Incorrect password" }),
+            },
+            {
+              to: "invalidCredentials",
+              data: ({ event: { username } }) => ({
+                errorMessage: `Unknown username "${username}" or incorrect password`,
+              }),
+            },
+          ],
         },
       },
+      authenticated: {
+        onEnter: ({ send }) => {
+          const timer = setTimeout(
+            () => send({ type: "LOGOUT", fromSystem: true }),
+            1000 * 60 * 5,
+          ); // automatically log out after 5 minutes
+          return () => clearTimeout(timer);
+        },
+        on: {
+          LOGOUT: {
+            to: "unauthenticated",
+            when: ({ state: { rememberMe }, event: { fromSystem } }) =>
+              !fromSystem || !rememberMe,
+          },
+        },
+      },
+      banned: {},
     },
-    banned: {},
   },
-});
+);

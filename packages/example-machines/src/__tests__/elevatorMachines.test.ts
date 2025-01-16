@@ -1,4 +1,12 @@
-import { type Mock, afterAll, beforeAll, beforeEach, expect, mock, test } from "bun:test";
+import {
+  type Mock,
+  afterAll,
+  beforeAll,
+  beforeEach,
+  expect,
+  mock,
+  test,
+} from "bun:test";
 import { type InstalledClock, install } from "@sinonjs/fake-timers";
 import type { Subscriber } from "yay-machine";
 import {
@@ -27,7 +35,9 @@ afterAll(() => {
  * Elevator machine tests
  */
 
-const summarize = (subscriber: Mock<Subscriber<ElevatorState, ElevatorEvent>>) =>
+const summarize = (
+  subscriber: Mock<Subscriber<ElevatorState, ElevatorEvent>>,
+) =>
   subscriber.mock.calls.map(([{ state }]) => {
     switch (state.name) {
       case "doorsClosing":
@@ -51,13 +61,28 @@ test("elevator visits floors sensibly", () => {
   elevator.subscribe(subscriber);
 
   elevator.start();
-  expect(elevator.state).toEqual({ name: "doorsClosed", currentFloor: 1, fractionalFloor: 0, floorsToVisit: [] });
+  expect(elevator.state).toEqual({
+    name: "doorsClosed",
+    currentFloor: 1,
+    fractionalFloor: 0,
+    floorsToVisit: [],
+  });
 
   elevator.send({ type: "VISIT_FLOOR", floor: 5 });
-  expect(elevator.state).toEqual({ name: "goingUp", currentFloor: 1, fractionalFloor: 0, floorsToVisit: [5] });
+  expect(elevator.state).toEqual({
+    name: "goingUp",
+    currentFloor: 1,
+    fractionalFloor: 0,
+    floorsToVisit: [5],
+  });
 
   elevator.send({ type: "VISIT_FLOOR", floor: 3 });
-  expect(elevator.state).toEqual({ name: "goingUp", currentFloor: 1, fractionalFloor: 0, floorsToVisit: [3, 5] });
+  expect(elevator.state).toEqual({
+    name: "goingUp",
+    currentFloor: 1,
+    fractionalFloor: 0,
+    floorsToVisit: [3, 5],
+  });
 
   clock.runAll();
   expect(subscriber).toHaveBeenCalledTimes(53);
@@ -118,7 +143,12 @@ test("elevator visits floors sensibly", () => {
   "doorsClosed @ 5",
 ]
 `);
-  expect(elevator.state).toEqual({ name: "doorsClosed", currentFloor: 5, fractionalFloor: 0, floorsToVisit: [] });
+  expect(elevator.state).toEqual({
+    name: "doorsClosed",
+    currentFloor: 5,
+    fractionalFloor: 0,
+    floorsToVisit: [],
+  });
 
   elevator.send({ type: "VISIT_FLOOR", floor: 2 });
   clock.runAll();
@@ -173,12 +203,22 @@ test("requests to visit floors are inserted according to current state", () => {
 
   elevator.send({ type: "VISIT_FLOOR", floor: 5 });
   clock.runAll();
-  expect(elevator.state).toEqual({ name: "doorsClosed", currentFloor: 5, fractionalFloor: 0, floorsToVisit: [] });
+  expect(elevator.state).toEqual({
+    name: "doorsClosed",
+    currentFloor: 5,
+    fractionalFloor: 0,
+    floorsToVisit: [],
+  });
 
   // let's make it go down first
   elevator.send({ type: "VISIT_FLOOR", floor: 2 });
   clock.next();
-  expect(elevator.state).toEqual({ name: "goingDown", currentFloor: 4, fractionalFloor: 9, floorsToVisit: [2] });
+  expect(elevator.state).toEqual({
+    name: "goingDown",
+    currentFloor: 4,
+    fractionalFloor: 9,
+    floorsToVisit: [2],
+  });
 
   // add various requests
   elevator.send({ type: "VISIT_FLOOR", floor: 6 });
@@ -194,7 +234,9 @@ test("requests to visit floors are inserted according to current state", () => {
   // where did it stop?
   clock.runAll();
   expect(subscriber).toHaveBeenCalledTimes(191);
-  expect(summarize(subscriber).filter((it) => it.startsWith("doorsOpen "))).toMatchInlineSnapshot(`
+  expect(
+    summarize(subscriber).filter((it) => it.startsWith("doorsOpen ")),
+  ).toMatchInlineSnapshot(`
 [
   "doorsOpen @ 5",
   "doorsOpen @ 2",
@@ -207,7 +249,12 @@ test("requests to visit floors are inserted according to current state", () => {
   // now make it go up
   elevator.send({ type: "VISIT_FLOOR", floor: 14 });
   clock.next();
-  expect(elevator.state).toEqual({ name: "goingUp", currentFloor: 9, fractionalFloor: 1, floorsToVisit: [14] });
+  expect(elevator.state).toEqual({
+    name: "goingUp",
+    currentFloor: 9,
+    fractionalFloor: 1,
+    floorsToVisit: [14],
+  });
 
   // add various requests
   elevator.send({ type: "VISIT_FLOOR", floor: 6 });
@@ -239,13 +286,28 @@ test("requests to visit floors are inserted according to current state", () => {
 test("controller sends elevators to requested floor", () => {
   const elevators: Elevators = [
     elevatorMachine.newInstance({
-      initialState: { name: "doorsClosed", currentFloor: 1, fractionalFloor: 0, floorsToVisit: [] },
+      initialState: {
+        name: "doorsClosed",
+        currentFloor: 1,
+        fractionalFloor: 0,
+        floorsToVisit: [],
+      },
     }),
     elevatorMachine.newInstance({
-      initialState: { name: "doorsClosed", currentFloor: 5, fractionalFloor: 0, floorsToVisit: [] },
+      initialState: {
+        name: "doorsClosed",
+        currentFloor: 5,
+        fractionalFloor: 0,
+        floorsToVisit: [],
+      },
     }),
     elevatorMachine.newInstance({
-      initialState: { name: "doorsClosed", currentFloor: 9, fractionalFloor: 0, floorsToVisit: [] },
+      initialState: {
+        name: "doorsClosed",
+        currentFloor: 9,
+        fractionalFloor: 0,
+        floorsToVisit: [],
+      },
     }),
   ];
   elevators.forEach((elevator) => elevator.start());
@@ -254,11 +316,17 @@ test("controller sends elevators to requested floor", () => {
     elevator.subscribe(subscriber);
     return subscriber;
   });
-  const controller = controllerMachine.newInstance({ initialState: { name: "idle", elevators, pendingRequests: [] } });
+  const controller = controllerMachine.newInstance({
+    initialState: { name: "idle", elevators, pendingRequests: [] },
+  });
   const subscriber = mock();
   controller.subscribe(subscriber);
   controller.start();
-  expect(controller.state).toEqual({ name: "idle", elevators, pendingRequests: [] });
+  expect(controller.state).toEqual({
+    name: "idle",
+    elevators,
+    pendingRequests: [],
+  });
 
   controller.send({ type: "REQUEST_ELEVATOR", floor: 5 });
   controller.send({ type: "REQUEST_ELEVATOR", floor: 13 });
@@ -279,7 +347,12 @@ test("controller sends elevators to requested floor", () => {
       { floor: 11, elevatorIndex: 2 },
     ],
   });
-  expect(elevators[0].state).toEqual({ name: "goingUp", currentFloor: 1, fractionalFloor: 0, floorsToVisit: [2] });
+  expect(elevators[0].state).toEqual({
+    name: "goingUp",
+    currentFloor: 1,
+    fractionalFloor: 0,
+    floorsToVisit: [2],
+  });
   expect(elevators[1].state).toEqual({
     name: "doorsOpening",
     currentFloor: 5,
@@ -295,19 +368,25 @@ test("controller sends elevators to requested floor", () => {
 
   // let's see where they stopped
   clock.runAll();
-  expect(summarize(subscribers[0]).filter((it) => it.startsWith("doorsOpen "))).toMatchInlineSnapshot(`
+  expect(
+    summarize(subscribers[0]).filter((it) => it.startsWith("doorsOpen ")),
+  ).toMatchInlineSnapshot(`
 [
   "doorsOpen @ 2",
 ]
 `);
-  expect(summarize(subscribers[1]).filter((it) => it.startsWith("doorsOpen "))).toMatchInlineSnapshot(`
+  expect(
+    summarize(subscribers[1]).filter((it) => it.startsWith("doorsOpen ")),
+  ).toMatchInlineSnapshot(`
 [
   "doorsOpen @ 5",
   "doorsOpen @ 6",
   "doorsOpen @ 7",
 ]
 `);
-  expect(summarize(subscribers[2]).filter((it) => it.startsWith("doorsOpen "))).toMatchInlineSnapshot(`
+  expect(
+    summarize(subscribers[2]).filter((it) => it.startsWith("doorsOpen ")),
+  ).toMatchInlineSnapshot(`
 [
   "doorsOpen @ 11",
   "doorsOpen @ 13",

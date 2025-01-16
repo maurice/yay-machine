@@ -2,7 +2,11 @@ import assert from "assert";
 import { defineMachine } from "yay-machine";
 
 interface GuessState {
-  readonly name: "init" | "playing" | "guessedCorrectly" | "tooManyIncorrectGuesses";
+  readonly name:
+    | "init"
+    | "playing"
+    | "guessedCorrectly"
+    | "tooManyIncorrectGuesses";
   readonly answer: number;
   readonly numGuesses: number;
   readonly maxGuesses: number;
@@ -17,7 +21,9 @@ interface NewGameEvent {
   readonly type: "NEW_GAME";
 }
 
-const incrementNumGuesses = ({ state }: { readonly state: GuessState }): GuessState => ({
+const incrementNumGuesses = ({
+  state,
+}: { readonly state: GuessState }): GuessState => ({
   ...state,
   numGuesses: state.numGuesses + 1,
 });
@@ -25,13 +31,20 @@ const incrementNumGuesses = ({ state }: { readonly state: GuessState }): GuessSt
 /**
  * Guess a number from 1 to 10
  */
-export const guessMachine = defineMachine<GuessState, GuessEvent | NewGameEvent>({
+export const guessMachine = defineMachine<
+  GuessState,
+  GuessEvent | NewGameEvent
+>({
   initialState: { name: "init", answer: 0, numGuesses: 0, maxGuesses: 5 },
   states: {
     init: {
       always: {
         to: "playing",
-        data: ({ state }) => ({ ...state, answer: Math.ceil(Math.random() * 10), numGuesses: 0 }),
+        data: ({ state }) => ({
+          ...state,
+          answer: Math.ceil(Math.random() * 10),
+          numGuesses: 0,
+        }),
       },
     },
     playing: {

@@ -52,7 +52,14 @@ type OrderState =
   | ReturnReceivedState;
 
 interface OrderEvent {
-  readonly type: "CANCEL" | "PROCESSING" | "DISPATCHED" | "DELIVERED" | "PENDING_RETURN" | "RETURN_RECEIVED" | "FINAL";
+  readonly type:
+    | "CANCEL"
+    | "PROCESSING"
+    | "DISPATCHED"
+    | "DELIVERED"
+    | "PENDING_RETURN"
+    | "RETURN_RECEIVED"
+    | "FINAL";
   readonly time: number;
 }
 
@@ -60,33 +67,58 @@ interface OrderEvent {
  * A simplified e-commerce order state-machine
  */
 export const orderMachine = defineMachine<OrderState, OrderEvent>({
-  initialState: { name: "placed", orderId: undefined!, placedTime: -1, items: [] },
+  initialState: {
+    name: "placed",
+    orderId: undefined!,
+    placedTime: -1,
+    items: [],
+  },
   states: {
     placed: {
       on: {
-        PROCESSING: { to: "processing", data: ({ state, event }) => ({ ...state, processingTime: event.time }) },
-        CANCEL: { to: "cancelled", data: ({ state, event }) => ({ ...state, cancelledTime: event.time }) },
+        PROCESSING: {
+          to: "processing",
+          data: ({ state, event }) => ({
+            ...state,
+            processingTime: event.time,
+          }),
+        },
+        CANCEL: {
+          to: "cancelled",
+          data: ({ state, event }) => ({ ...state, cancelledTime: event.time }),
+        },
       },
     },
     processing: {
       on: {
-        DISPATCHED: { to: "dispatched", data: ({ state, event }) => ({ ...state, dispatchTime: event.time }) },
+        DISPATCHED: {
+          to: "dispatched",
+          data: ({ state, event }) => ({ ...state, dispatchTime: event.time }),
+        },
       },
     },
     dispatched: {
       on: {
-        DELIVERED: { to: "delivered", data: ({ state, event }) => ({ ...state, deliveredTime: event.time }) },
+        DELIVERED: {
+          to: "delivered",
+          data: ({ state, event }) => ({ ...state, deliveredTime: event.time }),
+        },
       },
     },
     delivered: {
       onEnter: ({ send }) => {
-        const timer = setTimeout(() => send({ type: "FINAL", time: Date.now() }));
+        const timer = setTimeout(() =>
+          send({ type: "FINAL", time: Date.now() }),
+        );
         return () => clearTimeout(timer);
       },
       on: {
         PENDING_RETURN: {
           to: "pendingReturn",
-          data: ({ state, event }) => ({ ...state, pendingReturnTime: event.time }),
+          data: ({ state, event }) => ({
+            ...state,
+            pendingReturnTime: event.time,
+          }),
         },
         FINAL: {
           to: "final",
@@ -96,7 +128,10 @@ export const orderMachine = defineMachine<OrderState, OrderEvent>({
     },
     pendingReturn: {
       on: {
-        RETURN_RECEIVED: { to: "returnReceived", data: ({ state, event }) => ({ ...state, receivedTime: event.time }) },
+        RETURN_RECEIVED: {
+          to: "returnReceived",
+          data: ({ state, event }) => ({ ...state, receivedTime: event.time }),
+        },
       },
     },
   },
