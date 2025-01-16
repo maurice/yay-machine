@@ -56,16 +56,24 @@ interface ConnectionAttemptState {
   readonly connectionAttemptNum: number;
 }
 
-interface ConnectingState extends CommonState<"connecting">, ConnectionAttemptState {}
+interface ConnectingState
+  extends CommonState<"connecting">,
+    ConnectionAttemptState {}
 
-interface ReattemptConnectionState extends CommonState<"reattemptConnection">, ConnectionAttemptState {}
+interface ReattemptConnectionState
+  extends CommonState<"reattemptConnection">,
+    ConnectionAttemptState {}
 
-interface ConnectedState extends CommonState<"connected">, ConnectionAttemptState {
+interface ConnectedState
+  extends CommonState<"connected">,
+    ConnectionAttemptState {
   readonly connectionId: string;
   readonly connection: Connection;
 }
 
-interface ConnectionErrorState extends CommonState<"connectionError">, ConnectionAttemptState {
+interface ConnectionErrorState
+  extends CommonState<"connectionError">,
+    ConnectionAttemptState {
   readonly errorMessage: string;
 }
 
@@ -78,9 +86,17 @@ type ConnectionState =
 
 type ConnectionEvent =
   | { readonly type: "CONNECT"; readonly url: string }
-  | { readonly type: "CONNECTED"; readonly connectionId: string; readonly connection: Connection }
+  | {
+      readonly type: "CONNECTED";
+      readonly connectionId: string;
+      readonly connection: Connection;
+    }
   | { readonly type: "SEND"; readonly data: string }
-  | { readonly type: "CONNECTION_ERROR"; readonly code: number; readonly errorMessage: string }
+  | {
+      readonly type: "CONNECTION_ERROR";
+      readonly code: number;
+      readonly errorMessage: string;
+    }
   | { readonly type: "HEARTBEAT" }
   | { readonly type: "DISCONNECT" }
   | { readonly type: "DISCONNECTED" };
@@ -96,7 +112,10 @@ const isAuthError = (code: number) => code === 401 || code === 403;
  * - conditionals, single and multi
  * - `reenter:false`
  */
-export const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
+export const connectionMachine = defineMachine<
+  ConnectionState,
+  ConnectionEvent
+>({
   initialState: {
     name: "disconnected",
     maxReconnectionAttempts: 10,
@@ -110,7 +129,11 @@ export const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>
       on: {
         CONNECT: {
           to: "connecting",
-          data: ({ state, event: { url } }) => ({ ...state, url, connectionAttemptNum: 1 }),
+          data: ({ state, event: { url } }) => ({
+            ...state,
+            url,
+            connectionAttemptNum: 1,
+          }),
         },
       },
     },
@@ -118,8 +141,10 @@ export const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>
       onEnter: ({ state: { log, transport, url }, send }) => {
         log(`connecting to ${url}`);
         const connection = transport.connect(url);
-        connection.onconnect = (connectionId) => send({ type: "CONNECTED", connectionId, connection });
-        connection.onerror = (error) => send({ type: "CONNECTION_ERROR", ...error });
+        connection.onconnect = (connectionId) =>
+          send({ type: "CONNECTED", connectionId, connection });
+        connection.onerror = (error) =>
+          send({ type: "CONNECTION_ERROR", ...error });
       },
       on: {
         CONNECTED: {
@@ -134,7 +159,10 @@ export const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>
           {
             to: "connectionError",
             when: ({ event }) => isAuthError(event.code),
-            data: ({ state, event: { errorMessage } }) => ({ ...state, errorMessage }),
+            data: ({ state, event: { errorMessage } }) => ({
+              ...state,
+              errorMessage,
+            }),
           },
           {
             to: "reattemptConnection",
@@ -146,7 +174,8 @@ export const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>
     connected: {
       onEnter: ({ state: { log, url, connection, onReceive }, send }) => {
         log(`connected to ${url}`);
-        connection.onerror = (error) => send({ type: "CONNECTION_ERROR", ...error });
+        connection.onerror = (error) =>
+          send({ type: "CONNECTION_ERROR", ...error });
         connection.onmessage = (data) => {
           if (data === "❤️ HEARTBEAT") {
             send({ type: "HEARTBEAT" });
@@ -176,7 +205,10 @@ export const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>
     reattemptConnection: {
       onEnter: ({ state: { log, url }, send }) => {
         log("waiting to re-attempt connection...");
-        const timer = setTimeout(() => send({ type: "CONNECT", url }), Math.round(Math.random() * 10_000));
+        const timer = setTimeout(
+          () => send({ type: "CONNECT", url }),
+          Math.round(Math.random() * 10_000),
+        );
         return () => clearTimeout(timer);
       },
       on: {
@@ -204,10 +236,14 @@ export const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>
     },
   },
   on: {
-    HEARTBEAT: { data: ({ state }) => ({ ...state, lastHeartbeatTime: Date.now() }) },
+    HEARTBEAT: {
+      data: ({ state }) => ({ ...state, lastHeartbeatTime: Date.now() }),
+    },
     DISCONNECT: {
       to: "disconnected",
-      data: ({ state: { maxReconnectionAttempts, log, transport, onReceive } }) => ({
+      data: ({
+        state: { maxReconnectionAttempts, log, transport, onReceive },
+      }) => ({
         maxReconnectionAttempts,
         log,
         transport,

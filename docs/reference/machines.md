@@ -72,7 +72,12 @@ export type TapeEvent =
 
 export const tapeMachine = defineMachine<TapeState, TapeEvent>({
   enableCopyDataOnTransition: true,
-  initialState: { name: "stopped", speed: 0, aspectRatio: "12x9", hardware: undefined! },
+  initialState: {
+    name: "stopped",
+    speed: 0,
+    aspectRatio: "12x9",
+    hardware: undefined!,
+  },
   onStart: ({ state, send }) => {
     const cleanupFns = [
       state.hardware.on("end", () => send({ type: "STOP" })),
@@ -102,19 +107,29 @@ export const tapeMachine = defineMachine<TapeState, TapeEvent>({
     },
     scrubbing: {
       onEnter: ({ state: { hardware, speed } }) => {
-        hardware.startMotor(speed > 1 ? "forward" : "backward", Math.abs(speed));
+        hardware.startMotor(
+          speed > 1 ? "forward" : "backward",
+          Math.abs(speed),
+        );
       },
       on: {
         PAUSE: { to: "paused" },
         SCRUB: [
           {
             to: "scrubbing",
-            data: ({ state, event }) => ({ ...state, speed: event.direction === "forward" ? 2 : -2 }),
-            when: ({ state, event }) => state.speed > 0 !== (event.direction === "forward"),
+            data: ({ state, event }) => ({
+              ...state,
+              speed: event.direction === "forward" ? 2 : -2,
+            }),
+            when: ({ state, event }) =>
+              state.speed > 0 !== (event.direction === "forward"),
           },
           {
             to: "scrubbing",
-            data: ({ state }) => ({ ...state, speed: state.speed > 1 ? state.speed + 1 : state.speed - 1 }),
+            data: ({ state }) => ({
+              ...state,
+              speed: state.speed > 1 ? state.speed + 1 : state.speed - 1,
+            }),
           },
         ],
       },
@@ -133,17 +148,22 @@ export const tapeMachine = defineMachine<TapeState, TapeEvent>({
     SCRUB: [
       {
         to: "scrubbing",
-        when: ({ state: { hardware }, event }) => event.direction === "forward" && hardware.getPosition() < 1,
+        when: ({ state: { hardware }, event }) =>
+          event.direction === "forward" && hardware.getPosition() < 1,
         data: ({ state }) => ({ ...state, speed: 2 }),
       },
       {
         to: "scrubbing",
-        when: ({ state: { hardware }, event }) => event.direction === "backward" && hardware.getPosition() > 0,
+        when: ({ state: { hardware }, event }) =>
+          event.direction === "backward" && hardware.getPosition() > 0,
         data: ({ state }) => ({ ...state, speed: -2 }),
       },
     ],
     SET_ASPECT_RATIO: {
-      data: ({ state, event }) => ({ ...state, aspectRatio: event.aspectRatio }),
+      data: ({ state, event }) => ({
+        ...state,
+        aspectRatio: event.aspectRatio,
+      }),
     },
   },
 });

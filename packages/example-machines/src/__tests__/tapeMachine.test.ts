@@ -28,7 +28,14 @@ const mockHardware = () => {
 const setup = () => {
   const { hardware, setPosition, fireEvent } = mockHardware();
   const tape = tapeMachine
-    .newInstance({ initialState: { name: "stopped", speed: 0, aspectRatio: "12x9", hardware } })
+    .newInstance({
+      initialState: {
+        name: "stopped",
+        speed: 0,
+        aspectRatio: "12x9",
+        hardware,
+      },
+    })
     .start();
   return { tape, hardware, setPosition, fireEvent };
 };

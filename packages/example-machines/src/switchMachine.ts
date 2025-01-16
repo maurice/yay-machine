@@ -20,7 +20,10 @@ interface OnEvent {
 /**
  * Models a switch - about as simple as it gets.
  */
-export const switchMachine = defineMachine<OffState | OnState, OffEvent | OnEvent>({
+export const switchMachine = defineMachine<
+  OffState | OnState,
+  OffEvent | OnEvent
+>({
   initialState: { name: "off" },
   states: {
     off: {

@@ -10,7 +10,14 @@ type HealthState = Readonly<{
    * surviving: strength + stamina are between 10 and 5
    * critical: strength + stamina are between 5 and 0
    */
-  name: "checkHealth" | "invincible" | "thriving" | "moderate" | "surviving" | "critical" | "expired";
+  name:
+    | "checkHealth"
+    | "invincible"
+    | "thriving"
+    | "moderate"
+    | "surviving"
+    | "critical"
+    | "expired";
   strength: number; // 0..10 inclusive
   stamina: number; // 0..10 inclusive
   invincibilityStarted: number;
@@ -37,7 +44,12 @@ const applyFirstAid = (
  */
 export const healthMachine = defineMachine<HealthState, HealthEvent>({
   enableCopyDataOnTransition: true,
-  initialState: { name: "checkHealth", strength: 10, stamina: 10, invincibilityStarted: 0 },
+  initialState: {
+    name: "checkHealth",
+    strength: 10,
+    stamina: 10,
+    invincibilityStarted: 0,
+  },
   states: {
     checkHealth: {
       always: [
@@ -76,7 +88,10 @@ export const healthMachine = defineMachine<HealthState, HealthEvent>({
           data: ({ state, event }) => applyFirstAid(state, event),
         },
         DAMAGE: { to: "invincible", reenter: false },
-        HUMAN_AGAIN: { to: "checkHealth", data: ({ state }) => ({ ...state, invincibilityStarted: 0 }) },
+        HUMAN_AGAIN: {
+          to: "checkHealth",
+          data: ({ state }) => ({ ...state, invincibilityStarted: 0 }),
+        },
       },
     },
   },
@@ -84,7 +99,10 @@ export const healthMachine = defineMachine<HealthState, HealthEvent>({
     GOD_LIKE: {
       to: "invincible",
       when: ({ event }) => event.compatibleWith === "human",
-      data: ({ state }) => ({ ...state, invincibilityStarted: performance.now() }),
+      data: ({ state }) => ({
+        ...state,
+        invincibilityStarted: performance.now(),
+      }),
     },
     DAMAGE: {
       to: "checkHealth",
@@ -109,31 +127,66 @@ health.subscribe(({ state }) => {
     console.log("GAME OVER");
   }
 });
-assert.deepStrictEqual(health.state, { name: "thriving", strength: 10, stamina: 10, invincibilityStarted: 0 });
+assert.deepStrictEqual(health.state, {
+  name: "thriving",
+  strength: 10,
+  stamina: 10,
+  invincibilityStarted: 0,
+});
 
 health.send({ type: "DAMAGE", stamina: 1, strength: 3 });
 health.send({ type: "DAMAGE", stamina: 2, strength: 1 });
 health.send({ type: "DAMAGE", stamina: 1, strength: 1 });
-assert.deepStrictEqual(health.state, { name: "moderate", strength: 5, stamina: 6, invincibilityStarted: 0 });
+assert.deepStrictEqual(health.state, {
+  name: "moderate",
+  strength: 5,
+  stamina: 6,
+  invincibilityStarted: 0,
+});
 
 health.send({ type: "FIRST_AID", stamina: 5, strength: 5 });
-assert.deepStrictEqual(health.state, { name: "thriving", strength: 10, stamina: 10, invincibilityStarted: 0 });
+assert.deepStrictEqual(health.state, {
+  name: "thriving",
+  strength: 10,
+  stamina: 10,
+  invincibilityStarted: 0,
+});
 
 health.send({ type: "DAMAGE", stamina: 4, strength: 3 });
 health.send({ type: "DAMAGE", stamina: 5, strength: 4 });
-assert.deepStrictEqual(health.state, { name: "critical", strength: 3, stamina: 1, invincibilityStarted: 0 });
+assert.deepStrictEqual(health.state, {
+  name: "critical",
+  strength: 3,
+  stamina: 1,
+  invincibilityStarted: 0,
+});
 
 health.send({ type: "GOD_LIKE", compatibleWith: "human" });
 const invincibilityStarted = health.state.invincibilityStarted; // performance.now()
 assert(invincibilityStarted > 0);
-assert.deepStrictEqual(health.state, { name: "invincible", strength: 3, stamina: 1, invincibilityStarted });
+assert.deepStrictEqual(health.state, {
+  name: "invincible",
+  strength: 3,
+  stamina: 1,
+  invincibilityStarted,
+});
 
 health.send({ type: "DAMAGE", stamina: 9, strength: 7 });
 health.send({ type: "DAMAGE", stamina: 7, strength: 6 });
-assert.deepStrictEqual(health.state, { name: "invincible", strength: 3, stamina: 1, invincibilityStarted }); // still
+assert.deepStrictEqual(health.state, {
+  name: "invincible",
+  strength: 3,
+  stamina: 1,
+  invincibilityStarted,
+}); // still
 
 health.send({ type: "FIRST_AID", stamina: 5, strength: 5 });
 health.send({ type: "HUMAN_AGAIN" }); // test usage - it's supposed to be sent from a side-effect via a timer
-assert.deepStrictEqual(health.state, { name: "moderate", strength: 8, stamina: 6, invincibilityStarted: 0 });
+assert.deepStrictEqual(health.state, {
+  name: "moderate",
+  strength: 8,
+  stamina: 6,
+  invincibilityStarted: 0,
+});
 
 // etc ...

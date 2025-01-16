@@ -20,7 +20,8 @@ type HeaterEvent =
   | { readonly type: "COOLER" };
 
 // simulate some self-diagnostics integrity-check of a physical machine
-const isHeaterOk = async (state: HeaterState): Promise<boolean> => state.integrityCheck === "2+2=4";
+const isHeaterOk = async (state: HeaterState): Promise<boolean> =>
+  state.integrityCheck === "2+2=4";
 
 /**
  * A room-heater/cooler
@@ -45,26 +46,41 @@ export const heaterMachine = defineMachine<HeaterState, HeaterEvent>({
         });
       },
       on: {
-        CHECK_OK: [{ to: "heat", when: ({ state }) => state.temperature >= MIN_HEAT }, { to: "cool" }],
-        CHECK_FAILED: { to: "error", data: ({ state }) => ({ ...state, errorCode: "NOTOK" }) },
+        CHECK_OK: [
+          { to: "heat", when: ({ state }) => state.temperature >= MIN_HEAT },
+          { to: "cool" },
+        ],
+        CHECK_FAILED: {
+          to: "error",
+          data: ({ state }) => ({ ...state, errorCode: "NOTOK" }),
+        },
       },
     },
     heat: {
       on: {
         HOTTER: {
           to: "heat",
-          data: ({ state }) => ({ ...state, temperature: state.temperature + 1 }),
+          data: ({ state }) => ({
+            ...state,
+            temperature: state.temperature + 1,
+          }),
           when: ({ state }) => state.temperature < MAX_TEMP,
         },
         COOLER: [
           {
             to: "heat",
-            data: ({ state }) => ({ ...state, temperature: state.temperature - 1 }),
+            data: ({ state }) => ({
+              ...state,
+              temperature: state.temperature - 1,
+            }),
             when: ({ state }) => state.temperature > MIN_HEAT,
           },
           {
             to: "cool",
-            data: ({ state }) => ({ ...state, temperature: state.temperature - 1 }),
+            data: ({ state }) => ({
+              ...state,
+              temperature: state.temperature - 1,
+            }),
           },
         ],
       },
@@ -74,17 +90,26 @@ export const heaterMachine = defineMachine<HeaterState, HeaterEvent>({
         HOTTER: [
           {
             to: "cool",
-            data: ({ state }) => ({ ...state, temperature: state.temperature + 1 }),
+            data: ({ state }) => ({
+              ...state,
+              temperature: state.temperature + 1,
+            }),
             when: ({ state }) => state.temperature + 1 < MIN_HEAT,
           },
           {
             to: "heat",
-            data: ({ state }) => ({ ...state, temperature: state.temperature + 1 }),
+            data: ({ state }) => ({
+              ...state,
+              temperature: state.temperature + 1,
+            }),
           },
         ],
         COOLER: {
           to: "cool",
-          data: ({ state }) => ({ ...state, temperature: state.temperature - 1 }),
+          data: ({ state }) => ({
+            ...state,
+            temperature: state.temperature - 1,
+          }),
           when: ({ state }) => state.temperature > MIN_TEMP,
         },
       },
