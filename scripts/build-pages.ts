@@ -44,7 +44,7 @@ marked.setOptions({
 
 marked.use(gfmHeadingId());
 
-const template = (await readFile(`${docsAssetsDir}/pages-template.html`)).toString();
+const template = (await readFile(`${docsAssetsDir}/pages-template.hb`)).toString();
 
 for (const file of files) {
   if (file.name === "README.md") {
