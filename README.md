@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://maurice.github.io/yay-machine/"><img src="https://github.com/user-attachments/assets/03dd78c1-4396-42c4-a32c-aaa7c927f09e" alt="Logo"></a>
+  <a href="https://yay-machine.js.org/"><img src="https://github.com/user-attachments/assets/03dd78c1-4396-42c4-a32c-aaa7c927f09e" alt="Logo"></a>
 </p>
 
 <p align="center">
@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-<a href="https://maurice.github.io/yay-machine/"><strong>yay-machine</strong> is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.</a>
+<a href="https://yay-machine.js.org/"><strong>yay-machine</strong> is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.</a>
 </p>
 
 # Project status
@@ -17,7 +17,7 @@
 * ✅ MVP feature-set is implemented and ready for use
 * 📦 [Deployed to public NPM registry](https://www.npmjs.com/package/yay-machine) and available to install now
 * 📢 Ready for testing in real projects and open to feedback
-* 🚧 [Docs](https://maurice.github.io/yay-machine/) and live examples are being worked on right now
+* 🚧 [Docs](https://yay-machine.js.org/) and live examples are being worked on right now
 
 # Packages
 
