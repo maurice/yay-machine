@@ -25,8 +25,7 @@ interface ConnectionError {
  * Application connection state-machine
  */
 
-interface CommonState<Name extends string> {
-  readonly name: Name;
+interface StateData {
   readonly maxReconnectionAttempts: number;
   readonly log: (message: string) => void;
   readonly transport: Transport;
@@ -34,31 +33,31 @@ interface CommonState<Name extends string> {
   readonly lastHeartbeatTime: number;
 }
 
-interface DisconnectedState extends CommonState<"disconnected"> {}
+interface DisconnectedState extends StateData {
+  readonly name: "disconnected";
+}
 
 interface ConnectionAttemptState {
   readonly url: string;
   readonly connectionAttemptNum: number;
 }
 
-interface ConnectingState
-  extends CommonState<"connecting">,
-    ConnectionAttemptState {}
+interface ConnectingState extends StateData, ConnectionAttemptState {
+  readonly name: "connecting";
+}
 
-interface ReattemptConnectionState
-  extends CommonState<"reattemptConnection">,
-    ConnectionAttemptState {}
+interface ReattemptConnectionState extends StateData, ConnectionAttemptState {
+  readonly name: "reattemptConnection";
+}
 
-interface ConnectedState
-  extends CommonState<"connected">,
-    ConnectionAttemptState {
+interface ConnectedState extends StateData, ConnectionAttemptState {
+  readonly name: "connected";
   readonly connectionId: string;
   readonly connection: Connection;
 }
 
-interface ConnectionErrorState
-  extends CommonState<"connectionError">,
-    ConnectionAttemptState {
+interface ConnectionErrorState extends StateData, ConnectionAttemptState {
+  readonly name: "connectionError";
   readonly errorMessage: string;
 }
 

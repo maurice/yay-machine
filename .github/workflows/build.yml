@@ -31,7 +31,9 @@ jobs:
         run: bun run build
 
       - name: Pages check
-        run: bun run pages
+        run: |
+          ls -la
+          bun run pages
 
       - name: Check types
         run: bun check:types

@@ -11,6 +11,20 @@ const docsAssetsDir = `${docsDir}/assets`;
 const pagesDir = "pages";
 const pagesAssetsDir = `${pagesDir}/assets`;
 
+const recursiveCopy = async (fromDir: string, toDir: string) => {
+  const files = (await readdir(fromDir, { recursive: true, withFileTypes: true })).filter((it) => it.isFile());
+  for (const file of files) {
+    const relativePath = file.parentPath.slice(fromDir.length + 1);
+    const destDir = [toDir, relativePath].join("/");
+    if (!(await exists(destDir))) {
+      process.stdout.write(`mkdir: ${destDir}`);
+    }
+    const sourceFile = `${file.parentPath}/${file.name}`;
+    process.stdout.write(`cp: ${sourceFile} -> ${destDir}\n`);
+    await cp(sourceFile, `${destDir}/${file.name}`);
+  }
+};
+
 const files = (await readdir(docsDir, { recursive: true, withFileTypes: true })).filter(
   (it) => it.isFile() && it.name.endsWith(".md"),
 );
@@ -19,8 +33,13 @@ if (await exists(pagesDir)) {
   await rm(pagesDir, { recursive: true });
 }
 
-await mkdir(pagesAssetsDir, { recursive: true });
-await cp(docsAssetsDir, pagesAssetsDir, { recursive: true });
+process.stdout.write(`mkdir: ${pagesAssetsDir}\n`);
+await mkdir(pagesAssetsDir, { recursive: true }).catch(() => true);
+await recursiveCopy(docsAssetsDir, pagesAssetsDir);
+await recursiveCopy("assets", pagesAssetsDir);
+
+const highlightStylesDir = `${pagesAssetsDir}/highlight_js`;
+await recursiveCopy("./node_modules/highlight.js/styles", highlightStylesDir);
 
 const marked = new Marked(
   markedHighlight({
@@ -44,7 +63,7 @@ marked.setOptions({
 
 marked.use(gfmHeadingId());
 
-const template = (await readFile(`${docsAssetsDir}/pages-template.hb`)).toString();
+const template = (await readFile("assets/pages-template.hb")).toString();
 
 for (const file of files) {
   if (file.name === "README.md") {
@@ -67,13 +86,14 @@ for (const file of files) {
     .trim();
 
   const destFile = `${sourceFile.substring(5).replace(".md", ".html")}`;
+  process.stdout.write(`transform: ${sourceFile} -> ${destFile}\n`);
   const depth = destFile.split("/").length - 1;
   const relativeRoot = `${depth === 0 ? "./" : "../".repeat(depth)}`;
   const assetsPath = `${relativeRoot}assets`;
 
   const pageNav = nav
-    .replace("about.html", "")
     .replace(`<a href="./${destFile}">`, `<a class="menu-selected" href="./${destFile}">`)
+    .replace("about.html", "")
     .replaceAll('href="./', `href="${relativeRoot}`);
 
   let html = await marked.parse(contents);
@@ -108,12 +128,8 @@ for (const file of files) {
   }
 
   const destDir = dirname(destFile);
-  await mkdir(`pages/${destDir}`, { recursive: true });
+  await mkdir(`pages/${destDir}`, { recursive: true }).catch(() => true);
   await writeFile(`pages/${destFile}`, page);
 }
 
-await cp("assets", pagesAssetsDir, { recursive: true });
-const highlightStylesDir = `${pagesAssetsDir}/highlight_js`;
-await mkdir(highlightStylesDir, { recursive: true });
-await cp("./node_modules/highlight.js/styles", highlightStylesDir, { recursive: true });
 await rename(`${pagesDir}/about.html`, `${pagesDir}/index.html`);
