@@ -62,9 +62,9 @@ const state: ConnectionState = connection.state;
 assert(state).deepStrictEqual({ name: 'disconnected' });
 ```
 
-## Subscribing to a machine's state changes
+## Subscribing to a machine's state
 
-We can subscribe to machine's state, to be notified about state changes as they happen
+We can subscribe to a machine's state, to be notified about state changes as they happen
 
 ```typescript
 const connection = connectionMachine.newInstance().start();
@@ -152,7 +152,7 @@ if (connection.state.name === 'connected') {
 
 We can also define [conditional transitions](./transitions.md) that query both state-data and event-payloads to decide which transition to take.
 
-### The `enableCopyDataOnTransition` setting for homogenous state-data
+### `enableCopyDataOnTransition` for homogenous state-data
 
 For machines with homogenous state-data and a lot of transitions, you might find you are writing a lot of
 boilerplate `data()` callbacks that simply copy the state, eg
