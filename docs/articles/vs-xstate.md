@@ -31,11 +31,11 @@ Additionally we value library size and performance, and keeping things small and
 
 ### Bundle size
 
-| `xstate@5.19.2` | `yay-machine@1.2.1` |
+| `xstate@5.19.2` | `yay-machine@1.3.0` |
 | ---------- | --------------- |
-| [![XState bundlephobia stats](../assets/bundlephobia-xstate.png "https://bundlephobia.com/package/xstate@5.19.2")](https://bundlephobia.com/package/xstate@5.19.2) | [![yay-machine bundlephobia stats](../assets/bundlephobia-yay-machine.png "https://bundlephobia.com/package/yay-machine@1.2.1")](https://bundlephobia.com/package/yay-machine@1.2.1) |
+| [![XState bundlephobia stats](../assets/bundlephobia-xstate.png "https://bundlephobia.com/package/xstate@5.19.2")](https://bundlephobia.com/package/xstate@5.19.2) | [![yay-machine bundlephobia stats](../assets/bundlephobia-yay-machine.png "https://bundlephobia.com/package/yay-machine@1.3.0")](https://bundlephobia.com/package/yay-machine@1.3.0) |
 
-Stats from [![https://bundlephobia.com/](../assets/bundlephobia-logo.png "bundlephobia.com")](https://bundlephobia.com/) 🙏.
+Stats from [**BUNDLE**PHOBIA](https://bundlephobia.com/) 🙏.
 
 ### Runtime performance
 

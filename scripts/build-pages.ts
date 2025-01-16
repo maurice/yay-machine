@@ -36,7 +36,7 @@ const marked = new Marked(
   }),
 );
 
-const nav = (await marked.parse((await readFile(`${docsDir}/nav.md`)).toString())).replaceAll('.md"', '.html"');
+const nav = (await marked.parse((await readFile(`${docsDir}/README.md`)).toString())).replaceAll('.md"', '.html"');
 
 marked.setOptions({
   gfm: true,
@@ -45,7 +45,7 @@ marked.setOptions({
 marked.use(gfmHeadingId());
 
 for (const file of files) {
-  if (file.name === "nav.md") {
+  if (file.name === "README.md") {
     continue;
   }
   const sourceFile = `${file.parentPath}/${file.name}`;
