@@ -186,6 +186,17 @@ blockquote {
   border-left: 3px solid var(--theme-yellow);
 }
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    border: 1px solid #d1d9e0;
+    padding: 0.5em;
+  }
+}
+
 hr {
   height: 1px;
   background-color: var(--theme-yellow);
