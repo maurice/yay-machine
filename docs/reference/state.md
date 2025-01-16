@@ -5,6 +5,7 @@ State represents all the possible states in which a machine can exist.
 > 💡 **Remember**
 >
 > Machines can model business-logic, workflows, game or UI components, app state, ... lots of things.
+>
 > So when we say *"all the possible states in which a machine can exist"* we mean "all the possible states in which **the thing you are modelling** can exist".
 
 ## States are finite
