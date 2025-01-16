@@ -213,8 +213,8 @@ code:not(.hljs) {
 
 code.language-mermaid {
   background-size: 25px 25px;
-  background-image: linear-gradient(to right, #65ebb48c 1px, transparent 1px),
-    linear-gradient(to bottom, #65ebb48c 1px, transparent 1px);
+  background-image: linear-gradient(to right, #abeb658c 1px, transparent 1px),
+    linear-gradient(to bottom, #abeb658c 1px, transparent 1px);
   background-position: center;
   background-color: white;
 

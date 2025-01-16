@@ -24,7 +24,7 @@ They have a vast matrix of features and concepts. They have so much documentatio
 
 But they take weeks to learn and months to master.
 
-It might be hard to find existing examples using the features you are interested in. And if you work on a project with other people and start using some new advanced features, your code may quickly become the thing that nobody else understands or wants to touch!
+It might be hard to find existing examples using the features you are interested in. And if you work on a project with other people and start using some advanced features, your code may quickly become the thing that nobody else understands or wants to touch!
 
 They might only work with additional code-generation tools or IDE extensions; more complexity you don't need.
 
@@ -42,7 +42,7 @@ Our official project goals are
 
 * To provide the best modern pragmatic state-machine library for TypeScript
 * Strong TypeScript types without compromise
-* Minimal feature-set and lightweight implementation for tiny bundle sizes and performance for your mission-critical workloads
+* Minimal feature-set and lightweight implementation for tiny bundle sizes, and performance for your mission-critical workloads
 * No code-generation or IDE extensions required
 
 ## Philosophy
@@ -53,11 +53,11 @@ Firstly we're not trying to be the most feature-rich TypeScript state-machine li
 
 We believe a few powerful primitives go a long way; it's faster to learn and get working.
 
-Specifically **yay-machine** doesn't currently support state-charts or any hierarchical or parallel state-machine definition: **yay-machine** currently only supports *flat state-machines*. In practice - in our experience - this isn't really a limiting factor. You can solve the same all problems that you might use a hierarchical state-machine for, just in different ways.
+**yay-machine** doesn't currently support state-charts or any hierarchical or parallel state-machine definition, only *flat state-machines*. In practice - in our experience - this isn't really a limiting factor. You can solve the same all problems that you might use a hierarchical state-machine for, just in different ways.
 
 ### Make it accessible
 
-Second we like pragmatic and ergonomic library concepts and APIs. We may choose alternative names for existing concepts in the academic literature, or take a different path to other libraries if we think it makes more sense.
+Second we like pragmatic and ergonomic library concepts and APIs. We may choose alternative names for existing concepts vs the academic literature, or take a different path to other libraries if we think it makes more sense.
 
 ### Explicit types
 

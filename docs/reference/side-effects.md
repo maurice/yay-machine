@@ -32,7 +32,7 @@ More concretely
 * a **state `onExit()` side-effect**  is transient, since it only exists while exiting the state, so it is cleaned-up immediately
 * a **machine `onStop()` side-effect**  is transient, since it only exists while stopping the machine, so it is cleaned-up immediately
 
-## Machine lifecycle side-effects: `onStart()`, `onStop()`
+## Machine lifecycle: `onStart()`, `onStop()`
 
 These two optional side-effects are performed when the machine is started/stopped
 
@@ -50,7 +50,7 @@ They receive a single parameter containing the machine's current `state` and a `
 >
 > Return a cleanup function to free resources (clear timers, disconnect subscriptions, ....)
 
-## State lifecycle side-effects: `onEnter()`, `onExit()`
+## State lifecycle: `onEnter()`, `onExit()`
 
 These two optional side-effects are performed when a specific state is entered or exited
 
@@ -76,7 +76,7 @@ Like machine-lifecycle side-effects, they receive a single parameter containing 
 >
 > See the section on [`reenter: false` in the states documentation](./state.md) if you need to keep `onEnter()` side-effects alive while transitioning from a state back to the same state.
 
-## Transition side-effect: `onTransition()`
+## Transition: `onTransition()`
 
 This optional side-effect is performed during a transition from a specific state or *any state*
 

@@ -44,6 +44,8 @@ marked.setOptions({
 
 marked.use(gfmHeadingId());
 
+const template = (await readFile(`${docsAssetsDir}/pages-template.html`)).toString();
+
 for (const file of files) {
   if (file.name === "README.md") {
     continue;
@@ -93,52 +95,21 @@ for (const file of files) {
     html = html.replace("Next page:", '<p class="prev-next">Next page</p>');
   }
 
-  html = `
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>${title} - yay-machine</title>
-    <!-- todo extract this from metadata -->
-    <meta name="description" content="yay-machine" />
-    <link rel="icon" href="${assetsPath}/icon.png" />
-    <link href="${assetsPath}/styles.css" rel="stylesheet" />
-    <link href="${assetsPath}/highlight_js/rose-pine-dawn.css" rel="stylesheet" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
-<script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({ startOnLoad: true });
-</script>
-  </head>
-  <body>
-    <header>
-      <a href="https://yay-machine.js.org/"><img src="${assetsPath}/yay-machine.png" alt="Logo" width="300px"></a>
-      <aside>
-        <a href="https://github.com/maurice/yay-machine" title="GitHub"><img src="${assetsPath}/github-logo.svg" class="icon-link"></a>
-        <a href="https://www.npmjs.com/package/yay-machine" title="NPM"><img src="${assetsPath}/package.svg" class="icon-link"></a>
-      </aside>
-    </header>
-    <section>
-      <nav>
-        <div class="nav-spacer"></div>
-        <div class="menu">
-        ${pageNav}
-        </div>
-      </nav>
-      <div class="body-content">
-        <article>
-          ${html}
-        </article>
-      </div>
-    </section>
-  </body>
-</html>
-`;
+  const variables = {
+    title,
+    assetsPath,
+    pageNav,
+    html,
+  };
+
+  let page = template;
+  for (const [name, value] of Object.entries(variables)) {
+    page = page.replaceAll(`{{ ${name} }}`, value);
+  }
+
   const destDir = dirname(destFile);
   await mkdir(`pages/${destDir}`, { recursive: true });
-  await writeFile(`pages/${destFile}`, html);
+  await writeFile(`pages/${destFile}`, page);
 }
 
 await cp("assets", pagesAssetsDir, { recursive: true });

@@ -5,7 +5,7 @@ To build state-machines with **yay-machine**
 1. first we describe the behaviour of the machine at compile-time
 2. then we create instances and operate the machines at run-time
 
-## Define the machine at compile-time
+## Define machine at compile-time
 
 We describe a state-machine's behaviour - it's potential [states](./state.md), [events](./events.md), [transitions](./transitions.md) and [side-effects](./side-effects.md) - with `defineMachine<StateType, EventType>({ /* ... */ })`, like so
 
@@ -171,7 +171,7 @@ export const tapeMachine = defineMachine<TapeState, TapeEvent>({
 
 This creates a "blueprint" for machine instances.
 
-## Instantiating and operating machines at run-time
+## Instantiate and operate machines at run-time
 
 Once we have a machine-definition, we can easily create any number of machine-instances, start them, subscribe to their state, send them events, and eventually stop them.
 
