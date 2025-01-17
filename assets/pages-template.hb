@@ -20,15 +20,17 @@
     <header>
       <a href="https://yay-machine.js.org/"><img src="{{ assetsPath }}/yay-machine.png" alt="Logo" width="300px"></a>
       <aside>
-        <a href="https://github.com/maurice/yay-machine" title="GitHub"><img src="{{ assetsPath }}/github-logo.svg" class="icon-link"></a>
-        <a href="https://www.npmjs.com/package/yay-machine" title="NPM"><img src="{{ assetsPath }}/package.svg" class="icon-link"></a>
+        <a href="https://github.com/maurice/yay-machine" title="GitHub"><img src="{{ assetsPath }}/github-logo.svg" class="icon-link"/></a>
+        <a href="https://www.npmjs.com/package/yay-machine" title="NPM"><img src="{{ assetsPath }}/package.svg" class="icon-link"/></a>
+        <button class="nav-button open-nav" onclick="document.body.classList.add('nav-open')"><img src="{{ assetsPath }}/list.svg" class="nav-link"/></button>
+        <button class="nav-button close-nav" onclick="document.body.classList.remove('nav-open')"><img src="{{ assetsPath }}/x.svg" class="nav-link"/></button>
       </aside>
     </header>
     <section>
-      <nav>
+      <nav class="wide">
         <div class="nav-spacer"></div>
         <div class="menu">
-        {{ pageNav }}
+          {{ pageNav }}
         </div>
       </nav>
       <div class="body-content">
@@ -36,6 +38,11 @@
           {{ html }}
         </article>
       </div>
+      <nav class="not-wide">
+        <div class="menu">
+          {{ pageNav }}
+        </div>
+      </nav>
     </section>
   </body>
 </html>
