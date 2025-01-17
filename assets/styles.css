@@ -3,6 +3,7 @@
   --theme-dark-yellow: #cfa600;
   --theme-orange: #ff914d;
   --theme-red: #ff3131;
+  --theme-black: #1f2e28;
 }
 
 * {
@@ -13,7 +14,7 @@ body {
   font-family: sans-serif;
   padding: 0;
   margin: 0;
-  color: #1f2e28;
+  color: var(--theme-black);
   line-height: 1.5;
   min-height: 100vh;
 }
@@ -356,6 +357,53 @@ code.language-mermaid {
 
 pre {
   line-height: 1.45;
+  position: relative;
+
+  .tooltip {
+    position: absolute;
+    top: 0.5em;
+    right: 3em;
+    color: white;
+
+    .tooltip-body {
+      background-color: var(--theme-black);
+      display: inline-block;
+      padding: 0.5em 1em;
+      border-radius: 5px;
+    }
+
+    .tooltip-arrow {
+      box-sizing: content-box;
+      display: inline-block;
+      width: 0;
+      height: 0;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 10px solid var(--theme-black);
+    }
+  }
+}
+
+button {
+  cursor: pointer;
+}
+
+.copy-button {
+  border: none;
+  background: none;
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+
+  img.copy-icon,
+  img.copied-icon {
+    height: 24px;
+    width: 24px;
+  }
+
+  img.copied-icon {
+    filter: invert(39%) sepia(95%) saturate(1964%) hue-rotate(101deg) brightness(100%) contrast(103%);
+  }
 }
 
 ul:not(.guided-path-navigation) {
@@ -385,13 +433,17 @@ img {
   max-width: 100%;
   height: auto;
 
-  &:not([alt="Logo"]):not(.icon-link):not(.nav-link) {
+  &:not([alt="Logo"]):not(.icon-link):not(.nav-link):not(.icon) {
     box-shadow: 0px 4px 8px 3px rgba(0, 0, 0, 0.2);
   }
 
   &.nav-link {
     min-width: 32px;
     min-height: 32px;
+  }
+
+  &.icon {
+    filter: invert(13%) sepia(34%) saturate(410%) hue-rotate(104deg) brightness(91%) contrast(89%);
   }
 }
 

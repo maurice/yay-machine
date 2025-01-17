@@ -1,15 +1,10 @@
-import { cp, exists, mkdir, readFile, readdir, rename, rm, writeFile } from "node:fs/promises";
+import { copyFile, exists, mkdir, readFile, readdir, rename, rm, watch, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import hljs from "highlight.js";
 import { Marked } from "marked";
 import { gfmHeadingId } from "marked-gfm-heading-id";
 import { markedHighlight } from "marked-highlight";
 import { titleCase } from "title-case";
-
-const docsDir = "docs";
-const docsAssetsDir = `${docsDir}/assets`;
-const pagesDir = "pages";
-const pagesAssetsDir = `${pagesDir}/assets`;
 
 const recursiveCopy = async (fromDir: string, toDir: string) => {
   const files = (await readdir(fromDir, { recursive: true, withFileTypes: true })).filter((it) => it.isFile());
@@ -21,115 +16,152 @@ const recursiveCopy = async (fromDir: string, toDir: string) => {
     }
     const sourceFile = `${file.parentPath}/${file.name}`;
     process.stdout.write(`cp: ${sourceFile} -> ${destDir}\n`);
-    await cp(sourceFile, `${destDir}/${file.name}`);
+    if (!(await exists(destDir))) {
+      await mkdir(destDir, { recursive: true });
+    }
+    await copyFile(sourceFile, `${destDir}/${file.name}`);
   }
 };
 
-const files = (await readdir(docsDir, { recursive: true, withFileTypes: true })).filter(
-  (it) => it.isFile() && it.name.endsWith(".md"),
-);
+const docsDir = "docs";
+const docsAssetsDir = `${docsDir}/assets`;
+const pagesDir = "pages";
+const pagesAssetsDir = `${pagesDir}/assets`;
 
 if (await exists(pagesDir)) {
   await rm(pagesDir, { recursive: true });
 }
 
-process.stdout.write(`mkdir: ${pagesAssetsDir}\n`);
-await mkdir(pagesAssetsDir, { recursive: true }).catch(() => true);
-await recursiveCopy(docsAssetsDir, pagesAssetsDir);
-await recursiveCopy("assets", pagesAssetsDir);
-
 const highlightStylesDir = `${pagesAssetsDir}/highlight_js`;
 await recursiveCopy("./node_modules/highlight.js/styles", highlightStylesDir);
 
-const marked = new Marked(
-  markedHighlight({
-    emptyLangClass: "hljs",
-    langPrefix: "hljs language-",
-    highlight(code, lang) {
-      if (lang === "mermaid") {
-        return `<pre class="mermaid">${code}</pre>`;
-      }
-      const language = hljs.getLanguage(lang) ? lang : "plaintext";
-      return hljs.highlight(code, { language }).value;
-    },
-  }),
+const files = (await readdir(docsDir, { recursive: true, withFileTypes: true })).filter(
+  (it) => it.isFile() && it.name.endsWith(".md"),
 );
 
-const nav = (await marked.parse((await readFile(`${docsDir}/README.md`)).toString())).replaceAll('.md"', '.html"');
+process.stdout.write(`mkdir: ${pagesAssetsDir}\n`);
+await mkdir(pagesAssetsDir, { recursive: true }).catch(() => true);
 
-marked.setOptions({
-  gfm: true,
-});
+async function buildPages() {
+  await recursiveCopy(docsAssetsDir, pagesAssetsDir);
+  await recursiveCopy("assets", pagesAssetsDir);
 
-marked.use(gfmHeadingId());
+  const marked = new Marked(
+    markedHighlight({
+      emptyLangClass: "hljs",
+      langPrefix: "hljs language-",
+      highlight(code, lang) {
+        if (lang === "mermaid") {
+          return `<pre class="mermaid">${code}</pre>`;
+        }
+        const language = hljs.getLanguage(lang) ? lang : "plaintext";
+        return hljs.highlight(code, { language }).value;
+      },
+    }),
+  );
 
-const template = (await readFile("assets/pages-template.hb")).toString();
+  const nav = (await marked.parse((await readFile(`${docsDir}/README.md`)).toString())).replaceAll('.md"', '.html"');
 
-for (const file of files) {
-  if (file.name === "README.md") {
-    continue;
-  }
-  const sourceFile = `${file.parentPath}/${file.name}`;
-  const contents = (await readFile(sourceFile)).toString();
-  let title: string = titleCase(file.name.slice(0, -3));
-  if (contents.startsWith("#")) {
-    const titleStart = contents.indexOf(" ");
-    const titleEnd = contents.indexOf("\n");
-    title = contents.slice(titleStart, titleEnd).replace(/[*`]/g, "");
-  }
-  title = file.parentPath
-    .split("/")
-    .slice(1)
-    .map((it) => titleCase(it))
-    .toSpliced(0, 0, title)
-    .join(" - ")
-    .trim();
-
-  const destFile = `${sourceFile.substring(5).replace(".md", ".html")}`;
-  process.stdout.write(`transform: ${sourceFile} -> ${destFile}\n`);
-  const depth = destFile.split("/").length - 1;
-  const relativeRoot = `${depth === 0 ? "./" : "../".repeat(depth)}`;
-  const assetsPath = `${relativeRoot}assets`;
-
-  const pageNav = nav
-    .replace(`<a href="./${destFile}">`, `<a class="menu-selected" href="./${destFile}">`)
-    .replace("about.html", "")
-    .replaceAll('href="./', `href="${relativeRoot}`);
-
-  let html = await marked.parse(contents);
-  html = html.replace(/href="[^"]+.md"/g, (match) => {
-    const [, link] = /href="([^"]+).md"/.exec(match)!;
-    return `href="${link}.html"`;
+  marked.setOptions({
+    gfm: true,
   });
 
-  html = html.replace(/<h[12345] id="[^"]+">(.+)<\/h[12345]>/g, (match) => {
-    const [, level, id, title] = /<h([12345]) id="([^"]+)">(.+)<\/h[12345]>/.exec(match)!;
-    return `<h${level} id="${id}">${title}<a class="header-anchor" href="#${id}">#</a></h${level}>`;
-  });
+  marked.use(gfmHeadingId());
 
-  const guidedPathNavigationStart = html.indexOf("<!-- GUIDED PATH NAVIGATION -->");
-  if (guidedPathNavigationStart !== -1) {
-    const ulStart = html.indexOf("<ul>", guidedPathNavigationStart);
-    html = `${html.slice(0, ulStart)}<ul class="guided-path-navigation">${html.slice(ulStart + 4)}`;
-    html = html.replace("Previous page:", '<p class="prev-next">Previous page</p>');
-    html = html.replace("Next page:", '<p class="prev-next">Next page</p>');
+  const template = (await readFile("assets/pages-template.hb")).toString();
+
+  for (const file of files) {
+    if (file.name === "README.md") {
+      continue;
+    }
+    const sourceFile = `${file.parentPath}/${file.name}`;
+    const contents = (await readFile(sourceFile)).toString();
+    let title: string = titleCase(file.name.slice(0, -3));
+    if (contents.startsWith("#")) {
+      const titleStart = contents.indexOf(" ");
+      const titleEnd = contents.indexOf("\n");
+      title = contents.slice(titleStart, titleEnd).replace(/[*`]/g, "");
+    }
+    title = file.parentPath
+      .split("/")
+      .slice(1)
+      .map((it) => titleCase(it))
+      .toSpliced(0, 0, title)
+      .join(" - ")
+      .trim();
+
+    const destFile = `${sourceFile.substring(5).replace(".md", ".html")}`;
+    process.stdout.write(`transform: ${sourceFile} -> ${destFile}\n`);
+    const depth = destFile.split("/").length - 1;
+    const relativeRoot = `${depth === 0 ? "./" : "../".repeat(depth)}`;
+    const assetsPath = `${relativeRoot}assets`;
+
+    const pageNav = nav
+      .replace(`<a href="./${destFile}">`, `<a class="menu-selected" href="./${destFile}">`)
+      .replace("about.html", "")
+      .replaceAll('href="./', `href="${relativeRoot}`);
+
+    let html = await marked.parse(contents);
+    html = html.replace(/href="[^"]+.md"/g, (match) => {
+      const [, link] = /href="([^"]+).md"/.exec(match)!;
+      return `href="${link}.html"`;
+    });
+
+    html = html.replace(/<h[12345] id="[^"]+">(.+)<\/h[12345]>/g, (match) => {
+      const [, level, id, title] = /<h([12345]) id="([^"]+)">(.+)<\/h[12345]>/.exec(match)!;
+      return `<h${level} id="${id}">${title}<a class="header-anchor" href="#${id}">#</a></h${level}>`;
+    });
+
+    const guidedPathNavigationStart = html.indexOf("<!-- GUIDED PATH NAVIGATION -->");
+    if (guidedPathNavigationStart !== -1) {
+      const ulStart = html.indexOf("<ul>", guidedPathNavigationStart);
+      html = `${html.slice(0, ulStart)}<ul class="guided-path-navigation">${html.slice(ulStart + 4)}`;
+      html = html.replace("Previous page:", '<p class="prev-next">Previous page</p>');
+      html = html.replace("Next page:", '<p class="prev-next">Next page</p>');
+    }
+
+    const variables = {
+      title,
+      assetsPath,
+      pageNav,
+      html,
+    };
+
+    let page = template;
+    for (const [name, value] of Object.entries(variables)) {
+      page = page.replaceAll(`{{ ${name} }}`, value);
+    }
+
+    const destDir = dirname(destFile);
+    await mkdir(`pages/${destDir}`, { recursive: true }).catch(() => true);
+    await writeFile(`pages/${destFile}`, page);
   }
 
-  const variables = {
-    title,
-    assetsPath,
-    pageNav,
-    html,
-  };
-
-  let page = template;
-  for (const [name, value] of Object.entries(variables)) {
-    page = page.replaceAll(`{{ ${name} }}`, value);
-  }
-
-  const destDir = dirname(destFile);
-  await mkdir(`pages/${destDir}`, { recursive: true }).catch(() => true);
-  await writeFile(`pages/${destFile}`, page);
+  await rename(`${pagesDir}/about.html`, `${pagesDir}/index.html`);
 }
 
-await rename(`${pagesDir}/about.html`, `${pagesDir}/index.html`);
+await buildPages();
+
+const args = process.argv.slice(2);
+
+const watchMode = args.includes("--watch");
+if (!watchMode) {
+  process.exit(0);
+}
+
+process.on("SIGINT", () => {
+  // close watcher when Ctrl-C is pressed
+  process.stdout.write("Closing watcher...\n");
+
+  process.exit(0);
+});
+
+async function watchDir(dir: string) {
+  for await (const info of watch(dir, { recursive: true })) {
+    process.stdout.write(`file change: ${dir}/${info.filename}\n`);
+    await buildPages();
+  }
+}
+
+watchDir("assets");
+watchDir(docsAssetsDir);
