@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://yay-machine.js.org/"><img src="https://github.com/user-attachments/assets/03dd78c1-4396-42c4-a32c-aaa7c927f09e" alt="Logo"></a>
+  <a href="https://yay-machine.js.org/"><img src="https://github.com/user-attachments/assets/6bbb1b46-67b1-40b0-a0d8-e604d288e4f2" alt="Logo"></a>
 </p>
 
 **yay-machine** is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.
