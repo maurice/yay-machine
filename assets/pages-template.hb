@@ -11,10 +11,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
-<script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({ startOnLoad: true });
-</script>
+    <script type="module">
+      import { initSprinkles } from "{{ assetsPath }}/sprinkles.js";
+      initSprinkles("{{ assetsPath }}");
+    </script>
   </head>
   <body>
     <header>
@@ -22,8 +22,8 @@
       <aside>
         <a href="https://github.com/maurice/yay-machine" title="GitHub"><img src="{{ assetsPath }}/github-logo.svg" class="icon-link"/></a>
         <a href="https://www.npmjs.com/package/yay-machine" title="NPM"><img src="{{ assetsPath }}/package.svg" class="icon-link"/></a>
-        <button class="nav-button open-nav" onclick="document.body.classList.add('nav-open')"><img src="{{ assetsPath }}/list.svg" class="nav-link"/></button>
-        <button class="nav-button close-nav" onclick="document.body.classList.remove('nav-open')"><img src="{{ assetsPath }}/x.svg" class="nav-link"/></button>
+        <button class="nav-button open-nav"><img src="{{ assetsPath }}/list.svg" class="nav-link icon"/></button>
+        <button class="nav-button close-nav"><img src="{{ assetsPath }}/x.svg" class="nav-link icon"/></button>
       </aside>
     </header>
     <section>
