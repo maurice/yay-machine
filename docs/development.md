@@ -66,3 +66,8 @@ Coverage is published to COVERALLS
 This project is onboarded with Renovate for automatic dependency update PRs.
 
 * [Dashboard](https://developer.mend.io/github/maurice/yay-machine)
+
+## Logo
+
+The logo is a screenshot of the [Google Fonts Nabla font](https://fonts.google.com/specimen/Nabla?preview.text=yay-machine%20&categoryFilters=Feeling:%2FExpressive%2FFuturistic).
+

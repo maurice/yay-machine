@@ -163,5 +163,6 @@ async function watchDir(dir: string) {
   }
 }
 
+watchDir("docs");
 watchDir("assets");
 watchDir(docsAssetsDir);

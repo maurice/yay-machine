@@ -8,9 +8,9 @@
     <link rel="icon" href="{{ assetsPath }}/icon.png" />
     <link href="{{ assetsPath }}/styles.css" rel="stylesheet" />
     <link href="{{ assetsPath }}/highlight_js/rose-pine-dawn.css" rel="stylesheet" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <script type="module">
       import { initSprinkles } from "{{ assetsPath }}/sprinkles.js";
       initSprinkles("{{ assetsPath }}");
@@ -18,7 +18,7 @@
   </head>
   <body>
     <header>
-      <a href="https://yay-machine.js.org/"><img src="{{ assetsPath }}/yay-machine.png" alt="Logo" width="300px"></a>
+      <a href="https://yay-machine.js.org/"><img src="{{ assetsPath }}/logo.png" alt="Logo" width="300px"></a>
       <aside>
         <a href="https://github.com/maurice/yay-machine" title="GitHub"><img src="{{ assetsPath }}/github-logo.svg" class="icon-link"/></a>
         <a href="https://www.npmjs.com/package/yay-machine" title="NPM"><img src="{{ assetsPath }}/package.svg" class="icon-link"/></a>
