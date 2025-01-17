@@ -149,7 +149,7 @@ In fairness, code completion and existing working code helps. And most likely yo
 
 In **yay-machine** we have a dedicated per-transition `data()` callback to update the state-data (akin to [**XState**'s `assign(...)`](https://stately.ai/docs/actions#assign-action)) and for everything else (logging, fetching data, sending events, ...) we have generic side-effect functions, which you can implement however you like. Here the user is getting a lot of value from the abstractions, because there is so much less to learn, and much more flexibility in how to use it.
 
-## Multiple ways vs single way to define something
+## Multiple ways vs single way
 
 Let's take "persistence" as an example feature.
 
@@ -177,7 +177,7 @@ In general **yay-machine** tries to offer a single way to do something, although
 | View library bindings (React, Vue, Svelte) | ✅ | ⏳ <sup>(planned)</sup> |
 | Docs | ✅ | 🚧 <sup>(in progress)</sup> |
 
-## State-machine and state-chart features at a glance
+## State-machine/chart features at a glance
 
 |          | **XState** | **yay-machine** |
 | -------- | -------- | ------- |

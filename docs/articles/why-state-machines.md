@@ -1,6 +1,5 @@
 # Why state-machines?
 
-## Why state machines?
 
 State machines have some very desirable properties
 

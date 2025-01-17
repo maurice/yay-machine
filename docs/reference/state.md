@@ -96,7 +96,7 @@ const unsubscribe = connection.subscribe(({ state }) => {
 unsubscribe(); // callback no longer receives state changes
 ```
 
-## States can have associated data (homogenous)
+## States can have homogenous data
 
 As well as a `name`, state types can have additional data properties
 
@@ -210,7 +210,7 @@ const toggleMachine = defineMachine<ToggleState, ToggleEvent>({
 
 > 💡 See the [`healthMachine` example](https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/healthMachine.ts) for more realistic usage.
 
-## States can have associated data (heterogenous)
+## States can have heterogenous data
 
 If we like, we can define state types with different data
 
