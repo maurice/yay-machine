@@ -72,8 +72,10 @@ export function initSprinkles(assetsPath) {
     const jumpEls = document.querySelectorAll(".jump-to-section");
     for (const jumpEl of jumpEls) {
       jumpEl.addEventListener("click", (event) => {
-        document.body.classList.remove("nav-open");
-        document.body.scrollTop = bodyScrollTop;
+        if (document.body.classList.contains("nav-open")) {
+          document.body.classList.remove("nav-open");
+          document.body.scrollTop = bodyScrollTop;
+        }
 
         event.preventDefault();
         event.stopImmediatePropagation();
