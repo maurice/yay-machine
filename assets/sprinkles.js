@@ -1,6 +1,29 @@
 import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
 mermaid.initialize({ startOnLoad: true });
 
+function easeInOutCubic(x) {
+  return x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2;
+}
+
+function animateScrollTop(element, newPosition) {
+  const position = element.scrollTop;
+  const delta = newPosition - position;
+  const duration = 500;
+  const start = performance.now();
+
+  function step(currentTime) {
+    const progress = (currentTime - start) / duration;
+    if (progress < 1) {
+      const newScrollTop = position + easeInOutCubic(progress) * delta;
+      element.scrollTop = newScrollTop;
+      requestAnimationFrame(step);
+    } else {
+      element.scrollTop = newPosition;
+    }
+  }
+  requestAnimationFrame(step);
+}
+
 export function initSprinkles(assetsPath) {
   const copyImg = `<img class="icon copy-icon" src="${assetsPath}/copy.svg"/>`;
   const copiedImg = `<img class="icon copied-icon" src="${assetsPath}/check.svg"/>`;
@@ -44,6 +67,34 @@ export function initSprinkles(assetsPath) {
     closeNavButton.addEventListener("click", () => {
       document.body.classList.remove("nav-open");
       document.body.scrollTop = bodyScrollTop;
+    });
+
+    const jumpEls = document.querySelectorAll(".jump-to-section");
+    for (const jumpEl of jumpEls) {
+      jumpEl.addEventListener("click", (event) => {
+        document.body.classList.remove("nav-open");
+        document.body.scrollTop = bodyScrollTop;
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        const headerId = jumpEl.href.split("#").reverse().shift();
+        const headerEl = document.querySelector(`#${headerId}`);
+        const targetScrollTop = headerEl.offsetTop - 87;
+        animateScrollTop(document.body, targetScrollTop);
+        history.pushState({}, "", `#${headerId}`);
+      });
+    }
+
+    const menuSelected = document.querySelector(".menu-selected");
+    menuSelected.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      animateScrollTop(document.body, 0);
+      const uri = window.location.toString();
+      if (uri.indexOf("#") > 0) {
+        const cleanUri = uri.substring(0, uri.indexOf("#"));
+        window.history.replaceState({}, document.title, cleanUri);
+      }
     });
   }
 

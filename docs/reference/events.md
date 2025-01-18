@@ -64,7 +64,7 @@ Of course the machine is type-safe, so you'll get an error trying to send anythi
 connection.send({ type: 'HELLO' }); 
 ```
 
-## Use event payload to manage state data
+## Event payload
 
 When your events have a payload (any other properties apart from `type`), you can use these to generate state data for the next state [in a transition](./transitions.md).
 
@@ -109,7 +109,7 @@ connection.subscribe(({ state }) => {
 connection.send({ type: 'CONNECT', url: 'ws://localhost:9999/api' });
 ```
 
-## Subscribers receive last event, if any
+## Subscribers receive last event
 
 When you subscribe for state changes, you *might also* get the event which triggered the state change.
 

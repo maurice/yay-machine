@@ -13,7 +13,7 @@ Let's be clear **XState** is amazing is so many ways.
 
 **XState** and it's creator [David Khourshid](https://github.com/davidkpiano) have a revitalized these decades-old computer-science ideas and created modern, accessible libraries and tools for the masses.
 
-**XState** made us realize the power and potential of state-machines and we've successfully used it for our own production projects.
+**XState** made us realize the power and potential of state-machines and we've successfully used it in our own production projects.
 
 **yay-machine** borrows a lot of ideas directly from **XState**, so it's fair to say that without **XState**, **yay-machine** would not exist.
 

@@ -337,7 +337,7 @@ const machine = defineMachine<State, Event>({
 });
 ```
 
-### Remain in the same state with `reenter: false`
+### `reenter: false`
 
 In some cases we want to handle an event in a specific state, and remain in the same state, without exiting and re-entering the state.
 
@@ -397,7 +397,7 @@ const machine = defineMachine<State, Event>({
 });
 ```
 
-### Return to the current state by omitting `to`
+### Optional `to`
 
 Sometimes we want to handle an event in *any state* and then **return to the current state**.
 
@@ -423,7 +423,7 @@ const machine = defineMachine<State, Event>({
 });
 ```
 
-## Transition conditionally with `when()`
+## Conditional transitions: `when()`
 
 Wherever you can define a transition, you can also define an array of transitions, where some or all have a `when()` callback.
 
@@ -465,7 +465,7 @@ const machine = defineMachine<State, Event>({
 });
 ```
 
-## Transition immediately with `always`
+## Immediate transitions: `always`
 
 Immediate transitions (often combined with conditional transitions) are taken immediately, on entering a state.
 
@@ -492,7 +492,7 @@ const machine = defineMachine<State, Event>({
 });
 ```
 
-## Generating next-state data with `data()`
+## Generate state data: `data()`
 
 Since states can have associated data, you often need to provide a `data()` callback in the transition to generate the data for the next state.
 
@@ -504,7 +504,7 @@ The callback SHOULD be pure and deterministic, and only use data from `state` an
 
 For *homogenous* state-data you also have the option to set `enableCopyDataOnTransition: true` to avoid some boilerplate. See the [states](./state.md) documentation for a longer discussion.
 
-## Combining transitions and options
+## Combining transitions
 
 We can mix-n-match most of the above, eg
 
@@ -517,7 +517,7 @@ The two *special cases* in the configuration are
 - no `to` in an *any state* transition means exit and re-enter the current state, updating data if relevant
 - `reenter: false` in a state + event transition means perform the optional side-effect but do not exit re-enter the current state or update data
 
-## Perform side-effects with `onTransition()`
+## Side-effects: `onTransition()`
 
 Transitions can define side-effects: an `onTransition()` function that is called if and when the transition is taken.
 

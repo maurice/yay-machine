@@ -49,7 +49,7 @@ const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
 });
 ```
 
-## Getting a machine's current state
+## Get a machine's current state
 
 When we have an instance of a machine we can query its current state
 
@@ -96,7 +96,7 @@ const unsubscribe = connection.subscribe(({ state }) => {
 unsubscribe(); // callback no longer receives state changes
 ```
 
-## States can have homogenous data
+## Homogenous state data
 
 As well as a `name`, state types can have additional data properties
 
@@ -153,7 +153,7 @@ if (connection.state.name === 'connected') {
 
 We can also define [conditional transitions](./transitions.md) that query both state-data and event-payloads to decide which transition to take.
 
-### `enableCopyDataOnTransition` for homogenous state-data
+### `enableCopyDataOnTransition`
 
 For machines with homogenous state-data and a lot of transitions, you might find you are writing a lot of
 boilerplate `data()` callbacks that simply copy the state, eg
@@ -210,7 +210,7 @@ const toggleMachine = defineMachine<ToggleState, ToggleEvent>({
 
 > 💡 See the [`healthMachine` example](https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/healthMachine.ts) for more realistic usage.
 
-## States can have heterogenous data
+## Heterogenous state data
 
 If we like, we can define state types with different data
 
