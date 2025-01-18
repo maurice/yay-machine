@@ -37,14 +37,13 @@ header {
   left: 0px;
   border-bottom: 1px solid var(--theme-yellow);
   background-color: white;
-  padding-left: calc(3em - 16px);
+  padding-left: 3em;
   align-items: center;
 
   aside {
     flex: 1;
     display: flex;
     justify-content: end;
-    margin-right: 4em;
     gap: 0.3em;
 
     img.icon-link {
@@ -74,6 +73,10 @@ body:not(.nav-open) .close-nav {
 }
 
 @media (max-width: 1024px) {
+  header aside {
+    margin-right: 1em;
+  }
+
   nav.wide {
     display: none;
   }
@@ -121,6 +124,10 @@ body:not(.nav-open) .close-nav {
 }
 
 @media (min-width: 1024px) {
+  header aside {
+    margin-right: 4em;
+  }
+
   .body-content {
     overflow-x: hidden;
   }
