@@ -216,6 +216,22 @@ nav {
         color: var(--theme-dark-yellow);
       }
 
+      li.level-2 a {
+        padding-left: 2em;
+      }
+
+      li.level-3 a {
+        padding-left: 3em;
+      }
+
+      li.level-4 a {
+        padding-left: 4em;
+      }
+
+      li.level-5 a {
+        display: none;
+      }
+
       a:hover {
         color: var(--theme-orange);
         border-left: 1px solid var(--theme-red);

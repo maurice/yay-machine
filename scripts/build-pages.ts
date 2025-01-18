@@ -96,9 +96,30 @@ async function buildPages() {
     const relativeRoot = `${depth === 0 ? "./" : "../".repeat(depth)}`;
     const assetsPath = `${relativeRoot}assets`;
 
-    const pageNav = nav
+    const headingMarked = new Marked();
+    const sourceMarkdown = (await readFile(sourceFile)).toString();
+    const headings = sourceMarkdown
+      .split("\n")
+      .filter((it) => it.startsWith("##"))
+      .map((it) => {
+        const level = it.indexOf(" ");
+        const heading = it.slice(level + 1);
+        const headingHtml = (headingMarked.parse(heading) as string).slice(3, -5);
+        const slug = heading
+          .toLocaleLowerCase()
+          .replaceAll(/[`,:()/.']/g, "")
+          .replaceAll(" ", "-");
+        return `<li class="level-${level}"><a class="jump-to-section" href="./${destFile}#${slug}">${headingHtml}</a></li>`;
+      })
+      .join("\n");
+
+    const pageNavStart = nav.indexOf(`<a href="./${destFile}">`);
+    const pageNavEnd = nav.indexOf("</li>", pageNavStart);
+    let pageNav = [nav.slice(0, pageNavEnd + 5), headings, nav.slice(pageNavEnd + 5)].join("");
+
+    pageNav = pageNav
       .replace(`<a href="./${destFile}">`, `<a class="menu-selected" href="./${destFile}">`)
-      .replace("about.html", "")
+      .replaceAll("/about.html", "/")
       .replaceAll('href="./', `href="${relativeRoot}`);
 
     let html = await marked.parse(contents);
