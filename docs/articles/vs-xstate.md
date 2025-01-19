@@ -29,19 +29,29 @@ We feel that size of the **XState** ecosystem, feature-set, documentation, etc, 
 
 Additionally we value library size and performance, and keeping things small and simple means **yay-machine** outperforms **XState** here.
 
+Read more about [our philosophy here](./why-yay-machine.md#philosophy).
+
 ### Bundle size
 
-| `xstate@5.19.2` | `yay-machine@1.3.0` |
+**yay-machine** is an order of magnitude smaller than **XState**.
+
+| `xstate@5.19.2` | `yay-machine@1.3.1` |
 | ---------- | --------------- |
-| [![XState bundlephobia stats](../assets/bundlephobia-xstate.png "https://bundlephobia.com/package/xstate@5.19.2")](https://bundlephobia.com/package/xstate@5.19.2) | [![yay-machine bundlephobia stats](../assets/bundlephobia-yay-machine.png "https://bundlephobia.com/package/yay-machine@1.3.0")](https://bundlephobia.com/package/yay-machine@1.3.0) |
+| [![XState bundlephobia stats](../assets/bundlephobia-xstate.png "https://bundlephobia.com/package/xstate@5.19.2")](https://bundlephobia.com/package/xstate@5.19.2) | [![yay-machine bundlephobia stats](../assets/bundlephobia-yay-machine.png "https://bundlephobia.com/package/yay-machine@1.3.1")](https://bundlephobia.com/package/yay-machine@1.3.1) |
 
 Stats from [**BUNDLE**PHOBIA](https://bundlephobia.com/) 🙏.
 
 ### Runtime performance
 
+**yay-machine** is more than 50X times faster than **XState** for the [most basic state-machine implementation](https://github.com/maurice/yay-machine/blob/main/packages/bench/src/bench.ts).
+
 [![bench tests](../assets/bench.png)](https://github.com/maurice/yay-machine/blob/main/packages/bench/src/bench.ts)
 
-Read more about [our philosophy here](./why-yay-machine.md#philosophy).
+> 🤔 **Talking of basic**
+>
+> We know this benchmark test is not enough but we had to have *something* for our 1.0 docs.
+>
+> We want to add more benchmarks in future, with more realistic production-like state-machines, and add comparisons with other libraries.
 
 ## Homogenous vs Heterogenous context/state-data
 
