@@ -38,7 +38,9 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Build pages
-        run: bun run pages
+        run: |
+          bunx puppeteer browsers install chrome-headless-shell
+          bun run pages
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

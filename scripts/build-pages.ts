@@ -5,6 +5,7 @@ import { Marked } from "marked";
 import { gfmHeadingId } from "marked-gfm-heading-id";
 import { markedHighlight } from "marked-highlight";
 import { titleCase } from "title-case";
+import { renderMermaid } from "./render-mermaid";
 
 const recursiveCopy = async (fromDir: string, toDir: string) => {
   const files = (await readdir(fromDir, { recursive: true, withFileTypes: true })).filter((it) => it.isFile());
@@ -51,9 +52,9 @@ async function buildPages() {
       emptyLangClass: "hljs",
       langPrefix: "hljs language-",
       highlight(code, lang) {
-        if (lang === "mermaid") {
-          return `<pre class="mermaid">${code}</pre>`;
-        }
+        // if (lang === "mermaid") {
+        //   return `<pre class="mermaid">${code}</pre>`;
+        // }
         const language = hljs.getLanguage(lang) ? lang : "plaintext";
         return hljs.highlight(code, { language }).value;
       },
@@ -123,6 +124,26 @@ async function buildPages() {
       .replaceAll('href="./', `href="${relativeRoot}`);
 
     let html = await marked.parse(contents);
+
+    let mermaidNum = 0;
+    let mermaidEnd = 0;
+    while (true) {
+      const mermaidStart = html.indexOf('<pre><code class="hljs language-mermaid">', mermaidEnd);
+      if (mermaidStart === -1) {
+        break;
+      }
+      mermaidEnd = html.indexOf("</code></pre>", mermaidStart);
+      const mermaidText = html
+        .slice(mermaidStart + 41, mermaidEnd)
+        .replaceAll("&lt;", "<")
+        .replaceAll("&gt;", ">");
+      const svgFileName = `${file.name.slice(0, -3)}-${++mermaidNum}.svg`;
+      await renderMermaid(mermaidText, `${pagesAssetsDir}/${svgFileName}`);
+      html = `${html.slice(0, mermaidStart)}
+<img src="${assetsPath}/${svgFileName}" />
+${html.slice(mermaidEnd + 13)}`;
+    }
+
     html = html.replace(/href="[^"]+.md"/g, (match) => {
       const [, link] = /href="([^"]+).md"/.exec(match)!;
       return `href="${link}.html"`;
