@@ -42,7 +42,13 @@ Credit goes to [this article](https://dev.to/sahanonp/how-to-setup-semantic-rele
 
 The documentation site [yay-machine.js.org/](https://yay-machine.js.org/) is deployed to GitHub pages on every push to `main`.
 
-To build the pages site locally
+To build the pages site locally, first install external dependencies used to render Mermaid charts to SVG
+
+```sh
+bunx puppeteer browsers install chrome-headless-shell
+```
+
+Then generate the pages site
 
 ```sh
 bun run pages               # generate documentation site (pages)
