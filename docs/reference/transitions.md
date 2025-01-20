@@ -2,7 +2,7 @@
 
 Transitions bring state-machines to life, defining when and how they move from state-to-state.
 
-## Connection Machine
+## Example: connection machine
 
 We will expand on the "connection machine" example we used when explaining [states](./state.md) and [events](./events.md), to illustrate various transitions.
 
@@ -349,7 +349,7 @@ stateDiagram
     connected --> connected: SEND
 ```
 
-This can be used to perform some **transition side-effect** and still keep any previous **state entry side-effect** active (ie, not call its cleanup function).
+This can be used to perform a **transition side-effect** and still keep any current **state entry side-effect** active (ie, not call their cleanup function, and allow them to continue to `send` events to the machine).
 
 Simply add `reenter: false` to the transition
 
@@ -401,7 +401,7 @@ const machine = defineMachine<State, Event>({
 
 Sometimes we want to handle an event in *any state* and then **return to the current state**.
 
-In the above machine we see this for
+In the above machine we see this for the `HEARTBEAT` event 
 
 ```mermaid
 stateDiagram
@@ -409,7 +409,7 @@ stateDiagram
     any_state --> current_state: HEARTBEAT
 ```
 
-This technique is typically used to update state-data (eg, in the connection machine, it has this transition to update `lastHeartbeatTime`)
+This technique is typically used to update state-data. For example, the connection machine updates the `lastHeartbeatTime` state-data property whenever it receives a `HEARTBEAT` event.
 
 
 ```typescript
