@@ -19,7 +19,7 @@
   <body>
     <header>
       <a href="https://yay-machine.js.org/"><img src="{{ assetsPath }}/logo.png" alt="Logo" width="300px"></a>
-      <aside>
+      <aside class="icon-links">
         <a href="https://github.com/maurice/yay-machine" title="GitHub"><img src="{{ assetsPath }}/github-logo.svg" class="icon-link"/></a>
         <a href="https://www.npmjs.com/package/yay-machine" title="NPM"><img src="{{ assetsPath }}/package.svg" class="icon-link"/></a>
         <button class="nav-button open-nav"><img src="{{ assetsPath }}/list.svg" class="nav-link icon"/></button>
@@ -39,6 +39,14 @@
         </article>
       </div>
       <nav class="not-wide">
+        <aside class="icon-links">
+          <div class="icon-link-button">
+            <a href="https://github.com/maurice/yay-machine" title="GitHub"><img src="{{ assetsPath }}/github-logo.svg" class="icon-link"/></a>
+          </div>
+          <div class="icon-link-button">
+            <a href="https://www.npmjs.com/package/yay-machine" title="NPM"><img src="{{ assetsPath }}/package.svg" class="icon-link"/></a>
+          </div>
+        </aside>
         <div class="menu">
           {{ pageNav }}
         </div>
