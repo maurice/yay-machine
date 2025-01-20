@@ -209,7 +209,10 @@ export const stompParserMachine = defineMachine<
         },
         {
           to: "error",
-          data: ({ state }) => ({ ...state, errorMessage: "Command expected" }),
+          data: ({ state }) => ({
+            ...state,
+            errorMessage: `Command expected, found: "${state.raw.slice(0, 15)}..."`,
+          }),
         },
       ],
     },
@@ -234,17 +237,32 @@ export const stompParserMachine = defineMachine<
         },
         {
           to: "error",
-          data: ({ state }) => ({ ...state, errorMessage: "Invalid headers" }),
+          data: ({ state: { raw, currentIndex } }) => ({
+            raw,
+            currentIndex,
+            errorMessage: `Invalid headers, at: "${raw.slice(currentIndex, currentIndex + 15)}..."`,
+          }),
         },
       ],
     },
     parseBody: {
-      always: {
-        to: "done",
-        when: ({ state: { raw, currentIndex } }) =>
-          BODY.matches(raw, currentIndex),
-        data: ({ state }) => ({ ...state, body: BODY.match() }),
-      },
+      always: [
+        {
+          to: "done",
+          when: ({ state: { raw, currentIndex } }) =>
+            BODY.matches(raw, currentIndex) &&
+            NULL.matches(raw, BODY.newIndex()),
+          data: ({ state }) => ({ ...state, body: BODY.match() }),
+        },
+        {
+          to: "error",
+          data: ({ state: { raw, currentIndex } }) => ({
+            raw,
+            currentIndex,
+            errorMessage: `Invalid body/missing null, at: "${raw.slice(currentIndex, 15)}..."`,
+          }),
+        },
+      ],
     },
     done: {
       always: [
