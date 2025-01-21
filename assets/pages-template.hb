@@ -52,5 +52,6 @@
         </div>
       </nav>
     </section>
+    <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "3475185a85b4458eb1944af4f907d40e"}'></script><!-- End Cloudflare Web Analytics -->
   </body>
 </html>
