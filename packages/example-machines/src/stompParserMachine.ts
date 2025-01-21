@@ -16,11 +16,37 @@ class Matcher<Value> {
 
   private lastMatch: ReturnType<Match<Value>>;
 
-  matches(raw: string, currentIndex: number): boolean {
+  /**
+   * @returns true if the matcher matches once at the current position
+   */
+  at(raw: string, currentIndex: number): boolean {
     this.lastMatch = this.doMatch(raw, currentIndex);
     return !!this.lastMatch;
   }
 
+  /**
+   * @returns true if the matcher matches zero or more times at the current position
+   */
+  anyAt(raw: string, currentIndex: number): boolean {
+    let index = currentIndex;
+    let lastMatch: ReturnType<Match<Value>>;
+    do {
+      lastMatch = this.doMatch(raw, index);
+      if (lastMatch) {
+        index = lastMatch[1];
+        this.lastMatch = lastMatch;
+      } else {
+        this.lastMatch = [undefined!, index];
+        break;
+      }
+    } while (lastMatch);
+
+    return true;
+  }
+
+  /**
+   * @returns the last matched value
+   */
   match(): Value {
     if (!Array.isArray(this.lastMatch)) {
       throw new Error("Last match was not success");
@@ -28,6 +54,9 @@ class Matcher<Value> {
     return this.lastMatch[0];
   }
 
+  /**
+   * @returns the new index after the last matched value
+   */
   newIndex(): number {
     if (!Array.isArray(this.lastMatch)) {
       throw new Error("Last match was not success");
@@ -88,7 +117,7 @@ const HEADER = new Matcher<Record<string, string>>((raw, currentIndex) => {
   let colon = -1;
   let end = -1;
   for (let i = currentIndex; i < raw.length; i++) {
-    if (EOL.matches(raw, i)) {
+    if (EOL.at(raw, i)) {
       end = i;
       break;
     }
@@ -109,7 +138,7 @@ const HEADER = new Matcher<Record<string, string>>((raw, currentIndex) => {
 
 const BODY = new Matcher<string>((raw, currentIndex) => {
   for (let i = currentIndex; i < raw.length; i++) {
-    if (NULL.matches(raw, i)) {
+    if (NULL.at(raw, i)) {
       return [raw.slice(currentIndex, i), i];
     }
   }
@@ -120,39 +149,45 @@ const BODY = new Matcher<string>((raw, currentIndex) => {
  * Parser state-machine
  */
 
-interface CommandState {
-  readonly name: "parseCommand";
+interface InitialState {
   readonly raw: string; // the raw unparsed data
   readonly currentIndex: number;
 }
 
-interface HeadersState extends Omit<CommandState, "name"> {
-  readonly name: "parseHeaders";
+interface ParseStartState extends InitialState {
+  readonly name: "parse:start";
+  readonly raw: string; // the raw unparsed data
+  readonly currentIndex: number;
+}
+
+interface ParseCommandState extends InitialState {
+  readonly name: "parse:command";
+  readonly raw: string; // the raw unparsed data
+  readonly currentIndex: number;
+}
+
+interface ParseHeadersState extends InitialState {
+  readonly name: "parse:headers";
   readonly command: Command;
   readonly headers: Record<string, string>;
 }
 
-interface BodyState extends Omit<CommandState, "name"> {
-  readonly name: "parseBody";
+interface ParseBodyState extends InitialState {
+  readonly name: "parse:body";
   readonly command: Command;
   readonly headers: Record<string, string>;
 }
 
-interface DoneState extends Omit<BodyState, "name"> {
-  readonly name: "done";
+interface FrameState extends Omit<ParseBodyState, "name"> {
+  readonly name: "frame?" | "command:client" | "command:server";
   readonly body: string;
 }
 
-interface FrameState extends Omit<BodyState, "name"> {
-  readonly name: "clientCommand" | "serverCommand";
-  readonly body: string;
-}
-
-interface HeartbeatState extends Omit<CommandState, "name"> {
+interface HeartbeatState extends InitialState {
   readonly name: "heartbeat";
 }
 
-interface ErrorState extends Omit<CommandState, "name"> {
+interface ErrorState extends InitialState {
   readonly name: "error";
   readonly errorMessage: string;
 }
@@ -176,24 +211,36 @@ hello queue a^@
  * @see https://stomp.github.io/stomp-specification-1.2.html#Augmented_BNF
  */
 export const stompParserMachine = defineMachine<
-  | CommandState
-  | HeadersState
-  | BodyState
-  | DoneState
+  | ParseStartState
+  | ParseCommandState
+  | ParseHeadersState
+  | ParseBodyState
   | FrameState
   | HeartbeatState
   | ErrorState,
   never
 >({
-  initialState: { name: "parseCommand", raw: undefined!, currentIndex: -1 },
+  initialState: { name: "parse:start", raw: undefined!, currentIndex: -1 },
   states: {
-    parseCommand: {
+    "parse:start": {
       always: [
         {
-          to: "parseHeaders",
+          to: "heartbeat",
+          when: ({ state: { raw, currentIndex } }) => EOL.at(raw, currentIndex),
+          data: ({ state }) => state,
+        },
+        {
+          to: "parse:command",
+          data: ({ state }) => state,
+        },
+      ],
+    },
+    "parse:command": {
+      always: [
+        {
+          to: "parse:headers",
           when: ({ state: { currentIndex, raw } }) =>
-            COMMAND.matches(raw, currentIndex) &&
-            EOL.matches(raw, COMMAND.newIndex()),
+            COMMAND.at(raw, currentIndex) && EOL.at(raw, COMMAND.newIndex()),
           data: ({ state }) => ({
             ...state,
             currentIndex: EOL.newIndex(),
@@ -203,8 +250,7 @@ export const stompParserMachine = defineMachine<
         },
         {
           to: "heartbeat",
-          when: ({ state: { raw, currentIndex } }) =>
-            EOL.matches(raw, currentIndex),
+          when: ({ state: { raw, currentIndex } }) => EOL.at(raw, currentIndex),
           data: ({ state }) => state,
         },
         {
@@ -216,13 +262,12 @@ export const stompParserMachine = defineMachine<
         },
       ],
     },
-    parseHeaders: {
+    "parse:headers": {
       always: [
         {
-          to: "parseHeaders",
+          to: "parse:headers",
           when: ({ state: { currentIndex, raw } }) =>
-            HEADER.matches(raw, currentIndex) &&
-            EOL.matches(raw, HEADER.newIndex()),
+            HEADER.at(raw, currentIndex) && EOL.at(raw, HEADER.newIndex()),
           data: ({ state }) => ({
             ...state,
             currentIndex: EOL.newIndex(),
@@ -230,9 +275,8 @@ export const stompParserMachine = defineMachine<
           }),
         },
         {
-          to: "parseBody",
-          when: ({ state: { raw, currentIndex } }) =>
-            EOL.matches(raw, currentIndex),
+          to: "parse:body",
+          when: ({ state: { raw, currentIndex } }) => EOL.at(raw, currentIndex),
           data: ({ state }) => ({ ...state, currentIndex: EOL.newIndex() }),
         },
         {
@@ -245,14 +289,19 @@ export const stompParserMachine = defineMachine<
         },
       ],
     },
-    parseBody: {
+    "parse:body": {
       always: [
         {
-          to: "done",
+          to: "frame?",
           when: ({ state: { raw, currentIndex } }) =>
-            BODY.matches(raw, currentIndex) &&
-            NULL.matches(raw, BODY.newIndex()),
-          data: ({ state }) => ({ ...state, body: BODY.match() }),
+            BODY.at(raw, currentIndex) &&
+            NULL.at(raw, BODY.newIndex()) &&
+            EOL.anyAt(raw, NULL.newIndex()),
+          data: ({ state }) => ({
+            ...state,
+            body: BODY.match(),
+            currentIndex: EOL.newIndex(),
+          }),
         },
         {
           to: "error",
@@ -264,10 +313,10 @@ export const stompParserMachine = defineMachine<
         },
       ],
     },
-    done: {
+    "frame?": {
       always: [
         {
-          to: "clientCommand",
+          to: "command:client",
           when: ({ state: { command } }) =>
             CLIENT_COMMANDS.includes(
               command as (typeof CLIENT_COMMANDS)[number],
@@ -275,7 +324,7 @@ export const stompParserMachine = defineMachine<
           data: ({ state }) => state,
         },
         {
-          to: "serverCommand",
+          to: "command:server",
           when: ({ state: { command } }) =>
             SERVER_COMMANDS.includes(
               command as (typeof SERVER_COMMANDS)[number],
@@ -283,6 +332,22 @@ export const stompParserMachine = defineMachine<
           data: ({ state }) => state,
         },
       ],
+    },
+    "command:client": {
+      always: {
+        to: "parse:start",
+        when: ({ state: { raw, currentIndex } }) =>
+          COMMAND.at(raw, currentIndex) && EOL.at(raw, COMMAND.newIndex()),
+        data: ({ state }) => state,
+      },
+    },
+    "command:server": {
+      always: {
+        to: "parse:start",
+        when: ({ state: { raw, currentIndex } }) =>
+          COMMAND.at(raw, currentIndex) && EOL.at(raw, COMMAND.newIndex()),
+        data: ({ state }) => state,
+      },
     },
   },
 });

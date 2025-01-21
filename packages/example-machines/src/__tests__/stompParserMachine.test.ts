@@ -12,16 +12,16 @@ hello queue a\u0000
 `;
   const machine = stompParserMachine.newInstance({
     initialState: {
-      name: "parseCommand",
+      name: "parse:start",
       raw,
       currentIndex: 0,
     },
   });
   machine.start();
   expect(machine.state).toEqual({
-    name: "serverCommand",
+    name: "command:server",
     raw,
-    currentIndex: 84,
+    currentIndex: 99,
     command: "MESSAGE",
     headers: {
       "content-type": "text/plain",
@@ -31,6 +31,94 @@ hello queue a\u0000
     },
     body: "hello queue a",
   });
+});
+
+test("parses a valid message with headers and body and additional EOL after NULL", () => {
+  const raw = `MESSAGE
+subscription:0
+message-id:007
+destination:/queue/a
+content-type:text/plain
+
+hello queue a\u0000
+
+
+
+`;
+  const machine = stompParserMachine.newInstance({
+    initialState: {
+      name: "parse:start",
+      raw,
+      currentIndex: 0,
+    },
+  });
+  machine.start();
+  expect(machine.state).toEqual({
+    name: "command:server",
+    raw,
+    currentIndex: 102,
+    command: "MESSAGE",
+    headers: {
+      "content-type": "text/plain",
+      destination: "/queue/a",
+      "message-id": "007",
+      subscription: "0",
+    },
+    body: "hello queue a",
+  });
+});
+
+test("parses a valid frame-stream", () => {
+  const raw = `MESSAGE
+subscription:0
+message-id:007
+destination:/queue/a
+content-type:text/plain
+
+hello queue a\u0000
+
+
+
+MESSAGE
+subscription:1
+message-id:008
+destination:/queue/b
+content-type:text/plain
+
+hello queue b\u0000
+
+
+
+MESSAGE
+subscription:3
+message-id:009
+destination:/queue/c
+content-type:text/plain
+
+hello queue c\u0000`;
+  const machine = stompParserMachine.newInstance({
+    initialState: {
+      name: "parse:start",
+      raw,
+      currentIndex: 0,
+    },
+  });
+  const frames: string[] = [];
+  machine.subscribe(({ state }) => {
+    if (state.name === "command:client" || state.name === "command:server") {
+      frames.push(
+        `${state.command} [${JSON.stringify(state.headers)}]: ${state.body}`,
+      );
+    }
+  });
+  machine.start();
+  expect(frames).toMatchInlineSnapshot(`
+[
+  "MESSAGE [{"subscription":"0","message-id":"007","destination":"/queue/a","content-type":"text/plain"}]: hello queue a",
+  "MESSAGE [{"subscription":"1","message-id":"008","destination":"/queue/b","content-type":"text/plain"}]: hello queue b",
+  "MESSAGE [{"subscription":"3","message-id":"009","destination":"/queue/c","content-type":"text/plain"}]: hello queue c",
+]
+`);
 });
 
 test("parses a valid message with headers and no body", () => {
@@ -43,16 +131,16 @@ ack:client
 `;
   const machine = stompParserMachine.newInstance({
     initialState: {
-      name: "parseCommand",
+      name: "parse:start",
       raw,
       currentIndex: 0,
     },
   });
   machine.start();
   expect(machine.state).toEqual({
-    name: "clientCommand",
+    name: "command:client",
     raw,
-    currentIndex: 50,
+    currentIndex: 52,
     command: "SUBSCRIBE",
     headers: {
       id: "0",
@@ -68,7 +156,7 @@ test("parses a heartbeat frame", () => {
 `;
   const machine = stompParserMachine.newInstance({
     initialState: {
-      name: "parseCommand",
+      name: "parse:start",
       raw,
       currentIndex: 0,
     },
@@ -92,7 +180,7 @@ hello queue a\u0000
   `;
   const machine = stompParserMachine.newInstance({
     initialState: {
-      name: "parseCommand",
+      name: "parse:start",
       raw,
       currentIndex: 0,
     },
@@ -117,7 +205,7 @@ hello queue a\u0000
   `;
   const machine = stompParserMachine.newInstance({
     initialState: {
-      name: "parseCommand",
+      name: "parse:start",
       raw,
       currentIndex: 0,
     },
@@ -141,7 +229,7 @@ content-type:text/plain
 hello queue a`;
   const machine = stompParserMachine.newInstance({
     initialState: {
-      name: "parseCommand",
+      name: "parse:start",
       raw,
       currentIndex: 0,
     },
