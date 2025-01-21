@@ -1,4 +1,6 @@
+import { cwd } from "node:process";
 import { chromium, devices } from "playwright";
+import sharp from "sharp";
 
 const assetsDir = "assets";
 
@@ -11,25 +13,28 @@ const scapeLogo = async () => {
   const browser = await chromium.launch();
   const context = await browser.newContext(devices["Desktop Chrome"]);
   const page = await context.newPage();
-  await page.goto(
-    "https://fonts.google.com/specimen/Nabla?preview.text=yay-machine%20&categoryFilters=Feeling:%2FExpressive%2FFuturistic",
-  );
+  await page.goto(`file://${cwd()}/scripts/logo.html`);
 
   log("waiting for rendered text");
-  const renderedText = page.locator("[contenteditable][spellcheck=false]");
+  const renderedText = page.locator("span.logo-font");
   await renderedText.waitFor();
 
-  const screenshotFile = `${assetsDir}/logo.png`;
-  log(`saving screenshot file: ${screenshotFile}\n`);
+  const paddedScreenshotFile = `${assetsDir}/logo-padded.png`;
+  log(`saving screenshot file: ${paddedScreenshotFile}`);
 
   await renderedText.screenshot({
     animations: "disabled",
-    path: screenshotFile,
+    path: paddedScreenshotFile,
     omitBackground: true,
   });
 
+  log("closing browser");
   await context.close();
   await browser.close();
+
+  log("trimming");
+  const trimmedScreenshotFile = `${assetsDir}/logo.png`;
+  await sharp(paddedScreenshotFile).trim().toFile(trimmedScreenshotFile);
 };
 
 await scapeLogo();

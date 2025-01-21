@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://yay-machine.js.org/"><img src="https://github.com/user-attachments/assets/6bbb1b46-67b1-40b0-a0d8-e604d288e4f2" alt="Logo"></a>
+  <a href="https://yay-machine.js.org/"><img src="https://github.com/user-attachments/assets/dcc997ee-faa8-465a-9ddf-3682b87ebb4e" alt="Logo"></a>
 </p>
 
 <p align="center">
