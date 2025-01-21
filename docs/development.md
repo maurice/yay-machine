@@ -2,24 +2,24 @@
 
 ## Bun
 
-This project uses [bun](https://bun.sh/) for package management and other tasks.
+This project uses npm for package management and other tasks.
 
 You'll need it on your PATH so install it as per their instructions.
 
 ## Initial setup
 
 ```sh
-bun install                 # install dependencies
-bun run all                 # run all scripts - check, test, build
+npm install                 # install dependencies
+npm run all                 # run all scripts - check, test, build
 ```
 
 ## Other scripts
 
 ```sh
-bun run check               # type-check, lint
-bun test                    # run tests once
-bun test --watch            # run tests in watch-mode
-bun build                   # transpile TypeScript to dist/*.js, generate .d.ts files
+npm run check               # type-check, lint
+npm run test                # run tests once
+npm run test:watch          # run tests in watch-mode
+npm run build               # transpile TypeScript to dist/*.js, generate .d.ts files
 ```
 
 ## Contributions
@@ -45,8 +45,8 @@ The documentation site [yay-machine.js.org/](https://yay-machine.js.org/) is dep
 To build the pages site locally
 
 ```sh
-bun run pages               # generate documentation site (pages)
-bun run pages -- --watch    # generate documentation site (pages) in watch mode
+npm run pages               # generate documentation site (pages)
+npm run pages:watch         # generate documentation site (pages) in watch mode
 ```
 
 This runs a custom script to transform the markdown docs (in this [docs folder](./)) into HTML using [marked](https://marked.js.org/) amongst other things. We also copy a bunch of static assets from other directories.
