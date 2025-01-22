@@ -1,4 +1,4 @@
-# Toggle (on/off)
+# STOMP parser
 
 > 🏷️ `state data`\
 > 🏷️ `conditional transitions`\
@@ -7,11 +7,9 @@
 
 ## About
 
-A parser in the form of a state-machine.
+This machine parses [STOMP messages](https://stomp.github.io/), as [defined by the spec](https://stomp.github.io/stomp-specification-1.2.html). This parser roughly mirrors the [Augmented BNF](https://stomp.github.io/stomp-specification-1.2.html#Augmented_BNF).
 
-This machine parses STOMP Frames, which are text messages with a COMMAND, optional headers and body, as [defined by the spec](https://stomp.github.io/stomp-specification-1.2.html). This parser roughly mirrors the [Augmented BNF](https://stomp.github.io/stomp-specification-1.2.html#Augmented_BNF).
-
-The machine starts in the `idle` state, and when it receives a `PARSE` event it proceeds to consume input until either landing in the `error` state or one of the `command:client` or `command:server` states. If the raw text data contains more frames it loops around until all input is consumed.
+The machine starts in the `idle` state, and when it receives a `PARSE` event, it consumes input until landing in either the `error` state or one of the `command:client` or `command:server` states. If the raw text data contains more messages, it loops around until all input is consumed.
 
 As it finds valid tokens it keeps advancing the state's `currentIndex`, which is the current parse position in the `raw` message `string`.
 
