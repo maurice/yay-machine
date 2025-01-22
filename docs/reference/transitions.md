@@ -292,7 +292,7 @@ connection.subscribe(({ state }) => {
 connection.send({ type: "CONNECT", url: "foo://bar/baz" });
 ```
 
-## In State, On Event
+## Specific State, On Event
 
 The simplest and most obvious types of transition are done in a specific state, because of a specific event.
 

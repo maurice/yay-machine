@@ -11,6 +11,18 @@
 * [Side-effects](./reference/side-effects.md)
 * [Machines](./reference/machines.md)
 
+# Examples
+
+* [Toggle (on/off)](./examples/toggle.md)
+* [Counter (1, 2, 3, ...)](./examples/counter.md)
+* [Guess a number](./examples/guess.md)
+* [Login](./examples/login.md)
+* [Health (game component)](./examples/health.md)
+* [Tape (VCR)](./examples/tape.md)
+* [STOMP Frame parser](./examples/stomp-parser.md)
+* [Elevator](./examples/elevator.md)
+* [Elevators controller](./examples/elevators-controller.md)
+
 # Articles
 
 * [Why state-machines?](./articles/why-state-machines.md)

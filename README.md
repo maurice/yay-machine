@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-<a href="https://yay-machine.js.org/"><strong>yay-machine</strong> is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.</a>
+<a href="https://yay-machine.js.org/"><strong>yay-machine</strong> is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library.</a>
 </p>
 
 # Project status

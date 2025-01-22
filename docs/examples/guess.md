@@ -1,25 +1,13 @@
-<p align="center">
-  <a href="https://yay-machine.js.org/"><img src="https://github.com/user-attachments/assets/dcc997ee-faa8-465a-9ddf-3682b87ebb4e" alt="Logo"></a>
-</p>
+# Guess a number
 
+> 🏷️ `state data`\
+> 🏷️ `any state + event transition`\
+> 🏷️ `conditional transitions`\
+> 🏷️ `immediate (always) transition`
 
-<p align="center">
-<a href="https://github.com/maurice/yay-machine/actions/workflows/build.yml" title="build"><img src="https://github.com/maurice/yay-machine/workflows/build/badge.svg"/></a>
-<a href="https://www.npmjs.com/package/yay-machine" title="NPM"><img src="https://img.shields.io/npm/v/yay-machine"/></a>
-<img src="https://img.shields.io/coverallsCoverage/github/maurice/yay-machine"/>
-</p>
+## About
 
-<p align="center">
-<a href="https://yay-machine.js.org/"><strong>yay-machine</strong> is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library.</a>
-</p>
-
----
-
-*📦 This package is the core state-machine library.*
-
-# Example
-
-## Define the machine at compile-time
+Models the "Guess a random number from 1 to 10" game.
 
 > 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/guessMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/guessMachine.test.ts" target="_blank">test</a> on GitHub
 
@@ -100,7 +88,7 @@ export const guessMachine = defineMachine<
 });
 ```
 
-## Create instances and operate them at run-time
+## Usage
 
 ```typescript
 const guess = guessMachine.newInstance().start();
@@ -117,12 +105,3 @@ if (guess.state.name === "guessedCorrectly") {
   assert.fail(`Invalid state: ${guess.state.name}`);
 }
 ```
-
-# Next...
-
-* [About **yay-machine**](https://yay-machine.js.org/)
-* [Quick Start](https://yay-machine.js.org/quick-start.html)
-* [Reference docs](https://yay-machine.js.org/reference/state.html)
-* [Why state-machines?](https://yay-machine.js.org/articles/why-state-machines.html)
-* [Why **yay-machine**?](https://yay-machine.js.org/articles/why-yay-machine.html)
-* [**yay-machine** vs **XState**](https://yay-machine.js.org/articles/vs-xstate.html)

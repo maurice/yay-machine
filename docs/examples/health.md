@@ -1,3 +1,36 @@
+# Health (game component)
+
+> 🏷️ `state data`\
+> 🏷️ `copy data on transition`\
+> 🏷️ `event payload`\
+> 🏷️ `specific state + event transition`\
+> 🏷️ `any state + event transition`\
+> 🏷️ `conditional transitions`\
+> 🏷️ `immediate (always) transitions`\
+> 🏷️ `non-reenter state transition`\
+> 🏷️ `state entry side-effect`\
+> 🏷️ `side-effect cleanup`\
+> 🏷️ `send event to self`
+
+## About
+
+Models a **health** component from a game.
+
+Uses a decision state (`checkHealth`) and immediate (always) transitions with conditions to determine which one of the health states (`thriving`, `moderate`, `surviving`, `critical`, `expired`) to go to next.
+
+Health deteriorates as the machine receives `DAMAGE` events and improves when it receives `FIRST_AID` events.
+
+If the machine receives a `GOD_LIKE` event (with *human-compatible* condition), the health component enters the `invincible` state. On entering this state we have an `onEnter()` side-effect, which after 10s sends a `HUMAN_AGAIN` event to the machine instance, and returns it to one of the health states.
+
+While `invincible`, the machine effectively ignores any `DAMAGE` events by having a state-specific transition, and using `reenter: false` to avoid exiting-and-entering the state (which would stop and restart the invincibility timer), and not updating state data. (This is more for demonstration than necessity, since the state data stores the time that `invincibilityStarted`, so other events **do** trigger exit and re-entry into this state, and so they **do** cancel the timer and re-start it with the remaining time.)
+
+The `GOD_LIKE` event is handled in **any state** so it's possible to keep extending the invincibility timer by receiving more `GOD_LIKE` events after entering that state.
+
+This machine's state data is homogenous and we're using `enableCopyDataOnTransition` to simplify some transitions that don't update the data.
+
+> 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/healthMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/healthMachine.test.ts" target="_blank">test</a> on GitHub
+
+```typescript
 import assert from "assert";
 import { defineMachine } from "yay-machine";
 
@@ -118,9 +151,11 @@ export const healthMachine = defineMachine<HealthState, HealthEvent>({
     },
   },
 });
+```
 
-// Usage
+## Usage
 
+```typescript
 const health = healthMachine.newInstance().start();
 health.subscribe(({ state }) => {
   if (state.name === "expired") {
@@ -190,3 +225,4 @@ assert.deepStrictEqual(health.state, {
 });
 
 // etc ...
+```

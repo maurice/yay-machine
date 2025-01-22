@@ -2,7 +2,7 @@
   <a href="https://yay-machine.js.org/"><img src="https://github.com/user-attachments/assets/dcc997ee-faa8-465a-9ddf-3682b87ebb4e" alt="Logo"></a>
 </p>
 
-**yay-machine** is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library for the browser and server.
+**yay-machine** is a modern, simple, lightweight, zero-dependency, TypeScript state-machine library.
 
 ## Modern
 

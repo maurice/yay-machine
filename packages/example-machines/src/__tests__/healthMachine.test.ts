@@ -1,5 +1,20 @@
-import { expect, test } from "bun:test";
+import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test";
+import { type InstalledClock, install } from "@sinonjs/fake-timers";
 import { healthMachine } from "../healthMachine";
+
+let clock: InstalledClock;
+
+beforeAll(() => {
+  clock = install();
+});
+
+beforeEach(() => {
+  clock.reset();
+});
+
+afterAll(() => {
+  clock.uninstall();
+});
 
 test("health starts in thriving", () => {
   const health = healthMachine.newInstance().start();
@@ -153,4 +168,83 @@ test("invincibility repels damage but not first-aid", () => {
     stamina: 10,
     invincibilityStarted: 0,
   });
+});
+
+test("invincibility lasts for 10s", () => {
+  const health = healthMachine.newInstance().start();
+  health.send({ type: "DAMAGE", strength: 7, stamina: 4 });
+  expect(health.state).toEqual({
+    name: "surviving",
+    strength: 3,
+    stamina: 6,
+    invincibilityStarted: 0,
+  });
+
+  health.send({ type: "GOD_LIKE", compatibleWith: "human" });
+  expect(health.state).toEqual({
+    name: "invincible",
+    strength: 3,
+    stamina: 6,
+    invincibilityStarted: expect.any(Number),
+  });
+
+  clock.tick(10_000);
+  expect(health.state).toEqual({
+    name: "surviving",
+    strength: 3,
+    stamina: 6,
+    invincibilityStarted: expect.any(Number),
+  }); // as before
+});
+
+test("invincibility can be extended with more GOD_LIKE events", () => {
+  const health = healthMachine.newInstance().start();
+  health.send({ type: "DAMAGE", strength: 7, stamina: 4 });
+  expect(health.state).toEqual({
+    name: "surviving",
+    strength: 3,
+    stamina: 6,
+    invincibilityStarted: 0,
+  });
+
+  health.send({ type: "GOD_LIKE", compatibleWith: "human" });
+  expect(health.state).toEqual({
+    name: "invincible",
+    strength: 3,
+    stamina: 6,
+    invincibilityStarted: expect.any(Number),
+  });
+
+  clock.tick(9_000);
+  expect(health.state).toEqual({
+    name: "invincible",
+    strength: 3,
+    stamina: 6,
+    invincibilityStarted: expect.any(Number),
+  }); // still
+
+  // extension
+  health.send({ type: "GOD_LIKE", compatibleWith: "human" });
+  expect(health.state).toEqual({
+    name: "invincible",
+    strength: 3,
+    stamina: 6,
+    invincibilityStarted: expect.any(Number),
+  });
+
+  clock.tick(9_000);
+  expect(health.state).toEqual({
+    name: "invincible",
+    strength: 3,
+    stamina: 6,
+    invincibilityStarted: expect.any(Number),
+  }); // still
+
+  clock.tick(1_000);
+  expect(health.state).toEqual({
+    name: "surviving",
+    strength: 3,
+    stamina: 6,
+    invincibilityStarted: expect.any(Number),
+  }); // as before
 });

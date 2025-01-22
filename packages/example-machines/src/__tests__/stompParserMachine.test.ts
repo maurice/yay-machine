@@ -10,14 +10,8 @@ content-type:text/plain
 
 hello queue a\u0000
 `;
-  const machine = stompParserMachine.newInstance({
-    initialState: {
-      name: "parse:start",
-      raw,
-      currentIndex: 0,
-    },
-  });
-  machine.start();
+  const machine = stompParserMachine.newInstance().start();
+  machine.send({ type: "PARSE", raw });
   expect(machine.state).toEqual({
     name: "command:server",
     raw,
@@ -45,14 +39,8 @@ hello queue a\u0000
 
 
 `;
-  const machine = stompParserMachine.newInstance({
-    initialState: {
-      name: "parse:start",
-      raw,
-      currentIndex: 0,
-    },
-  });
-  machine.start();
+  const machine = stompParserMachine.newInstance().start();
+  machine.send({ type: "PARSE", raw });
   expect(machine.state).toEqual({
     name: "command:server",
     raw,
@@ -96,22 +84,65 @@ destination:/queue/c
 content-type:text/plain
 
 hello queue c\u0000`;
-  const machine = stompParserMachine.newInstance({
-    initialState: {
-      name: "parse:start",
-      raw,
-      currentIndex: 0,
-    },
-  });
+  const machine = stompParserMachine.newInstance().start();
   const frames: string[] = [];
   machine.subscribe(({ state }) => {
-    if (state.name === "command:client" || state.name === "command:server") {
+    if (state.name === "command:server") {
       frames.push(
         `${state.command} [${JSON.stringify(state.headers)}]: ${state.body}`,
       );
     }
   });
-  machine.start();
+  machine.send({ type: "PARSE", raw });
+  expect(frames).toMatchInlineSnapshot(`
+[
+  "MESSAGE [{"subscription":"0","message-id":"007","destination":"/queue/a","content-type":"text/plain"}]: hello queue a",
+  "MESSAGE [{"subscription":"1","message-id":"008","destination":"/queue/b","content-type":"text/plain"}]: hello queue b",
+  "MESSAGE [{"subscription":"3","message-id":"009","destination":"/queue/c","content-type":"text/plain"}]: hello queue c",
+]
+`);
+});
+
+test("parses a sequence of discrete messages", () => {
+  const machine = stompParserMachine.newInstance().start();
+  const frames: string[] = [];
+  machine.subscribe(({ state }) => {
+    if (state.name === "command:server") {
+      frames.push(
+        `${state.command} [${JSON.stringify(state.headers)}]: ${state.body}`,
+      );
+    }
+  });
+  machine.send({
+    type: "PARSE",
+    raw: `MESSAGE
+subscription:0
+message-id:007
+destination:/queue/a
+content-type:text/plain
+
+hello queue a\u0000`,
+  });
+  machine.send({
+    type: "PARSE",
+    raw: `MESSAGE
+subscription:1
+message-id:008
+destination:/queue/b
+content-type:text/plain
+
+hello queue b\u0000`,
+  });
+  machine.send({
+    type: "PARSE",
+    raw: `MESSAGE
+subscription:3
+message-id:009
+destination:/queue/c
+content-type:text/plain
+
+hello queue c\u0000`,
+  });
   expect(frames).toMatchInlineSnapshot(`
 [
   "MESSAGE [{"subscription":"0","message-id":"007","destination":"/queue/a","content-type":"text/plain"}]: hello queue a",
@@ -129,14 +160,8 @@ ack:client
 
 \u0000
 `;
-  const machine = stompParserMachine.newInstance({
-    initialState: {
-      name: "parse:start",
-      raw,
-      currentIndex: 0,
-    },
-  });
-  machine.start();
+  const machine = stompParserMachine.newInstance().start();
+  machine.send({ type: "PARSE", raw });
   expect(machine.state).toEqual({
     name: "command:client",
     raw,
@@ -154,14 +179,8 @@ ack:client
 test("parses a heartbeat frame", () => {
   const raw = `
 `;
-  const machine = stompParserMachine.newInstance({
-    initialState: {
-      name: "parse:start",
-      raw,
-      currentIndex: 0,
-    },
-  });
-  machine.start();
+  const machine = stompParserMachine.newInstance().start();
+  machine.send({ type: "PARSE", raw });
   expect(machine.state).toEqual({
     name: "heartbeat",
     raw,
@@ -178,14 +197,8 @@ content-type:text/plain
 
 hello queue a\u0000
   `;
-  const machine = stompParserMachine.newInstance({
-    initialState: {
-      name: "parse:start",
-      raw,
-      currentIndex: 0,
-    },
-  });
-  machine.start();
+  const machine = stompParserMachine.newInstance().start();
+  machine.send({ type: "PARSE", raw });
   expect(machine.state).toEqual({
     name: "error",
     raw,
@@ -203,14 +216,8 @@ content-type:text/plain
 
 hello queue a\u0000
   `;
-  const machine = stompParserMachine.newInstance({
-    initialState: {
-      name: "parse:start",
-      raw,
-      currentIndex: 0,
-    },
-  });
-  machine.start();
+  const machine = stompParserMachine.newInstance().start();
+  machine.send({ type: "PARSE", raw });
   expect(machine.state).toEqual({
     name: "error",
     raw,
@@ -227,14 +234,8 @@ destination:/queue/a
 content-type:text/plain
 
 hello queue a`;
-  const machine = stompParserMachine.newInstance({
-    initialState: {
-      name: "parse:start",
-      raw,
-      currentIndex: 0,
-    },
-  });
-  machine.start();
+  const machine = stompParserMachine.newInstance().start();
+  machine.send({ type: "PARSE", raw });
   expect(machine.state).toEqual({
     name: "error",
     raw,

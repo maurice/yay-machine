@@ -68,7 +68,7 @@ async function buildPages() {
 
   marked.use(gfmHeadingId());
 
-  const template = (await readFile("assets/pages-template.hb")).toString();
+  const template = (await readFile("assets/pages-template.hbs")).toString();
 
   for (const file of files) {
     if (file.name === "README.md") {
