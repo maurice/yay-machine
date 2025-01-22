@@ -27,33 +27,35 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
 ): MachineDefinition<StateType, EventType> => {
   // basic validation - the TypeScript types should catch all of these but just in case the user is not using
   // TypeScript or is liberal with `any` etc...
-  for (const [name, config] of Object.entries(definitionConfig.states) as readonly [
-    StateType["name"],
-    StateConfig<StateType, EventType, StateType, boolean>,
-  ][]) {
-    if (config.always) {
-      for (const transition of Array.isArray(config.always) ? config.always : [config.always]) {
-        if ("reenter" in transition) {
-          throw new Error(`Cannot use 'reenter' with immediate transitions in state "${name}"`);
+  if (definitionConfig.states) {
+    for (const [name, config] of Object.entries(definitionConfig.states) as readonly [
+      StateType["name"],
+      StateConfig<StateType, EventType, StateType, boolean>,
+    ][]) {
+      if (config.always) {
+        for (const transition of Array.isArray(config.always) ? config.always : [config.always]) {
+          if ("reenter" in transition) {
+            throw new Error(`Cannot use 'reenter' with immediate transitions in state "${name}"`);
+          }
         }
       }
-    }
-    if (config.on) {
-      for (const [type, tx] of Object.entries(config.on) as readonly [
-        EventType["type"],
-        TransitionConfig<StateType, EventType, StateType, EventType, boolean, false>,
-      ][]) {
-        for (const transition of Array.isArray(tx) ? tx : [tx]) {
-          if ("reenter" in transition && transition.reenter === false) {
-            if (transition.to !== name) {
-              throw new Error(
-                `Cannot use \`reenter: false\` to another state "${transition.to}" for transition in state "${name}" via event "${type}"`,
-              );
-            }
-            if (transition.data) {
-              throw new Error(
-                `Cannot use \`reenter: false\` with \`data()\` for transition in state "${name}" via event "${type}"`,
-              );
+      if (config.on) {
+        for (const [type, tx] of Object.entries(config.on) as readonly [
+          EventType["type"],
+          TransitionConfig<StateType, EventType, StateType, EventType, boolean, false>,
+        ][]) {
+          for (const transition of Array.isArray(tx) ? tx : [tx]) {
+            if ("reenter" in transition && transition.reenter === false) {
+              if (transition.to !== name) {
+                throw new Error(
+                  `Cannot use \`reenter: false\` to another state "${transition.to}" for transition in state "${name}" via event "${type}"`,
+                );
+              }
+              if (transition.data) {
+                throw new Error(
+                  `Cannot use \`reenter: false\` with \`data()\` for transition in state "${name}" via event "${type}"`,
+                );
+              }
             }
           }
         }
@@ -92,7 +94,7 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
       let disposeState: Cleanup | undefined;
 
       const initState = <CurrentState extends StateType>() => {
-        const { onEnter, onExit } = definitionConfig.states[currentState.name as StateType["name"]] || {};
+        const { onEnter, onExit } = definitionConfig.states?.[currentState.name as StateType["name"]] || {};
         const [enterParams, disposeEnterParams] = getEffectParams<CurrentState>();
         // @ts-ignore
         const disposeEnter = onEnter?.(enterParams);
@@ -140,7 +142,7 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
       };
 
       const applyAlwaysTransitions = () => {
-        const always = definitionConfig.states[currentState.name as StateType["name"]]?.always;
+        const always = definitionConfig.states?.[currentState.name as StateType["name"]]?.always;
         if (always) {
           applyTransitions(undefined, always);
         }
@@ -214,7 +216,7 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
         handlingEvent = true;
         try {
           const { states, on } = definitionConfig;
-          const state = states[currentState.name as StateType["name"]];
+          const state = states?.[currentState.name as StateType["name"]];
           if (state) {
             const stateOnEvent = state.on?.[event.type as EventType["type"]];
             // @ts-ignore
