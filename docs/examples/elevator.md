@@ -9,11 +9,11 @@
 
 ## About
 
-This example models an elevator (lift). This model operates completely standalone, but can also be combined into a group of coordinated elevators using the [elevator controller](./elevator-controller.md).
+This example models an elevator (lift). This model operates completely standalone, but can also be combined into a group of coordinated elevators with the [elevators controller](./elevators-controller.md).
 
-The elevator machine's state says where it is now and where it's going, plus it has a queue of floors to visit next (if any). When a `VISIT_FLOOR` event is received (either by summoning it at the wall, or a passenger pressing a button inside), the elevator either opens the doors (if already at the floor), else adds the floor to its queue at the best position.
+The elevator machine's state says where it is now and where it's going, plus it has a queue of floors to visit next (if any). When a `VISIT_FLOOR` event is received (either by summoning it at the wall, or a passenger pressing a button inside), the elevator either opens the doors (if already at the floor), else adds the floor to its queue.
 
-State `onEntry()` side-effects use `setTimeout` to send events to the machine to simulate 5s to open/close doors. Similarly we simulate travel (up/down) progress by moving 1/10th of a floor every 500ms, meaning it takes 5s to go up/down one floor.
+State `onEntry()` side-effects use `setTimeout` to send events to the machine to simulate 5s to open/close doors. Similarly up/down travel progress is simulated by moving 1/10th of a floor every 500ms, meaning it takes 5s to go up/down one floor.
 
 This machine's state data is homogenous and we're using `enableCopyDataOnTransition` to simplify some transitions that don't update the data.
 

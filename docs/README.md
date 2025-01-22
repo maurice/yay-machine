@@ -19,7 +19,7 @@
 * [Login](./examples/login.md)
 * [Health (game component)](./examples/health.md)
 * [Tape (VCR)](./examples/tape.md)
-* [STOMP Frame parser](./examples/stomp-parser.md)
+* [STOMP parser](./examples/stomp-parser.md)
 * [Elevator](./examples/elevator.md)
 * [Elevators controller](./examples/elevators-controller.md)
 
