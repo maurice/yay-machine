@@ -137,8 +137,6 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
         for (const subscriber of subscribers) {
           subscriber({ state: currentState, event });
         }
-
-        applyAlwaysTransitions();
       };
 
       const applyAlwaysTransitions = () => {
@@ -158,6 +156,7 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
       ): boolean => {
         for (const transition of Array.isArray(transitions) ? transitions : [transitions]) {
           if (tryTransition(event, transition)) {
+            applyAlwaysTransitions();
             return true;
           }
         }

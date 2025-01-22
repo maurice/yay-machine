@@ -450,3 +450,122 @@ test("events sent after reenter:false onTransition side effect is cleaned up are
   capturedSend!({ type: "NEXT" });
   expect(machine.state).toBe(currentState);
 });
+
+test("always transitions precede events (sent by onEnter in initial state)", () => {
+  type State = { name: "a" | "b" | "c" };
+  type Event = { type: "B" };
+  const machine = defineMachine<State, Event>({
+    initialState: { name: "a" },
+    states: {
+      a: {
+        onEnter: ({ send }) => send({ type: "B" }),
+        on: {
+          B: { to: "b" },
+        },
+        always: {
+          to: "c",
+        },
+      },
+    },
+  })
+    .newInstance()
+    .start();
+  expect(machine.state.name).toBe("c");
+});
+test("always transitions precede events (sent by onEnter in future state)", () => {
+  type State = { name: "a" | "b" | "c" | "d" };
+  type Event = { type: "B" | "C" };
+  const machine = defineMachine<State, Event>({
+    initialState: { name: "a" },
+    states: {
+      a: {
+        on: {
+          B: { to: "b" },
+        },
+      },
+      b: {
+        onEnter: ({ send }) => send({ type: "C" }),
+        on: {
+          C: { to: "c" },
+        },
+        always: {
+          to: "d",
+        },
+      },
+    },
+  })
+    .newInstance()
+    .start();
+  machine.send({ type: "B" });
+  expect(machine.state.name).toBe("d");
+});
+
+test("always transitions precede events (sent by onExit in initial state)", () => {
+  type State = { name: "a" | "b" | "c" };
+  type Event = { type: "B" };
+  const machine = defineMachine<State, Event>({
+    initialState: { name: "a" },
+    states: {
+      a: {
+        onExit: ({ send }) => send({ type: "B" }),
+        on: {
+          B: { to: "b" },
+        },
+        always: {
+          to: "c",
+        },
+      },
+    },
+  })
+    .newInstance()
+    .start();
+  expect(machine.state.name).toBe("c");
+});
+
+test("always transitions precede events (sent by onExit in future state)", () => {
+  type State = { name: "a" | "b" | "c" | "d" };
+  type Event = { type: "B" | "C" };
+  const machine = defineMachine<State, Event>({
+    initialState: { name: "a" },
+    states: {
+      a: {
+        on: {
+          B: { to: "b" },
+        },
+      },
+      b: {
+        onExit: ({ send }) => send({ type: "C" }),
+        on: {
+          C: { to: "c" },
+        },
+        always: {
+          to: "d",
+        },
+      },
+    },
+  })
+    .newInstance()
+    .start();
+  machine.send({ type: "B" });
+  expect(machine.state.name).toBe("d");
+});
+
+test("always transitions are non-recursive and won't cause stack-overflow errors", () => {
+  type State = { name: "a"; iteration: number };
+  type Event = { type: "NEXT" };
+  const machine = defineMachine<State, Event>({
+    initialState: { name: "a", iteration: 0 },
+    states: {
+      a: {
+        always: {
+          to: "a",
+          when: ({ state }) => state.iteration < 10_000,
+          data: ({ state }) => ({ iteration: state.iteration + 1 }),
+        },
+      },
+    },
+  })
+    .newInstance()
+    .start();
+  expect(machine.state.name).toBe("a");
+});
