@@ -89,7 +89,7 @@ export const healthMachine = defineMachine<HealthState, HealthEvent>({
       onEnter: ({ state, send }) => {
         const timer = setTimeout(
           () => send({ type: "HUMAN_AGAIN" }),
-          performance.now() - state.invincibilityStarted - 10_000,
+          performance.now() + 10_000 - state.invincibilityStarted,
         );
         return () => clearTimeout(timer);
       },

@@ -33,11 +33,6 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Pages check
-        run: |
-          ls -la
-          npm run pages
-
       - name: Check types
         run: npm run check:types
 
@@ -55,3 +50,8 @@ jobs:
           npm run docs:sync -- --skipBundlephobia
           git diff --exit-code
         
+      - name: Pages check
+        run: |
+          ls -la
+          npm run pages
+  

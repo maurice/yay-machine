@@ -1,3 +1,28 @@
+# Toggle (on/off)
+
+> 🏷️ `state data`\
+> 🏷️ `conditional transitions`\
+> 🏷️ `immediate (always) transitions`\
+> 🏷️ `events`
+
+## About
+
+A parser in the form of a state-machine.
+
+This machine parses STOMP Frames, which are text messages with a COMMAND, optional headers and body, as [defined by the spec](https://stomp.github.io/stomp-specification-1.2.html). This parser roughly mirrors the [Augmented BNF](https://stomp.github.io/stomp-specification-1.2.html#Augmented_BNF).
+
+The machine starts in the `idle` state, and when it receives a `PARSE` event it proceeds to consume input until either landing in the `error` state or one of the `command:client` or `command:server` states. If the raw text data contains more frames it loops around until all input is consumed.
+
+As it finds valid tokens it keeps advancing the state's `currentIndex`, which is the current parse position in the `raw` message `string`.
+
+The machine parses the input entirely with conditional immediate (always) transitions, and therefore consumes all given input synchronously.
+
+It's safe to send the machine multiple `PARSE` events in a row, subscribing to state, and extracting each valid frame as the state changes.
+
+
+> 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/stompParserMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/stompParserMachine.test.ts" target="_blank">test</a> on GitHub
+
+```typescript
 import assert from "assert";
 import { defineMachine } from "yay-machine";
 
@@ -366,9 +391,11 @@ export const stompParserMachine = defineMachine<ParserState, ParserEvent>({
     },
   },
 });
+```
 
-// Usage
+## Usage
 
+```typescript
 const raw = `SUBSCRIBE
 id:0
 destination:/queue/foo
@@ -391,3 +418,4 @@ assert.deepStrictEqual(machine.state, {
   },
   body: "",
 });
+```

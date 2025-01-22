@@ -19,7 +19,7 @@ afterAll(() => {
 test("conditionals are evaluated in order", () => {
   let login = loginMachine.newInstance().start();
 
-  login.send({ type: "LOGIN", username: "hackerman", password: "anything" });
+  login.send({ type: "LOGIN", username: "attacker", password: "anything" });
   expect(login.state).toEqual({ name: "banned" });
 
   login = loginMachine.newInstance().start();
