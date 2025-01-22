@@ -31,7 +31,7 @@ export interface HeterogenousStateMachineDefinitionConfig<
    * The machine states configuration.
    * Defines state-specific event- and/or immediate-transitions
    */
-  readonly states: StatesConfig<StateType, EventType, CopyDataOnTransition>;
+  readonly states?: StatesConfig<StateType, EventType, CopyDataOnTransition>;
 
   /**
    * Optional side-effect, run when a machine instance is started.
