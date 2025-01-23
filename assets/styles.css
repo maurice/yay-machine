@@ -186,18 +186,37 @@ body:not(.nav-open) .close-nav {
           display: inline-block;
           width: 100%;
           padding: 0.1em 1em;
-          border-left: 1px solid var(--theme-dark-yellow);
           text-decoration: none;
           color: var(--theme-dark-yellow);
+          border-left: 1px solid var(--theme-dark-yellow);
+          position: relative;
         }
 
         a:hover {
+          &:before {
+            content: "";
+            position: absolute;
+            left: 0px;
+            width: 1px;
+            top: 0;
+            bottom: 0;
+            background: var(--theme-orange);
+          }
           color: var(--theme-orange);
-          border-left: 1px solid var(--theme-red);
+          border-left: 1px solid var(--theme-orange);
         }
 
         a.menu-selected {
           font-weight: 700;
+          &:before {
+            content: "";
+            position: absolute;
+            left: 0px;
+            width: 1px;
+            top: 0;
+            bottom: 0;
+            background: var(--theme-dark-yellow);
+          }
         }
 
         li + li {
@@ -343,7 +362,7 @@ h2 {
   position: absolute;
   top: 0;
   left: 0;
-  margin-left: -.87em;
+  margin-left: -.7em;
   padding-right: .13em;
   font-weight: 500;
   -webkit-user-select: none;

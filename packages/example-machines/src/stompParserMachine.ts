@@ -369,25 +369,27 @@ export const stompParserMachine = defineMachine<ParserState, ParserEvent>({
 
 // Usage
 
-const raw = `SUBSCRIBE
-id:0
-destination:/queue/foo
-ack:client
+const raw = `MESSAGE
+subscription:0
+message-id:007
+destination:/queue/a
+content-type:text/plain
 
-\u0000
+hello queue a\u0000
 `;
 
 const machine = stompParserMachine.newInstance().start();
 machine.send({ type: "PARSE", raw });
 assert.deepStrictEqual(machine.state, {
-  name: "command:client",
+  name: "command:server",
   raw,
-  currentIndex: 52,
-  command: "SUBSCRIBE",
+  currentIndex: 99,
+  command: "MESSAGE",
   headers: {
-    id: "0",
-    destination: "/queue/foo",
-    ack: "client",
+    subscription: "0",
+    "message-id": "007",
+    destination: "/queue/a",
+    "content-type": "text/plain",
   },
-  body: "",
+  body: "hello queue a",
 });

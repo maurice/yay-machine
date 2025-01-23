@@ -35,9 +35,9 @@ Read more about [our philosophy here](./why-yay-machine.md#philosophy).
 
 **yay-machine** is an order of magnitude smaller than **XState**.
 
-| `xstate@5.19.2` | `yay-machine@1.3.1` |
+| `xstate@5.19.2` | `yay-machine@1.3.2` |
 | ---------- | --------------- |
-| [![XState bundlephobia stats](../assets/bundlephobia-xstate.png "https://bundlephobia.com/package/xstate@5.19.2")](https://bundlephobia.com/package/xstate@5.19.2) | [![yay-machine bundlephobia stats](../assets/bundlephobia-yay-machine.png "https://bundlephobia.com/package/yay-machine@1.3.1")](https://bundlephobia.com/package/yay-machine@1.3.1) |
+| [![XState bundlephobia stats](../assets/bundlephobia-xstate.png "https://bundlephobia.com/package/xstate@5.19.2")](https://bundlephobia.com/package/xstate@5.19.2) | [![yay-machine bundlephobia stats](../assets/bundlephobia-yay-machine.png "https://bundlephobia.com/package/yay-machine@1.3.2")](https://bundlephobia.com/package/yay-machine@1.3.2) |
 
 Stats from [**BUNDLE**PHOBIA](https://bundlephobia.com/) 🙏.
 
