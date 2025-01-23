@@ -39,9 +39,9 @@ It should be quick to learn, master, and have a low ongoing cost-of-ownership.
 
 ## Lightweight
 
-**yay-machine** is [a tiny package](https://bundlephobia.com/package/yay-machine@1.3.1) and won't bloat your app bundles.
+**yay-machine** is [a tiny package](https://bundlephobia.com/package/yay-machine@1.3.2) and won't bloat your app bundles.
 
-[![yay-machine bundlephobia stats](./assets/bundlephobia-yay-machine.png "https://bundlephobia.com/package/yay-machine@1.3.1")](https://bundlephobia.com/package/yay-machine@1.3.1)
+[![yay-machine bundlephobia stats](./assets/bundlephobia-yay-machine.png "https://bundlephobia.com/package/yay-machine@1.3.2")](https://bundlephobia.com/package/yay-machine@1.3.2)
 
 Minimal implementation means minimal overhead and you can trust **yay-machine** with your high-performance workloads.
 
@@ -65,4 +65,4 @@ Read our [introduction to state-machines](./articles/why-state-machines.md) if y
 
 Get up and running fast with our [quick start guide](./quick-start.md) or head over to the [reference docs](./reference/state.md).
 
-There are [more examples](https://github.com/maurice/yay-machine/blob/main/packages/example-machines/) to demonstrate and test the core library.
+There are also [various examples](./examples/toggle.md) to demonstrate the core library and ways to solve problems with **yay-machine**.
