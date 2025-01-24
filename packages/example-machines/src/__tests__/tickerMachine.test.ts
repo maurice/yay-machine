@@ -16,14 +16,14 @@ test("ticker machine manages multiple price machines", () => {
       initialState: {
         name: "connecting",
         url: "wss://yay-machine.js.org/prices",
-        tickers: {},
+        symbols: {},
       },
     })
     .start();
   expect(ticker.state).toEqual({
     name: "connecting",
     url: "wss://yay-machine.js.org/prices",
-    tickers: {},
+    symbols: {},
   });
 
   expect(clientWs).toBeDefined();
@@ -34,7 +34,7 @@ test("ticker machine manages multiple price machines", () => {
   expect(ticker.state).toEqual({
     name: "connected",
     url: "wss://yay-machine.js.org/prices",
-    tickers: {},
+    symbols: {},
     socket: clientWs,
   });
   expect(clientWs.send).not.toHaveBeenCalled();
@@ -43,12 +43,12 @@ test("ticker machine manages multiple price machines", () => {
   expect(ticker.state).toEqual({
     name: "connected",
     url: "wss://yay-machine.js.org/prices",
-    tickers: {
+    symbols: {
       AAAA: expect.anything(),
     },
     socket: clientWs,
   });
-  expect(ticker.state.tickers["AAAA"].state).toEqual({ name: "pending" });
+  expect(ticker.state.symbols["AAAA"].state).toEqual({ name: "pending" });
   expect(sendMock.mock.calls).toEqual([["subscribe:AAAA"]]);
 
   // add a few more
@@ -66,22 +66,22 @@ test("ticker machine manages multiple price machines", () => {
       data: "BBBB:23.4,CCCC:234.1,BBBB:19.7,DDDD:256.1",
     }),
   );
-  expect(ticker.state.tickers["AAAA"].state).toEqual({ name: "pending" });
-  expect(ticker.state.tickers["BBBB"].state).toEqual({
+  expect(ticker.state.symbols["AAAA"].state).toEqual({ name: "pending" });
+  expect(ticker.state.symbols["BBBB"].state).toEqual({
     name: "live",
     price: 19.7,
     change: "down",
     timeValid: 5000,
     priceTime: expect.any(Number),
   });
-  expect(ticker.state.tickers["CCCC"].state).toEqual({
+  expect(ticker.state.symbols["CCCC"].state).toEqual({
     name: "live",
     price: 234.1,
     change: "none",
     timeValid: 5000,
     priceTime: expect.any(Number),
   });
-  expect(ticker.state.tickers["DDDD"].state).toEqual({
+  expect(ticker.state.symbols["DDDD"].state).toEqual({
     name: "live",
     price: 256.1,
     change: "none",
@@ -89,9 +89,9 @@ test("ticker machine manages multiple price machines", () => {
     priceTime: expect.any(Number),
   });
 
-  const cccc = ticker.state.tickers["CCCC"];
+  const cccc = ticker.state.symbols["CCCC"];
   ticker.send({ type: "REMOVE_TICKER", symbol: "CCCC" });
-  expect(ticker.state.tickers).not.toHaveProperty("CCCC");
+  expect(ticker.state.symbols).not.toHaveProperty("CCCC");
   expect(() =>
     cccc.send({ type: "TICK", price: 1, timeValid: 5_000 }),
   ).toThrow(); // cccc should be stopped

@@ -5,23 +5,22 @@ import { type PriceMachine, priceMachine } from "./priceMachine";
  * Multi-symbol stock tickers machine modelling active subscriptions and API integration
  */
 
-interface ConnectingState {
-  readonly name: "connecting";
+interface CommonState {
   readonly url: string;
-  readonly tickers: Record</* symbol */ string, PriceMachine>;
+  readonly symbols: Record</* symbol */ string, PriceMachine>;
 }
 
-interface ConnectedState {
+interface ConnectingState extends CommonState {
+  readonly name: "connecting";
+}
+
+interface ConnectedState extends CommonState {
   readonly name: "connected";
-  readonly url: string;
-  readonly tickers: Record</* symbol */ string, PriceMachine>;
   readonly socket: WebSocket;
 }
 
-interface ConnectionErrorState {
+interface ConnectionErrorState extends CommonState {
   readonly name: "connectionError";
-  readonly url: string;
-  readonly tickers: Record</* symbol */ string, PriceMachine>;
   readonly errorMessage: string;
 }
 
@@ -60,7 +59,7 @@ type TickersEvent =
   | RemoveTickerEvent;
 
 export const tickerMachine = defineMachine<TickersState, TickersEvent>({
-  initialState: { name: "connecting", url: undefined!, tickers: {} },
+  initialState: { name: "connecting", url: undefined!, symbols: {} },
   onStart: ({ state, send }) => {
     // connect to remote service and setup event handlers
     const socket = new WebSocket(state.url);
@@ -84,7 +83,7 @@ export const tickerMachine = defineMachine<TickersState, TickersEvent>({
       onEnter: ({ state, event }) => {
         // subscribe for all symbols added so far
         if (event?.type === "CONNECTED") {
-          const symbols = Object.keys(state.tickers);
+          const symbols = Object.keys(state.symbols);
           if (symbols.length) {
             state.socket.send(`subscribe:${symbols.join(",")}`);
           }
@@ -94,11 +93,11 @@ export const tickerMachine = defineMachine<TickersState, TickersEvent>({
   },
   on: {
     ADD_TICKER: {
-      when: ({ state, event }) => !(event.symbol in state.tickers),
+      when: ({ state, event }) => !(event.symbol in state.symbols),
       data: ({ state, event }) => ({
         ...state,
-        tickers: {
-          ...state.tickers,
+        symbols: {
+          ...state.symbols,
           [event.symbol]: priceMachine.newInstance().start(),
         },
       }),
@@ -110,14 +109,14 @@ export const tickerMachine = defineMachine<TickersState, TickersEvent>({
       },
     },
     REMOVE_TICKER: {
-      when: ({ state, event }) => event.symbol in state.tickers,
+      when: ({ state, event }) => event.symbol in state.symbols,
       data: ({ state, event }) => {
-        const newTickers = { ...state.tickers };
+        const newTickers = { ...state.symbols };
         newTickers[event.symbol].stop();
         delete newTickers[event.symbol];
         return {
           ...state,
-          tickers: newTickers,
+          symbols: newTickers,
         };
       },
       onTransition: ({ state, event }) => {
@@ -135,7 +134,7 @@ export const tickerMachine = defineMachine<TickersState, TickersEvent>({
         // format "<symbol>:<price>[,<symbol>:<price>]*"
         const ticks = event.data.split(",").map((it) => it.split(":"));
         for (const [symbol, price] of ticks) {
-          state.tickers[symbol]?.send({
+          state.symbols[symbol]?.send({
             type: "TICK",
             price: Number.parseFloat(price),
             timeValid: 5_000,
@@ -160,7 +159,7 @@ const ticker = tickerMachine
     initialState: {
       name: "connecting",
       url: "wss://yay-machine.js.org/prices",
-      tickers: {},
+      symbols: {},
     },
   })
   .start();
@@ -168,7 +167,7 @@ const ticker = tickerMachine
 ticker.send({ type: "ADD_TICKER", symbol: "YAAY" });
 ticker.send({ type: "ADD_TICKER", symbol: "MCHN" });
 
-ticker.state.tickers["YAAY"].subscribe(({ state }) => {
+ticker.state.symbols["YAAY"].subscribe(({ state }) => {
   if (state.name === "live") {
     console.log("YAAY price went %s and is now %s", state.change, state.price);
   } else if (state.name === "stale") {
