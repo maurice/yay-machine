@@ -236,7 +236,7 @@ type TickersEvent =
 export const tickerMachine = defineMachine<TickersState, TickersEvent>({
   initialState: { name: "connecting", url: undefined!, tickers: {} },
   onStart: ({ state, send }) => {
-    console.log("starting connection now", state.url);
+    // connect to remote service and setup event handlers
     const socket = new WebSocket(state.url);
     socket.onopen = () => send({ type: "CONNECTED", socket });
     socket.onerror = (e) =>
