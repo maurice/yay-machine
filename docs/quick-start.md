@@ -205,6 +205,11 @@ assert.deepStrictEqual(health.state, {
 // etc ...
 ```
 
-# Reference docs
+# What next?
 
-Read the [reference docs](./reference/state.md) to find out more.
+* [About **yay-machine**](https://yay-machine.js.org/)
+* [Various examples](https://yay-machine.js.org/examples/toggle.html)
+* [Reference docs](https://yay-machine.js.org/reference/state.html)
+* [Why state-machines?](https://yay-machine.js.org/articles/why-state-machines.html)
+* [Why **yay-machine**?](https://yay-machine.js.org/articles/why-yay-machine.html)
+* [**yay-machine** vs **XState**](https://yay-machine.js.org/articles/vs-xstate.html)
