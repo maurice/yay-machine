@@ -105,35 +105,44 @@ for (const fileName of files) {
   /*
   > 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/healthMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/healthMachine.test.ts" target="_blank">test</a> on GitHub
   */
-  const index = newContent.indexOf("> 💡 View this example's <a href");
-  if (index !== -1) {
-    const result = newContent.match(
-      /View this example's <a href="https:\/\/github.com\/maurice\/yay-machine\/blob\/main\/([^"]+)" target="_blank"/,
-    );
-    if (!result) {
-      log(`${fileName}: seems corrupted - no example match`);
-    } else {
-      const exampleFile = result[1];
-      log("found embedded example", exampleFile);
-      const exampleSource = await readFile(exampleFile, { encoding: "utf8" });
-      const [definition, usage] = exampleSource.split("// Usage").map((it) => it.trim());
+  let lastIndex = 0;
+  while (true) {
+    const index = newContent.indexOf("> 💡 View this example's <a href", lastIndex);
+    if (index === -1) {
+      break;
+    }
+    if (index !== -1) {
+      const result = newContent
+        .slice(index)
+        .match(
+          /View this example's <a href="https:\/\/github.com\/maurice\/yay-machine\/blob\/main\/([^"]+)" target="_blank"/,
+        );
+      if (!result) {
+        log(`${fileName}: seems corrupted - no example match`);
+      } else {
+        const exampleFile = result[1];
+        log("found embedded example", exampleFile, index);
+        const exampleSource = await readFile(exampleFile, { encoding: "utf8" });
+        const [definition, usage] = exampleSource.split("// Usage").map((it) => it.trim());
 
-      const startDefinition = newContent.indexOf("```typescript", index);
-      const endDefinition = newContent.indexOf("```", startDefinition + 3);
-      const startUsage = newContent.indexOf("```typescript", endDefinition + 3);
-      const endUsage = newContent.indexOf("```", startUsage + 3);
+        const startDefinition = newContent.indexOf("```typescript", index);
+        const endDefinition = newContent.indexOf("```", startDefinition + 3);
+        const startUsage = newContent.indexOf("```typescript", endDefinition + 3);
+        const endUsage = newContent.indexOf("```", startUsage + 3);
 
-      newContent = [
-        newContent.slice(0, startDefinition),
-        "```typescript\n",
-        definition,
-        "\n",
-        newContent.slice(endDefinition, startUsage),
-        "```typescript\n",
-        usage,
-        "\n",
-        newContent.slice(endUsage),
-      ].join("");
+        newContent = [
+          newContent.slice(0, startDefinition),
+          "```typescript\n",
+          definition,
+          "\n",
+          newContent.slice(endDefinition, startUsage),
+          "```typescript\n",
+          usage,
+          "\n",
+          newContent.slice(endUsage),
+        ].join("");
+        lastIndex = endUsage;
+      }
     }
   }
 

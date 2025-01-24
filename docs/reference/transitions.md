@@ -526,7 +526,7 @@ In the above state machine there are transition side effects when handling
 - the `SEND` event in the `connected` state
 - the `CONNECT` event in the `reattemptConnection` state
 
-The `onTransition()` function receives the current `state`, `event`, the `next` state and a `send` function which can be used to send events back to the machine instance. It MAY return a cleanup function to release any associated resources, and if so that is called immediately after the `onTransition()` itself.
+The `onTransition()` function receives the current `state`, `event`, and a `send` function which can be used to send events back to the machine instance. It MAY return a cleanup function to release any associated resources, and if so that is called immediately after the `onTransition()` itself.
 
 ---
 

@@ -14,8 +14,6 @@ import type { MachineInstance, Subscriber } from "./MachineInstance";
 import type { MachineState } from "./MachineState";
 import type { OneOrMore } from "./OneOrMore";
 
-type Cleanup = () => void;
-
 /**
  * Defines a machine prototype. Use this when you intend to create multiple instances of the same machine.
  * @param definitionConfig describes the machine prototype; it's states and how it responds to events
@@ -25,6 +23,8 @@ type Cleanup = () => void;
 export const defineMachine = <StateType extends MachineState, EventType extends MachineEvent>(
   definitionConfig: MachineDefinitionConfig<StateType, EventType>,
 ): MachineDefinition<StateType, EventType> => {
+  type Cleanup = (event: EventType | undefined) => void;
+
   // basic validation - the TypeScript types should catch all of these but just in case the user is not using
   // TypeScript or is liberal with `any` etc...
   if (definitionConfig.states) {
@@ -73,7 +73,7 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
       const initialState = instanceConfig?.initialState ?? definitionConfig.initialState;
       let currentState = initialState;
 
-      const getEffectParams = <CurrentState extends StateType>() => {
+      const getEffectParams = <CurrentState extends StateType>(event: EventType | undefined) => {
         let disposed = false;
         const dispose = () => {
           disposed = true;
@@ -81,6 +81,7 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
         return [
           {
             state: currentState as CurrentState,
+            event,
             send: (event: EventType) => {
               if (!disposed) {
                 machine.send(event);
@@ -93,15 +94,15 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
 
       let disposeState: Cleanup | undefined;
 
-      const initState = <CurrentState extends StateType>() => {
+      const initState = <CurrentState extends StateType>(event: EventType | undefined) => {
         const { onEnter, onExit } = definitionConfig.states?.[currentState.name as StateType["name"]] || {};
-        const [enterParams, disposeEnterParams] = getEffectParams<CurrentState>();
+        const [enterParams, disposeEnterParams] = getEffectParams<CurrentState>(event);
         // @ts-ignore
         const disposeEnter = onEnter?.(enterParams);
-        disposeState = () => {
+        disposeState = (disposeEvent) => {
           disposeEnterParams();
           disposeEnter?.();
-          const [exitParams, disposeExitParams] = getEffectParams();
+          const [exitParams, disposeExitParams] = getEffectParams(disposeEvent);
           // @ts-ignore
           onExit?.(exitParams)?.();
           disposeExitParams();
@@ -120,19 +121,19 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
         onTransition: BasicTransition<StateType, EventType, CurrentState, CurrentEvent, NextState>["onTransition"],
       ) => {
         if (disposeState) {
-          disposeState();
+          disposeState(event);
           disposeState = undefined;
         }
 
         if (onTransition) {
-          const [transitionParams, disposeTransitionParams] = getEffectParams();
+          const [transitionParams, disposeTransitionParams] = getEffectParams(event);
           // @ts-ignore
           onTransition({ ...transitionParams, next: nextState, ...(event && { event }) })?.();
           disposeTransitionParams();
         }
 
         currentState = nextState;
-        initState();
+        initState(event);
 
         for (const subscriber of subscribers) {
           subscriber({ state: currentState, event });
@@ -176,7 +177,7 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
         }
 
         if (isReenterTransitionFalse(transition)) {
-          const [transitionParams, disposeTransitionParams] = getEffectParams();
+          const [transitionParams, disposeTransitionParams] = getEffectParams(event);
           if (transition.onTransition) {
             // @ts-ignore
             transition.onTransition({
@@ -250,12 +251,12 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
 
       const initMachine = () => {
         const { onStart, onStop } = definitionConfig;
-        const [startParams, disposeStartParams] = getEffectParams();
+        const [startParams, disposeStartParams] = getEffectParams(undefined);
         const disposeStart = onStart?.(startParams);
-        disposeMachine = () => {
+        disposeMachine = (disposeEvent) => {
           disposeStartParams();
           disposeStart?.();
-          const [stopParams, disposeStopParams] = getEffectParams();
+          const [stopParams, disposeStopParams] = getEffectParams(disposeEvent);
           const disposeStop = onStop?.(stopParams);
           disposeStopParams();
           disposeStop?.();
@@ -287,7 +288,7 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
           running = true;
           handlingEvent = true;
           initMachine();
-          initState();
+          initState(undefined);
           applyAlwaysTransitions();
 
           starting = false;
@@ -307,9 +308,9 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
 
           stopping = true;
           handlingEvent = true;
-          disposeState?.();
+          disposeState?.(undefined);
           disposeState = undefined;
-          disposeMachine?.();
+          disposeMachine?.(undefined);
           disposeMachine = undefined;
           running = false;
 

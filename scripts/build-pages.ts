@@ -98,6 +98,7 @@ async function buildPages() {
 
     const headingMarked = new Marked();
     const sourceMarkdown = (await readFile(sourceFile)).toString();
+    const slugNum: Record<string, number> = {};
     const headings = sourceMarkdown
       .split("\n")
       .filter((it) => it.startsWith("##"))
@@ -109,7 +110,12 @@ async function buildPages() {
           .toLocaleLowerCase()
           .replaceAll(/[`,:()/.']/g, "")
           .replaceAll(" ", "-");
-        return `<li class="level-${level}"><a class="jump-to-section" href="./${destFile}#${slug}">${headingHtml}</a></li>`;
+        if (slug in slugNum) {
+          slugNum[slug] += 1;
+        } else {
+          slugNum[slug] = 0;
+        }
+        return `<li class="level-${level}"><a class="jump-to-section" href="./${destFile}#${slug}${slugNum[slug] ? `-${slugNum[slug]}` : ""}">${headingHtml}</a></li>`;
       })
       .join("\n");
 

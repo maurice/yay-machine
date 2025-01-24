@@ -3,7 +3,7 @@
 > 🏷️ `transition side-effect`\
 > 🏷️ `machine start side-effect`\
 > 🏷️ `send event to self`\
-> 🏷️ `machine of machines`
+> 🏷️ `composing machines`
 
 ## About
 

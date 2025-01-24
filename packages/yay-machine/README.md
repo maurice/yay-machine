@@ -122,6 +122,7 @@ if (guess.state.name === "guessedCorrectly") {
 
 * [About **yay-machine**](https://yay-machine.js.org/)
 * [Quick Start](https://yay-machine.js.org/quick-start.html)
+* [Various examples](https://yay-machine.js.org/examples/toggle.html)
 * [Reference docs](https://yay-machine.js.org/reference/state.html)
 * [Why state-machines?](https://yay-machine.js.org/articles/why-state-machines.html)
 * [Why **yay-machine**?](https://yay-machine.js.org/articles/why-yay-machine.html)

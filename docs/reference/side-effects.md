@@ -58,15 +58,15 @@ These two optional side-effects are performed when a specific state is entered o
 const machine = defineMachine<State, Event>({
   states: {
     [stateName]: {
-      onEnter: ({ state, send }) =>{ /* ... */ },
-      onExit: ({ state, send }) =>{ /* ... */ },
+      onEnter: ({ state, event, send }) =>{ /* ... */ },
+      onExit: ({ state, event, send }) =>{ /* ... */ },
     },
   },
   // ...
 });
 ```
 
-Like machine-lifecycle side-effects, they receive a single parameter containing the machine's current `state` and a `send()` function, which can be used to send events to the machine instance.
+Like machine-lifecycle side-effects, they receive a single parameter containing the machine's current `state` and a `send()` function, which can be used to send events to the machine instance. Depending on what triggered the state-entry, they may receive an `event` too.
 
 > 💡 **Tip** 
 >
@@ -103,14 +103,14 @@ const machine = defineMachine<State, Event>({
   on: {
     [EVENT_TYPE]: {
       to: 'nextStateName',
-      onTransition: ({ state, event, next, send }) => { /* ... */ },
+      onTransition: ({ state, event, send }) => { /* ... */ },
     },
   }
   // ...
 });
 ```
 
-Transition side-effects receive a single parameter containing the machine's current `state`, the current `event`, the `next` state, and a `send()` function, which can be used to send events to the machine instance.
+Transition side-effects receive a single parameter containing the machine's current `state`, the current `event`, and a `send()` function, which can be used to send events to the machine instance.
 
 ---
 
