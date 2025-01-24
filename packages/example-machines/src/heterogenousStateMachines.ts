@@ -10,9 +10,11 @@ type HeterogenousState =
   | { readonly name: "a"; readonly aData: string }
   | { readonly name: "b"; readonly bData: boolean };
 
-interface HeterogenousEvent {
-  readonly type: "NEXT";
-}
+type HeterogenousEvent =
+  | {
+      readonly type: "NEXT";
+    }
+  | { readonly type: "PREV"; readonly name: string };
 
 export const heterogenousMachineOK = defineMachine<
   HeterogenousState,
@@ -32,6 +34,22 @@ export const heterogenousMachineOK = defineMachine<
     },
   },
 });
+
+export const heterogenousMachineHandleEventInAnyStateWithReenterTransitionEffectOK =
+  defineMachine<HeterogenousState, HeterogenousEvent>({
+    initialState: { name: "a", aData: "" },
+    states: {},
+    on: {
+      NEXT: {
+        when: ({ state }) => state.name === "a",
+        // oops this should be a type error since we are in any state
+        data: () => ({ bData: true }),
+        onTransition: ({ state, event, send }) => {
+          console.log("returning to state", state, "via event", event, send);
+        },
+      },
+    },
+  });
 
 /**
  * `enableCopyDataOnTransition` is not allowed when the state-data is heterogenous

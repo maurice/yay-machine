@@ -160,6 +160,7 @@ export type StateLifecycleSideEffectFunction<CurrentState extends MachineState, 
 
 export type StateLifecycleSideEffectParam<CurrentState extends MachineState, EventType extends MachineEvent> = {
   readonly state: CurrentState;
+  readonly event: EventType | undefined;
   readonly send: SendFunction<EventType>;
 };
 
@@ -369,7 +370,11 @@ export interface AnyStateTransition<
    * May return a tear-down function so any resources can be freed when
    * the state is exited.
    */
-  readonly onTransition?: OnTransitionSideEffectFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
+  readonly onTransition?: (param: {
+    readonly state: CurrentState;
+    readonly event: CurrentEvent;
+    readonly send: SendFunction<EventType>;
+  }) => EffectReturnValue;
 }
 
 export type AnyStateTransitionWith<

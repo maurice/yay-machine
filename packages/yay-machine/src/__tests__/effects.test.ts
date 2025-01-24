@@ -252,6 +252,7 @@ test("effect functions receive current state and send function plus next state w
   machine.send({ type: "TO_B" });
   expect(initialState.onExitA).toHaveBeenCalledWith({
     state: expect.objectContaining({ name: "a", onlyExistsInA: true }),
+    event: { type: "TO_B" },
     send: expect.any(Function),
   });
   expect(initialState.onTransitionAToB).toHaveBeenCalledWith({
@@ -262,6 +263,7 @@ test("effect functions receive current state and send function plus next state w
   });
   expect(initialState.onEnterB).toHaveBeenCalledWith({
     state: expect.objectContaining({ name: "b", onlyExistsInB: true }),
+    event: { type: "TO_B" },
     send: expect.any(Function),
   });
 

@@ -20,6 +20,7 @@
 * [Health (game component)](./examples/health.md)
 * [Tape (VCR)](./examples/tape.md)
 * [STOMP parser](./examples/stomp-parser.md)
+* [Stock tickers](./examples/stock-tickers.md)
 * [Elevator](./examples/elevator.md)
 * [Elevators controller](./examples/elevators-controller.md)
 

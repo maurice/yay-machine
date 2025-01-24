@@ -62,7 +62,7 @@ const orderMachine = defineMachine<OrderState, OrderEvent>({
       to: "cancelled",
       data: ({ event: { onCancelled } }) => ({ onCancelled }),
       when: ({ state }) => state.name !== "cancelled",
-      onTransition: ({ next: { onCancelled } }) => onCancelled(),
+      onTransition: ({ event: { onCancelled } }) => onCancelled(),
     },
     COMPLETE: { to: "collected" },
   },
