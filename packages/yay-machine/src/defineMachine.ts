@@ -277,11 +277,11 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
         },
 
         start() {
-          if (running) {
-            throw new Error("Machine is already running");
-          }
           if (stopping) {
             throw new Error("Machine is already stopping");
+          }
+          if (running) {
+            throw new Error("Machine is already running");
           }
 
           starting = true;
