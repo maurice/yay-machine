@@ -6,7 +6,7 @@
 <p align="center">
 <a href="https://github.com/maurice/yay-machine/actions/workflows/build.yml" title="build"><img src="https://github.com/maurice/yay-machine/workflows/build/badge.svg"/></a>
 <a href="https://www.npmjs.com/package/yay-machine" title="NPM"><img src="https://img.shields.io/npm/v/yay-machine"/></a>
-<img src="https://img.shields.io/coverallsCoverage/github/maurice/yay-machine"/>
+<a hre="https://coveralls.io/github/maurice/yay-machine" title="coverage"><img src="https://img.shields.io/coverallsCoverage/github/maurice/yay-machine"/></a>
 </p>
 
 <p align="center">
