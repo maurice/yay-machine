@@ -54,7 +54,7 @@
     "@commitlint/config-conventional": "^19.6.0",
     "@sinonjs/fake-timers": "^14.0.0",
     "@types/sinonjs__fake-timers": "^8.1.5",
-    "bun": "^1.1.45",
+    "bun": "^1.2.1",
     "bun-types": "^1.1.42",
     "highlight.js": "^11.11.1",
     "husky": "^9.1.7",
