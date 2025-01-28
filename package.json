@@ -55,7 +55,7 @@
     "@sinonjs/fake-timers": "^14.0.0",
     "@types/sinonjs__fake-timers": "^8.1.5",
     "bun": "^1.1.45",
-    "bun-types": "^1.1.42",
+    "bun-types": "^1.2.1",
     "husky": "^9.1.7",
     "marked": "^15.0.6",
     "marked-gfm-heading-id": "^4.1.1",
