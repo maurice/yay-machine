@@ -395,7 +395,13 @@ hr {
   border: none;
 }
 
-code:not(.hljs) {
+p > code,
+a > code,
+h1 > code,
+h2 > code,
+h3 > code,
+h4 > code,
+h5 > code {
   background-color: #faf4ed; /* TODO sync with highlight.js theme */
   padding: 0 0.3em;
   border: 1px solid var(--theme-yellow);
@@ -403,7 +409,7 @@ code:not(.hljs) {
   padding: 2px 3px;
 }
 
-code.language-mermaid {
+pre.mermaid {
   background-size: 25px 25px;
   background-image: linear-gradient(to right, #abeb658c 1px, transparent 1px),
     linear-gradient(to bottom, #abeb658c 1px, transparent 1px);
@@ -429,11 +435,19 @@ pre {
   line-height: 1.45;
   position: relative;
 
+  code {
+    display: block;
+    padding: 1em;
+    overflow-x: auto;
+  }
+
   .tooltip {
     position: absolute;
     top: 0.5em;
     right: 3em;
     color: white;
+    font-size: smaller;
+    font-family: var(--theme-default-font);
 
     .tooltip-body {
       background-color: var(--theme-black);

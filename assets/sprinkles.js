@@ -29,7 +29,7 @@ export function initSprinkles(assetsPath) {
   const copiedImg = `<img class="icon copied-icon" src="${assetsPath}/check.svg"/>`;
 
   function initDeferred() {
-    const codeEls = document.querySelectorAll("pre code.hljs:not(.language-mermaid)");
+    const codeEls = document.querySelectorAll("pre.shiki code");
     for (const codeEl of codeEls) {
       const pre = codeEl.parentElement;
       const button = document.createElement("button");

@@ -1,9 +1,8 @@
 import { copyFile, exists, mkdir, readFile, readdir, rename, rm, watch, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
-import hljs from "highlight.js";
-import { Marked } from "marked";
+import { Marked, type RendererObject } from "marked";
 import { gfmHeadingId } from "marked-gfm-heading-id";
-import { markedHighlight } from "marked-highlight";
+import { createHighlighter } from "shiki";
 import { titleCase } from "title-case";
 
 const recursiveCopy = async (fromDir: string, toDir: string) => {
@@ -32,9 +31,6 @@ if (await exists(pagesDir)) {
   await rm(pagesDir, { recursive: true });
 }
 
-const highlightStylesDir = `${pagesAssetsDir}/highlight_js`;
-await recursiveCopy("./node_modules/highlight.js/styles", highlightStylesDir);
-
 const files = (await readdir(docsDir, { recursive: true, withFileTypes: true })).filter(
   (it) => it.isFile() && it.name.endsWith(".md"),
 );
@@ -42,30 +38,27 @@ const files = (await readdir(docsDir, { recursive: true, withFileTypes: true }))
 process.stdout.write(`mkdir: ${pagesAssetsDir}\n`);
 await mkdir(pagesAssetsDir, { recursive: true }).catch(() => true);
 
+// setup a custom renderer for code blocks
+const highlighter = await createHighlighter({
+  themes: ["snazzy-light"],
+  langs: ["sh", "typescript"],
+});
+const renderer: RendererObject = {
+  code({ text, lang }) {
+    if (lang === "mermaid") {
+      return `<pre class="mermaid">${text}</pre>`;
+    }
+    return highlighter.codeToHtml(text, { lang: lang!, theme: "snazzy-light" });
+  },
+} as const;
+
 async function buildPages() {
   await recursiveCopy(docsAssetsDir, pagesAssetsDir);
   await recursiveCopy("assets", pagesAssetsDir);
 
-  const marked = new Marked(
-    markedHighlight({
-      emptyLangClass: "hljs",
-      langPrefix: "hljs language-",
-      highlight(code, lang) {
-        if (lang === "mermaid") {
-          return `<pre class="mermaid">${code}</pre>`;
-        }
-        const language = hljs.getLanguage(lang) ? lang : "plaintext";
-        return hljs.highlight(code, { language }).value;
-      },
-    }),
-  );
-
-  const nav = (await marked.parse((await readFile(`${docsDir}/README.md`)).toString())).replaceAll('.md"', '.html"');
-
-  marked.setOptions({
-    gfm: true,
-  });
-
+  const marked = new Marked();
+  marked.use({ renderer });
+  marked.setOptions({ gfm: true });
   marked.use(gfmHeadingId());
 
   const template = (await readFile("assets/pages-template.hbs")).toString();
@@ -118,6 +111,8 @@ async function buildPages() {
         return `<li class="level-${level}"><a class="jump-to-section" href="./${destFile}#${slug}${slugNum[slug] ? `-${slugNum[slug]}` : ""}">${headingHtml}</a></li>`;
       })
       .join("\n");
+
+    const nav = (await marked.parse((await readFile(`${docsDir}/README.md`)).toString())).replaceAll('.md"', '.html"');
 
     const pageNavStart = nav.indexOf(`<a href="./${destFile}">`);
     const pageNavEnd = nav.indexOf("</li>", pageNavStart);
