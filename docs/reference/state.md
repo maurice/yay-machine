@@ -208,7 +208,7 @@ const toggleMachine = defineMachine<ToggleState, ToggleEvent>({
 });
 ```
 
-> 💡 See the [`healthMachine` example](https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/healthMachine.ts) for more realistic usage.
+> 💡 See the [Health (game component) example](../examples/health.md) for more realistic usage.
 
 ## Heterogenous state data
 

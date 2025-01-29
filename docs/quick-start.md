@@ -205,7 +205,7 @@ assert.deepStrictEqual(health.state, {
 // etc ...
 ```
 
-# What next?
+# Where next?
 
 * [About **yay-machine**](https://yay-machine.js.org/)
 * [Various examples](https://yay-machine.js.org/examples/toggle.html)

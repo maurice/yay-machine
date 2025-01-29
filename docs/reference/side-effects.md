@@ -26,8 +26,8 @@ The lifetime of a side-effect matches the lifetime of where it is defined.
 
 More concretely
 
-* a **machine `onStart()` side-effect** may run as long as the machine is running (not stopped). When the machine is stopped, the machine-start side-effect is cleaned-up
-* a **state `onEnter()` side-effect** may run as long as the machine remains in that state. When the machine exits that state (or stopped), the state-enter side-effect is cleaned-up
+* a **machine `onStart()` side-effect** MAY run as long as the machine is running (not stopped). When the machine is stopped, the machine's `onStart()` side-effect is cleaned-up (the returned cleanup function (if any) is called, and the side-effect may no longer `send()` the machine events)
+* a **state `onEnter()` side-effect** MAY run as long as the machine remains in that state. When the machine exits that state via a transition (or the machine is stopped), the state's `onEnter()` side-effect is cleaned-up  (the returned cleanup function (if any) is called, and the side-effect may no longer `send()` the machine events)
 * a **transition `onTransition()` side-effect** is transient, since it only exists for the transition, so it is cleaned-up immediately
 * a **state `onExit()` side-effect**  is transient, since it only exists while exiting the state, so it is cleaned-up immediately
 * a **machine `onStop()` side-effect**  is transient, since it only exists while stopping the machine, so it is cleaned-up immediately

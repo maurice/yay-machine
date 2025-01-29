@@ -8,7 +8,7 @@
 
 ## About
 
-A login machine example which uses **event data** for auth credentials, has different (heterogenous) **state data** for different states, and uses a state-`onEnter` side-effect that sends a `LOGOUT` event to the machine instance, after a delay.
+A login machine example which uses **event data** for auth credentials, has different (heterogenous) **state data** for different states, and uses a state-`onEnter()` side-effect that sends a `LOGOUT` event to the machine instance, after a delay.
 
 > 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/loginMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/loginMachine.test.ts" target="_blank">test</a> on GitHub
 

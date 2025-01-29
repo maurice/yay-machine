@@ -3,7 +3,12 @@
   --theme-dark-yellow: #cfa600;
   --theme-orange: #ff914d;
   --theme-red: #ff3131;
+  --theme-gray: gray;
+  --theme-light-gray: lightgray;
   --theme-black: #1f2e28;
+  --theme-event: #11658f;
+  --theme-code: #131300;
+  --theme-code-bg: #fafbfc;
   --theme-default-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
     "Open Sans", "Helvetica Neue", sans-serif;
   --theme-title-font: "Andika", serif;
@@ -39,7 +44,7 @@ header {
   position: fixed;
   top: 0px;
   left: 0px;
-  border-bottom: 1px solid var(--theme-yellow);
+  border-bottom: 1px solid lightgray;
   background-color: white;
   padding-left: 3em;
   align-items: center;
@@ -287,7 +292,7 @@ nav {
 
       a:hover {
         color: var(--theme-orange);
-        border-left: 1px solid var(--theme-red);
+        border-left: 1px solid var(--theme-orange);
       }
 
       a.menu-selected {
@@ -395,40 +400,66 @@ hr {
   border: none;
 }
 
+li > code,
 p > code,
+strong > code,
 a > code,
 h1 > code,
 h2 > code,
 h3 > code,
 h4 > code,
 h5 > code {
-  background-color: #faf4ed; /* TODO sync with highlight.js theme */
+  color: var(--theme-code);
+  background-color: var(--theme-code-bg);
   padding: 0 0.3em;
-  border: 1px solid var(--theme-yellow);
+  border: 1px solid var(--theme-light-gray);
   border-radius: 0.2em;
   padding: 2px 3px;
 }
 
 pre.mermaid {
-  background-size: 25px 25px;
-  background-image: linear-gradient(to right, #abeb658c 1px, transparent 1px),
-    linear-gradient(to bottom, #abeb658c 1px, transparent 1px);
+  &:before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-size: 10px 10px;
+    background-image: linear-gradient(to right, #f2f2f28c 1px, transparent 1px),
+      linear-gradient(to bottom, #f2f2f28c 1px, transparent 1px);
+    background-position: center;
+    z-index: -1;
+  }
+
+  svg {
+    margin: 1em;
+  }
+
+  background-size: 50px 50px;
+  background-image: linear-gradient(to right, #d1d1d18c 1px, transparent 1px),
+    linear-gradient(to bottom, #d1d1d18c 1px, transparent 1px);
   background-position: center;
-  background-color: white;
 
   .node rect {
-    fill: #faf4ed !important; /* TODO sync with highlight.js theme */
-    stroke: var(--theme-yellow) !important;
+    fill: var(--theme-code-bg) !important;
+    stroke: var(--theme-light-gray) !important;
+    filter: drop-shadow(0 0 0.15em var(--theme-light-gray));
   }
 
   .edgePaths path {
-    stroke: var(--theme-orange) !important;
+    stroke: #2dae58 !important;
   }
 
   .edgeLabel p {
     padding: 4px;
-    color: var(--theme-orange) !important;
+    color: var(--theme-event) !important;
+    background-color: white !important;
+    box-shadow: 0px 4px 8px 3px white;
   }
+}
+
+pre.shiki {
+  border: 1px solid var(--theme-light-gray);
+  border-radius: 0.2em;
 }
 
 pre {
@@ -504,7 +535,7 @@ a {
   color: var(--theme-dark-yellow);
 
   &:visited {
-    color: var(--theme-red);
+    color: var(--theme-gray);
   }
 
   &:hover {

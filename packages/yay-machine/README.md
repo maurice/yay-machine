@@ -118,7 +118,7 @@ if (guess.state.name === "guessedCorrectly") {
 }
 ```
 
-# What next?
+# Where next?
 
 * [About **yay-machine**](https://yay-machine.js.org/)
 * [Quick Start](https://yay-machine.js.org/quick-start.html)
