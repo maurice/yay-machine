@@ -20,9 +20,6 @@ Models a stock price, the change since the last price, how long the price is val
 
 When the machine receives a `TICK` event it updates its state and starts a timer with a state `onEntry()` side-effect. If a new price is not received within the current price's `timeValid`ms, the machine sends itself a `STALE` event.
 
-
-This machine 
-
 > 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/priceMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/priceMachine.test.ts" target="_blank">test</a> on GitHub
 
 ```typescript

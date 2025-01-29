@@ -380,7 +380,7 @@ In the above machine we see this for
 ```mermaid
 stateDiagram
     direction LR
-    any_state --> disconnected: DISCONNECT
+    [any_state] --> disconnected: DISCONNECT
 ```
 
 These types of transitions are defined at `on[EVENT_NAME]` in the definition config
@@ -406,7 +406,7 @@ In the above machine we see this for the `HEARTBEAT` event
 ```mermaid
 stateDiagram
     direction LR
-    any_state --> current_state: HEARTBEAT
+    [any_state] --> [current_state]: HEARTBEAT
 ```
 
 This technique is typically used to update state-data. For example, the connection machine updates the `lastHeartbeatTime` state-data property whenever it receives a `HEARTBEAT` event.

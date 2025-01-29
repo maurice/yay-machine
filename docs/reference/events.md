@@ -123,10 +123,10 @@ connection.subscribe(({ state, event }) => {
 
 When an event triggers a state-transition, `event` will be that event.
 
-In these other cases `event` will be `undefined`:
+Sometimes `event` will be `undefined`:
 
 * the first time the subscriber callback is called: it only receives the machine's current state
-* when the machine transitions to a new state due to an immediate (always) transition
+* when the machine transitions to a new state due to an immediate (always) transition; this is an "eventless" transition
 
 ---
 

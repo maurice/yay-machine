@@ -35,7 +35,7 @@ We use modern, accessible language, rather than traditional academic terms.
 
 These features can be combined to model just about anything.
 
-It should be quick to learn, master, and have a low ongoing cost-of-ownership.
+It should be quick to learn, and have a minimal ongoing cost-of-ownership.
 
 ## Lightweight
 
@@ -59,10 +59,10 @@ We ❤️ TypeScript and want the best experience for TypeScript developers with
 
 A [**state** in **yay-machine**](./reference/state.md) is a type, giving you new ways to express your machine models with compile-time confidence.
 
-## Continue
+## Where next?
 
 Read our [introduction to state-machines](./articles/why-state-machines.md) if you're new to them, or learn [why **yay-machine** exists](./articles/why-yay-machine.md) and a [comparison with **XState**](./articles/vs-xstate.md) if you are already familiar.
 
 Get up and running fast with our [quick start guide](./quick-start.md) or head over to the [reference docs](./reference/state.md).
 
-There are also [various examples](./examples/toggle.md) to demonstrate the core library and ways to solve problems with **yay-machine**.
+There are also [various examples](./examples/toggle.md) to demonstrate the core library and ways to model with **yay-machine**.
