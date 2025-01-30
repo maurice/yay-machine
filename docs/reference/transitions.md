@@ -380,7 +380,7 @@ In the above machine we see this for
 ```mermaid
 stateDiagram
     direction LR
-    [any_state] --> disconnected: DISCONNECT
+    any_state --> disconnected: DISCONNECT
 ```
 
 These types of transitions are defined at `on[EVENT_NAME]` in the definition config
@@ -406,7 +406,7 @@ In the above machine we see this for the `HEARTBEAT` event
 ```mermaid
 stateDiagram
     direction LR
-    [any_state] --> [current_state]: HEARTBEAT
+    any_state --> current_state: HEARTBEAT
 ```
 
 This technique is typically used to update state-data. For example, the connection machine updates the `lastHeartbeatTime` state-data property whenever it receives a `HEARTBEAT` event.
@@ -440,7 +440,10 @@ stateDiagram
 
 The `when()` callback takes the current `state` and `event`, and SHOULD be pure and deterministic, ie, only using `state` and `event` to decide which transition to take.
 
-Transitions are attempted in order and the first `when()` to return `true`, or first transition without a `when()`, is taken. If no `when()`s return true, no transitions are taken.
+Conditional transitions are evaluated in their definition order
+
+* the machine takes the first transition where `when()` returns true, or there is no `when()`
+* there's no transition if all transition `when()`s return false and there is no "default* transition
 
 ```typescript
 const machine = defineMachine<State, Event>({
@@ -451,7 +454,7 @@ const machine = defineMachine<State, Event>({
           { to: 'firstState', when: ({ state, event }) => { /* ... */ }, /* ... other options */ },
           { to: 'firstState', when: ({ state, event }) => { /* ... */ }, /* ... other options */ },
           { to: 'secondState', when: ({ state, event }) => { /* ... */ }, /* ... other options */ },
-          { to: 'thirdState', /* ... other options */ },
+          { to: 'thirdState', /* "default" transition ... other options */ },
         ]
       }
     }
@@ -496,7 +499,7 @@ const machine = defineMachine<State, Event>({
 
 Since states can have associated data, you often need to provide a `data()` callback in the transition to generate the data for the next state.
 
-This callback MUST only ever generate a new object. DO NOT mutate the current state data.
+This callback MUST only ever generate a new object. NEVER mutate the current state data.
 
 The callback receives the current `state` and `event`.
 
@@ -514,19 +517,19 @@ We can mix-n-match most of the above, eg
 
 The two *special cases* in the configuration are
 
-- no `to` in an *any state* transition means exit and re-enter the current state, updating data if relevant
+- `to` is optional in an *any state* transitions: if `to` is not provided, it means exit and re-enter the current state, updating data if relevant
 - `reenter: false` in a state + event transition means perform the optional side-effect but do not exit re-enter the current state or update data
 
 ## Side-effects: `onTransition()`
 
-Transitions can define side-effects: an `onTransition()` function that is called if and when the transition is taken.
+Transitions can define [side-effects](./side-effects.md): an `onTransition()` function that is called if and when the transition is taken.
 
 In the above state machine there are transition side effects when handling
 
 - the `SEND` event in the `connected` state
 - the `CONNECT` event in the `reattemptConnection` state
 
-The `onTransition()` function receives the current `state`, `event`, and a `send` function which can be used to send events back to the machine instance. It MAY return a cleanup function to release any associated resources, and if so that is called immediately after the `onTransition()` itself.
+The `onTransition()` function receives the current `state`, `event`, and a `send` function which can be used to send events back to the machine instance. It MAY return a cleanup function to release any associated resources, and if so that is called immediately after `onTransition()` is called.
 
 ---
 

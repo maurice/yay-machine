@@ -119,7 +119,10 @@ const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
   states: {
     disconnected: {
       on: {
-        CONNECT: { to: 'connecting', data: () => ({ connectingStartedAt: Date.now(), connectionEstablishedAt: -1 }) },
+        CONNECT: {
+          to: 'connecting',
+          data: () => ({ connectingStartedAt: Date.now(), connectionEstablishedAt: -1 })
+        },
       },
     },
     connecting: {

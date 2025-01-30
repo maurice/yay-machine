@@ -212,7 +212,7 @@ body:not(.nav-open) .close-nav {
         }
 
         a.menu-selected {
-          font-weight: 700;
+          font-weight: 800;
           &:before {
             content: "";
             position: absolute;
@@ -339,10 +339,12 @@ h5 {
 
 h1 {
   font-size: 2.8em;
+  font-weight: 800;
 }
 
 h2 {
   font-size: 2em;
+  font-weight: 600;
 }
 
 h3 {
@@ -403,6 +405,7 @@ hr {
 li > code,
 p > code,
 strong > code,
+em > code,
 a > code,
 h1 > code,
 h2 > code,
@@ -411,10 +414,12 @@ h4 > code,
 h5 > code {
   color: var(--theme-code);
   background-color: var(--theme-code-bg);
+  display: inline-block;
   padding: 0 0.3em;
   border: 1px solid var(--theme-light-gray);
   border-radius: 0.2em;
   padding: 2px 3px;
+  text-wrap: balance;
 }
 
 pre.mermaid {
@@ -528,7 +533,7 @@ ul:not(.guided-path-navigation) {
   margin-bottom: 1em;
 
   li + li {
-    margin-top: .5em;
+    margin-top: .4em;
   }
 }
 

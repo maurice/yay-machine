@@ -6,6 +6,26 @@ npm install yay-machine         # or your package-manager of choice
 
 ## Define machines at compile-time
 
+You define types for the **states (and data)** of the machine, and the **kinds of events** it accepts to transition between states.
+
+```typescript
+type MyMachineState = { /* ... */ };
+
+type MyMachineEvent = { /* ... */ };
+```
+
+Then you define the behavior of the machine: transitions and side-effects.
+
+```typescript
+export const myMachine = defineMachine<MyMachineState, MyMachineEvent>({
+  ...
+});
+```
+
+This process is often iterative: as you work-out the behavior of the machine, you re-work the state- and event-types; you update the machine definition, and so on, until you are happy with both.
+
+Below is a complete "health machine" modelling a health game component.
+
 > 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/healthMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/healthMachine.test.ts" target="_blank">test</a> on GitHub
 
 ```typescript
@@ -132,6 +152,10 @@ export const healthMachine = defineMachine<HealthState, HealthEvent>({
 ```
 
 ## Operate instances at run-time
+
+When you've defined the machine and its types, you can create instances, start them, and start sending events.
+
+You can also subscribe to a machine instance for state changes.
 
 ```typescript
 const health = healthMachine.newInstance().start();

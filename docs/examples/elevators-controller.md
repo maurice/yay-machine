@@ -17,7 +17,11 @@ In this machine's `onStart()` side-effect it subscribes to the elevators's state
 
 When a passenger requests an elevator it checks the existing pending requests and if one already exists for that floor, ignores it (ie, it doesn't add a duplicate request).
 
-If there are no existing requests for that floor, it ranks the elevators using a few simple rules to find the best one. It then creates an "internal" `REQUESTING_ELEVATOR` even whose payload carries the selected elevator, and sends this event to itself in the `onTransition()` side-effect, after transitioning to the temporary `requesting` state. The `requesting` state's only job is to send a `VISIT_FLOOR` event to the selected elevator. Then we return to the `busy`/`idle` state (via a conditional immediate transition) once more and wait for more requests. Hence we don't need to store the selected elevator for the last user request - it's ephemeral and only exists as long as the `REQUESTING_ELEVATOR` event.
+When there are no existing requests for that floor, it ranks the elevators using a few simple rules to find the best one. It then creates an "internal" `REQUESTING_ELEVATOR` event whose payload carries the selected elevator, and *sends this event to itself* in the `onTransition()` side-effect, during the transition to the temporary `requesting` state. 
+
+The `requesting` state receives the `REQUESTING_ELEVATOR` event, and sends a `VISIT_FLOOR` event to the selected elevator. Then we return to the `busy` state (and potentially immediately to `idle` via a conditional immediate transition from `busy`) once more and wait for more requests.
+
+The `REQUESTING_ELEVATOR` event shows how we can share ephemeral data between states without having to add it (temporarily) to the machine's state-data.
 
 > 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/elevatorControllerMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/elevatorControllerMachine.test.ts" target="_blank">test</a> on GitHub
 
