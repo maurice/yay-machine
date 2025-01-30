@@ -2,7 +2,7 @@
 
 Side-effects allow your state-machines to interact with the outside world.
 
-In **yay-machine** you can optionally perform side-effects 
+In **yay-machine** you can optionally run side-effects.
 
 * when the machine is started or stopped
 * when a state is entered or exited
@@ -17,7 +17,7 @@ The side-effect function MAY return a cleanup function, which you can use to fre
 ```typescript
 type Cleanup = () => void;
 
-type SideEffect = (param: { /* ... */}) => Cleanup | null | undefined | void;
+type SideEffect = (param: { /* ... */ }) => Cleanup | null | undefined | void;
 ```
 
 ## Side-effect lifetime
@@ -34,7 +34,7 @@ More concretely
 
 ## Machine `onStart()`, `onStop()`
 
-These two optional side-effects are performed when the machine is started/stopped
+These two optional side-effects are run when the machine is started/stopped
 
 ```typescript
 const machine = defineMachine<State, Event>({
@@ -52,7 +52,7 @@ They receive a single parameter containing the machine's current `state` and a `
 
 ## State `onEnter()`, `onExit()`
 
-These two optional side-effects are performed when a specific state is entered or exited
+These two optional side-effects are run when a specific state is entered or exited
 
 ```typescript
 const machine = defineMachine<State, Event>({
@@ -78,7 +78,7 @@ Like machine-lifecycle side-effects, they receive a single parameter containing 
 
 ## Transition `onTransition()`
 
-This optional side-effect is performed during a transition from a specific state or *any state*
+This optional side-effect is run during a transition from a specific state or *any state*
 
 ```typescript
 const machine = defineMachine<State, Event>({

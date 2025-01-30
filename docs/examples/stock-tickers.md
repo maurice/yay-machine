@@ -18,7 +18,7 @@ This example has two machines: (1) a per stock-symbol *price machine*, and (2) a
 
 Models a stock price, the change since the last price, how long the price is valid, etc. The machine's state name tells us if the price is `pending`, `live` or `stale`.
 
-When the machine receives a `TICK` event it updates its state and starts a timer with a state `onEntry()` side-effect. If a new price is not received within the current price's `timeValid`ms, the machine sends itself a `STALE` event.
+When the machine receives a `TICK` event it updates its state and starts a timer with a state `onEntry()` side-effect. If a new price is not received within the current price's `timeValid`ms, the machine sends itself a `STALE` event, and it transitions to `stale` (trading terminology: it means the price is too old and cannot be used to place a trade).
 
 > 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/priceMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/priceMachine.test.ts" target="_blank">test</a> on GitHub
 
@@ -154,11 +154,11 @@ assert.deepStrictEqual(state, {
 
 Models a stock price ticker, with ticking prices for zero or more symbols.
 
-The state name of the machine (`connecting`, `connected` and `connectionError`) tells us about the status of the connection to the fictional WebSocket price service.
+The state name (`connecting`, `connected` and `connectionError`) tells us about the status of the connection to the fictional WebSocket price service.
 
 A machine `onStart()` side-effect initiates the web-socket client connection and setups up event listeners for lifecycle callbacks (`onopen`, `onerror` and `onmessage`). In fact all three of these web-socket events trigger the machine to send itself an equivalent event. The side-effect returns a cleanup function to close the connection when the machine is stopped.
 
-Client code can add/remove price-tickers by sending `ADD_TICKER`/`REMOVE_TICKER` events respectively. These events are handled in *any state*, and if the machine is currently `connected` they send "subscribe" or "unsubscribe" messages for the symbol to the remote service.
+Client code can add/remove price-tickers by sending `ADD_TICKER` / `REMOVE_TICKER` events respectively. These events are handled in *any state*, and if the machine is currently `connected` they send "subscribe" or "unsubscribe" messages for the symbol to the remote service.
 
 As symbols are added/removed, the *tickers machine* creates/destroys *price machines* and adds/removes them to/from its own state data.
 

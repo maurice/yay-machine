@@ -9,7 +9,7 @@
 
 ## About
 
-This example models an elevator (lift). This model operates completely standalone, but can also be combined into a group of coordinated elevators with the [elevators controller](./elevators-controller.md).
+This example models an elevator (aka lift). This model operates completely standalone, but can also be combined into a group of coordinated elevators with the [elevators controller](./elevators-controller.md).
 
 The elevator machine's state says where it is now and where it's going, plus it has a queue of floors to visit next (if any). When a `VISIT_FLOOR` event is received (either by summoning it at the wall, or a passenger pressing a button inside), the elevator either opens the doors (if already at the floor), else adds the floor to its queue.
 

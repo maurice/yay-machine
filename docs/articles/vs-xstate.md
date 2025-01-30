@@ -47,11 +47,11 @@ Stats from [**BUNDLE**PHOBIA](https://bundlephobia.com/) 🙏.
 
 [![bench tests](../assets/bench.png)](https://github.com/maurice/yay-machine/blob/main/packages/bench/src/bench.ts)
 
-> 🤔 **Talking of basic**
+> 🤔 **Talking of basic...**
 >
 > We know this benchmark test is not enough but we had to have *something* for our 1.0 docs.
 >
-> We want to add more benchmarks in future, with more realistic production-like state-machines, and add comparisons with other libraries.
+> We want to add more benchmarks in future, with more realistic production-like state-machines, and comparisons with other libraries.
 
 ## Homogenous vs Heterogenous context/state-data
 
@@ -153,11 +153,11 @@ And you are still free to model your state-data with optional fields or empty st
 
 [**XState**'s actions](https://stately.ai/docs/actions) are used to update the machine's context, do logging, interact with external services, spawn child machines, send events to spawned processes, or parent machines, to the current machine, etc, etc.
 
-It's a nice abstraction, but the issue is that users don't get a lot of value from the *abstraction itself*. To actually do anything, you need to use one of the concrete action-creator functions, which all have unique APIs. So users need to review the documentation and learn all of the different built-in actions (and there are quite a lot), to decide which one to use in any given situation. It's either a commitment of time to memorize them, or rely on AI, or read the docs fairly often. 
+It's a nice abstraction, but the problem is, users don't get a lot of value from the *abstraction itself*. To actually do anything, you need to use one of the concrete action-creator functions, which all have unique APIs. So users need to review the documentation and learn all of the different built-in actions (and there are quite a lot), to decide which one to use in any given situation. It's either a commitment of time to memorize them, or rely on AI, or read the docs fairly often. 
 
 In fairness, code completion and existing working code helps. And most likely you only use a few most of the time, and only need reach for something exotic in rare cases. But it's still additional complexity that end users ultimately pay for with their time.
 
-In **yay-machine** we have a dedicated per-transition `data()` callback to update the state-data (akin to [**XState**'s `assign(...)`](https://stately.ai/docs/actions#assign-action)) and for everything else (logging, fetching data, sending events, ...) we have generic side-effect functions, which you can implement however you like. Here the user is getting a lot of value from the abstractions, because there is so much less to learn, and much more flexibility in how to use it.
+In **yay-machine** we have a dedicated per-transition `data()` callback to update the state-data (akin to [**XState**'s `assign(...)`](https://stately.ai/docs/actions#assign-action)) and for everything else (logging, fetching data, sending events, starting/stopping external processes, ...) we have generic side-effect functions, which you can implement however you like. Here the user is getting a lot of value from the abstractions, because there is so much less to learn, and much more flexibility in how to use it.
 
 ## Multiple ways vs single way
 
@@ -173,7 +173,7 @@ Let's take "persistence" as an example feature.
 
 So in order to support persistence, **XState** sometimes offers several ways to define something, eg, an "action" could be defined by an inline function (can't be persisted) or as a JSON config object that refers to a function defined elsewhere (the action JSON config can now be persisted as the function is provided at runtime).
 
-Having multiple ways to do something is nice, but does add add complexity and cost in many ways.
+Having multiple ways to do something is nice, but does add complexity and cost in many ways.
 
 In general **yay-machine** tries to offer a single way to do something, although there are still obviously multiple ways to write a machine that achieves the same outcomes.
 
@@ -185,7 +185,7 @@ In general **yay-machine** tries to offer a single way to do something, although
 | Visualizer | ✅ | ❌    |
 | Online editor | ✅ | ❌    |
 | View library bindings (React, Vue, Svelte) | ✅ | ⏳ <sup>(planned)</sup> |
-| Docs | ✅ | 🚧 <sup>(in progress)</sup> |
+| Docs | ✅ | ✅ <sup>(more to come)</sup> |
 
 ## State-machine/chart features at a glance
 

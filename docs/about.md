@@ -11,7 +11,7 @@
 It will feel familiar to **XState** users, with features including
 
 - JSON config
-- state-data (context / extended-state)
+- state-data (context / extended-state / dynamic state)
 - condition predicate functions (guards)
 - immediate (always) transitions
 - event handling in specific-state or any-state
