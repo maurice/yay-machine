@@ -442,6 +442,7 @@ pre.mermaid {
   .node rect {
     fill: var(--theme-code-bg) !important;
     stroke: var(--theme-light-gray) !important;
+    -webkit-filter: drop-shadow(0 0 0.15em var(--theme-light-gray));
     filter: drop-shadow(0 0 0.15em var(--theme-light-gray));
   }
 
