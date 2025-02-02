@@ -9,20 +9,48 @@ npm install yay-machine         # or your package-manager of choice
 You define types for the **states (and data)** of the machine, and the **kinds of events** it accepts to transition between states.
 
 ```typescript
-type MyMachineState = { /* ... */ };
+type MyMachineState = {
+  name: 'stateA' | 'stateB'
+  /* any other state-data */ 
+};
 
-type MyMachineEvent = { /* ... */ };
+type MyMachineEvent = {
+  type: 'EVENT1' | 'EVENT2'
+  /* any other event payload */ 
+};
 ```
 
-Then you define the behavior of the machine: transitions and side-effects.
+Then you define the behavior of the machine with transitions and side-effects.
 
 ```typescript
 export const myMachine = defineMachine<MyMachineState, MyMachineEvent>({
-  ...
+  initialState: { /* a `MyMachineState` value */ },
+  /* optional machine side-effects: `onStart()`, `onStop()` */
+  states: {
+    stateA: {
+      /* optional state side-effects: `onEnter()`, `onExit()` */
+      on: {
+        EVENT1: {
+          /* optional event-driven transition(s) */
+        },
+      },
+      always: {
+        /* optional immediate (always) transition(s) */
+      }
+    },
+    stateB: {
+      /* etc */
+    },
+  },
+  on: {
+    EVENT2: {
+      /* optional *any state* event-driven transition(s) */
+    }
+  },
 });
 ```
 
-This process is often iterative: as you work-out the behavior of the machine, you re-work the state- and event-types; you update the machine definition, and so on, until you are happy with both.
+This process is often iterative: as you figure-out the behavior of the machine, you re-work the state- and event-types; you update the machine definition, and so on, until you are happy with both.
 
 Below is a complete "health machine" modelling a health game component.
 
@@ -153,7 +181,7 @@ export const healthMachine = defineMachine<HealthState, HealthEvent>({
 
 ## Operate instances at run-time
 
-When you've defined the machine and its types, you can create instances, start them, and start sending events.
+When you've defined the machine, you can create instances, start them, and send them events.
 
 You can also subscribe to a machine instance for state changes.
 
@@ -231,9 +259,9 @@ assert.deepStrictEqual(health.state, {
 
 # Where next?
 
-* [About **yay-machine**](https://yay-machine.js.org/)
 * [Various examples](https://yay-machine.js.org/examples/toggle.html)
 * [Reference docs](https://yay-machine.js.org/reference/state.html)
+* [About **yay-machine**](https://yay-machine.js.org/)
 * [Why state-machines?](https://yay-machine.js.org/articles/why-state-machines.html)
 * [Why **yay-machine**?](https://yay-machine.js.org/articles/why-yay-machine.html)
 * [**yay-machine** vs **XState**](https://yay-machine.js.org/articles/vs-xstate.html)

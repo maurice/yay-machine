@@ -51,6 +51,7 @@ interface ErrorEvent {
 To send an event to a machine, you'll need a running instance, then simply call it's `send()` method:
 
 ```typescript
+// @decorations:[{"start":{"line":3,"character":0},"end":{"line":3,"character":69},"properties":{"class":"highlight"}}]
 const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({ /* ... */});
 
 const connection = connectionMachine.newInstance().start();
@@ -60,27 +61,34 @@ connection.send({ type: 'CONNECT', url: 'ws://localhost:9999/api' });
 Of course the machine is type-safe, so you'll get an error trying to send anything else
 
 ```typescript
+// @decorations:[{"start":{"line":1,"character":0},"end":{"line":1,"character":35},"properties":{"class":"highlight remove"}}]
 // ❌ ts(2322): Type '"HELLO"' is not assignable to type '"CONNECT" | "CONNECTED"' | "DISCONNECTED"' | "ERROR"'. 
 connection.send({ type: 'HELLO' }); 
 ```
 
 ## Event payload
 
-When your events have a payload (any other properties apart from `type`), you can use these to generate state data for the next state [in a transition](./transitions.md).
+When your events have a payload (any other properties apart from `type`), you can use these to 
+
+* generate state data for the next state [in a transition](./transitions.md)
+* determine which [conditional transition](./transitions.md) to take
 
 ```typescript
+// @decorations:[{"start":{"line":2,"character":49},"end":{"line":2,"character":70},"properties":{"class":"highlight"}}, {"start":{"line":3,"character":40},"end":{"line":3,"character":70},"properties":{"class":"highlight"}}, {"start":{"line":12,"character":10},"end":{"line":12,"character":50},"properties":{"class":"highlight"}}, {"start":{"line":20,"character":10},"end":{"line":20,"character":71},"properties":{"class":"highlight"}}, {"start":{"line":39,"character":35},"end":{"line":39,"character":65},"properties":{"class":"highlight"}}]
 type ConnectionState = 
-  | { readonly name: 'disconnected' }
-  | { readonly name: 'connecting' | 'connected'; readonly url: string } 
-  | { readonly name: 'connectionError'; readonly errorMessage: string; 
-}
+  | { readonly name: 'disconnected'; }
+  | { readonly name: 'connecting' | 'connected'; readonly url: string; } 
+  | { readonly name: 'connectionError'; readonly errorMessage: string; };
 
 const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
   initialState: { name: "disconnected", url: '<none>' },
   states: {
     disconnected: {
       on: {
-        CONNECT: { to: "connecting", data: ({ url }) => ({ url }) },
+        CONNECT: {
+          to: "connecting",
+          data: ({ event: { url } }) => ({ url }),
+        },
       },
     },
     connecting: {
@@ -114,6 +122,7 @@ connection.send({ type: 'CONNECT', url: 'ws://localhost:9999/api' });
 When you subscribe for state changes, you *might also* get the event which triggered the state change.
 
 ```typescript
+// @decorations:[{"start":{"line":1,"character":31},"end":{"line":1,"character":36},"properties":{"class":"highlight"}}, {"start":{"line":3,"character":59},"end":{"line":3,"character":64},"properties":{"class":"highlight"}}]
 const connection = connectionMachine.newInstance().start();
 connection.subscribe(({ state, event }) => {
   // event: ConnectionEvent | undefined

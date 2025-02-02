@@ -33,6 +33,7 @@ In **yay-machine** the machine's state is a TypeScript type with a `name: string
 So we might start to build the above machine like
 
 ```typescript
+// @decorations:[{"start":{"line":2,"character":0},"end":{"line":4,"character":1},"properties":{"class":"highlight"}}]
 import { defineMachine } from 'yay-machine';
 
 interface ConnectionState {
@@ -54,20 +55,20 @@ const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
 When we have an instance of a machine we can query its current state
 
 ```typescript
+// @decorations:[{"start":{"line":2,"character":7},"end":{"line":2,"character":23},"properties":{"class":"highlight"}}]
 const connection = connectionMachine.newInstance().start();
 
-// `machine.state` is a property getter that always returns the machine's current state.
-// Note the `const state: ConnectionState` - our state type
-const state: ConnectionState = connection.state;
-
-assert(state).deepStrictEqual({ name: 'disconnected' });
+assert(connection.state).deepStrictEqual({ name: 'disconnected' });
 ```
+
+`machine.state` is a *property getter* that always returns the machine's current state, and whose type is the machine's state-type, in our case `ConnectionState`.
 
 ## Subscribing to a machine's state
 
 We can subscribe to a machine's state, to be notified about state changes as they happen
 
 ```typescript
+// @decorations:[{"start":{"line":3,"character":20},"end":{"line":3,"character":57},"properties":{"class":"highlight"}}]
 const connection = connectionMachine.newInstance().start();
 
 // the type of `state` is `ConnectionState` - our state type
@@ -101,6 +102,7 @@ unsubscribe(); // callback no longer receives state changes
 As well as a `name`, state types can have additional data properties
 
 ```typescript
+// @decorations:[{"start":{"line":2,"character":0},"end":{"line":3,"character":58},"properties":{"class":"highlight"}}]
 interface ConnectionState {
   readonly name: 'disconnected' | 'connecting' | 'connected' | 'connectionError';
   readonly connectingStartedAt: number; // Date.now();
@@ -114,14 +116,22 @@ In this case we say the state-data is homogenous, because for all states  -
 The machine manages the data as it runs, by providing a `data()` callback to generate data for the next state
 
 ```typescript
+// @decorations:[{"start":{"line":11,"character":0},"end":{"line":14,"character":13},"properties":{"class":"highlight"}}, {"start":{"line":22,"character":0},"end":{"line":25,"character":13},"properties":{"class":"highlight"}}]
 const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
-  initialState: { name: 'disconnected', connectingStartedAt: -1, connectionEstablishedAt: -1 },
+  initialState: {
+    name: 'disconnected',
+    connectingStartedAt: -1,
+    connectionEstablishedAt: -1
+  },
   states: {
     disconnected: {
       on: {
         CONNECT: {
           to: 'connecting',
-          data: () => ({ connectingStartedAt: Date.now(), connectionEstablishedAt: -1 })
+          data: () => ({
+            connectingStartedAt: Date.now(),
+            connectionEstablishedAt: -1
+          }),
         },
       },
     },
@@ -129,7 +139,10 @@ const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
       on: {
         CONNECTED: { 
           to: 'connected', 
-          data: ({ state }) => ({ connectingStartedAt: state.connectingStartedAt, connectionEstablishedAt: -1 })
+          data: ({ state }) => ({
+            connectingStartedAt: state.connectingStartedAt,
+            connectionEstablishedAt: -1
+          }),
         },
       },
     },
@@ -141,6 +154,7 @@ const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
 Later we could query the data
 
 ```typescript
+// @decorations:[{"start":{"line":4,"character":4},"end":{"line":4,"character":41},"properties":{"class":"highlight"}}, {"start":{"line":7,"character":4},"end":{"line":7,"character":84},"properties":{"class":"highlight"}}, {"start":{"line":8,"character":17},"end":{"line":8,"character":58},"properties":{"class":"highlight"}}]
 const connection = connectionMachine.newInstance().start();
 
 // ... use the machine ...
@@ -148,8 +162,8 @@ const connection = connectionMachine.newInstance().start();
 if (connection.state.name === 'connected') {
   console.log(
     'It took %s milliseconds to establish the connection, and its uptime is %s millis', 
-    connection.state.connectionEstablishedAt - connection.state.connectingStartedAt
-    Date.now() - connection.state.connectionEstablishedAt
+    connection.state.connectionEstablishedAt - connection.state.connectingStartedAt,
+    Date.now() - connection.state.connectionEstablishedAt,
   );
 }
 ```
@@ -162,6 +176,7 @@ For machines with homogenous state-data and a lot of transitions, you might find
 boilerplate `data()` callbacks that simply copy the state, eg
 
 ```typescript
+// @decorations:[{"start":{"line":24,"character":10},"end":{"line":24,"character":37},"properties":{"class":"highlight smell"}}]
 interface ToggleState {
   readonly name: 'off' | 'on';
   readonly onTimes: number;
@@ -176,12 +191,18 @@ const toggleMachine = defineMachine<ToggleState, ToggleEvent>({
   states: {
     off: {
       on: {
-        TOGGLE: { to: 'on', data: ({ state }) => ({ onTimes: state.onTimes + 1 }) }, // data in `on` state will be updated
+        TOGGLE: {
+          to: 'on', 
+          data: ({ state }) => ({ onTimes: state.onTimes + 1 }), // update state-data
+        },
       },
     },
     on: {
       on: {
-        TOGGLE: { to: 'off', data: ({ state }) => state }, // :-( this isn't adding any value
+        TOGGLE: {
+          to: 'off',
+          data: ({ state }) => state, // :-( this isn't adding any value
+        },
       },
     },
   },
@@ -193,13 +214,17 @@ If your machine has a lot of transitions that don't actually change the state-da
 In this case you can do
 
 ```typescript
+// @decorations:[{"start":{"line":1,"character":2},"end":{"line":1,"character":35},"properties":{"class":"highlight add"}}, {"start":{"line":14,"character":8},"end":{"line":14,"character":30},"properties":{"class":"highlight add"}}]
 const toggleMachine = defineMachine<ToggleState, ToggleEvent>({
-  enableCopyDataOnTransition: true, // <== ADD THIS
+  enableCopyDataOnTransition: true, // add this
   initialState: { name: 'off', onTimes: 0 },
   states: {
     off: {
       on: {
-        TOGGLE: { to: 'on', data: ({ state }) => ({ onTimes: state.onTimes + 1 }) }, // data in `on` state will be updated
+        TOGGLE: {
+          to: 'on',
+          data: ({ state }) => ({ onTimes: state.onTimes + 1 }) // update state-data
+        },
       },
     },
     on: {
@@ -225,29 +250,39 @@ type ConnectionState =
   | { readonly name: 'connectionError'; readonly errorMessage: string };
 ```
 
-
 In this case we say the state-data is heterogenous, because for some or all states the associated state-data has a different shape (type).
 
 The machine manages the data as it runs, by providing a `data()` callback to generate data for the next state
 
 ```typescript
+// @decorations:[{"start":{"line":7,"character":0},"end":{"line":9,"character":13},"properties":{"class":"highlight"}}, {"start":{"line":17,"character":0},"end":{"line":20,"character":13},"properties":{"class":"highlight"}}, {"start":{"line":24,"character":0},"end":{"line":26,"character":13},"properties":{"class":"highlight"}}]
 const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
   initialState: { name: "disconnected" },
   states: {
     disconnected: {
       on: {
-        CONNECT: { to: "connecting", data: () => ({ connectingStartedAt: Date.now() }) },
+        CONNECT: {
+          to: "connecting",
+          data: () => ({
+            connectingStartedAt: Date.now()
+          }),
+        },
       },
     },
     connecting: {
       on: {
         CONNECTED: {
           to: "connected",
-          data: ({ state }) => ({ connectingStartedAt: state.connectingStartedAt, connectionEstablishedAt: -1 }),
+          data: ({ state }) => ({
+            connectingStartedAt: state.connectingStartedAt,
+            connectionEstablishedAt: -1,
+          }),
         },
         ERROR: {
           to: "connectionError",
-          data: ({ event }) => ({ errorMessage: String(event.error) }),
+          data: ({ event }) => ({
+            errorMessage: String(event.error),
+          }),
         },
       },
     },
@@ -255,10 +290,10 @@ const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
   },
 });
 ```
-
 Later we can query the data with complete type-safety
 
 ```typescript
+// @decorations:[{"start":{"line":4,"character":4},"end":{"line":4,"character":41},"properties":{"class":"highlight"}}, {"start":{"line":7,"character":4},"end":{"line":7,"character":84},"properties":{"class":"highlight"}}, {"start":{"line":8,"character":4},"end":{"line":8,"character":58},"properties":{"class":"highlight"}}, {"start":{"line":10,"character":11},"end":{"line":10,"character":54},"properties":{"class":"highlight"}}, {"start":{"line":11,"character":39},"end":{"line":11,"character":68},"properties":{"class":"highlight"}}]
 const connection = connectionMachine.newInstance().start();
 
 // ... use the machine ...
@@ -266,8 +301,8 @@ const connection = connectionMachine.newInstance().start();
 if (connection.state.name === 'connected') {
   console.log(
     'It took %s milliseconds to establish the connection, and its uptime is %s millis', 
-    connection.state.connectionEstablishedAt - connection.state.connectingStartedAt
-    Date.now() - connection.state.connectionEstablishedAt
+    connection.state.connectionEstablishedAt - connection.state.connectingStartedAt,
+    Date.now() - connection.state.connectionEstablishedAt,
   );
 } else if (connection.state.name === 'connectionError') {
   console.log('Connection failed: %s', connection.state.errorMessage);
@@ -287,6 +322,7 @@ if (connection.state.name === 'connected') {
 States may define two optional [side-effect](./side-effects.md) callbacks that are executed when the state is entered and exited respectively
 
 ```typescript
+// @decorations:[{"start":{"line":5,"character":0},"end":{"line":5,"character":80},"properties":{"class":"highlight"}}, {"start":{"line":6,"character":0},"end":{"line":6,"character":85},"properties":{"class":"highlight"}}]
 const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
   initialState: { name: "disconnected" },
   states: {

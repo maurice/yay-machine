@@ -321,6 +321,7 @@ stateDiagram
 These types of transitions are defined at `states[stateName].on[EVENT_NAME]` in the definition config
 
 ```typescript
+// @decorations:[{"start":{"line":1,"character":2},"end":{"line":1,"character":8},"properties":{"class":"highlight"}}, {"start":{"line":2,"character":4},"end":{"line":2,"character":15},"properties":{"class":"highlight"}}, {"start":{"line":3,"character":6},"end":{"line":3,"character":8},"properties":{"class":"highlight"}}, {"start":{"line":4,"character":8},"end":{"line":4,"character":20},"properties":{"class":"highlight"}}]
 const machine = defineMachine<State, Event>({
   states: {
     [stateName]: {
@@ -339,7 +340,7 @@ const machine = defineMachine<State, Event>({
 
 ### `reenter: false`
 
-In some cases we want to handle an event in a specific state, and remain in the same state, without exiting and re-entering the state.
+In some cases we want to handle an event in a specific state, and *remain in the same state*, without exiting and re-entering the state.
 
 In the above machine we see this happens for
 
@@ -354,6 +355,7 @@ This can be used to perform a **transition side-effect** and still keep any curr
 Simply add `reenter: false` to the transition
 
 ```typescript
+// @decorations:[{"start":{"line":5,"character":10},"end":{"line":5,"character":24},"properties":{"class":"highlight"}}, {"start":{"line":6,"character":10},"end":{"line":6,"character":25},"properties":{"class":"highlight"}}]
 const machine = defineMachine<State, Event>({
   states: {
     [stateName]: {
@@ -386,10 +388,11 @@ stateDiagram
 These types of transitions are defined at `on[EVENT_NAME]` in the definition config
 
 ```typescript
+// @decorations:[{"start":{"line":2,"character":2},"end":{"line":2,"character":4},"properties":{"class":"highlight"}}, {"start":{"line":3,"character":4},"end":{"line":3,"character":16},"properties":{"class":"highlight"}}]
 const machine = defineMachine<State, Event>({
   // ...
-  on {
-    [EVENT_NAME]: { 
+  on: {
+    [EVENT_NAME]: {
       to: 'nextStateName',
       /* ... other options ... */ 
     },
@@ -413,6 +416,7 @@ This technique is typically used to update state-data. For example, the connecti
 
 
 ```typescript
+// @decorations:[{"start":{"line":3,"character":0},"end":{"line":5,"character":6},"properties":{"class":"highlight"}}]
 const machine = defineMachine<State, Event>({
   // ...
   on {
@@ -446,6 +450,7 @@ Conditional transitions are evaluated in their definition order
 * there's no transition if all transition `when()`s return false and there is no "default* transition
 
 ```typescript
+// @decorations:[{"start":{"line":5,"character":30},"end":{"line":5,"character":72},"properties":{"class":"highlight"}}, {"start":{"line":6,"character":30},"end":{"line":6,"character":72},"properties":{"class":"highlight"}}, {"start":{"line":7,"character":31},"end":{"line":7,"character":73},"properties":{"class":"highlight"}}]
 const machine = defineMachine<State, Event>({
   states: {
     [stateName]: {
@@ -485,6 +490,7 @@ stateDiagram
 Immediate transitions are optionally defined in state nodes in the definition config at `states[stateName].always`
 
 ```typescript
+// @decorations:[{"start":{"line":1,"character":2},"end":{"line":1,"character":8},"properties":{"class":"highlight"}}, {"start":{"line":2,"character":4},"end":{"line":2,"character":15},"properties":{"class":"highlight"}}, {"start":{"line":3,"character":6},"end":{"line":3,"character":12},"properties":{"class":"highlight"}}]
 const machine = defineMachine<State, Event>({
   states: {
     [stateName]: {
