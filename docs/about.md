@@ -61,8 +61,8 @@ A [**state** in **yay-machine**](./reference/state.md) is a type, giving you new
 
 ## Where next?
 
-Read our [introduction to state-machines](./articles/why-state-machines.md) if you're new to them, or learn [why **yay-machine** exists](./articles/why-yay-machine.md) and a [comparison with **XState**](./articles/vs-xstate.md) if you are already familiar.
-
 Get up and running fast with our [quick start guide](./quick-start.md) or head over to the [reference docs](./reference/state.md).
 
-There are also [various examples](./examples/toggle.md) to demonstrate the core library and ways to model with **yay-machine**.
+If you're new to state-machines, [read our introduction](./articles/why-state-machines.md). If you already have some experience, learn [why **yay-machine** exists](./articles/why-yay-machine.md), and see the [comparison with **XState**](./articles/vs-xstate.md).
+
+There are also [various examples](./examples/toggle.md) to demonstrate solving problems with with **yay-machine**.

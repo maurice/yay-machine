@@ -34,9 +34,10 @@ More concretely
 
 ## Machine `onStart()`, `onStop()`
 
-These two optional side-effects are run when the machine is started/stopped
+These two *optional* side-effects are run when the machine is started/stopped
 
 ```typescript
+// @decorations:[{"start":{"line":1,"character":0},"end":{"line":2,"character":39},"properties":{"class":"highlight"}}]
 const machine = defineMachine<State, Event>({
   onStart: ({ state, send }) => { /* ... */ },
   onStop: ({ state }) => { /* ... */ },
@@ -52,9 +53,10 @@ They receive a single parameter containing the machine's current `state` and a `
 
 ## State `onEnter()`, `onExit()`
 
-These two optional side-effects are run when a specific state is entered or exited
+These two *optional* side-effects are run when a specific state is entered or exited
 
 ```typescript
+// @decorations:[{"start":{"line":3,"character":0},"end":{"line":4,"character":55},"properties":{"class":"highlight"}}]
 const machine = defineMachine<State, Event>({
   states: {
     [stateName]: {
@@ -78,9 +80,10 @@ Like machine-lifecycle side-effects, they receive a single parameter containing 
 
 ## Transition `onTransition()`
 
-This optional side-effect is run during a transition from a specific state or *any state*
+This *optional* side-effect is run during a transition from a specific state or *any state*
 
 ```typescript
+// @decorations:[{"start":{"line":6,"character":0},"end":{"line":6,"character":72},"properties":{"class":"highlight"}}]
 const machine = defineMachine<State, Event>({
   states: {
     [stateName]: {
@@ -99,6 +102,7 @@ const machine = defineMachine<State, Event>({
 And/or
 
 ```typescript
+// @decorations:[{"start":{"line":4,"character":0},"end":{"line":4,"character":62},"properties":{"class":"highlight"}}]
 const machine = defineMachine<State, Event>({
   on: {
     [EVENT_TYPE]: {

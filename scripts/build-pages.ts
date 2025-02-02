@@ -43,12 +43,36 @@ const highlighter = await createHighlighter({
   themes: ["snazzy-light"],
   langs: ["sh", "typescript"],
 });
+
+const DECORATIONS_ANNOTATION = "// @decorations:";
+
 const renderer: RendererObject = {
   code({ text, lang }) {
     if (lang === "mermaid") {
       return `<pre class="mermaid">${text}</pre>`;
     }
-    return highlighter.codeToHtml(text, { lang: lang!, theme: "snazzy-light" });
+    return highlighter.codeToHtml(text, {
+      lang: lang!,
+      theme: "snazzy-light",
+      transformers: [
+        {
+          preprocess(code, options) {
+            if (!code.startsWith(DECORATIONS_ANNOTATION)) {
+              return code;
+            }
+
+            const firstEol = code.indexOf("\n");
+            const decorations = JSON.parse(code.slice(DECORATIONS_ANNOTATION.length, firstEol));
+
+            options.decorations ||= [];
+            options.decorations.push(...decorations);
+
+            const newCode = code.slice(firstEol + 1);
+            return newCode;
+          },
+        },
+      ],
+    });
   },
 } as const;
 
@@ -182,6 +206,7 @@ async function watchDir(dir: string) {
   for await (const info of watch(dir, { recursive: true })) {
     process.stdout.write(`file change: ${dir}/${info.filename}\n`);
     await buildPages();
+    process.stdout.write("waiting for changes...\n");
   }
 }
 

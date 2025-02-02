@@ -7,7 +7,7 @@ To build state-machines with **yay-machine**
 
 ## Define at compile-time
 
-We describe a state-machine's behaviour - it's potential [states](./state.md), [events](./events.md), [transitions](./transitions.md) and [side-effects](./side-effects.md) - with `defineMachine<StateType, EventType>({ /* ... */ })`, like so
+We describe a state-machine's behaviour - it's potential [state types](./state.md), [event types](./events.md), [transitions](./transitions.md) and [side-effects](./side-effects.md) - with `defineMachine<StateType, EventType>({ /* ... */ })`, like so
 
 > 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/tapeMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/tapeMachine.test.ts" target="_blank">test</a> on GitHub
 
