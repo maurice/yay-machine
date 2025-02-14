@@ -77,7 +77,7 @@ type ConnectionEvent =
     }
   | { readonly type: "SEND"; readonly data: string }
   | {
-      readonly type: "CONNECTION_ERROR";
+      readonly type: "ERROR";
       readonly code: number;
       readonly errorMessage: string;
     }
@@ -127,8 +127,7 @@ export const connectionMachine = defineMachine<
         const connection = transport.connect(url);
         connection.onconnect = (connectionId) =>
           send({ type: "CONNECTED", connectionId, connection });
-        connection.onerror = (error) =>
-          send({ type: "CONNECTION_ERROR", ...error });
+        connection.onerror = (error) => send({ type: "ERROR", ...error });
       },
       on: {
         CONNECTED: {
@@ -139,7 +138,7 @@ export const connectionMachine = defineMachine<
             connection,
           }),
         },
-        CONNECTION_ERROR: [
+        ERROR: [
           {
             to: "connectionError",
             when: ({ event }) => isAuthError(event.code),
@@ -158,8 +157,7 @@ export const connectionMachine = defineMachine<
     connected: {
       onEnter: ({ state: { log, url, connection, onReceive }, send }) => {
         log(`connected to ${url}`);
-        connection.onerror = (error) =>
-          send({ type: "CONNECTION_ERROR", ...error });
+        connection.onerror = (error) => send({ type: "ERROR", ...error });
         connection.onmessage = (data) => {
           if (data === "❤️ HEARTBEAT") {
             send({ type: "HEARTBEAT" });
@@ -180,7 +178,7 @@ export const connectionMachine = defineMachine<
             state.connection.send(event.data);
           },
         },
-        CONNECTION_ERROR: {
+        ERROR: {
           to: "reattemptConnection",
           data: ({ state }) => ({ ...state, connectionAttemptNum: 0 }),
         },

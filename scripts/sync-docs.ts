@@ -1,4 +1,5 @@
 import { readFile, readdir, writeFile } from "node:fs/promises";
+import { basename } from "node:path";
 import { type Locator, chromium, devices } from "playwright";
 
 interface PackageMetadata {
@@ -9,8 +10,8 @@ interface PackageMetadata {
 
 type PackagesMetadata = Record<string, PackageMetadata>;
 
-const docsDir = "docs";
-const assetsDir = `${docsDir}/assets`;
+const docsDir = "packages/site/src/content/docs";
+const assetsDir = "packages/site/src/assets";
 const metadataFile = `${assetsDir}/bundlephobia-metadata.json`;
 
 const args = process.argv.slice(2);
@@ -80,7 +81,7 @@ const newMetadata = skipBundlephobia ? previousMetadata : await captureBundlepho
 
 let didChange = false;
 const files = (await readdir(docsDir, { recursive: true, withFileTypes: true }))
-  .filter((it) => it.isFile() && it.name.endsWith(".md"))
+  .filter((it) => it.isFile() && (it.name.endsWith(".md") || it.name.endsWith(".mdx")))
   .map((it) => `${it.parentPath}/${it.name}`)
   .concat(["packages/yay-machine/README.md"]);
 for (const fileName of files) {
@@ -132,7 +133,7 @@ for (const fileName of files) {
 
         newContent = [
           newContent.slice(0, startDefinition),
-          "```typescript\n",
+          `\`\`\`typescript\n// ${basename(exampleFile)}\n`,
           definition,
           "\n",
           newContent.slice(endDefinition, startUsage),

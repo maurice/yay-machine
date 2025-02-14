@@ -1,0 +1,110 @@
+---
+title: Visualizer
+description: Work-in-progress visualizer for yay-machine state-charts
+---
+
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+<Aside type="caution">
+This component is being built to provide interactive examples in the docs.
+
+It may eventually become a separate public NPM package, but right now it is quite basic.
+</Aside>
+
+## Examples
+
+### Non-interactive (no current state)
+
+<Tabs>
+  <TabItem label="Astro">
+```mdx
+import StateChart from '../../../components/StateChart/StateChart.astro';
+
+<StateChart
+  start="off" 
+  states={['off', 'on']} 
+  transitions={[
+    { from: 'off', to: 'on', label: 'TOGGLE'},
+    { from: 'on', to: 'off', label: 'TOGGLE'}
+  ]}
+  />
+```
+  </TabItem>
+  <TabItem label="HTML">
+```html
+<script>
+  import '../../../components/StateChart/YmChart';
+  import '../../../components/StateChart/YmState';
+  import '../../../components/StateChart/YmTransition';
+</script>
+
+<ym-chart start="off">
+    <ym-state name="off"/>
+    <ym-state name="on"/>
+    <ym-transition from="off" to="on" label="TOGGLE"/>
+    <ym-transition from="on" to="off" label="TOGGLE"/>
+</ym-chart>
+```
+  </TabItem>
+</Tabs>
+
+#### Renders
+
+import StateChart from '../../../components/StateChart/StateChart.astro';
+
+<StateChart
+  start="off" 
+  states={['off', 'on']} 
+  transitions={[
+    { from: 'off', to: 'on', label: 'TOGGLE'},
+    { from: 'on', to: 'off', label: 'TOGGLE'}
+  ]}
+  />
+
+### Interactive (with current state)
+
+<Tabs>
+  <TabItem label="Astro">
+```mdx
+import StateChart from '../../../components/StateChart/StateChart.astro';
+
+<StateChart
+  start="off" 
+  current="off" 
+  states={['off', 'on']} 
+  transitions={[
+    { from: 'off', to: 'on', label: 'TOGGLE'},
+    { from: 'on', to: 'off', label: 'TOGGLE'}
+  ]}
+  />
+```
+  </TabItem>
+  <TabItem label="HTML">
+```html
+<script>
+  import '../../../components/StateChart/YmChart';
+  import '../../../components/StateChart/YmState';
+  import '../../../components/StateChart/YmTransition';
+</script>
+
+<ym-chart start="off" current="off">
+    <ym-state name="off"/>
+    <ym-state name="on"/>
+    <ym-transition from="off" to="on" label="TOGGLE"/>
+    <ym-transition from="on" to="off" label="TOGGLE"/>
+</ym-chart>
+```
+  </TabItem>
+</Tabs>
+
+#### Renders
+
+<StateChart
+  start="off" 
+  current="off" 
+  states={['off', 'on']} 
+  transitions={[
+    { from: 'off', to: 'on', label: 'TOGGLE'},
+    { from: 'on', to: 'off', label: 'TOGGLE'}
+  ]}
+  />

@@ -1,0 +1,22 @@
+{
+  "name": "@yay-machine/site",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "check:types": "tsc --noEmit",
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.31.1",
+    "@dagrejs/dagre": "^1.1.4",
+    "@types/d3-shape": "^3.1.7",
+    "astro": "^5.1.5",
+    "d3-shape": "^3.2.0",
+    "lit": "^3.2.1",
+    "sharp": "^0.32.5"
+  }
+}
