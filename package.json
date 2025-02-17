@@ -9,7 +9,7 @@
     "prepare": "husky",
     "all": "bun run build && bun run fix && bun run check && bun run test",
     "check": "bun run check:types && bun run check:lint",
-    "check:types": "tsc --noEmit",
+    "check:types": "turbo check:types",
     "check:lint": "npx @biomejs/biome check",
     "fix": "bun run fix:lint",
     "fix:lint": "npx @biomejs/biome check --write",
@@ -17,10 +17,11 @@
     "test:watch": "bun test --watch",
     "test:ci": "turbo run test:ci",
     "bench": "turbo bench",
-    "build": "turbo build",
+    "build": "turbo build --concurrency=1",
     "docs:sync": "bun run scripts/sync-docs.ts",
-    "pages": "bun run scripts/build-pages.ts",
-    "pages:watch": "bun run scripts/build-pages.ts --watch"
+    "site:dev": "npm run -w @yay-machine/site dev",
+    "site:build": "npm run -w @yay-machine/site build",
+    "site:preview": "npm run -w @yay-machine/site preview"
   },
   "repository": {
     "type": "git",
@@ -57,12 +58,8 @@
     "bun": "^1.1.45",
     "bun-types": "^1.2.1",
     "husky": "^9.1.7",
-    "marked": "^15.0.6",
-    "marked-gfm-heading-id": "^4.1.1",
     "playwright": "^1.49.1",
     "sharp": "^0.33.5",
-    "shiki": "^2.1.0",
-    "title-case": "^4.3.2",
     "turbo": "^2.3.3",
     "typescript": "^5.7.2"
   },

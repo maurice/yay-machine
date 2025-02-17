@@ -8,6 +8,7 @@
   "type": "module",
   "files": ["src", "dist"],
   "scripts": {
+    "check:types": "tsc --noEmit",
     "build": "rimraf dist && bun run build:esm && bun run build:cjs && bun run build:types",
     "build:esm": "bun build src/index.ts --outfile dist/index.js --format esm",
     "build:cjs": "bun build src/index.ts --outfile dist/index.cjs --format cjs",

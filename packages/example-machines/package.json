@@ -6,6 +6,7 @@
   "type": "module",
   "files": ["src"],
   "scripts": {
+    "check:types": "tsc --noEmit",
     "test:ci": "bun test"
   },
   "repository": {
