@@ -122,9 +122,9 @@ if (guess.state.name === "guessedCorrectly") {
 # Where next?
 
 * [About **yay-machine**](https://yay-machine.js.org/)
-* [Quick Start](https://yay-machine.js.org/quick-start.html)
-* [Various examples](https://yay-machine.js.org/examples/toggle.html)
-* [Reference docs](https://yay-machine.js.org/reference/state.html)
-* [Why state-machines?](https://yay-machine.js.org/articles/why-state-machines.html)
-* [Why **yay-machine**?](https://yay-machine.js.org/articles/why-yay-machine.html)
-* [**yay-machine** vs **XState**](https://yay-machine.js.org/articles/vs-xstate.html)
+* [Quick Start](https://yay-machine.js.org/quick-start/)
+* [Various examples](https://yay-machine.js.org/examples/toggle/)
+* [Reference docs](https://yay-machine.js.org/reference/state/)
+* [Why state-machines?](https://yay-machine.js.org/articles/why-state-machines/)
+* [Why **yay-machine**?](https://yay-machine.js.org/articles/why-yay-machine/)
+* [**yay-machine** vs **XState**](https://yay-machine.js.org/articles/vs-xstate/)
