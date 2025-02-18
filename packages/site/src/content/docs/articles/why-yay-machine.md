@@ -7,7 +7,7 @@ sidebar:
 
 Why do we need another state-machine library?
 
-Here at **yay-machine** HQ, [we ❤️ state machines](./why-state-machines/) and think they suit a wide variety of domains, and want to see them used in more TypeScript code.
+Here at **yay-machine** HQ, [we ❤️ state machines](/articles/why-state-machines/) and think they suit a wide variety of domains, and want to see them used in more TypeScript code.
 
 While there are already other well established state-machine libraries, none are quite what we want.
 
