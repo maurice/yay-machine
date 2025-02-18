@@ -1,0 +1,115 @@
+---
+import StateChart from "../../../components/StateChart/StateChart.astro";
+---
+
+<style>
+/* styles borrowed from https://medium.com/front-end-weekly/creating-a-toggle-switch-in-css-2d23e496d035 */
+input[type=checkbox]{
+	height: 0;
+	width: 0;
+	visibility: hidden;
+}
+
+label {
+	cursor: pointer;
+	text-indent: -9999px;
+	width: 100px;
+	height: 50px;
+	background: grey;
+	display: block;
+	border-radius: 50px;
+	position: relative;
+}
+
+label:after {
+	content: '';
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	width: 46px;
+	height: 46px;
+	background: #fff;
+	border-radius: 46px;
+    transition: var(--transition);
+}
+
+@starting-style {
+    label:after {
+        transition: none;
+    }
+}
+
+input:checked + label {
+	background: #bada55;
+}
+
+input:checked + label:after {
+	left: calc(100% - 2px);
+	transform: translateX(-100%);
+}
+
+label:active:after {
+	width: 65px;
+}
+
+.toggle-wrapper {
+    --transition: none;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+    padding: 1em 0;
+    border-bottom: 1px dashed lightgray;
+}
+
+.toggle-wrapper.hidden {
+    visibility: hidden;
+}
+</style>
+
+<script>
+    import { toggleMachine } from "@yay-machine/example-machines";
+
+    let checked = false;
+    try {
+        checked = Boolean(JSON.parse(localStorage.getItem('toggle-checked') ?? "false"));
+    } catch (_) {
+        // ignore
+    }
+
+    const toggle = toggleMachine
+        .newInstance({ initialState: { name: checked ? 'on' : 'off' } })
+        .start();
+
+    const chartEl = document.querySelector('ym-chart')!;
+    
+    const toggleEL = document.querySelector('#toggle') as HTMLInputElement;
+    toggleEL.addEventListener('change', () => {
+        toggle.send({ type: 'TOGGLE' });
+    });
+
+    toggle.subscribe(({ state }) => {
+        chartEl.current = toggle.state.name;
+        toggleEL.checked = checked = state.name === 'on';
+        try {
+            localStorage.setItem('toggle-checked', JSON.stringify(checked));
+        } catch (_) {
+            // ignore
+        }
+    })
+
+    const wrapperEl = document.querySelector('.toggle-wrapper')! as HTMLDivElement;
+    wrapperEl.classList.remove('hidden');
+    setTimeout(() => wrapperEl.style.setProperty('--transition', '0.3s'), 500);
+</script>
+
+<div class="toggle-wrapper hidden">
+  <input type="checkbox" id="toggle"/><label for="toggle">Toggle</label>
+</div>
+
+<StateChart
+  states={['off', 'on']}
+  transitions={[
+    { from: 'off', to: 'on', label: 'TOGGLE' },
+    { from: 'on', to: 'off', label: 'TOGGLE' },
+  ]}
+/>

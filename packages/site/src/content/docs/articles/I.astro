@@ -1,0 +1,21 @@
+---
+import { Icon } from "@astrojs/starlight/components";
+
+interface Props {
+  readonly type: "yes" | "no" | "stop" | "planned" | "explain";
+}
+
+const config = {
+  yes: { name: "approve-check", color: "green", size: "1.5em" },
+  no: { name: "close", color: "red" },
+  stop: { name: "error", color: "purple" },
+  planned: { name: "document", color: "#148f77" },
+  explain: { name: "comment", color: "royalblue" },
+} as const;
+
+const { type } = Astro.props;
+
+const { name, color, size } = { size: "1.2em", ...config[type] };
+---
+
+<Icon name={name} color={color} size={size} class="inline-icon"/>

@@ -16,7 +16,7 @@ Let's be clear **XState** is amazing is so many ways.
 - it has an online editor and visualizer
 - it has IDE extensions
 
-**XState** and it's creator [David Khourshid](https://github.com/davidkpiano) have a revitalized these decades-old computer-science ideas and created modern, accessible libraries and tools for the masses.
+**XState** and it's creator [David Khourshid](https://github.com/davidkpiano) have a revitalized these decades-old computer-science ideas and created modern, accessible libraries and tools.
 
 **XState** made us realize the power and potential of state-machines and we've successfully used it in our own production projects.
 
@@ -170,11 +170,13 @@ Let's take "persistence" as an example feature.
 
 [**XState** supports persisting machines](https://stately.ai/docs/persistence) (effectively freezing them in time and re-creating them later, ie, serialization and deserialization), although it requires authors to build their machines a certain way.
 
-> 🦉 **NOTE** 
+import { Aside } from '@astrojs/starlight/components';
+
+<Aside type="note">
+We are talking here about *persisting machine definitions*, and later *re-creating machine definitions*.
 >
-> We are talking here about *persisting machine definitions*, and later *re-creating machine definitions*.
->
-> *Persisting a machine instance's state* on the other hand - and later creating a new machine with that state and "resuming" it - is a much simpler problem and easily done in either library.
+*Persisting a machine instance's state* on the other hand - and later creating a new machine with that state and "resuming" it - is a much simpler problem and easily done in either library.
+</Aside>
 
 So in order to support persistence, **XState** sometimes offers several ways to define something, eg, an "action" could be defined by an inline function (can't be persisted) or as a JSON config object that refers to a function defined elsewhere (the action JSON config can now be persisted as the function is provided at runtime).
 
@@ -184,43 +186,39 @@ In general **yay-machine** tries to offer a single way to do something, although
 
 ## Ecosystem at a glance
 
-import Y from './Y.astro';
-import N from './N.astro';
-import X from './X.astro';
-import Q from './Q.astro';
-import P from './P.astro';
+import I from './I.astro';
 
 |          | **XState** | **yay-machine** |
 | -------- | -------- | ------- |
-| Discord | <Y/> | <N/>    |
-| Visualizer | <Y/> | <N/>    |
-| Online editor | <Y/> | <N/>    |
-| View library bindings (React, Vue, Svelte) | <Y/> | <P/> <sup>(planned)</sup> |
-| Docs | <Y/> | <Y/> <sup>(more to come)</sup> |
+| Discord | <I type="yes"/> | <I type="no"/>    |
+| Visualizer | <I type="yes"/> | <I type="no"/>    |
+| Online editor | <I type="yes"/> | <I type="no"/>    |
+| View library bindings (React, Vue, Svelte) | <I type="yes"/> | <I type="planned"/> <sup>(planned)</sup> |
+| Docs | <I type="yes"/> | <I type="yes"/> <sup>(more to come)</sup> |
 
 ## State-machine/chart features at a glance
 
 |          | **XState** | **yay-machine** |
 | -------- | -------- | ------- |
-| Flat state-machines | <Y/> | <Y/>    |
-| Declarative JSON configuration | <Y/> | <Y/>    |
-| Create independent machine instances | <Y/> | <Y/>    |
-| Initial state (and context/state-data) overridable per machine-instance | <Y/> | <Y/> |
-| Machine instance lifecycle: subscribe-to, start, send events, and stop | <Y/> | <Y/>    |
-| Context | <Y/> | <Y/> <sup>(equivalent: [state data](../reference/state/))</sup> |
-| Actions | <Y/> | <Y/> <sup>(equivalent: [side-effects](../reference/side-effects/))</sup> |
-| Invoke/spawn Actors within machine | <Y/> | <Y/> <sup>(equivalent: [side-effects](../reference/side-effects/))</sup> |
-| Native `Promise`, `Observable`, `EventObservable` Actors | <Y/> | <Q/> <sup>(not native, but easily done)</sup> |
-| Eventless (always) transitions | <Y/> | <Y/> |
-| Delayed (after) transitions | <Y/> | <Q/> <sup>(easy via [side-effect](../reference/side-effects/) + `setTimeout()`)</sup> |
-| Guards (conditional transitions) | <Y/> | <Y/> |
-| Reenter (aka internal) transitions | <Y/> | <Y/> |
-| Parent/child states | <Y/> | <N/> <sup>(not yet, for now just flatten them)</sup> |
-| Parallel states | <Y/> | <N/> <sup>(not yet, for now compose child machines)</sup> |
-| Final states | <Y/> | <N/> <sup>(nothing formal)</sup> |
-| History states | <Y/> | <X/> <sup>(not a project goal)</sup> |
-| Persistence (serialization/deserialization) | <Y/> | <X/> <sup>(not a project goal)</sup> |
-| SCXML | <Y/> | <X/> <sup>(not a project goal)</sup> |
+| Flat state-machines | <I type="yes"/> | <I type="yes"/>    |
+| Declarative JSON configuration | <I type="yes"/> | <I type="yes"/>    |
+| Create independent machine instances | <I type="yes"/> | <I type="yes"/>    |
+| Initial state (and context/state-data) overridable per machine-instance | <I type="yes"/> | <I type="yes"/> |
+| Machine instance lifecycle: subscribe-to, start, send events, and stop | <I type="yes"/> | <I type="yes"/>    |
+| Context | <I type="yes"/> | <I type="yes"/> <sup>(equivalent: [state data](../reference/state/))</sup> |
+| Actions | <I type="yes"/> | <I type="yes"/> <sup>(equivalent: [side-effects](../reference/side-effects/))</sup> |
+| Invoke/spawn Actors within machine | <I type="yes"/> | <I type="yes"/> <sup>(equivalent: [side-effects](../reference/side-effects/))</sup> |
+| Native `Promise`, `Observable`, `EventObservable` Actors | <I type="yes"/> | <I type="explain"/> <sup>(not native, but easily done)</sup> |
+| Eventless (always) transitions | <I type="yes"/> | <I type="yes"/> |
+| Delayed (after) transitions | <I type="yes"/> | <I type="explain"/> <sup>(easy via [side-effect](../reference/side-effects/) + `setTimeout()`)</sup> |
+| Guards (conditional transitions) | <I type="yes"/> | <I type="yes"/> |
+| Reenter (aka internal) transitions | <I type="yes"/> | <I type="yes"/> |
+| Parent/child states | <I type="yes"/> | <I type="no"/> <sup>(not yet, for now just flatten them)</sup> |
+| Parallel states | <I type="yes"/> | <I type="no"/> <sup>(not yet, for now compose child machines)</sup> |
+| Final states | <I type="yes"/> | <I type="no"/> <sup>(nothing formal)</sup> |
+| History states | <I type="yes"/> | <I type="stop"/> <sup>(not a project goal)</sup> |
+| Persistence (serialization/deserialization) | <I type="yes"/> | <I type="stop"/> <sup>(not a project goal)</sup> |
+| SCXML | <I type="yes"/> | <I type="stop"/> <sup>(not a project goal)</sup> |
 
 ## Coming soon...
 
