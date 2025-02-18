@@ -44,4 +44,9 @@ export default defineConfig({
       },
     }),
   ],
+  vite: {
+    define: {
+      "process.env": JSON.stringify({}),
+    },
+  },
 });

@@ -120,11 +120,15 @@ class YmChart extends LitElement {
   clippedPaths: [] | undefined;
 
   render() {
-    if (!this.graph) {
-      requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      if (!this.graph) {
         this.#layout();
-      });
-    }
+      }
+      for (const state of this.querySelectorAll("ym-state")) {
+        state.interactive = !!this.current;
+        state.current = this.current === state.name;
+      }
+    });
 
     return html`
       <div class="background">
@@ -180,12 +184,6 @@ class YmChart extends LitElement {
     });
 
     for (const state of this.querySelectorAll("ym-state")) {
-      if (this.current) {
-        state.interactive = true;
-        if (this.current === state.name) {
-          state.current = true;
-        }
-      }
       const rect = state.getBoundingClientRect();
       g.setNode(state.name, { label: state.name, width: rect.width, height: rect.height });
     }

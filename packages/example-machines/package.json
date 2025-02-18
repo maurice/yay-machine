@@ -4,6 +4,9 @@
   "description": "Example state-machines with yay-machine",
   "private": true,
   "type": "module",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
   "files": ["src"],
   "scripts": {
     "check:types": "tsc --noEmit",

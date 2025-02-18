@@ -12,16 +12,17 @@ sidebar:
 
 A very simple state-machine modelling a binary control, and demonstrating basic transitions.
 
-import StateChart from '../../../components/StateChart/StateChart.astro';
+## Try it
 
-<StateChart
-  states={['off', 'on']}
-  transitions={[
-    { from: 'off', to: 'on', label: 'TOGGLE' },
-    { from: 'on', to: 'off', label: 'TOGGLE' },
-  ]}
-  start="off"
-/>
+<Aside type="note">
+Try toggling **on** and **off**, and refreshing the page.
+
+Notice how the state-machine can be resumed in either state.
+</Aside>
+
+import Toggle from './Toggle.astro';
+
+<Toggle />
 
 ## Source
 

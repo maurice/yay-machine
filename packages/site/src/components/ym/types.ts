@@ -1,13 +1,3 @@
-export interface State {
-  readonly name: string;
-}
-
-export interface Transition {
-  readonly from: string;
-  readonly to: string;
-  readonly label?: string;
-}
-
 export interface Point {
   readonly x: number;
   readonly y: number;

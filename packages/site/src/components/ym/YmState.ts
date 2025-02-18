@@ -31,13 +31,19 @@ class YmState extends LitElement {
   .state.current {
     --state-color: var(--medium-blue);
     box-shadow: 0px 0px 0px 1px rgb(143 214 255), 0px 0px 0px 3px rgb(220 242 255), 0px 0px 10px 0px rgb(0, 0, 0, 0.3);
-    background-color: white;
-  }
-
+    }
+    
   .name {
+    color: var(--state-color);
     border-bottom: 2px solid var(--state-color);
     padding: 0 0.2em;
     text-align: center;
+  }
+
+  .current .name {
+    font-weight: bold;
+    /* background-color: rgb(238 249 255);
+    border-radius-top-left: 5px; */
   }
     `;
 

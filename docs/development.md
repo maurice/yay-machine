@@ -45,11 +45,11 @@ The documentation site [yay-machine.js.org/](https://yay-machine.js.org/) is dep
 To build the pages site locally
 
 ```sh
-npm run pages               # generate documentation site (pages)
-npm run pages:watch         # generate documentation site (pages) in watch mode
+npm run site:dev            # site dev server (watch mode)
+npm run site:build          # static build for deployment
 ```
 
-This runs a custom script to transform the markdown docs (in this [docs folder](./)) into HTML using [marked](https://marked.js.org/) amongst other things. We also copy a bunch of static assets from other directories.
+It's an [Astro Starlight](https://starlight.astro.build/) project using MDX for dynamic content.
 
 Use VS Code Live 
 

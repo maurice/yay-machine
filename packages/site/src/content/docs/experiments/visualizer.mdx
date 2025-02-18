@@ -11,9 +11,7 @@ This component is being built to provide interactive examples in the docs.
 It may eventually become a separate public NPM package, but right now it is quite basic.
 </Aside>
 
-## Examples
-
-### Non-interactive (no current state)
+## Non-interactive (no initial state)
 
 <Tabs>
   <TabItem label="Astro">
@@ -48,7 +46,7 @@ import StateChart from '../../../components/StateChart/StateChart.astro';
   </TabItem>
 </Tabs>
 
-#### Renders
+### Renders
 
 import StateChart from '../../../components/StateChart/StateChart.astro';
 
@@ -61,7 +59,7 @@ import StateChart from '../../../components/StateChart/StateChart.astro';
   ]}
   />
 
-### Interactive (with current state)
+## Interactive (with initial state)
 
 <Tabs>
   <TabItem label="Astro">
@@ -70,7 +68,7 @@ import StateChart from '../../../components/StateChart/StateChart.astro';
 
 <StateChart
   start="off" 
-  current="off" 
+  initial="off" 
   states={['off', 'on']} 
   transitions={[
     { from: 'off', to: 'on', label: 'TOGGLE'},
@@ -97,11 +95,11 @@ import StateChart from '../../../components/StateChart/StateChart.astro';
   </TabItem>
 </Tabs>
 
-#### Renders
+### Renders
 
 <StateChart
   start="off" 
-  current="off" 
+  initial="off" 
   states={['off', 'on']} 
   transitions={[
     { from: 'off', to: 'on', label: 'TOGGLE'},
