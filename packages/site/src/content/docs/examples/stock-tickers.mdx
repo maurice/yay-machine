@@ -177,7 +177,9 @@ Establishing a connection to a remote service is an async operation so if the cl
 
 When the machine receives data from the remote service, it parses the string and extracts the prices for each symbol, and sends a `TICK` event to the relevant *price machines*.
 
-> 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/tickerMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/tickerMachine.test.ts" target="_blank">test</a> on GitHub
+<Aside type="tip">
+View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/tickerMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/tickerMachine.test.ts" target="_blank">test</a> on GitHub
+</Aside>
 
 ```typescript
 // tickerMachine.ts

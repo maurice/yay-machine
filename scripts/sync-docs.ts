@@ -108,7 +108,7 @@ for (const fileName of files) {
   */
   let lastIndex = 0;
   while (true) {
-    const index = newContent.indexOf("> 💡 View this example's <a href", lastIndex);
+    const index = newContent.indexOf("View this example's <a href", lastIndex);
     if (index === -1) {
       break;
     }
