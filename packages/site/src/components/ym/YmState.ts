@@ -23,6 +23,8 @@ class YmState extends LitElement {
     transition: 200ms box-shadow;
     user-select: none;
     will-change: transform;
+    display: flex;
+    flex-direction: column;
   }
 
   .state.interactive {
@@ -41,6 +43,13 @@ class YmState extends LitElement {
     text-align: center;
   }
 
+  .data {
+    color: var(--state-color);
+    padding: 0 0.2em;
+    white-space: pre-line;
+    line-height: normal;
+  }
+
   .current .name {
     font-weight: bold;
     /* background-color: rgb(238 249 255);
@@ -50,6 +59,9 @@ class YmState extends LitElement {
 
   @property({ type: String })
   name = "";
+
+  @property({ type: Object })
+  data = {};
 
   @state()
   interactive = false;
@@ -61,6 +73,9 @@ class YmState extends LitElement {
     return html`
       <div class=${classMap({ state: true, interactive: this.interactive, current: this.current })}>
         <div class="name">${this.name}</div>
+        <div class="data">${Object.entries(this.data)
+          .map(([key, value]) => `${key}: ${value}`)
+          .join("\n")}</div>
       </div>
     `;
   }

@@ -28,6 +28,15 @@ button {
     cursor: pointer;
     min-width: 40px;
 }
+
+#counter-count {
+    background-color: royalblue;
+    color: white;
+    font-weight: 700;
+    padding: 0 1em;
+    display: inline-block;
+    border: 1px solid royalblue;
+}
 </style>
 
 <script>
@@ -77,7 +86,9 @@ button {
             .newInstance({ initialState })
             .start();
         unsubscribe = counter.subscribe(({ state }) => {
-            chartEl.current = state.name;
+            const { name, ...data } = state;
+            chartEl.current = name;
+            chartEl.data = data;
             counterValueEl.innerHTML = String(state.count);
             minInput.value = state.min === Number.MIN_SAFE_INTEGER ? '' : String(state.min);
             maxInput.value = state.max === Number.MAX_SAFE_INTEGER ? '' : String(state.max);
