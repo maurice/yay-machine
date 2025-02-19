@@ -22,6 +22,7 @@ class YmState extends LitElement {
     display: inline-block;
     transition: 200ms box-shadow;
     user-select: none;
+    will-change: transform;
   }
 
   .state.interactive {

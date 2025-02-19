@@ -95,8 +95,21 @@ class YmChart extends LitElement {
   @property({ type: String })
   start: string | undefined;
 
-  @property({ type: String })
-  current: string | undefined;
+  #current: string | undefined;
+
+  @property({
+    type: String,
+    hasChanged() {
+      return true;
+    },
+  })
+  get current(): string | undefined {
+    return this.#current;
+  }
+
+  set current(current: string | undefined) {
+    this.#current = current;
+  }
 
   @property({
     type: String,
@@ -119,6 +132,8 @@ class YmChart extends LitElement {
   @state()
   clippedPaths: [] | undefined;
 
+  #prevCurrent: string | undefined;
+
   render() {
     requestAnimationFrame(() => {
       if (!this.graph) {
@@ -127,7 +142,35 @@ class YmChart extends LitElement {
       for (const state of this.querySelectorAll("ym-state")) {
         state.interactive = !!this.current;
         state.current = this.current === state.name;
+        if (this.#prevCurrent && this.current === state.name) {
+          // const el = state.renderRoot.querySelector("div.state") as HTMLDivElement;
+          state.animate(
+            [
+              {
+                transform: "rotate(0deg)",
+              },
+              {
+                transform: "rotate(2deg)",
+              },
+              {
+                transform: "rotate(0deg)",
+              },
+              {
+                transform: "rotate(-2deg)",
+              },
+              {
+                transform: "rotate(0deg)",
+              },
+            ],
+            {
+              duration: 500,
+              easing: "cubic-bezier(0.5, 1.8, 0.3, 0.8)", // ease-out-elastic
+              iterations: 1,
+            },
+          );
+        }
       }
+      this.#prevCurrent = this.current;
     });
 
     return html`

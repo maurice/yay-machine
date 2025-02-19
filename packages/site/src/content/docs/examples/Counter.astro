@@ -1,0 +1,115 @@
+---
+import StateChart from "../../../components/StateChart/StateChart.astro";
+---
+
+<style>
+#counter {
+    --transition: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    padding: 1em 0;
+    border-bottom: 1px dashed #bbb;
+}
+
+.flex-row {
+    display: flex;
+    gap: 10px;
+    font-size: 24px;
+	justify-content: center;
+	align-items: center;
+}
+
+.smaller {
+    font-size: initial;
+}
+
+button {
+    cursor: pointer;
+    min-width: 40px;
+}
+</style>
+
+<script>
+    import { counterMachine, type CounterEvent, type CounterState } from "@yay-machine/example-machines";
+    import type { MachineInstance, Unsubscribe } from "yay-machine";
+
+    const chartEl = document.querySelector('ym-chart')!;
+
+    const incButtonEl = document.querySelector('#inc-button') as HTMLButtonElement;
+    const decButtonEl = document.querySelector('#dec-button') as HTMLButtonElement;
+    const counterValueEl = document.querySelector('#counter-count') as HTMLSpanElement;
+    const minInput = document.querySelector('#min') as HTMLButtonElement;
+    const maxInput = document.querySelector('#max') as HTMLButtonElement;
+
+    incButtonEl.addEventListener("click", () => counter.send({ type: 'INC' }));
+    decButtonEl.addEventListener("click", () => counter.send({ type: 'DEC' }));
+    minInput.addEventListener("change", () => {
+        const newValue = minInput.value.trim();
+        const newMin = newValue === '' ? Number.MIN_SAFE_INTEGER : Number(newValue);
+        initialState = { ...counter.state, min: newMin, count: newValue === '' ? counter.state.count : Math.max(counter.state.count, Number(minInput.value)) };
+        initCounter();
+    });
+    maxInput.addEventListener("change", () => {
+        const newValue = maxInput.value.trim();
+        const newMax = newValue === '' ? Number.MAX_SAFE_INTEGER : Number(newValue);
+        initialState = { ...counter.state, max: newMax, count: newValue === '' ? counter.state.count : Math.min(counter.state.count, Number(maxInput.value)) };
+        initCounter();
+    });
+
+    let initialState: CounterState | undefined;
+    try {
+        const stored = localStorage.getItem('counter-state');
+        initialState = stored && JSON.parse(stored);
+    } catch (_) {
+        // ignore
+    }
+
+    let counter: MachineInstance<CounterState, CounterEvent>;
+    let unsubscribe: Unsubscribe;
+    const initCounter = () => {
+        if (counter) {
+            counter.stop();
+            unsubscribe();
+        }
+
+        counter = counterMachine
+            .newInstance({ initialState })
+            .start();
+        unsubscribe = counter.subscribe(({ state }) => {
+            chartEl.current = state.name;
+            counterValueEl.innerHTML = String(state.count);
+            minInput.value = state.min === Number.MIN_SAFE_INTEGER ? '' : String(state.min);
+            maxInput.value = state.max === Number.MAX_SAFE_INTEGER ? '' : String(state.max);
+            try {
+                localStorage.setItem('counter-state', JSON.stringify(state));
+            } catch (_) {
+                // ignore
+            }
+        });
+    }
+    initCounter();
+</script>
+
+<div id="counter" class="not-content">
+    <div class="flex-row">
+        <span id="counter-count"></span>
+    </div>
+    <div class="flex-row">
+        <button id="dec-button">-</button>
+        <button id="inc-button">+</button>
+    </div>
+    <div class="flex-row smaller">
+        <label for="min">Min <input id="min" type="number" required="false"></label>
+        <label for="max">Max <input id="max" type="number" required="false"></label>
+    </div>
+</div>
+
+<StateChart
+  initial="counting"
+  states={['counting']}
+  transitions={[
+    { from: 'counting', to: 'counting', label: 'INC' },
+    { from: 'counting', to: 'counting', label: 'DEC' },
+  ]}
+/>

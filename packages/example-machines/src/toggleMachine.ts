@@ -1,11 +1,11 @@
 import assert from "assert";
 import { defineMachine } from "yay-machine";
 
-interface ToggleState {
+export interface ToggleState {
   readonly name: "off" | "on";
 }
 
-interface ToggleEvent {
+export interface ToggleEvent {
   readonly type: "TOGGLE";
 }
 
