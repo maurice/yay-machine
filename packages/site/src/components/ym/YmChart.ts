@@ -111,6 +111,9 @@ class YmChart extends LitElement {
     this.#current = current;
   }
 
+  @property({ type: Object })
+  data = {};
+
   @property({
     type: String,
     converter(value) {
@@ -142,6 +145,7 @@ class YmChart extends LitElement {
       for (const state of this.querySelectorAll("ym-state")) {
         state.interactive = !!this.current;
         state.current = this.current === state.name;
+        state.data = this.current === state.name ? this.data : "";
         if (this.#prevCurrent && this.current === state.name) {
           // const el = state.renderRoot.querySelector("div.state") as HTMLDivElement;
           state.animate(
