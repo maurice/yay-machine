@@ -1,14 +1,14 @@
 import assert from "assert";
 import { defineMachine } from "yay-machine";
 
-interface CounterState {
+export interface CounterState {
   readonly name: "counting";
   readonly count: number;
   readonly min: number;
   readonly max: number;
 }
 
-interface CounterEvent {
+export interface CounterEvent {
   readonly type: "INC" | "DEC";
 }
 

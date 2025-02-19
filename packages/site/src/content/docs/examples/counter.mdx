@@ -13,22 +13,25 @@ sidebar:
 
 A counter that can be incremented and decremented, with configurable min/max range.
 
-import StateChart from '../../../components/StateChart/StateChart.astro';
+## Try it
 
-<StateChart
-  current="counting"
-  states={['counting']}
-  transitions={[
-    { from: 'counting', to: 'counting', label: 'INC' },
-    { from: 'counting', to: 'counting', label: 'DEC' },
-  ]}
-/>
+import { Aside } from '@astrojs/starlight/components';
+
+<Aside type="note">
+The UI `<button/>` and `<input/>` events drive machine, and the machine's state drives the UI.
+
+Notice how the state-machine can be resumed from the previous state after refreshing the page.
+
+Also notice how it's impossible to go below "Min" (when set) and above "Max" (when set).
+</Aside>
+
+import Counter from './Counter.astro';
+
+<Counter/>
 
 ## Source
 
 Notice how the `INC` and `DEC` events are handled in **any state**, not a specific state.
-
-import { Aside } from '@astrojs/starlight/components';
 
 <Aside type="tip">
 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/counterMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/counterMachine.test.ts" target="_blank">test</a> on GitHub
@@ -39,14 +42,14 @@ View this example's <a href="https://github.com/maurice/yay-machine/blob/main/pa
 import assert from "assert";
 import { defineMachine } from "yay-machine";
 
-interface CounterState {
+export interface CounterState {
   readonly name: "counting";
   readonly count: number;
   readonly min: number;
   readonly max: number;
 }
 
-interface CounterEvent {
+export interface CounterEvent {
   readonly type: "INC" | "DEC";
 }
 

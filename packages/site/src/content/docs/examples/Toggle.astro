@@ -33,12 +33,6 @@ label:after {
     transition: var(--transition);
 }
 
-@starting-style {
-    label:after {
-        transition: none;
-    }
-}
-
 input:checked + label {
 	background: #bada55;
 }
@@ -58,7 +52,7 @@ label:active:after {
 	justify-content: center;
 	align-items: center;
     padding: 1em 0;
-    border-bottom: 1px dashed lightgray;
+    border-bottom: 1px dashed #bbb;
 }
 
 .toggle-wrapper.hidden {
@@ -67,17 +61,18 @@ label:active:after {
 </style>
 
 <script>
-    import { toggleMachine } from "@yay-machine/example-machines";
+    import { toggleMachine, type ToggleState } from "@yay-machine/example-machines";
 
-    let checked = false;
+    let initialState: ToggleState | undefined;
     try {
-        checked = Boolean(JSON.parse(localStorage.getItem('toggle-checked') ?? "false"));
+        const stored = localStorage.getItem('toggle-state');
+        initialState = stored && JSON.parse(stored);
     } catch (_) {
         // ignore
     }
 
     const toggle = toggleMachine
-        .newInstance({ initialState: { name: checked ? 'on' : 'off' } })
+        .newInstance({ initialState })
         .start();
 
     const chartEl = document.querySelector('ym-chart')!;
@@ -88,10 +83,10 @@ label:active:after {
     });
 
     toggle.subscribe(({ state }) => {
-        chartEl.current = toggle.state.name;
-        toggleEL.checked = checked = state.name === 'on';
+        chartEl.current = state.name;
+        toggleEL.checked = state.name === 'on';
         try {
-            localStorage.setItem('toggle-checked', JSON.stringify(checked));
+            localStorage.setItem('toggle-state', JSON.stringify(state));
         } catch (_) {
             // ignore
         }

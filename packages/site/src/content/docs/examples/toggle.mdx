@@ -14,6 +14,8 @@ A very simple state-machine modelling a binary control, and demonstrating basic 
 
 ## Try it
 
+import { Aside } from '@astrojs/starlight/components';
+
 <Aside type="note">
 Try toggling **on** and **off**, and refreshing the page.
 
@@ -26,8 +28,6 @@ import Toggle from './Toggle.astro';
 
 ## Source
 
-import { Aside } from '@astrojs/starlight/components';
-
 <Aside type="tip">
 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/toggleMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/toggleMachine.test.ts" target="_blank">test</a> on GitHub
 </Aside>
@@ -37,11 +37,11 @@ View this example's <a href="https://github.com/maurice/yay-machine/blob/main/pa
 import assert from "assert";
 import { defineMachine } from "yay-machine";
 
-interface ToggleState {
+export interface ToggleState {
   readonly name: "off" | "on";
 }
 
-interface ToggleEvent {
+export interface ToggleEvent {
   readonly type: "TOGGLE";
 }
 
