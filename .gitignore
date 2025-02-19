@@ -5,3 +5,6 @@ coverage/
 benchmark/
 pages/
 .astro/
+
+# Turborepo
+.turbo
