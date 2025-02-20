@@ -11,3 +11,12 @@ export const Direction = {
 } as const;
 
 export type Direction = (typeof Direction)[keyof typeof Direction];
+
+export const Align = {
+  UL: "UL",
+  UR: "UR",
+  DL: "DL",
+  DR: "DR",
+} as const;
+
+export type Align = (typeof Align)[keyof typeof Align];

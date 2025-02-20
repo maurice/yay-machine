@@ -3,7 +3,50 @@ import { curveBasis, line } from "d3-shape";
 import { LitElement, css, html, nothing, svg } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-import { Direction, type Point, type Points } from "./types";
+import type { YmTransition } from "./YmTransition";
+import { Align, Direction, type Point, type Points } from "./types";
+
+const WIGGLE_LEFT_KEY_FRAMES: Keyframe[] = [
+  {
+    transform: "rotate(0deg)",
+  },
+  {
+    transform: "rotate(2deg)",
+  },
+  {
+    transform: "rotate(0deg)",
+  },
+  {
+    transform: "rotate(-2deg)",
+  },
+  {
+    transform: "rotate(0deg)",
+  },
+];
+
+const WIGGLE_RIGHT_KEY_FRAMES: Keyframe[] = [
+  {
+    transform: "rotate(0deg)",
+  },
+  {
+    transform: "rotate(-2deg)",
+  },
+  {
+    transform: "rotate(0deg)",
+  },
+  {
+    transform: "rotate(2deg)",
+  },
+  {
+    transform: "rotate(0deg)",
+  },
+];
+
+const WIGGLE_ANIMATION: KeyframeAnimationOptions = {
+  duration: 500,
+  easing: "cubic-bezier(0.5, 1.8, 0.3, 0.8)", // ease-out-elastic
+  iterations: 1,
+};
 
 const curveDrawer = line<Point>()
   .x((p) => p.x)
@@ -18,6 +61,12 @@ const clipPath = (path: SVGPathElement, points: Points) => {
   const newPoints = [...points.slice(0, -1), end];
   path.setAttribute("d", drawCurve(newPoints));
 };
+
+interface Transition {
+  readonly next: string;
+  readonly data?: object;
+  readonly label?: string;
+}
 
 @customElement("ym-chart")
 class YmChart extends LitElement {
@@ -132,53 +181,140 @@ class YmChart extends LitElement {
   })
   direction: Direction = Direction.TB;
 
+  @property({
+    type: String,
+    converter(value) {
+      switch (value) {
+        case Align.UL:
+        case Align.UR:
+        case Align.DL:
+        case Align.DR:
+          return value;
+
+        default:
+          return undefined;
+      }
+    },
+  })
+  align: Align | undefined;
+
   @state()
   graph: graphlib.Graph | undefined;
 
   @state()
   clippedPaths: [] | undefined;
 
+  #isTransitioning = false;
+  #transitionQueue: Transition[] = [];
   #prevCurrent: string | undefined;
 
-  render() {
-    requestAnimationFrame(() => {
-      if (!this.graph) {
-        this.#layout();
-      }
-      for (const state of this.querySelectorAll("ym-state")) {
-        state.interactive = !!this.current;
-        state.current = this.current === state.name;
-        state.data = this.current === state.name ? this.data : "";
-        if (this.#prevCurrent && this.current === state.name) {
-          // const el = state.renderRoot.querySelector("div.state") as HTMLDivElement;
-          state.animate(
-            [
-              {
-                transform: "rotate(0deg)",
-              },
-              {
-                transform: "rotate(2deg)",
-              },
-              {
-                transform: "rotate(0deg)",
-              },
-              {
-                transform: "rotate(-2deg)",
-              },
-              {
-                transform: "rotate(0deg)",
-              },
-            ],
-            {
-              duration: 500,
-              easing: "cubic-bezier(0.5, 1.8, 0.3, 0.8)", // ease-out-elastic
-              iterations: 1,
-            },
-          );
+  transition(next: string, data?: object, label?: string) {
+    this.#transitionQueue.push({ next: next, data, label });
+    this.#scheduleNextTransition();
+  }
+
+  #scheduleNextTransition() {
+    if (!this.#isTransitioning && this.#transitionQueue.length) {
+      this.#isTransitioning = true;
+
+      queueMicrotask(() => {
+        this.#doNextTransition();
+        this.#isTransitioning = false;
+        this.#scheduleNextTransition();
+      });
+    }
+  }
+
+  #doNextTransition() {
+    // biome-ignore lint/style/noNonNullAssertion: OK
+    const { next, data, label } = this.#transitionQueue.shift()!;
+    const prev = this.current;
+    this.current = next;
+    this.data = data ?? this.data;
+    if (label) {
+      let index = -1;
+      let transition: YmTransition | undefined;
+      const transitions = this.querySelectorAll("ym-transition");
+      for (let i = 0; transitions.length; i++) {
+        const it = transitions.item(i);
+        if (it.from === prev && it.to === next && it.label === label) {
+          index = i;
+          transition = it;
+          break;
         }
       }
-      this.#prevCurrent = this.current;
-    });
+      if (transition) {
+        const POP_KEY_FRAMES: Keyframe[] = [
+          {
+            "--color": "var(--medium-blue)",
+            transform: "scale(1)",
+          },
+          {
+            "--color": "var(--medium-blue)",
+            transform: "scale(1.1)",
+            offset: 0.25,
+          },
+          {
+            transform: "scale(1)",
+            offset: 0.75,
+          },
+        ];
+
+        const POP_ANIMATION: KeyframeAnimationOptions = {
+          duration: 250,
+          easing: "ease-in-out",
+          // easing: "cubic-bezier(0.5, 1.8, 0.3, 0.8)", // ease-out-elastic
+          iterations: 1,
+          composite: "add",
+        };
+
+        transition.animate(POP_KEY_FRAMES, POP_ANIMATION);
+      }
+
+      if (index !== -1) {
+        const lines = this.renderRoot.querySelectorAll("path.transition-line");
+        const path = lines.item(index);
+        if (path) {
+          const FADE_KEY_FRAMES: Keyframe[] = [
+            {
+              stroke: "var(--medium-blue)",
+            },
+            {
+              stroke: "var(--medium-blue)",
+              offset: 0.25,
+            },
+          ];
+
+          const FADE_ANIMATION: KeyframeAnimationOptions = {
+            duration: 250,
+            easing: "ease-in-out",
+            // easing: "cubic-bezier(0.5, 1.8, 0.3, 0.8)", // ease-out-elastic
+            iterations: 1,
+            composite: "add",
+          };
+
+          path.animate(FADE_KEY_FRAMES, FADE_ANIMATION);
+        }
+      }
+    }
+  }
+
+  render() {
+    if (!this.graph) {
+      requestAnimationFrame(() => {
+        this.#layout();
+      });
+    }
+
+    for (const state of this.querySelectorAll("ym-state")) {
+      state.interactive = !!this.current;
+      state.current = this.current === state.name;
+      state.data = this.current === state.name ? this.data : "";
+      if (this.#prevCurrent && this.current === state.name) {
+        state.animate(Math.random() < 0.6 ? WIGGLE_LEFT_KEY_FRAMES : WIGGLE_RIGHT_KEY_FRAMES, WIGGLE_ANIMATION);
+      }
+    }
+    this.#prevCurrent = this.current;
 
     return html`
       <div class="background">
@@ -229,7 +365,8 @@ class YmChart extends LitElement {
     g.setGraph({
       nodesep: 100,
       edgesep: 30,
-      rankdir: this.direction === Direction.LR ? "LR" : "TB",
+      rankdir: this.direction,
+      align: this.align,
       marginy: 16,
     });
 

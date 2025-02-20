@@ -4,7 +4,6 @@ import StateChart from "../../../components/StateChart/StateChart.astro";
 
 <style>
 #counter {
-    --transition: none;
     display: flex;
     flex-direction: column;
     gap: 1em;
@@ -85,10 +84,14 @@ button {
         counter = counterMachine
             .newInstance({ initialState })
             .start();
-        unsubscribe = counter.subscribe(({ state }) => {
+        unsubscribe = counter.subscribe(({ state, event }) => {
             const { name, ...data } = state;
-            chartEl.current = name;
-            chartEl.data = data;
+            if (chartEl.transition) {
+                chartEl.transition(name, data, event?.type);
+            } else {
+                chartEl.current = name;
+                chartEl.data = data;
+            }
             counterValueEl.innerHTML = String(state.count);
             minInput.value = state.min === Number.MIN_SAFE_INTEGER ? '' : String(state.min);
             maxInput.value = state.max === Number.MAX_SAFE_INTEGER ? '' : String(state.max);
@@ -120,7 +123,7 @@ button {
   initial="counting"
   states={['counting']}
   transitions={[
-    { from: 'counting', to: 'counting', label: 'INC' },
     { from: 'counting', to: 'counting', label: 'DEC' },
+    { from: 'counting', to: 'counting', label: 'INC' },
   ]}
 />

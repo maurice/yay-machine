@@ -82,8 +82,12 @@ label:active:after {
         toggle.send({ type: 'TOGGLE' });
     });
 
-    toggle.subscribe(({ state }) => {
-        chartEl.current = state.name;
+    toggle.subscribe(({ state, event }) => {
+        if (chartEl.transition) {
+            chartEl.transition(state.name, undefined, event?.type);
+        } else {
+            chartEl.current = state.name;
+        }
         toggleEL.checked = state.name === 'on';
         try {
             localStorage.setItem('toggle-state', JSON.stringify(state));
