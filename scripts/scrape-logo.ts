@@ -2,7 +2,7 @@ import { cwd } from "node:process";
 import { chromium, devices } from "playwright";
 import sharp from "sharp";
 
-const assetsDir = "assets";
+const assetsDir = "packages/site/src/assets";
 
 const log = (message: string) => {
   process.stdout.write(`${message}\n`);
@@ -16,7 +16,7 @@ const scapeLogo = async () => {
   await page.goto(`file://${cwd()}/scripts/logo.html`);
 
   log("waiting for rendered text");
-  const renderedText = page.locator("span.logo-font");
+  const renderedText = page.locator(".container");
   await renderedText.waitFor();
 
   const paddedScreenshotFile = `${assetsDir}/logo-padded.png`;
