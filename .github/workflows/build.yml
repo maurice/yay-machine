@@ -50,5 +50,5 @@ jobs:
 
       - name: Check docs
         run: |
-          npm run docs:sync -- --skipBundlephobia
+          npm run docs:sync
           git diff --exit-code

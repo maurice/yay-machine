@@ -16,7 +16,7 @@ const metadataFile = `${assetsDir}/bundlephobia-metadata.json`;
 
 const args = process.argv.slice(2);
 const dryRun = args.includes("--dryRun");
-const skipBundlephobia = args.includes("--skipBundlephobia");
+const includeBundlephobia = args.includes("--includeBundlephobia");
 
 const log = (message: string, ...args: any[]) => console.log(message, ...args);
 
@@ -77,7 +77,7 @@ const captureBundlephobiaStats = async (): Promise<PackagesMetadata> => {
 const previousMetadata = await readMetadata();
 log("previous metadata", previousMetadata, indexMetadata(previousMetadata));
 
-const newMetadata = skipBundlephobia ? previousMetadata : await captureBundlephobiaStats();
+const newMetadata = !includeBundlephobia ? previousMetadata : await captureBundlephobiaStats();
 
 let didChange = false;
 const files = (await readdir(docsDir, { recursive: true, withFileTypes: true }))
