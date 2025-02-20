@@ -34,7 +34,7 @@ class YmState extends LitElement {
   .state.current {
     --state-color: var(--medium-blue);
     box-shadow: 0px 0px 0px 1px rgb(143 214 255), 0px 0px 0px 3px rgb(220 242 255), 0px 0px 10px 0px rgb(0, 0, 0, 0.3);
-    }
+  }
     
   .name {
     color: var(--state-color);
@@ -46,7 +46,6 @@ class YmState extends LitElement {
   .data {
     color: var(--state-color);
     padding: 0 0.2em;
-    white-space: pre-line;
     line-height: normal;
   }
 
@@ -73,9 +72,8 @@ class YmState extends LitElement {
     return html`
       <div class=${classMap({ state: true, interactive: this.interactive, current: this.current })}>
         <div class="name">${this.name}</div>
-        <div class="data">${Object.entries(this.data)
-          .map(([key, value]) => `${key}: ${value}`)
-          .join("\n")}</div>
+        <div class="data">${html`${Object.entries(this.data).map(([key, value]) => html`<div><em>${key}</em>: ${value}</div>`)}`}
+        </div>
       </div>
     `;
   }

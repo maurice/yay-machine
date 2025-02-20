@@ -1,0 +1,127 @@
+---
+import StateChart from "../../../components/StateChart/StateChart.astro";
+---
+
+<style>
+#guess-game {
+    --transition: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    padding: 1em 0;
+    border-bottom: 1px dashed #bbb;
+}
+
+#guess-game em {
+    color: royalblue;
+    font-weight: bold;
+}
+
+.flex-row {
+    display: flex;
+    gap: 10px;
+    font-size: 24px;
+	justify-content: center;
+	align-items: center;
+}
+
+#feedback.incorrect {
+    color: crimson;
+}
+
+#feedback.correct {
+    color: green;
+}
+
+#guess-game.playing #new-game {
+    display: none;
+}
+
+#guess-game:not(.playing) .number-guess {
+    display: none;
+}
+</style>
+
+<script>
+    import { guessMachine } from "@yay-machine/example-machines";
+
+    const gameEl = document.querySelector('#guess-game')!;
+    const chartEl = document.querySelector('ym-chart')!;
+    const feedbackEl = document.querySelector("#feedback")!;
+
+    for (const guessButton of document.querySelectorAll('.number-guess')) {
+        guessButton.addEventListener("click", event => guess.send({ type: 'GUESS', guess: Number((event.target as HTMLButtonElement).value) }));
+    }
+
+    const newGameEl = document.querySelector('#new-game');
+    newGameEl?.addEventListener('click', () => guess.send({ type: 'NEW_GAME' }));
+
+    const guess = guessMachine.newInstance();
+    guess.subscribe(({ state, event }) => {
+        const { name, ...data } = state;
+        if (chartEl.transition) {
+            chartEl.transition(name, data, event?.type ?? '(immediate)');
+        } else {
+            chartEl.current = name;
+            chartEl.data = data;
+        }
+
+        if (state.name === 'playing') {
+            gameEl.classList.add('playing');
+        } else {
+            gameEl.classList.remove('playing');
+        }
+
+        feedbackEl.classList.remove('correct');
+        feedbackEl.classList.remove('incorrect');
+        if (state.name === 'init') {
+            feedbackEl.innerHTML = "Let's go...";
+        } else if (state.name === 'playing' && state.numGuesses > 0) {
+            feedbackEl.classList.add('incorrect');
+            feedbackEl.innerHTML = `Incorrect, try again (${state.maxGuesses - state.numGuesses} more attempts)`;
+        } else if (state.name === 'tooManyIncorrectGuesses') {
+            feedbackEl.classList.add('incorrect');
+            feedbackEl.innerHTML = 'Sorry, you lost this time :-(';
+        } else if (state.name === 'guessedCorrectly') {
+            feedbackEl.classList.add('correct');
+            feedbackEl.innerHTML = "Yay, that's the right answer!";
+        }
+    });
+    guess.start();
+</script>
+
+<div id="guess-game" class="not-content">
+    <div class="flex-row">
+        <em>Guess the number!</em>
+        <span id="counter-count"></span>
+    </div>
+    <div class="flex-row">
+        <button class="number-guess" value="1">1</button>
+        <button class="number-guess" value="2">2</button>
+        <button class="number-guess" value="3">3</button>
+        <button class="number-guess" value="4">4</button>
+        <button class="number-guess" value="5">5</button>
+        <button class="number-guess" value="6">6</button>
+        <button class="number-guess" value="7">7</button>
+        <button class="number-guess" value="8">8</button>
+        <button class="number-guess" value="9">9</button>
+        <button class="number-guess" value="10">10</button>
+        <button id="new-game">New game</button>
+    </div>
+    <div id="feedback" class="flex-row">
+    </div>
+</div>
+
+<StateChart
+  start="init"
+  initial="init"
+  states={['init', 'playing', 'guessedCorrectly', 'tooManyIncorrectGuesses']}
+  transitions={[
+    { from: 'init', to: 'playing', label: '(immediate)' },
+    { from: 'playing', to: 'playing', label: 'GUESS' },
+    { from: 'playing', to: 'guessedCorrectly', label: 'GUESS' },
+    { from: 'playing', to: 'tooManyIncorrectGuesses', label: 'GUESS' },
+    { from: 'guessedCorrectly', to: 'init', label: 'NEW_GAME' },
+    { from: 'tooManyIncorrectGuesses', to: 'init', label: 'NEW_GAME' },
+  ]}
+/>

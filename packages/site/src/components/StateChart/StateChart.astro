@@ -1,5 +1,5 @@
 ---
-import type { Direction } from "../ym";
+import type { Align, Direction } from "../ym";
 
 interface State {
   readonly name: string;
@@ -17,9 +17,10 @@ interface Props {
   readonly start?: string;
   readonly initial?: string;
   readonly direction?: Direction;
+  readonly align?: Align;
 }
 
-const { className = "", initial, start, states, transitions, direction } = Astro.props;
+const { className = "", initial, start, states, transitions, direction, align } = Astro.props;
 const classNames = `${className ?? ""} no-content`;
 ---
 
@@ -28,7 +29,7 @@ import "../ym";
 </script>
 
 <div>
-    <ym-chart class={classNames} start={start} current={initial} direction={direction}>
+    <ym-chart class={classNames} start={start} current={initial} direction={direction} align={align}>
         {states?.map((it: string | State) => <ym-state name={typeof it === 'string' ? it : it.name}/>)}
         {transitions?.map((it: Transition) => <ym-transition from={it.from} to={it.to} label={it.label}/>)}
     </ym-chart>

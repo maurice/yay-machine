@@ -56,7 +56,7 @@ const incrementNumGuesses = ({
 });
 
 /**
- * Guess a number from 1 to 10
+ * Guess the number from 1 to 10
  */
 export const guessMachine = defineMachine<
   GuessState,
@@ -78,13 +78,13 @@ export const guessMachine = defineMachine<
       on: {
         GUESS: [
           {
-            to: "tooManyIncorrectGuesses",
-            when: ({ state }) => state.numGuesses + 1 === state.maxGuesses,
+            to: "guessedCorrectly",
+            when: ({ state, event }) => state.answer === event.guess,
             data: incrementNumGuesses,
           },
           {
-            to: "guessedCorrectly",
-            when: ({ state, event }) => state.answer === event.guess,
+            to: "tooManyIncorrectGuesses",
+            when: ({ state }) => state.numGuesses + 1 === state.maxGuesses,
             data: incrementNumGuesses,
           },
           {
@@ -94,9 +94,16 @@ export const guessMachine = defineMachine<
         ],
       },
     },
-  },
-  on: {
-    NEW_GAME: { to: "init" },
+    guessedCorrectly: {
+      on: {
+        NEW_GAME: { to: "init", data: ({ state }) => state },
+      },
+    },
+    tooManyIncorrectGuesses: {
+      on: {
+        NEW_GAME: { to: "init", data: ({ state }) => state },
+      },
+    },
   },
 });
 ```
