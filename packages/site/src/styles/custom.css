@@ -39,3 +39,10 @@ html[data-theme="dark"] p img {
 svg.inline-icon {
   display: inline;
 }
+
+@media (max-width: 50rem) {
+  ym-chart {
+    width: calc(100% + var(--sl-content-pad-x) * 2);
+    margin: 0 calc(var(--sl-content-pad-x) * -1);
+  }
+}

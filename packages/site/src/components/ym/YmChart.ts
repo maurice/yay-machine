@@ -22,13 +22,16 @@ const clipPath = (path: SVGPathElement, points: Points) => {
 @customElement("ym-chart")
 class YmChart extends LitElement {
   static styles = css`
+  :host {
+    display: block;
+  }
+
   .background {
     width: 100%;
     height: 100%;
     background: white;
     position: relative;
     box-shadow: 0px 0px 4px 0px white;
-    border-radius: 5px;
   }
 
   .container {

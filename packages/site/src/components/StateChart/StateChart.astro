@@ -11,6 +11,7 @@ interface Transition {
 }
 
 interface Props {
+  readonly className?: string;
   readonly states?: readonly (State | string)[];
   readonly transitions?: readonly Transition[];
   readonly start?: string;
@@ -18,7 +19,8 @@ interface Props {
   readonly direction?: Direction;
 }
 
-const { initial, start, states, transitions, direction } = Astro.props;
+const { className = "", initial, start, states, transitions, direction } = Astro.props;
+const classNames = `${className ?? ""} no-content`;
 ---
 
 <script>
@@ -26,7 +28,7 @@ import "../ym";
 </script>
 
 <div>
-    <ym-chart start={start} current={initial} direction={direction}>
+    <ym-chart class={classNames} start={start} current={initial} direction={direction}>
         {states?.map((it: string | State) => <ym-state name={typeof it === 'string' ? it : it.name}/>)}
         {transitions?.map((it: Transition) => <ym-transition from={it.from} to={it.to} label={it.label}/>)}
     </ym-chart>
