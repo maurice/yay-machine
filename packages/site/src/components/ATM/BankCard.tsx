@@ -9,7 +9,13 @@ interface BankCardProps {
   readonly onClick?: (cardNumber: string) => void;
 }
 
-export const BankCard: FC<BankCardProps> = ({ className, cardNumber, hidden, style, onClick }) => {
+export const BankCard: FC<BankCardProps> = ({
+  className,
+  cardNumber,
+  hidden,
+  style,
+  onClick,
+}) => {
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <div

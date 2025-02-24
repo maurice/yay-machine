@@ -26,7 +26,7 @@ Uses a decision state (`checkHealth`) and immediate (always) transitions with co
 
 Health deteriorates as the machine receives `DAMAGE` events and improves when it receives `FIRST_AID` events.
 
-If the machine receives a `GOD_LIKE` event (with *human-compatible* condition), the health component enters the `invincible` state. On entering this state we have an `onEnter()` side-effect, which after 10s sends a `HUMAN_AGAIN` event to the machine instance, and returns it to one of the health states.
+If the machine receives a `GOD_LIKE` event (with _human-compatible_ condition), the health component enters the `invincible` state. On entering this state we have an `onEnter()` side-effect, which after 10s sends a `HUMAN_AGAIN` event to the machine instance, and returns it to one of the health states.
 
 While `invincible`, the machine effectively ignores any `DAMAGE` events by having a state-specific transition, and using `reenter: false` to avoid exiting-and-entering the state (which would stop and restart the invincibility timer), and not updating state data. (This is more for demonstration than necessity, since the state data stores the time that `invincibilityStarted`, so other events **do** trigger exit and re-entry into this state, and so they **do** cancel the timer and re-start it with the remaining time.)
 
@@ -34,10 +34,24 @@ The `GOD_LIKE` event is handled in **any state** so it's possible to keep extend
 
 This machine's state data is homogenous and we're using `enableCopyDataOnTransition` to simplify some transitions that don't update the data.
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside } from "@astrojs/starlight/components";
 
 <Aside type="tip">
-View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/healthMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/healthMachine.test.ts" target="_blank">test</a> on GitHub
+  View this example's{" "}
+  <a
+    href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/healthMachine.ts"
+    target="_blank"
+  >
+    source
+  </a>{" "}
+  and{" "}
+  <a
+    href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/healthMachine.test.ts"
+    target="_blank"
+  >
+    test
+  </a>{" "}
+  on GitHub
 </Aside>
 
 ```typescript

@@ -23,9 +23,9 @@ Sometimes it's the TypeScript types that are insufficient. Eg the state-names mi
 
 ## Too much
 
-Some state-machine libraries are too complicated. 
+Some state-machine libraries are too complicated.
 
-They have a vast matrix of features and concepts. They have so much documentation. 
+They have a vast matrix of features and concepts. They have so much documentation.
 
 But they take weeks to learn and months to master.
 
@@ -45,10 +45,10 @@ We want you to be up and running with **yay-machine** in hours and an expert in 
 
 Our official project goals are
 
-* To provide the best modern pragmatic state-machine library for TypeScript
-* Strong TypeScript types without compromise
-* Minimal feature-set and lightweight implementation for tiny bundle sizes, and performance for your mission-critical workloads
-* No code-generation or IDE extensions required
+- To provide the best modern pragmatic state-machine library for TypeScript
+- Strong TypeScript types without compromise
+- Minimal feature-set and lightweight implementation for tiny bundle sizes, and performance for your mission-critical workloads
+- No code-generation or IDE extensions required
 
 ## Philosophy
 
@@ -58,7 +58,7 @@ Firstly we're not trying to be the most feature-rich TypeScript state-machine li
 
 We believe a few powerful primitives go a long way; it's faster to learn and get working.
 
-**yay-machine** doesn't currently support state-charts or any hierarchical or parallel state-machine definition, only *flat state-machines*. In practice - in our experience - this isn't really a limiting factor. You can solve the same all problems that you might use a hierarchical state-machine for, just in different ways.
+**yay-machine** doesn't currently support state-charts or any hierarchical or parallel state-machine definition, only _flat state-machines_. In practice - in our experience - this isn't really a limiting factor. You can solve the same all problems that you might use a hierarchical state-machine for, just in different ways.
 
 ### Make it accessible
 

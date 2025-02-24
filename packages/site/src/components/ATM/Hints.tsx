@@ -11,13 +11,19 @@ export const Hints: FC = () => {
   return (
     <div className="hints">
       {card.name === "noCard" && <p>Select a card to insert</p>}
-      {(card.name === "cardInserted" || card.name === "readCard" || card.name === "ejectingCard") && (
+      {(card.name === "cardInserted" ||
+        card.name === "readCard" ||
+        card.name === "ejectingCard") && (
         <>
           <p>
-            The pin is <strong>{bank.cardPins[card.cardNumber] ?? "???"}</strong>
+            The pin is{" "}
+            <strong>{bank.cardPins[card.cardNumber] ?? "???"}</strong>
           </p>
           <p>
-            The balance is <strong>{bank.accountBalances[card.cardNumber]?.toFixed(2) ?? "???"}</strong>
+            The balance is{" "}
+            <strong>
+              {bank.accountBalances[card.cardNumber]?.toFixed(2) ?? "???"}
+            </strong>
           </p>
         </>
       )}

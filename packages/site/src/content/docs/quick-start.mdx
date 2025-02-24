@@ -5,9 +5,14 @@ description: yay-machine is a modern, simple, lightweight, zero-dependency, Type
 
 ## Installation
 
-import { Code } from '@astrojs/starlight/components';
+import { Code } from "@astrojs/starlight/components";
 
-<Code lang="bash" code="npm add yay-machine" class="install-sh" mark={["yay-machine"]} />
+<Code
+  lang="bash"
+  code="npm add yay-machine"
+  class="install-sh"
+  mark={["yay-machine"]}
+/>
 
 ## Example: ATM
 
@@ -15,15 +20,15 @@ Let's build an ATM state-machine!
 
 To keep it simple, it will only offer a **cash withdrawal** service, and skip some unhappy paths.
 
-**This interactive demo is powered by the state-machine *we're going to build*.**
+**This interactive demo is powered by the state-machine _we're going to build_.**
 
-import { ATM, FullScreen } from '../../components'
+import { ATM, FullScreen } from "../../components";
 
 <FullScreen client:load>
-<ATM client:load/>
+  <ATM client:load />
 </FullScreen>
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside } from "@astrojs/starlight/components";
 
 ### First steps
 
@@ -33,51 +38,81 @@ Take a moment to think about the problem domain. In this case, reflect on your o
 What kinds of short- and long-lived **states** do they have. And what kinds of transient **events** can happen?
 
 Finally what interactions would it need with the outside world?
+
 </Aside>
 
 ### Outline States, Events and Transitions
 
-First, let's define all the **states**, **events** and **transitions** of the state-machine first. Let's ignore *state-data* and *event-payloads* right now.
+First, let's define all the **states**, **events** and **transitions** of the state-machine first. Let's ignore _state-data_ and _event-payloads_ right now.
 
 This will give us an **outline** and we can **fill in the details later**.
 
 In practice it usually takes several iterations on states and events, then machine-definition, then states and events, then machine-definition and so on, before you find something that feels right. That's normal.
 
-import { Tabs, TabItem } from '@astrojs/starlight/components';
-import atmMachineOutline from '@yay-machine/example-machines/src/atm/atmMachineOutline.ts?raw'
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+import atmMachineOutline from "@yay-machine/example-machines/src/atm/atmMachineOutline.ts?raw";
 
-<Code code={atmMachineOutline} lang="typescript" title="atmMachine.ts"/>
+<Code code={atmMachineOutline} lang="typescript" title="atmMachine.ts" />
 
 ### Try visualizing it
 
 Drawing the state-chart might help to see what looks correct, and what is invalid or missing.
 
-import StateChart from '../../components/StateChart/StateChart.astro';
+import StateChart from "../../components/StateChart/StateChart.astro";
 
 <FullScreen client:load>
-<StateChart
-  states={['waitingForCard', 'readingCard', 'serviceMenu', 'enterPin', 'enterAmount', 'validateWithdrawal', 'dispenseCash', 'ejectCard']}
-  transitions={[
-    { from: 'waitingForCard', to: 'readingCard', label: 'CARD_INSERTED' },
-    { from: 'readingCard', to: 'serviceMenu', label: 'CARD_READ' },
-    { from: 'readingCard', to: 'ejectCard', label: 'CARD_INVALID' },
-    { from: 'serviceMenu', to: 'ejectCard', label: 'USER_CANCELLED' },
-    { from: 'serviceMenu', to: 'enterPin', label: 'START_WITHDRAWAL' },
-    { from: 'enterPin', to: 'ejectCard', label: 'USER_CANCELLED' },
-    { from: 'enterPin', to: 'enterAmount', label: 'PIN_ENTERED' },
-    { from: 'enterAmount', to: 'ejectCard', label: 'USER_CANCELLED' },
-    { from: 'enterAmount', to: 'enterAmount', label: 'AMOUNT_ENTERED (invalid)' },
-    { from: 'enterAmount', to: 'validateWithdrawal', label: 'AMOUNT_ENTERED' },
-    { from: 'validateWithdrawal', to: 'dispenseCash', label: 'WITHDRAWAL_APPROVED' },
-    { from: 'validateWithdrawal', to: 'enterPin', label: 'INCORRECT_PIN' },
-    { from: 'validateWithdrawal', to: 'ejectCard', label: 'INCORRECT_PIN (too many attempts)' },
-    { from: 'validateWithdrawal', to: 'ejectCard', label: 'INSUFFICIENT_FUNDS' },
-    { from: 'dispenseCash', to: 'ejectCard', label: '(immediate)' },
-    { from: 'ejectCard', to: 'waitingForCard', label: 'CARD_EJECTED' },
-  ]}
-  start="waitingForCard"
-  compact={true}
-/>
+  <StateChart
+    states={[
+      "waitingForCard",
+      "readingCard",
+      "serviceMenu",
+      "enterPin",
+      "enterAmount",
+      "validateWithdrawal",
+      "dispenseCash",
+      "ejectCard",
+    ]}
+    transitions={[
+      { from: "waitingForCard", to: "readingCard", label: "CARD_INSERTED" },
+      { from: "readingCard", to: "serviceMenu", label: "CARD_READ" },
+      { from: "readingCard", to: "ejectCard", label: "CARD_INVALID" },
+      { from: "serviceMenu", to: "ejectCard", label: "USER_CANCELLED" },
+      { from: "serviceMenu", to: "enterPin", label: "START_WITHDRAWAL" },
+      { from: "enterPin", to: "ejectCard", label: "USER_CANCELLED" },
+      { from: "enterPin", to: "enterAmount", label: "PIN_ENTERED" },
+      { from: "enterAmount", to: "ejectCard", label: "USER_CANCELLED" },
+      {
+        from: "enterAmount",
+        to: "enterAmount",
+        label: "AMOUNT_ENTERED (invalid)",
+      },
+      {
+        from: "enterAmount",
+        to: "validateWithdrawal",
+        label: "AMOUNT_ENTERED",
+      },
+      {
+        from: "validateWithdrawal",
+        to: "dispenseCash",
+        label: "WITHDRAWAL_APPROVED",
+      },
+      { from: "validateWithdrawal", to: "enterPin", label: "INCORRECT_PIN" },
+      {
+        from: "validateWithdrawal",
+        to: "ejectCard",
+        label: "INCORRECT_PIN (too many attempts)",
+      },
+      {
+        from: "validateWithdrawal",
+        to: "ejectCard",
+        label: "INSUFFICIENT_FUNDS",
+      },
+      { from: "dispenseCash", to: "ejectCard", label: "(immediate)" },
+      { from: "ejectCard", to: "waitingForCard", label: "CARD_EJECTED" },
+    ]}
+    start="waitingForCard"
+    compact={true}
+  />
 </FullScreen>
 
 ### External APIs
@@ -91,33 +126,33 @@ It looks OK so far, but it's becoming obvious we're going to need some external 
 
 Let's sketch out those too:
 
-import CardReader from '@yay-machine/example-machines/src/atm/CardReader.ts?raw'
-import CashDispenser from '@yay-machine/example-machines/src/atm/CashDispenser.ts?raw'
-import Keypad from '@yay-machine/example-machines/src/atm/Keypad.ts?raw'
-import Bank from '@yay-machine/example-machines/src/atm/Bank.ts?raw'
+import CardReader from "@yay-machine/example-machines/src/atm/CardReader.ts?raw";
+import CashDispenser from "@yay-machine/example-machines/src/atm/CashDispenser.ts?raw";
+import Keypad from "@yay-machine/example-machines/src/atm/Keypad.ts?raw";
+import Bank from "@yay-machine/example-machines/src/atm/Bank.ts?raw";
 
 <Tabs>
   <TabItem label="CardReader.ts">
-    <Code code={CardReader} lang="typescript"/>
+    <Code code={CardReader} lang="typescript" />
   </TabItem>
   <TabItem label="CashDispenser.ts">
-    <Code code={CashDispenser} lang="typescript"/>
+    <Code code={CashDispenser} lang="typescript" />
   </TabItem>
   <TabItem label="Keypad.ts">
-    <Code code={Keypad} lang="typescript"/>
+    <Code code={Keypad} lang="typescript" />
   </TabItem>
   <TabItem label="Bank.ts">
-    <Code code={Bank} lang="typescript"/>
+    <Code code={Bank} lang="typescript" />
   </TabItem>
 </Tabs>
 
 ### Putting it all together
 
-Let's now add the *state-data*, *event-payloads* and *side-effects*.
+Let's now add the _state-data_, _event-payloads_ and _side-effects_.
 
 First we expand the states and events so they contain the data we need to capture.
 
-```typescript ins={11-20} {35-50} ins={55-64} ins="enableCopyDataOnTransition: true" 
+```typescript ins={11-20} {35-50} ins={55-64} ins="enableCopyDataOnTransition: true"
 export interface AtmState {
   readonly name:
     | "waitingForCard"
@@ -222,7 +257,7 @@ export const atmMachine = defineMachine<AtmState, AtmEvent>({
 
 Now we can define real transitions, starting from the top.
 
-First on entering `readingCard` card we use an `onEnter` side-effect function request the  `cardReader` device to read the card. Depending on the result we either send the machine a `CARD_READ` event with the card-number, or a `CARD_INVALID` event. These are handled in the `readingCard` state and in both cases, we populate additional state-data (either the card-number or an error message), which is committed when the state changes to the next state.
+First on entering `readingCard` card we use an `onEnter` side-effect function request the `cardReader` device to read the card. Depending on the result we either send the machine a `CARD_READ` event with the card-number, or a `CARD_INVALID` event. These are handled in the `readingCard` state and in both cases, we populate additional state-data (either the card-number or an error message), which is committed when the state changes to the next state.
 
 ```typescript "cardNumber" ins={8-13,17-20,24}
   states: {
@@ -359,8 +394,8 @@ The `validateWithdrawal` state is next and the `onEnter` side-effect contacts th
 
 Also in the side-effect we're handling some unhappy paths when the promise rejects:
 
-* if the bank tells us the pin was incorrect, we send an `INCORRECT_PIN` event to the machine, or
-* else we send an `INSUFFICIENT_FUNDS` event to the machine
+- if the bank tells us the pin was incorrect, we send an `INCORRECT_PIN` event to the machine, or
+- else we send an `INSUFFICIENT_FUNDS` event to the machine
 
 When handling the `INCORRECT_PIN` we have a conditional transition to `ejectCard` which is taken if the user has already tried unsuccessfully 3 times. Otherwise we'll go back to `enterPin`, incrementing `withdrawalAttempts`.
 
@@ -468,34 +503,36 @@ Finally in `ejectCard` we use another `onEnter` side-effect to request the card-
 Now we have our **definition** we will want to create and run a machine instance.
 
 ```typescript "atmMachine.newInstance({" "}).start()"
-import { cardReader, cashDispenser, keypad, bank } from './apis';
+import { cardReader, cashDispenser, keypad, bank } from "./apis";
 
-const atm = atmMachine.newInstance({ 
-  initialState: { 
-    name: "waitingForCard",
-    cardReader,
-    cashDispenser,
-    keypad,
-    bank,
-    cardNumber: undefined!,
-    pin: undefined!,
-    withdrawalAmount: 0,
-    transactionId: undefined!,
-    withdrawalAttempts: 0,
-    message: "",
-  }
-}).start();
+const atm = atmMachine
+  .newInstance({
+    initialState: {
+      name: "waitingForCard",
+      cardReader,
+      cashDispenser,
+      keypad,
+      bank,
+      cardNumber: undefined!,
+      pin: undefined!,
+      withdrawalAmount: 0,
+      transactionId: undefined!,
+      withdrawalAttempts: 0,
+      message: "",
+    },
+  })
+  .start();
 
 const unsubscribe = atm.subscribe(({ state, event }) => {
-  console.log('machine state', state, event);
+  console.log("machine state", state, event);
 });
 ```
 
 We could also send it some events to test it
 
 ```typescript
-atm.send({ type: 'CARD_INSERTED' });
-atm.send({ type: 'CARD_READ', cardNumber: '555' });
+atm.send({ type: "CARD_INSERTED" });
+atm.send({ type: "CARD_READ", cardNumber: "555" });
 ```
 
 If you want to see how the demo above is implemented, the [demo source code is here](https://github.com/maurice/yay-machine/tree/main/packages/site/src/components/ATM) and the [complete ATM state-machine is here](https://github.com/maurice/yay-machine/tree/main/packages/example-machines/src/atm/atmMachineComplete.ts).
@@ -518,6 +555,9 @@ Take a minute to think about how you would build this ATM using other programmin
 
 ## Want more examples?
 
-import { LinkButton, Card, CardGrid } from '@astrojs/starlight/components';
+import { LinkButton, Card, CardGrid } from "@astrojs/starlight/components";
 
-<Card title="Examples" icon="puzzle">Check out our [various examples](/examples/toggle/) to see how to solve problems with **yay-machine**</Card>
+<Card title="Examples" icon="puzzle">
+  Check out our [various examples](/examples/toggle/) to see how to solve
+  problems with **yay-machine**
+</Card>

@@ -1,4 +1,4 @@
-*📦 This package is the documentation site.*
+_📦 This package is the documentation site._
 
 [![a Starlight app](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
 
@@ -27,13 +27,12 @@ All commands are run from the root of the project, from a terminal:
 | `npm run site:build             `      | Build your production site to `./dist/`          |
 | `npm run -w @yay-machine/site preview` | Preview your build locally, before deploying     |
 
-
 In the `packages/site` directory:
 
-| Command                                | Action                                           |
-| :------------------------------------- | :----------------------------------------------- |
-| `npm run astro ...`                    | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help`              | Get help using the Astro CLI                     |
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `npm run astro -- --help` | Get help using the Astro CLI                     |
 
 ## Want to learn more?
 

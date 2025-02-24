@@ -1,6 +1,9 @@
 import { defineMachine } from "yay-machine";
 
-export const yayToggle = defineMachine<{ name: "on" | "off" }, { type: "TOGGLE" }>({
+export const yayToggle = defineMachine<
+  { name: "on" | "off" },
+  { type: "TOGGLE" }
+>({
   initialState: { name: "off" },
   states: {
     off: {

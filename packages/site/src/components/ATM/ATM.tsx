@@ -34,12 +34,25 @@ export const ATM: FC = () => {
     text = `${atm.state.message}\n\n${text}`;
   }
   if (keypad.state.name !== "inactive") {
-    const digits = keypad.state.name === "number" || keypad.state.name === "done" ? keypad.state.value : "";
-    const mask = keypad.state.name === "number" || keypad.state.name === "done" ? keypad.state.mask : false;
+    const digits =
+      keypad.state.name === "number" || keypad.state.name === "done"
+        ? keypad.state.value
+        : "";
+    const mask =
+      keypad.state.name === "number" || keypad.state.name === "done"
+        ? keypad.state.mask
+        : false;
     text += `\n\n${mask ? "*".repeat(digits.length) : digits}_`;
   }
 
-  const { name, cardReader, keypad: _, cashDispenser, bank, ...data } = atm.state;
+  const {
+    name,
+    cardReader,
+    keypad: _,
+    cashDispenser,
+    bank,
+    ...data
+  } = atm.state;
 
   return (
     <div className="atm">
@@ -71,21 +84,53 @@ export const ATM: FC = () => {
               "ejectCard",
             ]}
             transitions={[
-              { from: "waitingForCard", to: "readingCard", label: "CARD_INSERTED" },
+              {
+                from: "waitingForCard",
+                to: "readingCard",
+                label: "CARD_INSERTED",
+              },
               { from: "readingCard", to: "serviceMenu", label: "CARD_READ" },
               { from: "readingCard", to: "ejectCard", label: "CARD_INVALID" },
-              { from: "serviceMenu", to: "enterPin", label: "START_WITHDRAWAL" },
+              {
+                from: "serviceMenu",
+                to: "enterPin",
+                label: "START_WITHDRAWAL",
+              },
               { from: "serviceMenu", to: "ejectCard", label: "USER_CANCELLED" },
               { from: "enterPin", to: "enterAmount", label: "PIN_ENTERED" },
               { from: "enterPin", to: "ejectCard", label: "USER_CANCELLED" },
-              { from: "enterAmount", to: "validateWithdrawal", label: "AMOUNT_ENTERED" },
+              {
+                from: "enterAmount",
+                to: "validateWithdrawal",
+                label: "AMOUNT_ENTERED",
+              },
               { from: "enterAmount", to: "ejectCard", label: "USER_CANCELLED" },
-              { from: "validateWithdrawal", to: "dispenseCash", label: "WITHDRAWAL_APPROVED" },
-              { from: "validateWithdrawal", to: "enterPin", label: "INVALID_PIN" },
-              { from: "validateWithdrawal", to: "ejectCard", label: "INSUFFICIENT_FUNDS" },
-              { from: "validateWithdrawal", to: "ejectCard", label: "(too many attempts)" },
+              {
+                from: "validateWithdrawal",
+                to: "dispenseCash",
+                label: "WITHDRAWAL_APPROVED",
+              },
+              {
+                from: "validateWithdrawal",
+                to: "enterPin",
+                label: "INVALID_PIN",
+              },
+              {
+                from: "validateWithdrawal",
+                to: "ejectCard",
+                label: "INSUFFICIENT_FUNDS",
+              },
+              {
+                from: "validateWithdrawal",
+                to: "ejectCard",
+                label: "(too many attempts)",
+              },
               { from: "dispenseCash", to: "ejectCard", label: "(immediate)" },
-              { from: "ejectCard", to: "waitingForCard", label: "CARD_EJECTED" },
+              {
+                from: "ejectCard",
+                to: "waitingForCard",
+                label: "CARD_EJECTED",
+              },
             ]}
             current={atm.state.name}
             data={data}

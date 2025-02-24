@@ -14,10 +14,10 @@
 
 # Project status
 
-* ✅ MVP feature-set is implemented and ready for use
-* 📦 [Deployed to public NPM registry](https://www.npmjs.com/package/yay-machine) and available to install now
-* 📢 Ready for testing in real projects and open to feedback
-* 🚧 [Docs](https://yay-machine.js.org/) and live examples are being worked on right now
+- ✅ MVP feature-set is implemented and ready for use
+- 📦 [Deployed to public NPM registry](https://www.npmjs.com/package/yay-machine) and available to install now
+- 📢 Ready for testing in real projects and open to feedback
+- 🚧 [Docs](https://yay-machine.js.org/) and live examples are being worked on right now
 
 # Packages
 

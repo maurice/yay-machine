@@ -2,7 +2,6 @@
   <a href="https://yay-machine.js.org/"><img src="https://github.com/user-attachments/assets/80129f7d-5981-47e8-9092-78b6d755ef31" alt="Logo"></a>
 </p>
 
-
 <p align="center">
 <a href="https://github.com/maurice/yay-machine/actions/workflows/build.yml" title="build"><img src="https://github.com/maurice/yay-machine/workflows/build/badge.svg"/></a>
 <a href="https://www.npmjs.com/package/yay-machine" title="NPM"><img src="https://img.shields.io/npm/v/yay-machine"/></a>
@@ -15,7 +14,7 @@
 
 ---
 
-*📦 This package is the core state-machine library.*
+_📦 This package is the core state-machine library._
 
 # Example
 
@@ -50,7 +49,9 @@ interface NewGameEvent {
 
 const incrementNumGuesses = ({
   state,
-}: { readonly state: GuessState }): GuessState => ({
+}: {
+  readonly state: GuessState;
+}): GuessState => ({
   ...state,
   numGuesses: state.numGuesses + 1,
 });
@@ -128,10 +129,10 @@ if (guess.state.name === "guessedCorrectly") {
 
 # Where next?
 
-* [About **yay-machine**](https://yay-machine.js.org/)
-* [Quick Start](https://yay-machine.js.org/quick-start/)
-* [Various examples](https://yay-machine.js.org/examples/toggle/)
-* [Reference docs](https://yay-machine.js.org/reference/state/)
-* [Why state-machines?](https://yay-machine.js.org/articles/why-state-machines/)
-* [Why **yay-machine**?](https://yay-machine.js.org/articles/why-yay-machine/)
-* [**yay-machine** vs **XState**](https://yay-machine.js.org/articles/vs-xstate/)
+- [About **yay-machine**](https://yay-machine.js.org/)
+- [Quick Start](https://yay-machine.js.org/quick-start/)
+- [Various examples](https://yay-machine.js.org/examples/toggle/)
+- [Reference docs](https://yay-machine.js.org/reference/state/)
+- [Why state-machines?](https://yay-machine.js.org/articles/why-state-machines/)
+- [Why **yay-machine**?](https://yay-machine.js.org/articles/why-yay-machine/)
+- [**yay-machine** vs **XState**](https://yay-machine.js.org/articles/vs-xstate/)

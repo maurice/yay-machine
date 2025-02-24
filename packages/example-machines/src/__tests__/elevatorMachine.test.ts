@@ -232,9 +232,8 @@ test("requests to visit floors are inserted according to current state", () => {
   // where did it stop?
   clock.runAll();
   expect(subscriber).toHaveBeenCalledTimes(191);
-  expect(
-    summarize(subscriber).filter((it) => it.startsWith("doorsOpen ")),
-  ).toMatchInlineSnapshot(`
+  expect(summarize(subscriber).filter((it) => it.startsWith("doorsOpen ")))
+    .toMatchInlineSnapshot(`
 [
   "doorsOpen @ 5",
   "doorsOpen @ 2",

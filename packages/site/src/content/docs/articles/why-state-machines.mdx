@@ -7,35 +7,48 @@ sidebar:
 
 State machines have some very desirable properties
 
-* they can model a variety of domains including business-logic, workflows, physical objects, UI or game components, and app state
-* they make the **“current state” a first class concept**, rather than some derived value, and that is almost always useful
-* they are **declarative** (not imperative): you define the "rules" at compile-time, while the library provides the run-time
-* state-machine definitions are usually **concise**; it is often possible to describe quite complex workflows in one typical-length source file, and therefore comprehend the whole workflow in one place, rather than referring to multiple sources. In this way they have *great signal to noise ratio*
-* relatively few concepts; as with all things there is a learning curve, but it's a **simple mental model**
-* they are **deterministic**: predictable and reliable
-* they are **safe**: we can ensure specific events are only handled in specific states and avoid those “this should never happen” bugs altogether
+- they can model a variety of domains including business-logic, workflows, physical objects, UI or game components, and app state
+- they make the **“current state” a first class concept**, rather than some derived value, and that is almost always useful
+- they are **declarative** (not imperative): you define the "rules" at compile-time, while the library provides the run-time
+- state-machine definitions are usually **concise**; it is often possible to describe quite complex workflows in one typical-length source file, and therefore comprehend the whole workflow in one place, rather than referring to multiple sources. In this way they have _great signal to noise ratio_
+- relatively few concepts; as with all things there is a learning curve, but it's a **simple mental model**
+- they are **deterministic**: predictable and reliable
+- they are **safe**: we can ensure specific events are only handled in specific states and avoid those “this should never happen” bugs altogether
 
 ## Example
 
 Here's an example state machine diagram for a "buy tickets" user-journey
 
-import StateChart from '../../../components/StateChart/StateChart.astro';
+import StateChart from "../../../components/StateChart/StateChart.astro";
 
 <StateChart
-  states={['selectTickets', 'validateTickets', 'basket', 'applyingVoucher', 'yourDetails', 'payment', 'processingPayment', 'confirmation']}
+  states={[
+    "selectTickets",
+    "validateTickets",
+    "basket",
+    "applyingVoucher",
+    "yourDetails",
+    "payment",
+    "processingPayment",
+    "confirmation",
+  ]}
   transitions={[
-    { from: 'selectTickets', to: 'validateTickets', label: 'ADD_TO_BASKET' },
-    { from: 'selectTickets', to: 'basket', label: 'VIEW_BASKET' },
-    { from: 'validateTickets', to: 'selectTickets', label: '<<immediate>> (invalid selection)' },
-    { from: 'validateTickets', to: 'basket', label: '<<immediate>>' },
-    { from: 'basket', to: 'selectTickets', label: 'CONTINUE_SHOPPING' },
-    { from: 'basket', to: 'applyingVoucher', label: 'APPLY_VOUCHER' },
-    { from: 'applyingVoucher', to: 'basket' },
-    { from: 'basket', to: 'yourDetails', label: 'CHECKOUT' },
-    { from: 'yourDetails', to: 'payment', label: 'PAY_NOW' },
-    { from: 'payment', to: 'processingPayment', label: 'COMPLETE_PURCHASE' },
-    { from: 'processingPayment', to: 'confirmation', label: 'PAYMENT_SUCCESS' },
-    { from: 'processingPayment', to: 'payment', label: 'PAYMENT_FAILURE' },
+    { from: "selectTickets", to: "validateTickets", label: "ADD_TO_BASKET" },
+    { from: "selectTickets", to: "basket", label: "VIEW_BASKET" },
+    {
+      from: "validateTickets",
+      to: "selectTickets",
+      label: "<<immediate>> (invalid selection)",
+    },
+    { from: "validateTickets", to: "basket", label: "<<immediate>>" },
+    { from: "basket", to: "selectTickets", label: "CONTINUE_SHOPPING" },
+    { from: "basket", to: "applyingVoucher", label: "APPLY_VOUCHER" },
+    { from: "applyingVoucher", to: "basket" },
+    { from: "basket", to: "yourDetails", label: "CHECKOUT" },
+    { from: "yourDetails", to: "payment", label: "PAY_NOW" },
+    { from: "payment", to: "processingPayment", label: "COMPLETE_PURCHASE" },
+    { from: "processingPayment", to: "confirmation", label: "PAYMENT_SUCCESS" },
+    { from: "processingPayment", to: "payment", label: "PAYMENT_FAILURE" },
   ]}
   start="selectTickets"
 />
@@ -44,7 +57,7 @@ Next we're going to cover the basics of state-machines.
 
 ## State
 
-State-machine definitions model all the possible states in which the machine can exist. 
+State-machine definitions model all the possible states in which the machine can exist.
 
 In the above example the state-names are `selectTickets`, `validateTickets` (a transient decision-state rendered as a diamond), `basket`, `applyingVoucher`, `yourDetails`, `payment`, `paymentProcessing` and `confirmation`.
 
@@ -52,7 +65,7 @@ State-machine states are finite and known at the time the machine is defined (us
 
 In this example we could easily use the machine's current-state name with a UI router, to determine the correct page to render.
 
-A good state machine library will support *dynamic "associated data" for each state* (see below). In the above example we would want the state-machine to store the various form entries (selected tickets, user-details, etc) to complete the purchase, or show error messages.
+A good state machine library will support _dynamic "associated data" for each state_ (see below). In the above example we would want the state-machine to store the various form entries (selected tickets, user-details, etc) to complete the purchase, or show error messages.
 
 ## Events
 
@@ -64,14 +77,14 @@ Events are also finite and known at compile-time.
 
 Events are very flexible and can be used to represent
 
-* A user mouse click
-* API request from client
-* Async database query result
-* Response from remote service
-* Internal timer generated by the state-machine's own side-effect
-* Etc
+- A user mouse click
+- API request from client
+- Async database query result
+- Response from remote service
+- Internal timer generated by the state-machine's own side-effect
+- Etc
 
-A good state-machine library should support *dynamic payloads for each event*, and expose this for conditional transitions and to update associated state-data.
+A good state-machine library should support _dynamic payloads for each event_, and expose this for conditional transitions and to update associated state-data.
 
 ## Transitions
 
@@ -79,13 +92,13 @@ When the state-machine moves from one state to another, we call this a transitio
 
 Good state-machine libraries will support a variety of transitions, including
 
-* by sending an event to the machine in a certain state, if the machine has a matching transition for that state and event. In the above example the machine transitions from `yourDetails` to `payment` when sent the `PAY_NOW` event
-* by sending an event to the machine in *any state*, if the machine does have a matching transition for the current state, but has a generic transition that works in *any state*. You can therefore model your machine with transitions that only handle specific events in specific states, and/or handle specific events in *any state*.
-* "immediate" transitions, which are evaluated on entering a state. In the above example the `applyingVoucher` state immediately transitions back the the `basket` state
-* conditional transitions, where predicate functions determine which one of a number of potential transitions (if any) is taken. In the above example the `selectTickets` state either transitions to `basket` or back to `selectTickets` if the selection is invalid
-* transition side-effects, which perform some I/O with the outside world when taking a specific transition
+- by sending an event to the machine in a certain state, if the machine has a matching transition for that state and event. In the above example the machine transitions from `yourDetails` to `payment` when sent the `PAY_NOW` event
+- by sending an event to the machine in _any state_, if the machine does have a matching transition for the current state, but has a generic transition that works in _any state_. You can therefore model your machine with transitions that only handle specific events in specific states, and/or handle specific events in _any state_.
+- "immediate" transitions, which are evaluated on entering a state. In the above example the `applyingVoucher` state immediately transitions back the the `basket` state
+- conditional transitions, where predicate functions determine which one of a number of potential transitions (if any) is taken. In the above example the `selectTickets` state either transitions to `basket` or back to `selectTickets` if the selection is invalid
+- transition side-effects, which perform some I/O with the outside world when taking a specific transition
 
-Usually transitions/features can be combined, eg, immediate + conditional, *any state* + side-effect, etc.
+Usually transitions/features can be combined, eg, immediate + conditional, _any state_ + side-effect, etc.
 
 ## State-data
 
@@ -95,15 +108,15 @@ If states are finite where does all the other data go? Eg in the example above w
 
 This is where state-data comes in; it allows us to store arbitrary data in the machine instance state, eg
 
-* User settings
-* Shopping basket items
-* Other state machines
-* etc
+- User settings
+- Shopping basket items
+- Other state machines
+- etc
 
 We could store these externally but there are several advantages to keeping it in the state machine
 
-* Transition condition predicates can query the current state's data (and the event if any) to determine whether the transition should be taken
-* Transitions update state (name + data) atomically, so the machine's current state (name + data) is always valid and type-safe
+- Transition condition predicates can query the current state's data (and the event if any) to determine whether the transition should be taken
+- Transitions update state (name + data) atomically, so the machine's current state (name + data) is always valid and type-safe
 
 ## Interacting with the outside world
 
@@ -117,7 +130,7 @@ A good state-machine library will allow you to express these interactions within
 
 State-machines are a one-stop-shop for state-management.
 
-They work well with popular modern paradigms like *immutable data* and *functional-reactive programming*.
+They work well with popular modern paradigms like _immutable data_ and _functional-reactive programming_.
 
 They include everything you need to model a variety of domains.
 

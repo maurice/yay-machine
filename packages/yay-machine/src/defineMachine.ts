@@ -20,7 +20,10 @@ import type { OneOrMore } from "./OneOrMore";
  * @returns the machine definition, which can be used to create new machine instances
  * @throws {Error} if the definition is invalid
  */
-export const defineMachine = <StateType extends MachineState, EventType extends MachineEvent>(
+export const defineMachine = <
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+>(
   definitionConfig: MachineDefinitionConfig<StateType, EventType>,
 ): MachineDefinition<StateType, EventType> => {
   type Cleanup = (event: EventType | undefined) => void;
@@ -28,21 +31,34 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
   // basic validation - the TypeScript types should catch all of these but just in case the user is not using
   // TypeScript or is liberal with `any` etc...
   if (definitionConfig.states) {
-    for (const [name, config] of Object.entries(definitionConfig.states) as readonly [
+    for (const [name, config] of Object.entries(
+      definitionConfig.states,
+    ) as readonly [
       StateType["name"],
       StateConfig<StateType, EventType, StateType, boolean>,
     ][]) {
       if (config.always) {
-        for (const transition of Array.isArray(config.always) ? config.always : [config.always]) {
+        for (const transition of Array.isArray(config.always)
+          ? config.always
+          : [config.always]) {
           if ("reenter" in transition) {
-            throw new Error(`Cannot use 'reenter' with immediate transitions in state "${name}"`);
+            throw new Error(
+              `Cannot use 'reenter' with immediate transitions in state "${name}"`,
+            );
           }
         }
       }
       if (config.on) {
         for (const [type, tx] of Object.entries(config.on) as readonly [
           EventType["type"],
-          TransitionConfig<StateType, EventType, StateType, EventType, boolean, false>,
+          TransitionConfig<
+            StateType,
+            EventType,
+            StateType,
+            EventType,
+            boolean,
+            false
+          >,
         ][]) {
           for (const transition of Array.isArray(tx) ? tx : [tx]) {
             if ("reenter" in transition && transition.reenter === false) {
@@ -67,13 +83,22 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
     newInstance(instanceConfig) {
       const enableCopyDataOnTransition = (
         definitionConfig as
-          | HomogenousStateMachineDefinitionConfigCopyDataOnTransitionTrue<StateType, EventType>
-          | HomogenousStateMachineDefinitionConfigCopyDataOnTransitionFalse<StateType, EventType>
+          | HomogenousStateMachineDefinitionConfigCopyDataOnTransitionTrue<
+              StateType,
+              EventType
+            >
+          | HomogenousStateMachineDefinitionConfigCopyDataOnTransitionFalse<
+              StateType,
+              EventType
+            >
       ).enableCopyDataOnTransition;
-      const initialState = instanceConfig?.initialState ?? definitionConfig.initialState;
+      const initialState =
+        instanceConfig?.initialState ?? definitionConfig.initialState;
       let currentState = initialState;
 
-      const getEffectParams = <CurrentState extends StateType>(event: EventType | undefined) => {
+      const getEffectParams = <CurrentState extends StateType>(
+        event: EventType | undefined,
+      ) => {
         let disposed = false;
         const dispose = () => {
           disposed = true;
@@ -94,9 +119,14 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
 
       let disposeState: Cleanup | undefined;
 
-      const initState = <CurrentState extends StateType>(event: EventType | undefined) => {
-        const { onEnter, onExit } = definitionConfig.states?.[currentState.name as StateType["name"]] || {};
-        const [enterParams, disposeEnterParams] = getEffectParams<CurrentState>(event);
+      const initState = <CurrentState extends StateType>(
+        event: EventType | undefined,
+      ) => {
+        const { onEnter, onExit } =
+          definitionConfig.states?.[currentState.name as StateType["name"]] ||
+          {};
+        const [enterParams, disposeEnterParams] =
+          getEffectParams<CurrentState>(event);
         // @ts-ignore
         const disposeEnter = onEnter?.(enterParams);
         disposeState = (disposeEvent) => {
@@ -118,7 +148,13 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
       >(
         nextState: NextState,
         event: CurrentEvent | undefined,
-        onTransition: BasicTransition<StateType, EventType, CurrentState, CurrentEvent, NextState>["onTransition"],
+        onTransition: BasicTransition<
+          StateType,
+          EventType,
+          CurrentState,
+          CurrentEvent,
+          NextState
+        >["onTransition"],
       ) => {
         if (disposeState) {
           disposeState(event);
@@ -126,9 +162,14 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
         }
 
         if (onTransition) {
-          const [transitionParams, disposeTransitionParams] = getEffectParams(event);
+          const [transitionParams, disposeTransitionParams] =
+            getEffectParams(event);
           // @ts-ignore
-          onTransition({ ...transitionParams, next: nextState, ...(event && { event }) })?.();
+          onTransition({
+            ...transitionParams,
+            next: nextState,
+            ...(event && { event }),
+          })?.();
           disposeTransitionParams();
         }
 
@@ -141,7 +182,9 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
       };
 
       const applyAlwaysTransitions = () => {
-        const always = definitionConfig.states?.[currentState.name as StateType["name"]]?.always;
+        const always =
+          definitionConfig.states?.[currentState.name as StateType["name"]]
+            ?.always;
         if (always) {
           applyTransitions(undefined, always);
         }
@@ -153,9 +196,19 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
         NextState extends StateType,
       >(
         event: CurrentEvent,
-        transitions: OneOrMore<BasicTransition<StateType, EventType, CurrentState, CurrentEvent, NextState>>,
+        transitions: OneOrMore<
+          BasicTransition<
+            StateType,
+            EventType,
+            CurrentState,
+            CurrentEvent,
+            NextState
+          >
+        >,
       ): boolean => {
-        for (const transition of Array.isArray(transitions) ? transitions : [transitions]) {
+        for (const transition of Array.isArray(transitions)
+          ? transitions
+          : [transitions]) {
           if (tryTransition(event, transition)) {
             applyAlwaysTransitions();
             return true;
@@ -170,14 +223,24 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
         NextState extends StateType,
       >(
         event: CurrentEvent,
-        transition: BasicTransition<StateType, EventType, CurrentState, CurrentEvent, NextState>,
+        transition: BasicTransition<
+          StateType,
+          EventType,
+          CurrentState,
+          CurrentEvent,
+          NextState
+        >,
       ): boolean => {
-        if ("when" in transition && !transition.when({ state: currentState as CurrentState, event })) {
+        if (
+          "when" in transition &&
+          !transition.when({ state: currentState as CurrentState, event })
+        ) {
           return false;
         }
 
         if (isReenterTransitionFalse(transition)) {
-          const [transitionParams, disposeTransitionParams] = getEffectParams(event);
+          const [transitionParams, disposeTransitionParams] =
+            getEffectParams(event);
           if (transition.onTransition) {
             // @ts-ignore
             transition.onTransition({
@@ -192,11 +255,20 @@ export const defineMachine = <StateType extends MachineState, EventType extends 
 
         let nextState: NextState;
         if (isTransitionData(transition)) {
-          const { name, ...nextData } = transition.data({ state: currentState, event }) as NextState;
-          nextState = { name: transition.to ?? currentState.name, ...nextData } as NextState;
+          const { name, ...nextData } = transition.data({
+            state: currentState,
+            event,
+          }) as NextState;
+          nextState = {
+            name: transition.to ?? currentState.name,
+            ...nextData,
+          } as NextState;
         } else if (enableCopyDataOnTransition) {
           const { name, ...nextData } = currentState;
-          nextState = { name: transition.to ?? currentState.name, ...nextData } as NextState;
+          nextState = {
+            name: transition.to ?? currentState.name,
+            ...nextData,
+          } as NextState;
         } else {
           nextState = { name: transition.to ?? currentState.name } as NextState;
         }
@@ -344,7 +416,15 @@ const isTransitionData = <
   NextState extends StateType,
 >(
   transition: object,
-): transition is TransitionData<StateType, EventType, CurrentState, CurrentEvent, NextState> => "data" in transition;
+): transition is TransitionData<
+  StateType,
+  EventType,
+  CurrentState,
+  CurrentEvent,
+  NextState
+> => "data" in transition;
 
-const isReenterTransitionFalse = (transition: object): transition is ReenterTransition<false> =>
+const isReenterTransitionFalse = (
+  transition: object,
+): transition is ReenterTransition<false> =>
   "reenter" in transition && transition.reenter === false;

@@ -16,16 +16,30 @@ Models the "Guess the random number from 1 to 10" game.
 
 ## Try it
 
-import Guess from './Guess.astro';
+import Guess from "./Guess.astro";
 
 <Guess />
 
 ## Source
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside } from "@astrojs/starlight/components";
 
 <Aside type="tip">
-View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/guessMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/guessMachine.test.ts" target="_blank">test</a> on GitHub
+  View this example's{" "}
+  <a
+    href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/guessMachine.ts"
+    target="_blank"
+  >
+    source
+  </a>{" "}
+  and{" "}
+  <a
+    href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/guessMachine.test.ts"
+    target="_blank"
+  >
+    test
+  </a>{" "}
+  on GitHub
 </Aside>
 
 ```typescript
@@ -55,7 +69,9 @@ interface NewGameEvent {
 
 const incrementNumGuesses = ({
   state,
-}: { readonly state: GuessState }): GuessState => ({
+}: {
+  readonly state: GuessState;
+}): GuessState => ({
   ...state,
   numGuesses: state.numGuesses + 1,
 });

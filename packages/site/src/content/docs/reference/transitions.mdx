@@ -11,28 +11,47 @@ Transitions bring state-machines to life, defining when and how they move from s
 
 We will expand on the "connection machine" example we used when explaining [states](/reference/state/) and [events](/reference/events/), to illustrate various transitions.
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside } from "@astrojs/starlight/components";
 
 <Aside type="note">
-This is an example, created for teaching purposes - don't take it too seriously 😜
+  This is an example, created for teaching purposes - don't take it too
+  seriously 😜
 </Aside>
 
-import StateChart from '../../../components/StateChart/StateChart.astro';
+import StateChart from "../../../components/StateChart/StateChart.astro";
 
 <StateChart
-  states={['disconnected', 'connecting', 'connected', 'reattemptConnection', 'connectionError']}
+  states={[
+    "disconnected",
+    "connecting",
+    "connected",
+    "reattemptConnection",
+    "connectionError",
+  ]}
   transitions={[
-    { from: 'disconnected', to: 'connecting', label: 'CONNECT' },
-    { from: 'connecting', to: 'connected', label: 'CONNECTED' },
-    { from: 'connecting', to: 'connectionError', label: 'ERROR (invalid auth)' },
-    { from: 'connecting', to: 'reattemptConnection', label: 'ERROR (default)' },
-    { from: 'connected', to: 'reattemptConnection', label: 'ERROR' },
-    { from: 'connected', to: 'connected', label: 'SEND' },
-    { from: 'reattemptConnection', to: 'connecting', label: '(after delay ) CONNECT' },
-    { from: 'reattemptConnection', to: 'connectionError', label: "(reached max connection attempts)" },
-    { from: 'connected', to: 'disconnected', label: 'DISCONNECTED' },
-    { from: 'connecting', to: 'disconnected', label: 'DISCONNECTED' },
-    { from: 'reattemptConnection', to: 'disconnected', label: 'DISCONNECTED' },
+    { from: "disconnected", to: "connecting", label: "CONNECT" },
+    { from: "connecting", to: "connected", label: "CONNECTED" },
+    {
+      from: "connecting",
+      to: "connectionError",
+      label: "ERROR (invalid auth)",
+    },
+    { from: "connecting", to: "reattemptConnection", label: "ERROR (default)" },
+    { from: "connected", to: "reattemptConnection", label: "ERROR" },
+    { from: "connected", to: "connected", label: "SEND" },
+    {
+      from: "reattemptConnection",
+      to: "connecting",
+      label: "(after delay ) CONNECT",
+    },
+    {
+      from: "reattemptConnection",
+      to: "connectionError",
+      label: "(reached max connection attempts)",
+    },
+    { from: "connected", to: "disconnected", label: "DISCONNECTED" },
+    { from: "connecting", to: "disconnected", label: "DISCONNECTED" },
+    { from: "reattemptConnection", to: "disconnected", label: "DISCONNECTED" },
   ]}
   start="disconnected"
   compact={true}
@@ -43,7 +62,21 @@ import StateChart from '../../../components/StateChart/StateChart.astro';
 Here is the complete machine source. In the following sections we explore the various different transition techniques it uses.
 
 <Aside type="tip">
-View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/connectionMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/connectionMachine.test.ts" target="_blank">test</a> on GitHub
+  View this example's{" "}
+  <a
+    href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/connectionMachine.ts"
+    target="_blank"
+  >
+    source
+  </a>{" "}
+  and{" "}
+  <a
+    href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/connectionMachine.test.ts"
+    target="_blank"
+  >
+    test
+  </a>{" "}
+  on GitHub
 </Aside>
 
 ```typescript
@@ -329,32 +362,28 @@ connection.send({ type: "CONNECT", url: "foo://bar/baz" });
 
 The simplest and most obvious types of transition are done in a specific state, because of a specific event.
 
-In the above machine we see this for 
+In the above machine we see this for
 
 <StateChart
-  states={['disconnected', 'connecting']}
-  transitions={[
-    { from: 'disconnected', to: 'connecting', label: 'CONNECT' },
-  ]}
+  states={["disconnected", "connecting"]}
+  transitions={[{ from: "disconnected", to: "connecting", label: "CONNECT" }]}
   direction="LR"
 />
 
 and
 
 <StateChart
-  states={['connecting', 'connected']}
-  transitions={[
-    { from: 'connecting', to: 'connected', label: 'CONNECTED' },
-  ]}
+  states={["connecting", "connected"]}
+  transitions={[{ from: "connecting", to: "connected", label: "CONNECTED" }]}
   direction="LR"
 />
 
 and
 
 <StateChart
-  states={['connected', 'reattemptConnection']}
+  states={["connected", "reattemptConnection"]}
   transitions={[
-    { from: 'connected', to: 'reattemptConnection', label: 'ERROR' },
+    { from: "connected", to: "reattemptConnection", label: "ERROR" },
   ]}
   direction="LR"
 />
@@ -368,9 +397,9 @@ const machine = defineMachine<State, Event>({
   states: {
     [stateName]: {
       on: {
-        [EVENT_NAME]: { 
-          to: 'nextStateName',
-          /* ... other options ... */ 
+        [EVENT_NAME]: {
+          to: "nextStateName",
+          /* ... other options ... */
         },
         // ...
       },
@@ -382,15 +411,13 @@ const machine = defineMachine<State, Event>({
 
 ### `reenter: false`
 
-In some cases we want to handle an event in a specific state, and *remain in the same state*, without exiting and re-entering the state.
+In some cases we want to handle an event in a specific state, and _remain in the same state_, without exiting and re-entering the state.
 
 In the above machine we see this happens for
 
 <StateChart
-  states={['connected']}
-  transitions={[
-    { from: 'connected', to: 'connected', label: 'SEND' },
-  ]}
+  states={["connected"]}
+  transitions={[{ from: "connected", to: "connected", label: "SEND" }]}
   direction="LR"
 />
 
@@ -403,10 +430,12 @@ const machine = defineMachine<State, Event>({
   states: {
     [stateName]: {
       on: {
-        [EVENT_NAME]: { 
-          to: stateName,                                        // remain in current state
+        [EVENT_NAME]: {
+          to: stateName, // remain in current state
           reenter: false,
-          onTransition: ({ state, event }) => ({ /* ... */ })   // optional side-effect
+          onTransition: ({ state, event }) => ({
+            /* ... */
+          }), // optional side-effect
         },
         // ...
       },
@@ -418,14 +447,14 @@ const machine = defineMachine<State, Event>({
 
 ## Any State, On Event
 
-In some cases it's more convenient to handle an event in *any state*.
+In some cases it's more convenient to handle an event in _any state_.
 
 In the above machine we see this for
 
 <StateChart
-  states={['<<any state>>', 'disconnected']}
+  states={["<<any state>>", "disconnected"]}
   transitions={[
-    { from: '<<any state>>', to: 'disconnected', label: 'DISCONNECT' },
+    { from: "<<any state>>", to: "disconnected", label: "DISCONNECT" },
   ]}
   direction="LR"
 />
@@ -437,8 +466,8 @@ const machine = defineMachine<State, Event>({
   // ...
   on: {
     [EVENT_NAME]: {
-      to: 'nextStateName',
-      /* ... other options ... */ 
+      to: "nextStateName",
+      /* ... other options ... */
     },
   },
 });
@@ -446,26 +475,25 @@ const machine = defineMachine<State, Event>({
 
 ### Optional `to`
 
-Sometimes we want to handle an event in *any state* and then **return to the current state**.
+Sometimes we want to handle an event in _any state_ and then **return to the current state**.
 
-In the above machine we see this for the `HEARTBEAT` event 
+In the above machine we see this for the `HEARTBEAT` event
 
 <StateChart
-  states={['<<current state>>']}
+  states={["<<current state>>"]}
   transitions={[
-    { from: '<<current state>>', to: '<<current state>>', label: 'HEARTBEAT' },
+    { from: "<<current state>>", to: "<<current state>>", label: "HEARTBEAT" },
   ]}
   direction="LR"
 />
 
 This technique is typically used to update state-data. For example, the connection machine updates the `lastHeartbeatTime` state-data property whenever it receives a `HEARTBEAT` event.
 
-
 ```typescript {4-6}
 const machine = defineMachine<State, Event>({
   // ...
   on {
-    [EVENT_NAME]: { 
+    [EVENT_NAME]: {
       data: ({ state, event }) => ({ ...state, /* ... */ }),
     },
   },
@@ -474,15 +502,19 @@ const machine = defineMachine<State, Event>({
 
 ## Conditional transitions: `when()`
 
-Wherever you can define a transition, you can also define *an array of transitions*, where some or all have a `when()` callback.
+Wherever you can define a transition, you can also define _an array of transitions_, where some or all have a `when()` callback.
 
 In the above machine we see this happens for
 
 <StateChart
-  states={['connecting', 'reattemptConnection', 'connectionError']}
+  states={["connecting", "reattemptConnection", "connectionError"]}
   transitions={[
-    { from: 'connecting', to: 'connectionError', label: 'ERROR (invalid auth)' },
-    { from: 'connecting', to: 'reattemptConnection', label: 'ERROR (default)' },
+    {
+      from: "connecting",
+      to: "connectionError",
+      label: "ERROR (invalid auth)",
+    },
+    { from: "connecting", to: "reattemptConnection", label: "ERROR (default)" },
   ]}
 />
 
@@ -490,8 +522,8 @@ The `when()` callback has a single parameter with fields for the current `state`
 
 Conditional transitions are evaluated in their definition order:
 
-* the machine takes the first transition where `when()` returns `true`, or there is no `when()`
-* no transition is taken if all transition `when()`s return `false`, and there is no "default" transition
+- the machine takes the first transition where `when()` returns `true`, or there is no `when()`
+- no transition is taken if all transition `when()`s return `false`, and there is no "default" transition
 
 ```typescript "when: ({ state, event }) => { /* ... */ }"
 const machine = defineMachine<State, Event>({
@@ -523,9 +555,13 @@ Immediate transitions (often combined with conditional transitions) are taken im
 In the above machine we see this happens for
 
 <StateChart
-  states={['reattemptConnection', 'connectionError']}
+  states={["reattemptConnection", "connectionError"]}
   transitions={[
-    { from: 'reattemptConnection', to: 'connectionError', label: "(reached max connection attempts)" },
+    {
+      from: "reattemptConnection",
+      to: "connectionError",
+      label: "(reached max connection attempts)",
+    },
   ]}
 />
 
@@ -535,9 +571,13 @@ Immediate transitions belong to a state node in the definition config at `states
 const machine = defineMachine<State, Event>({
   states: {
     [stateName]: {
-      always: { /* a single transition */ },
-      // OR 
-      always: [ /* multiple potential transitions using `when()` */ ] ,
+      always: {
+        /* a single transition */
+      },
+      // OR
+      always: [
+        /* multiple potential transitions using `when()` */
+      ],
     },
   },
   // ...
@@ -556,7 +596,7 @@ The callback receives the current `state` and `event`.
 
 The callback SHOULD be pure and deterministic, and only use data from `state` and `event` to compute the data for the next state.
 
-For *homogenous* state-data you also have the option to set `enableCopyDataOnTransition: true` to avoid some boilerplate. See the [states](/reference/state/) documentation for a longer discussion.
+For _homogenous_ state-data you also have the option to set `enableCopyDataOnTransition: true` to avoid some boilerplate. See the [states](/reference/state/) documentation for a longer discussion.
 
 ## Combining transitions
 
@@ -566,9 +606,9 @@ We can mix-and-match most of the above, eg:
 - anywhere you can define a transition, you can use `when()`, `data()` and `onTransition()`
 - event-driven transitions from specific states MAY co-exist with immediate `always` transitions (the `reattemptConnection` state in the example above does this)
 
-The two *special cases* in the configuration are
+The two _special cases_ in the configuration are
 
-- `to` is optional in an *any state* transitions: if `to` is not provided, it means exit and re-enter the current state, updating data if relevant
+- `to` is optional in an _any state_ transitions: if `to` is not provided, it means exit and re-enter the current state, updating data if relevant
 - `reenter: false` in a state + event transition means perform the optional side-effect but do not exit and re-enter the current state or update data
 
 ## Side-effects: `onTransition()`

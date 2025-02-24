@@ -2,13 +2,18 @@ import type { MachineEvent } from "./MachineEvent";
 import type { MachineInstance, MachineInstanceConfig } from "./MachineInstance";
 import type { MachineState } from "./MachineState";
 
-export interface MachineInstanceProvider<StateType extends MachineState, EventType extends MachineEvent> {
+export interface MachineInstanceProvider<
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+> {
   /**
    * Create a new machine instance
    * @param config optional configuration for the new machine instance
    * @returns a new machine instance
    */
-  newInstance(config?: MachineInstanceConfig<StateType>): MachineInstance<StateType, EventType>;
+  newInstance(
+    config?: MachineInstanceConfig<StateType>,
+  ): MachineInstance<StateType, EventType>;
 }
 
 // export type MachineStateFactories<StateType extends MachineState> = {
@@ -27,5 +32,7 @@ export interface MachineInstanceProvider<StateType extends MachineState, EventTy
  * The result of calling `defineMachine`.
  * A factory for creating new machine instances.
  */
-export interface MachineDefinition<StateType extends MachineState, EventType extends MachineEvent>
-  extends MachineInstanceProvider<StateType, EventType> {} //  & MachineStateFactories<StateType> & MachineEventFactories<EventType>;
+export interface MachineDefinition<
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+> extends MachineInstanceProvider<StateType, EventType> {} //  & MachineStateFactories<StateType> & MachineEventFactories<EventType>;

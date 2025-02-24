@@ -15,7 +15,7 @@ A counter that can be incremented and decremented, with configurable min/max ran
 
 ## Try it
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside } from "@astrojs/starlight/components";
 
 <Aside type="note" title='Did you see that?'>
 The UI `<button/>` and `<input/>` events drive the machine, and the machine's state drives the UI.
@@ -23,18 +23,33 @@ The UI `<button/>` and `<input/>` events drive the machine, and the machine's st
 Notice how the state-machine can be resumed from the previous state after refreshing the page.
 
 Also notice how it's impossible to go below "Min" (when set) and above "Max" (when set).
+
 </Aside>
 
-import Counter from './Counter.astro';
+import Counter from "./Counter.astro";
 
-<Counter/>
+<Counter />
 
 ## Source
 
 Notice how the `INC` and `DEC` events are handled in **any state**, not a specific state.
 
 <Aside type="tip">
-View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/counterMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/counterMachine.test.ts" target="_blank">test</a> on GitHub
+  View this example's{" "}
+  <a
+    href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/counterMachine.ts"
+    target="_blank"
+  >
+    source
+  </a>{" "}
+  and{" "}
+  <a
+    href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/counterMachine.test.ts"
+    target="_blank"
+  >
+    test
+  </a>{" "}
+  on GitHub
 </Aside>
 
 ```typescript

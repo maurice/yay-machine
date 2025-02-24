@@ -51,60 +51,122 @@ export const Keypad: FC = () => {
     <div className="keypad">
       <Button
         value="7"
-        disabled={!(state.name === "number" || (state.name === "choose" && state.choices.includes(7)))}
+        disabled={
+          !(
+            state.name === "number" ||
+            (state.name === "choose" && state.choices.includes(7))
+          )
+        }
         onPress={onKeyPress}
       />
       <Button
         value="8"
-        disabled={!(state.name === "number" || (state.name === "choose" && state.choices.includes(8)))}
+        disabled={
+          !(
+            state.name === "number" ||
+            (state.name === "choose" && state.choices.includes(8))
+          )
+        }
         onPress={onKeyPress}
       />
       <Button
         value="9"
-        disabled={!(state.name === "number" || (state.name === "choose" && state.choices.includes(9)))}
+        disabled={
+          !(
+            state.name === "number" ||
+            (state.name === "choose" && state.choices.includes(9))
+          )
+        }
         onPress={onKeyPress}
       />
-      <Button value="CANCEL" disabled={!(state.name === "number" || state.name === "choose")} onPress={onKeyPress} />
+      <Button
+        value="CANCEL"
+        disabled={!(state.name === "number" || state.name === "choose")}
+        onPress={onKeyPress}
+      />
       <Button
         value="4"
-        disabled={!(state.name === "number" || (state.name === "choose" && state.choices.includes(4)))}
+        disabled={
+          !(
+            state.name === "number" ||
+            (state.name === "choose" && state.choices.includes(4))
+          )
+        }
         onPress={onKeyPress}
       />
       <Button
         value="5"
-        disabled={!(state.name === "number" || (state.name === "choose" && state.choices.includes(5)))}
+        disabled={
+          !(
+            state.name === "number" ||
+            (state.name === "choose" && state.choices.includes(5))
+          )
+        }
         onPress={onKeyPress}
       />
       <Button
         value="6"
-        disabled={!(state.name === "number" || (state.name === "choose" && state.choices.includes(6)))}
+        disabled={
+          !(
+            state.name === "number" ||
+            (state.name === "choose" && state.choices.includes(6))
+          )
+        }
         onPress={onKeyPress}
       />
-      <Button value="DELETE" disabled={!(state.name === "number")} onPress={onKeyPress} />
+      <Button
+        value="DELETE"
+        disabled={!(state.name === "number")}
+        onPress={onKeyPress}
+      />
       <Button
         value="1"
-        disabled={!(state.name === "number" || (state.name === "choose" && state.choices.includes(1)))}
+        disabled={
+          !(
+            state.name === "number" ||
+            (state.name === "choose" && state.choices.includes(1))
+          )
+        }
         onPress={onKeyPress}
       />
       <Button
         value="2"
-        disabled={!(state.name === "number" || (state.name === "choose" && state.choices.includes(2)))}
+        disabled={
+          !(
+            state.name === "number" ||
+            (state.name === "choose" && state.choices.includes(2))
+          )
+        }
         onPress={onKeyPress}
       />
       <Button
         value="3"
-        disabled={!(state.name === "number" || (state.name === "choose" && state.choices.includes(3)))}
+        disabled={
+          !(
+            state.name === "number" ||
+            (state.name === "choose" && state.choices.includes(3))
+          )
+        }
         onPress={onKeyPress}
       />
       <div />
       <div />
       <Button
         value="0"
-        disabled={!(state.name === "number" || (state.name === "choose" && state.choices.includes(0)))}
+        disabled={
+          !(
+            state.name === "number" ||
+            (state.name === "choose" && state.choices.includes(0))
+          )
+        }
         onPress={onKeyPress}
       />
       <div />
-      <Button value="ENTER" disabled={!(state.name === "number" && state.value)} onPress={onKeyPress} />
+      <Button
+        value="ENTER"
+        disabled={!(state.name === "number" && state.value)}
+        onPress={onKeyPress}
+      />
     </div>
   );
 };

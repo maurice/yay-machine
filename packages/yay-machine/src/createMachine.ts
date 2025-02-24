@@ -10,7 +10,10 @@ import { defineMachine } from "./defineMachine";
  * @param definitionConfig describes the machine prototype; it's states and how it responds to events
  * @returns the machine definition, which can be used to create new machine instances
  */
-export const createMachine = <StateType extends MachineState, EventType extends MachineEvent>(
+export const createMachine = <
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+>(
   definitionConfig: MachineDefinitionConfig<StateType, EventType>,
 ): MachineInstance<StateType, EventType> => {
   return defineMachine(definitionConfig).newInstance();

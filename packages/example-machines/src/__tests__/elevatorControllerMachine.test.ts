@@ -142,25 +142,22 @@ test("controller sends elevators to requested floor", () => {
 
   // let's see where they stopped
   clock.runAll();
-  expect(
-    summarize(subscribers[0]).filter((it) => it.startsWith("doorsOpen ")),
-  ).toMatchInlineSnapshot(`
+  expect(summarize(subscribers[0]).filter((it) => it.startsWith("doorsOpen ")))
+    .toMatchInlineSnapshot(`
 [
   "doorsOpen @ 2",
 ]
 `);
-  expect(
-    summarize(subscribers[1]).filter((it) => it.startsWith("doorsOpen ")),
-  ).toMatchInlineSnapshot(`
+  expect(summarize(subscribers[1]).filter((it) => it.startsWith("doorsOpen ")))
+    .toMatchInlineSnapshot(`
 [
   "doorsOpen @ 5",
   "doorsOpen @ 6",
   "doorsOpen @ 7",
 ]
 `);
-  expect(
-    summarize(subscribers[2]).filter((it) => it.startsWith("doorsOpen ")),
-  ).toMatchInlineSnapshot(`
+  expect(summarize(subscribers[2]).filter((it) => it.startsWith("doorsOpen ")))
+    .toMatchInlineSnapshot(`
 [
   "doorsOpen @ 11",
   "doorsOpen @ 13",

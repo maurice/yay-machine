@@ -7,12 +7,27 @@ import type {
 import { defineMachine } from "../defineMachine";
 
 interface EffectsStateData {
-  readonly onStart: MachineOnStartSideEffectFunction<EffectsState, EffectsEvent>;
+  readonly onStart: MachineOnStartSideEffectFunction<
+    EffectsState,
+    EffectsEvent
+  >;
   readonly onStop: MachineOnStopSideEffectFunction<EffectsState>;
-  readonly onEnterA: StateLifecycleSideEffectFunction<EffectsState, EffectsEvent>;
-  readonly onExitA: StateLifecycleSideEffectFunction<EffectsState, EffectsEvent>;
-  readonly onEnterB: StateLifecycleSideEffectFunction<EffectsState, EffectsEvent>;
-  readonly onExitB: StateLifecycleSideEffectFunction<EffectsState, EffectsEvent>;
+  readonly onEnterA: StateLifecycleSideEffectFunction<
+    EffectsState,
+    EffectsEvent
+  >;
+  readonly onExitA: StateLifecycleSideEffectFunction<
+    EffectsState,
+    EffectsEvent
+  >;
+  readonly onEnterB: StateLifecycleSideEffectFunction<
+    EffectsState,
+    EffectsEvent
+  >;
+  readonly onExitB: StateLifecycleSideEffectFunction<
+    EffectsState,
+    EffectsEvent
+  >;
   readonly onTransitionAToB: (param: any) => void;
 }
 
@@ -53,7 +68,10 @@ const effectMachine = defineMachine<EffectsState, EffectsEvent>({
       on: {
         TO_B: {
           to: "b",
-          data: ({ state: { name, ...effects } }) => ({ ...effects, onlyExistsInB: true }),
+          data: ({ state: { name, ...effects } }) => ({
+            ...effects,
+            onlyExistsInB: true,
+          }),
           onTransition: (param) => param.state.onTransitionAToB(param),
         },
       },
@@ -62,7 +80,13 @@ const effectMachine = defineMachine<EffectsState, EffectsEvent>({
       onEnter: (param) => param.state.onEnterB(param),
       onExit: (param) => param.state.onExitB(param),
       on: {
-        TO_A: { to: "a", data: ({ state: { name, ...effects } }) => ({ ...effects, onlyExistsInA: true }) },
+        TO_A: {
+          to: "a",
+          data: ({ state: { name, ...effects } }) => ({
+            ...effects,
+            onlyExistsInA: true,
+          }),
+        },
       },
     },
   },
@@ -177,7 +201,9 @@ test("state onEnter, onExit and onTransition effects called and cleaned-up when 
   expect(initialState.onExitA).toHaveBeenCalledTimes(1); // still
   expect(initialState.onExitA.mock.results[0]?.value).toHaveBeenCalledTimes(1);
   expect(initialState.onTransitionAToB).toHaveBeenCalledTimes(1);
-  expect(initialState.onTransitionAToB.mock.results[0]?.value).toHaveBeenCalledTimes(1);
+  expect(
+    initialState.onTransitionAToB.mock.results[0]?.value,
+  ).toHaveBeenCalledTimes(1);
   expect(initialState.onEnterB).toHaveBeenCalledTimes(1); // still
   expect(initialState.onEnterB.mock.results[0]?.value).not.toHaveBeenCalled();
   expect(initialState.onExitB).not.toHaveBeenCalled();
@@ -189,7 +215,9 @@ test("state onEnter, onExit and onTransition effects called and cleaned-up when 
   expect(initialState.onExitB).toHaveBeenCalledTimes(1); // still
   expect(initialState.onExitB.mock.results[0]?.value).toHaveBeenCalledTimes(1);
   expect(initialState.onTransitionAToB).toHaveBeenCalledTimes(1); // still
-  expect(initialState.onTransitionAToB.mock.results[0]?.value).toHaveBeenCalledTimes(1); // still
+  expect(
+    initialState.onTransitionAToB.mock.results[0]?.value,
+  ).toHaveBeenCalledTimes(1); // still
   expect(initialState.onEnterA).toHaveBeenCalledTimes(2);
   expect(initialState.onEnterA.mock.results[1]?.value).not.toHaveBeenCalled();
   expect(initialState.onExitA).toHaveBeenCalledTimes(1); // still
@@ -202,7 +230,9 @@ test("state onEnter, onExit and onTransition effects called and cleaned-up when 
   expect(initialState.onExitA).toHaveBeenCalledTimes(2);
   expect(initialState.onExitA.mock.results[1]?.value).toHaveBeenCalledTimes(1);
   expect(initialState.onTransitionAToB).toHaveBeenCalledTimes(2);
-  expect(initialState.onTransitionAToB.mock.results[1]?.value).toHaveBeenCalledTimes(1);
+  expect(
+    initialState.onTransitionAToB.mock.results[1]?.value,
+  ).toHaveBeenCalledTimes(1);
   expect(initialState.onEnterB).toHaveBeenCalledTimes(2);
   expect(initialState.onEnterB.mock.results[1]?.value).not.toHaveBeenCalled();
   expect(initialState.onExitB).toHaveBeenCalledTimes(1); // still

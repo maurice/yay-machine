@@ -30,7 +30,7 @@ One important difference is that **yay-machine** is intentionally simple. We bel
 
 In a nutshell, we want **yay-machine** to be simple to learn, quick to get running, and have a low ongoing cost-of-ownership.
 
-We feel that size of the **XState** ecosystem, feature-set, documentation, etc, is actually a barrier to entry, and the more advanced features you adopt, the higher the ongoing cost-of-ownership. **XState** has  introduced some major (sometimes breaking) changes over the last few years, it can be hard to stay up-to-date.
+We feel that size of the **XState** ecosystem, feature-set, documentation, etc, is actually a barrier to entry, and the more advanced features you adopt, the higher the ongoing cost-of-ownership. **XState** has introduced some major (sometimes breaking) changes over the last few years, it can be hard to stay up-to-date.
 
 Additionally we value library size and performance, and keeping things small and simple means **yay-machine** outperforms **XState** here.
 
@@ -40,8 +40,8 @@ Read more about [our philosophy here](/articles/why-yay-machine#philosophy).
 
 **yay-machine** is an order of magnitude smaller than **XState**.
 
-| `xstate@5.19.2` | `yay-machine@1.3.2` |
-| ---------- | --------------- |
+| `xstate@5.19.2`                                                                                                                                                          | `yay-machine@1.3.2`                                                                                                                                                                        |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | [![XState bundlephobia stats](../../../assets/bundlephobia-xstate.png "https://bundlephobia.com/package/xstate@5.19.2")](https://bundlephobia.com/package/xstate@5.19.2) | [![yay-machine bundlephobia stats](../../../assets/bundlephobia-yay-machine.png "https://bundlephobia.com/package/yay-machine@1.3.2")](https://bundlephobia.com/package/yay-machine@1.3.2) |
 
 Stats from [**BUNDLE**PHOBIA](https://bundlephobia.com/) 🙏.
@@ -54,7 +54,7 @@ Stats from [**BUNDLE**PHOBIA](https://bundlephobia.com/) 🙏.
 
 > 🤔 **Talking of basic...**
 >
-> We know this benchmark test is not enough but we had to have *something* for our 1.0 docs.
+> We know this benchmark test is not enough but we had to have _something_ for our 1.0 docs.
 >
 > We want to add more benchmarks in future, with more realistic production-like state-machines, and comparisons with other libraries.
 
@@ -64,23 +64,23 @@ The current state of an **XState** machine is a combination of a state name (lik
 
 > ```typescript
 > const feedbackMachine = createMachine({
->   id: 'feedback',
->   initial: 'question',
+>   id: "feedback",
+>   initial: "question",
 >   context: {
->     feedback: '',
+>     feedback: "",
 >   },
 >   states: {
 >     question: {
 >       meta: {
->         question: 'How was your experience?',
+>         question: "How was your experience?",
 >       },
 >     },
 >   },
 > });
-> 
+>
 > const actor = createActor(feedbackMachine);
 > actor.start();
-> 
+>
 > console.log(actor.getSnapshot());
 > // Logs an object containing:
 > // {
@@ -110,39 +110,42 @@ In **yay-machine** we could expand the above like this
 
 ```typescript
 interface QuestionState {
-  readonly name: 'question';
+  readonly name: "question";
 }
 
 interface FeedbackProvidedState {
-  readonly name: 'feedbackProvided';
+  readonly name: "feedbackProvided";
   readonly feedback: string;
 }
 
 interface FeedbackEvent {
-  readonly type: 'FEEDBACK';
+  readonly type: "FEEDBACK";
   readonly feedback: string;
 }
 
-const feedbackMachine = defineMachine<QuestionState | FeedbackProvidedState, FeedbackEvent>({
-  initialState: { name: 'question' },
+const feedbackMachine = defineMachine<
+  QuestionState | FeedbackProvidedState,
+  FeedbackEvent
+>({
+  initialState: { name: "question" },
   states: {
     question: {
       on: {
         FEEDBACK: {
-          to: 'feedbackProvided',
-          data: ({ event: { feedback }}) => ({ feedback }),
-        }
-      }
-    }
-  }
-})
+          to: "feedbackProvided",
+          data: ({ event: { feedback } }) => ({ feedback }),
+        },
+      },
+    },
+  },
+});
 const feedback = feedbackMachine.newInstance();
 feedback.start();
 
 console.log(feedback.state);
 // { name: 'question' }
 
-feedback.send({ type: 'FEEDBACK', feedback: 'Keep up the good work!' });
+feedback.send({ type: "FEEDBACK", feedback: "Keep up the good work!" });
 
 console.log(feedback.state);
 // { name: 'feedbackProvided', feedback: 'Keep up the good work!' }
@@ -158,7 +161,7 @@ And you are still free to model your state-data with optional fields or empty st
 
 [**XState**'s actions](https://stately.ai/docs/actions) are used to update the machine's context, do logging, interact with external services, spawn child machines, send events to spawned processes, or parent machines, to the current machine, etc, etc.
 
-It's a nice abstraction, but the problem is, users don't get a lot of value from the *abstraction itself*. To actually do anything, you need to use one of the concrete action-creator functions, which all have unique APIs. So users need to review the documentation and learn all of the different built-in actions (and there are quite a lot), to decide which one to use in any given situation. It's either a commitment of time to memorize them, or rely on AI, or read the docs fairly often. 
+It's a nice abstraction, but the problem is, users don't get a lot of value from the _abstraction itself_. To actually do anything, you need to use one of the concrete action-creator functions, which all have unique APIs. So users need to review the documentation and learn all of the different built-in actions (and there are quite a lot), to decide which one to use in any given situation. It's either a commitment of time to memorize them, or rely on AI, or read the docs fairly often.
 
 In fairness, code completion and existing working code helps. And most likely you only use a few most of the time, and only need reach for something exotic in rare cases. But it's still additional complexity that end users ultimately pay for with their time.
 
@@ -170,12 +173,13 @@ Let's take "persistence" as an example feature.
 
 [**XState** supports persisting machines](https://stately.ai/docs/persistence) (effectively freezing them in time and re-creating them later, ie, serialization and deserialization), although it requires authors to build their machines a certain way.
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside } from "@astrojs/starlight/components";
 
 <Aside type="note">
-We are talking here about *persisting machine definitions*, and later *re-creating machine definitions*.
->
-*Persisting a machine instance's state* on the other hand - and later creating a new machine with that state and "resuming" it - is a much simpler problem and easily done in either library.
+  We are talking here about *persisting machine definitions*, and later
+  *re-creating machine definitions*. > *Persisting a machine instance's state*
+  on the other hand - and later creating a new machine with that state and
+  "resuming" it - is a much simpler problem and easily done in either library.
 </Aside>
 
 So in order to support persistence, **XState** sometimes offers several ways to define something, eg, an "action" could be defined by an inline function (can't be persisted) or as a JSON config object that refers to a function defined elsewhere (the action JSON config can now be persisted as the function is provided at runtime).
@@ -186,39 +190,39 @@ In general **yay-machine** tries to offer a single way to do something, although
 
 ## Ecosystem at a glance
 
-import I from './I.astro';
+import I from "./I.astro";
 
-|          | **XState** | **yay-machine** |
-| -------- | -------- | ------- |
-| Discord | <I type="yes"/> | <I type="no"/>    |
-| Visualizer | <I type="yes"/> | <I type="no"/>    |
-| Online editor | <I type="yes"/> | <I type="no"/>    |
-| View library bindings (React, Vue, Svelte) | <I type="yes"/> | <I type="planned"/> <sup>(planned)</sup> |
-| Docs | <I type="yes"/> | <I type="yes"/> <sup>(more to come)</sup> |
+|                                            | **XState**      | **yay-machine**                           |
+| ------------------------------------------ | --------------- | ----------------------------------------- |
+| Discord                                    | <I type="yes"/> | <I type="no"/>                            |
+| Visualizer                                 | <I type="yes"/> | <I type="no"/>                            |
+| Online editor                              | <I type="yes"/> | <I type="no"/>                            |
+| View library bindings (React, Vue, Svelte) | <I type="yes"/> | <I type="planned"/> <sup>(planned)</sup>  |
+| Docs                                       | <I type="yes"/> | <I type="yes"/> <sup>(more to come)</sup> |
 
 ## State-machine/chart features at a glance
 
-|          | **XState** | **yay-machine** |
-| -------- | -------- | ------- |
-| Flat state-machines | <I type="yes"/> | <I type="yes"/>    |
-| Declarative JSON configuration | <I type="yes"/> | <I type="yes"/>    |
-| Create independent machine instances | <I type="yes"/> | <I type="yes"/>    |
-| Initial state (and context/state-data) overridable per machine-instance | <I type="yes"/> | <I type="yes"/> |
-| Machine instance lifecycle: subscribe-to, start, send events, and stop | <I type="yes"/> | <I type="yes"/>    |
-| Context | <I type="yes"/> | <I type="yes"/> <sup>(equivalent: [state data](/reference/state/))</sup> |
-| Actions | <I type="yes"/> | <I type="yes"/> <sup>(equivalent: [side-effects](/reference/side-effects/))</sup> |
-| Invoke/spawn Actors within machine | <I type="yes"/> | <I type="yes"/> <sup>(equivalent: [side-effects](/reference/side-effects/))</sup> |
-| Native `Promise`, `Observable`, `EventObservable` Actors | <I type="yes"/> | <I type="explain"/> <sup>(not native, but easily done)</sup> |
-| Eventless (always) transitions | <I type="yes"/> | <I type="yes"/> |
-| Delayed (after) transitions | <I type="yes"/> | <I type="explain"/> <sup>(easy via [side-effect](/reference/side-effects/) + `setTimeout()`)</sup> |
-| Guards (conditional transitions) | <I type="yes"/> | <I type="yes"/> |
-| Reenter (aka internal) transitions | <I type="yes"/> | <I type="yes"/> |
-| Parent/child states | <I type="yes"/> | <I type="no"/> <sup>(not yet, for now just flatten them)</sup> |
-| Parallel states | <I type="yes"/> | <I type="no"/> <sup>(not yet, for now compose child machines)</sup> |
-| Final states | <I type="yes"/> | <I type="no"/> <sup>(nothing formal)</sup> |
-| History states | <I type="yes"/> | <I type="stop"/> <sup>(not a project goal)</sup> |
-| Persistence (serialization/deserialization) | <I type="yes"/> | <I type="stop"/> <sup>(not a project goal)</sup> |
-| SCXML | <I type="yes"/> | <I type="stop"/> <sup>(not a project goal)</sup> |
+|                                                                         | **XState**      | **yay-machine**                                                                                    |
+| ----------------------------------------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------- |
+| Flat state-machines                                                     | <I type="yes"/> | <I type="yes"/>                                                                                    |
+| Declarative JSON configuration                                          | <I type="yes"/> | <I type="yes"/>                                                                                    |
+| Create independent machine instances                                    | <I type="yes"/> | <I type="yes"/>                                                                                    |
+| Initial state (and context/state-data) overridable per machine-instance | <I type="yes"/> | <I type="yes"/>                                                                                    |
+| Machine instance lifecycle: subscribe-to, start, send events, and stop  | <I type="yes"/> | <I type="yes"/>                                                                                    |
+| Context                                                                 | <I type="yes"/> | <I type="yes"/> <sup>(equivalent: [state data](/reference/state/))</sup>                           |
+| Actions                                                                 | <I type="yes"/> | <I type="yes"/> <sup>(equivalent: [side-effects](/reference/side-effects/))</sup>                  |
+| Invoke/spawn Actors within machine                                      | <I type="yes"/> | <I type="yes"/> <sup>(equivalent: [side-effects](/reference/side-effects/))</sup>                  |
+| Native `Promise`, `Observable`, `EventObservable` Actors                | <I type="yes"/> | <I type="explain"/> <sup>(not native, but easily done)</sup>                                       |
+| Eventless (always) transitions                                          | <I type="yes"/> | <I type="yes"/>                                                                                    |
+| Delayed (after) transitions                                             | <I type="yes"/> | <I type="explain"/> <sup>(easy via [side-effect](/reference/side-effects/) + `setTimeout()`)</sup> |
+| Guards (conditional transitions)                                        | <I type="yes"/> | <I type="yes"/>                                                                                    |
+| Reenter (aka internal) transitions                                      | <I type="yes"/> | <I type="yes"/>                                                                                    |
+| Parent/child states                                                     | <I type="yes"/> | <I type="no"/> <sup>(not yet, for now just flatten them)</sup>                                     |
+| Parallel states                                                         | <I type="yes"/> | <I type="no"/> <sup>(not yet, for now compose child machines)</sup>                                |
+| Final states                                                            | <I type="yes"/> | <I type="no"/> <sup>(nothing formal)</sup>                                                         |
+| History states                                                          | <I type="yes"/> | <I type="stop"/> <sup>(not a project goal)</sup>                                                   |
+| Persistence (serialization/deserialization)                             | <I type="yes"/> | <I type="stop"/> <sup>(not a project goal)</sup>                                                   |
+| SCXML                                                                   | <I type="yes"/> | <I type="stop"/> <sup>(not a project goal)</sup>                                                   |
 
 ## Coming soon...
 
