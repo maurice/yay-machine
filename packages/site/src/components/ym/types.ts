@@ -1,3 +1,8 @@
+import type React from "react";
+import type { YmChart } from "./YmChart";
+import type { YmState } from "./YmState";
+import type { YmTransition } from "./YmTransition";
+
 export interface Point {
   readonly x: number;
   readonly y: number;
@@ -20,3 +25,19 @@ export const Align = {
 } as const;
 
 export type Align = (typeof Align)[keyof typeof Align];
+
+export const Ranker = {
+  NETWORK_SIMPLEX: "network-simplex",
+  LONGEST_PATH: "longest-path",
+  TIGHT_TREE: "tight-tree",
+} as const;
+
+export type Ranker = (typeof Ranker)[keyof typeof Ranker];
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "ym-chart": YmChart;
+    "ym-state": YmState;
+    "ym-transition": YmTransition;
+  }
+}

@@ -9,7 +9,7 @@ Transitions bring state-machines to life, defining when and how they move from s
 
 ## Example: connection machine
 
-We will expand on the "connection machine" example we used when explaining [states](../state/) and [events](../events/), to illustrate various transitions.
+We will expand on the "connection machine" example we used when explaining [states](/reference/state/) and [events](/reference/events/), to illustrate various transitions.
 
 import { Aside } from '@astrojs/starlight/components';
 
@@ -28,13 +28,14 @@ import StateChart from '../../../components/StateChart/StateChart.astro';
     { from: 'connecting', to: 'reattemptConnection', label: 'ERROR (default)' },
     { from: 'connected', to: 'reattemptConnection', label: 'ERROR' },
     { from: 'connected', to: 'connected', label: 'SEND' },
-    { from: 'reattemptConnection', to: 'connecting', label: '(after random delay ) CONNECT' },
+    { from: 'reattemptConnection', to: 'connecting', label: '(after delay ) CONNECT' },
     { from: 'reattemptConnection', to: 'connectionError', label: "(reached max connection attempts)" },
     { from: 'connected', to: 'disconnected', label: 'DISCONNECTED' },
     { from: 'connecting', to: 'disconnected', label: 'DISCONNECTED' },
     { from: 'reattemptConnection', to: 'disconnected', label: 'DISCONNECTED' },
   ]}
   start="disconnected"
+  compact={true}
 />
 
 ### Source
@@ -555,7 +556,7 @@ The callback receives the current `state` and `event`.
 
 The callback SHOULD be pure and deterministic, and only use data from `state` and `event` to compute the data for the next state.
 
-For *homogenous* state-data you also have the option to set `enableCopyDataOnTransition: true` to avoid some boilerplate. See the [states](../state/) documentation for a longer discussion.
+For *homogenous* state-data you also have the option to set `enableCopyDataOnTransition: true` to avoid some boilerplate. See the [states](/reference/state/) documentation for a longer discussion.
 
 ## Combining transitions
 
@@ -572,7 +573,7 @@ The two *special cases* in the configuration are
 
 ## Side-effects: `onTransition()`
 
-Transitions MAY define an [`onTransition()` side-effect](../side-effects#transition-ontransition) function that is called if and when the transition is taken.
+Transitions MAY define an [`onTransition()` side-effect](/reference/side-effects#transition-ontransition) function that is called if and when the transition is taken.
 
 In the above state machine there are transition side effects when handling
 
@@ -580,4 +581,3 @@ In the above state machine there are transition side effects when handling
 - the `CONNECT` event in the `reattemptConnection` state
 
 The `onTransition()` function receives a single parameter with fields for the current `state`, `event`, and a `send` function which can be used to send events back to the machine instance. It MAY return a cleanup function to release any associated resources, and if so that is called immediately after `onTransition()` is called.
-

@@ -1,0 +1,41 @@
+.card-reader {
+  .card-slot {
+    width: 200px;
+    height: 20px;
+    background-color: var(--sl-color-gray-5);
+    position: relative;
+
+    .card-slot-top {
+      border: 1px solid var(--sl-color-gray-1);
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+      height: 10px;
+    }
+
+    .card-slot-bottom {
+      border-bottom: 1px solid var(--sl-color-gray-1);
+      border-left: 1px solid var(--sl-color-gray-1);
+      border-right: 1px solid var(--sl-color-gray-1);
+      border-bottom-left-radius: 3px;
+      border-bottom-right-radius: 3px;
+      height: 10px;
+    }
+
+    .bank-card.in-slot {
+      position: absolute;
+      left: 25px;
+      transform: rotate(270deg) scale(2.4);
+      z-index: 1;
+
+      &:not(.ejecting) {
+        clip-path: inset(0px 112px 0px 0px);
+        top: -120px;
+      }
+
+      &.ejecting {
+        top: -80px;
+        clip-path: inset(0px 96px 0px 0px);
+      }
+    }
+  }
+}

@@ -5,7 +5,7 @@ sidebar:
   order: 2
 ---
 
-Events represent the things that affect the [state of the machine](../state/) as it runs.
+Events represent the things that affect the [state of the machine](/reference/state/) as it runs.
 
 ## Events are finite
 
@@ -76,8 +76,8 @@ connection.send({ type: 'HELLO' });
 
 When your events have a payload (any other properties apart from `type`), you can use these to 
 
-* generate state data for the next state [in a transition](../transitions/)
-* determine which [conditional transition](../transitions/#conditional-transitions-when) to take
+* generate state data for the next state [in a transition](/reference/transitions/)
+* determine which [conditional transition](/reference/transitions/#conditional-transitions-when) to take
 
 ```typescript "data: ({ event: { url } }) => ({ url })" "data: ({ event }) => ({ errorMessage: String(event.error) })" "url: 'ws://localhost:9999/api'"
 type ConnectionState = 

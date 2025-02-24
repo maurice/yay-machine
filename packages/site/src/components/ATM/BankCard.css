@@ -1,0 +1,26 @@
+.bank-card {
+  width: 150px;
+  height: 80px;
+  font-family: "Courier New", monospace;
+  padding-left: 5px;
+
+  background-color: darkcyan;
+  color: white;
+  border-radius: 5px;
+
+  &[data-style="coral"] {
+    background-color: coral;
+  }
+
+  &[data-style="blueviolet"] {
+    background-color: blueviolet;
+  }
+
+  &.hidden {
+    visibility: hidden;
+  }
+
+  &.clickable {
+    cursor: pointer;
+  }
+}

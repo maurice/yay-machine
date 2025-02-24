@@ -1,10 +1,11 @@
 import dagre, { type graphlib } from "@dagrejs/dagre";
 import { curveBasis, line } from "d3-shape";
+import deepEqual from "fast-deep-equal";
 import { LitElement, css, html, nothing, svg } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import type { YmTransition } from "./YmTransition";
-import { Align, Direction, type Point, type Points } from "./types";
+import { Align, Direction, type Point, type Points, Ranker } from "./types";
 
 const WIGGLE_LEFT_KEY_FRAMES: Keyframe[] = [
   {
@@ -69,7 +70,7 @@ interface Transition {
 }
 
 @customElement("ym-chart")
-class YmChart extends LitElement {
+export class YmChart extends LitElement {
   static styles = css`
   :host {
     display: block;
@@ -89,6 +90,7 @@ class YmChart extends LitElement {
     --medium-blue: royalblue;
 
     --chart-color: var(--dark-grey);
+
     color: var(--chart-color);
     position: relative;
 
@@ -147,24 +149,31 @@ class YmChart extends LitElement {
   @property({ type: String })
   start: string | undefined;
 
+  #previousCurrent: string | undefined;
   #current: string | undefined;
 
-  @property({
-    type: String,
-    hasChanged() {
-      return true;
-    },
-  })
+  @property({ type: String })
   get current(): string | undefined {
     return this.#current;
   }
 
   set current(current: string | undefined) {
+    this.#previousCurrent = this.#current;
     this.#current = current;
   }
 
+  #previousData: object | undefined;
+  #data: object | undefined;
+
   @property({ type: Object })
-  data = {};
+  get data(): object | undefined {
+    return this.#data;
+  }
+
+  set data(data: object | undefined) {
+    this.#previousData = this.#data;
+    this.#data = data;
+  }
 
   @property({
     type: String,
@@ -198,15 +207,34 @@ class YmChart extends LitElement {
   })
   align: Align | undefined;
 
+  @property({
+    type: String,
+    converter(value) {
+      switch (value) {
+        case Ranker.NETWORK_SIMPLEX:
+        case Ranker.LONGEST_PATH:
+        case Ranker.TIGHT_TREE:
+          return value;
+
+        default:
+          return undefined;
+      }
+    },
+  })
+  ranker: Ranker | undefined;
+
   @state()
   graph: graphlib.Graph | undefined;
 
   @state()
   clippedPaths: [] | undefined;
 
+  #resizeObserver: ResizeObserver = new ResizeObserver((entries) => {
+    this.#invalidateLayout();
+  });
+
   #isTransitioning = false;
   #transitionQueue: Transition[] = [];
-  #prevCurrent: string | undefined;
 
   transition(next: string, data?: object, label?: string) {
     this.#transitionQueue.push({ next: next, data, label });
@@ -281,7 +309,6 @@ class YmChart extends LitElement {
             },
             {
               stroke: "var(--medium-blue)",
-              offset: 0.25,
             },
           ];
 
@@ -290,7 +317,6 @@ class YmChart extends LitElement {
             easing: "ease-in-out",
             // easing: "cubic-bezier(0.5, 1.8, 0.3, 0.8)", // ease-out-elastic
             iterations: 1,
-            composite: "add",
           };
 
           path.animate(FADE_KEY_FRAMES, FADE_ANIMATION);
@@ -309,12 +335,17 @@ class YmChart extends LitElement {
     for (const state of this.querySelectorAll("ym-state")) {
       state.interactive = !!this.current;
       state.current = this.current === state.name;
-      state.data = this.current === state.name ? this.data : "";
-      if (this.#prevCurrent && this.current === state.name) {
+      state.data = this.current === state.name ? this.data : undefined;
+      if (
+        state.name === this.current &&
+        this.#previousCurrent &&
+        (this.#previousCurrent !== this.current || !deepEqual(this.#previousData, this.#data))
+      ) {
         state.animate(Math.random() < 0.6 ? WIGGLE_LEFT_KEY_FRAMES : WIGGLE_RIGHT_KEY_FRAMES, WIGGLE_ANIMATION);
       }
     }
-    this.#prevCurrent = this.current;
+    this.#previousCurrent = this.#current;
+    this.#previousData = this.#data;
 
     return html`
       <div class="background">
@@ -339,7 +370,7 @@ class YmChart extends LitElement {
                     <path d="M 0 0 L 10 5 L 0 10 z" />
                   </marker>
                   <marker
-                      id="hover-arrow"
+                      id="active-arrow"
                       viewBox="0 0 10 10"
                       refX="5"
                       refY="5"
@@ -367,10 +398,12 @@ class YmChart extends LitElement {
       edgesep: 30,
       rankdir: this.direction,
       align: this.align,
+      ranker: this.ranker,
       marginy: 16,
     });
 
-    for (const state of this.querySelectorAll("ym-state")) {
+    const states = this.querySelectorAll("ym-state");
+    for (const state of states) {
       const rect = state.getBoundingClientRect();
       g.setNode(state.name, { label: state.name, width: rect.width, height: rect.height });
     }
@@ -380,7 +413,8 @@ class YmChart extends LitElement {
       g.setNode("start", { label: "start", width: rect.width, height: rect.height });
     }
 
-    for (const transition of this.querySelectorAll("ym-transition")) {
+    const transitions = this.querySelectorAll("ym-transition");
+    for (const transition of transitions) {
       const rect = transition.getBoundingClientRect();
       g.setEdge(
         transition.from,
@@ -395,38 +429,59 @@ class YmChart extends LitElement {
 
     dagre.layout(g);
 
+    if (!this.graph) {
+      for (const state of states) {
+        this.#resizeObserver.observe(state);
+      }
+    }
     this.graph = g;
 
-    for (const state of this.querySelectorAll("ym-state")) {
+    for (const state of states) {
       const node = g.node(state.name);
       state.style.top = `${node.y - node.height / 2}px`;
       state.style.left = `${node.x - node.width / 2}px`;
     }
 
     const edges = g.edges();
-    const transitions = Array.from(this.querySelectorAll("ym-transition"));
     const lines = Array.from(this.renderRoot.querySelectorAll(".transition-line"));
     for (let i = 0; i < transitions.length; i++) {
-      const transition = transitions[i];
+      const transition = transitions.item(i);
       const edge = g.edge(edges[i]);
       transition.style.top = `${edge.y - edge.height / 2}px`;
       transition.style.left = `${edge.x - edge.width / 2}px`;
-      const line = lines[i] as SVGPathElement;
-      line.setAttribute("d", drawCurve(edge.points));
-      clipPath(line, edge.points);
+      if (edge.points.every((it) => !Number.isNaN(it.x) && !Number.isNaN(it.y))) {
+        const line = lines[i] as SVGPathElement;
+        line.setAttribute("d", drawCurve(edge.points));
+        clipPath(line, edge.points);
+      }
     }
 
     if (this.start) {
       const edge = g.edge(edges[edges.length - 1]);
-      const line = lines[lines.length - 1] as SVGPathElement;
-      line.setAttribute("d", drawCurve(edge.points));
-      clipPath(line, edge.points);
+      if (edge.points.every((it) => !Number.isNaN(it.x) && !Number.isNaN(it.y))) {
+        const line = lines[lines.length - 1] as SVGPathElement;
+        line.setAttribute("d", drawCurve(edge.points));
+        clipPath(line, edge.points);
+      }
     }
+  }
+
+  #invalidateLayout() {
+    const stateEl = this.querySelector("ym-state");
+    if (findParentWithDisplayNone(stateEl)) {
+      return;
+    }
+    this.#layout();
   }
 }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    "ym-chart": YmChart;
+function findParentWithDisplayNone(initialElement: HTMLElement | null) {
+  let element: HTMLElement | null = initialElement;
+  while (element && element !== document.body) {
+    if (window.getComputedStyle(element).display === "none") {
+      return element;
+    }
+    element = element.parentElement;
   }
+  return null;
 }

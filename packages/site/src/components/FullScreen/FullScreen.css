@@ -1,0 +1,36 @@
+.full-screen {
+  position: relative;
+  margin-top: 1rem;
+
+  &.is-full-screen {
+    margin: 1rem;
+  }
+}
+
+.full-screen__controls {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+
+  button {
+    opacity: 0.5;
+    transition: 0.3s opacity;
+    cursor: pointer;
+    width: 26px;
+    height: 26px;
+    color: var(--sl-color-text-invert);
+    background-color: var(--sl-color-text-accent);
+    border: none;
+    border-radius: 3px;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+body.full-screen {
+  & .page {
+    display: none;
+  }
+}

@@ -1,0 +1,20 @@
+.wallet {
+  display: flex;
+  flex-direction: row;
+  margin: 40px 0;
+
+  .bank-card {
+    display: inline-block;
+    transform: rotate(330deg);
+    transition: 0.2s ease-in-out transform;
+
+    &:not(.inert):hover {
+      transform: scale(1.1) rotate(330deg);
+      z-index: 1;
+    }
+  }
+
+  .bank-card:not(:nth-child(1)) {
+    margin-left: -100px;
+  }
+}

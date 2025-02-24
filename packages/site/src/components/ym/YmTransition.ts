@@ -24,7 +24,7 @@ export class YmTransition extends LitElement {
     background-color: #f9f9f9;
     box-shadow: 0px 0px 10px 0px rgb(0, 0, 0, 0.3);
     border: 2px solid var(--color);
-    border-radius: 5px;
+    // border-radius: 5px;
     transition: 200ms box-shadow;
     user-select: none;
   }
@@ -45,11 +45,5 @@ export class YmTransition extends LitElement {
       <div class="label">${this.label}</div>
     `
       : nothing;
-  }
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ym-transition": YmTransition;
   }
 }

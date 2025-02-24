@@ -1,0 +1,35 @@
+/* credit to https://medium.com/@dovid11564/using-css-animations-to-mimic-the-look-of-a-crt-monitor-3919de3318e2 */
+.screen {
+  width: 400px;
+  height: 300px;
+  border: 2px solid var(--sl-color-gray-5);
+
+  background: linear-gradient(to top, #000000, #000000, #333333, #333333);
+  background-size: cover;
+  background-size: 100% 1px;
+
+  color: #00ff00;
+  font-family: "Courier New", monospace;
+  font-size: 20px;
+  text-align: center;
+  text-shadow: 0 0 10px #00ff00;
+
+  padding: 1em;
+  border-radius: 10px;
+  filter: blur(.3px);
+  white-space: pre;
+}
+
+@media screen {
+  .screen {
+    animation: scanlines infinite 55s linear;
+  }
+}
+@keyframes scanlines {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 -10px;
+  }
+}

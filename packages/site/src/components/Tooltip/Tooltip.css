@@ -1,0 +1,33 @@
+.tooltip {
+  position: absolute;
+  top: 2px;
+  right: 3em;
+  color: var(--sl-color-gray-6);
+  font-size: smaller;
+  z-index: 10;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s, transform 0.5s;
+
+  .tooltip-body {
+    background-color: var(--sl-color-gray-1);
+    display: inline-block;
+    padding: 0.5em 1em;
+    border-radius: 5px;
+  }
+
+  .tooltip-arrow {
+    box-sizing: content-box;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 10px solid var(--sl-color-gray-1);
+  }
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(10%);
+  }
+}

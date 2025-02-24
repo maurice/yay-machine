@@ -1,0 +1,30 @@
+.cash-dispenser {
+  .cash-slot {
+    width: 500px;
+    height: 20px;
+    background-color: var(--sl-color-gray-5);
+    position: relative;
+
+    .cash-slot-top {
+      border: 1px solid var(--sl-color-gray-1);
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+      height: 10px;
+    }
+
+    .cash-slot-bottom {
+      border-bottom: 1px solid var(--sl-color-gray-1);
+      border-left: 1px solid var(--sl-color-gray-1);
+      border-right: 1px solid var(--sl-color-gray-1);
+      border-bottom-left-radius: 3px;
+      border-bottom-right-radius: 3px;
+      height: 10px;
+    }
+
+    .bank-note {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+    }
+  }
+}
