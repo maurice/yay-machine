@@ -12,7 +12,10 @@ export interface MachineInstanceConfig<StateType extends MachineState> {
   readonly initialState?: StateType;
 }
 
-export interface MachineInstance<StateType extends MachineState, EventType extends MachineEvent> {
+export interface MachineInstance<
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+> {
   /**
    * Getter returning the current state of the machine
    */
@@ -60,16 +63,20 @@ export interface MachineInstance<StateType extends MachineState, EventType exten
  * Subscriber callback function type
  * @param params the machine's current state and optional event that triggered the last state-change
  */
-export type Subscriber<StateType extends MachineState, EventType extends MachineEvent> = (
-  params: SubscriberParams<StateType, EventType>,
-) => void;
+export type Subscriber<
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+> = (params: SubscriberParams<StateType, EventType>) => void;
 
 /**
  * Subscriber callback params type
  * @property state the machine's current state
  * @property event the event that triggered the most recent state-change, if any
  */
-export interface SubscriberParams<StateType extends MachineState, EventType extends MachineEvent> {
+export interface SubscriberParams<
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+> {
   readonly state: StateType;
   readonly event: EventType | undefined;
 }

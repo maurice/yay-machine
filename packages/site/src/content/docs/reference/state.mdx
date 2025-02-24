@@ -7,27 +7,28 @@ sidebar:
 
 State represents all the possible states in which a machine can exist.
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside } from "@astrojs/starlight/components";
 
 <Aside type="note" title="Remember">
 Machines can model business-logic, workflows, game or UI components, app state, ... lots of things.
 
-So when we say *"all the possible states in which a machine can exist"* we mean "all the possible states in which **the thing you are modelling** can exist".
+So when we say _"all the possible states in which a machine can exist"_ we mean "all the possible states in which **the thing you are modelling** can exist".
+
 </Aside>
 
 ## States are finite
 
 This means that we know all the states when the machine is defined.
 
-import StateChart from '../../../components/StateChart/StateChart.astro';
+import StateChart from "../../../components/StateChart/StateChart.astro";
 
 <StateChart
-  states={['disconnected', 'connecting', 'connected', 'connectionError']}
+  states={["disconnected", "connecting", "connected", "connectionError"]}
   transitions={[
-    { from: 'disconnected', to: 'connecting' },
-    { from: 'connecting', to: 'connected' },
-    { from: 'connecting', to: 'connectionError' },
-    { from: 'connected', to: 'disconnected' },
+    { from: "disconnected", to: "connecting" },
+    { from: "connecting", to: "connected" },
+    { from: "connecting", to: "connectionError" },
+    { from: "connected", to: "disconnected" },
   ]}
   start="disconnected"
 />
@@ -44,18 +45,25 @@ So we might start to build the above machine like
 
 ```typescript {4-5}
 // connectionMachine.ts
-import { defineMachine } from 'yay-machine';
+import { defineMachine } from "yay-machine";
 
 interface ConnectionState {
-  readonly name: 'disconnected' | 'connecting' | 'connected' | 'connectionError';
+  readonly name:
+    | "disconnected"
+    | "connecting"
+    | "connected"
+    | "connectionError";
 }
 
 interface ConnectionEvent {
-  readonly type: '???'; // we'll cover this next
+  readonly type: "???"; // we'll cover this next
 }
 
-export const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
-  initialState: { name: 'disconnected' },
+export const connectionMachine = defineMachine<
+  ConnectionState,
+  ConnectionEvent
+>({
+  initialState: { name: "disconnected" },
   // ...
 });
 ```
@@ -67,10 +75,10 @@ When we have an instance of a machine we can query its current state
 ```typescript "connection.state"
 const connection = connectionMachine.newInstance().start();
 
-assert(connection.state).deepStrictEqual({ name: 'disconnected' });
+assert(connection.state).deepStrictEqual({ name: "disconnected" });
 ```
 
-`machine.state` is a *property getter* that always returns the machine's current state, and whose type is the machine's state-type, in our case `ConnectionState`.
+`machine.state` is a _property getter_ that always returns the machine's current state, and whose type is the machine's state-type, in our case `ConnectionState`.
 
 ## Subscribing to a machine's state
 
@@ -85,15 +93,15 @@ const unsubscribe = connection.subscribe(({ state }) => {
     'disconnected':
       console.log('we are disconnected 🤷');
       break;
-    
+
     'connecting':
       console.log('connecting now... 👋');
       break;
-    
+
     'connected':
       console.log('yay, connected 🤝');
       break;
-    
+
     'connectionError':
       console.log('connection failed 😢');
       break;
@@ -111,13 +119,17 @@ As well as a `name`, state types can have additional data properties
 
 ```typescript {3,4}
 interface ConnectionState {
-  readonly name: 'disconnected' | 'connecting' | 'connected' | 'connectionError';
+  readonly name:
+    | "disconnected"
+    | "connecting"
+    | "connected"
+    | "connectionError";
   readonly connectingStartedAt: number; // Date.now();
   readonly connectionEstablishedAt: number; // Date.now();
 }
 ```
 
-In this case we say the state-data is homogenous, because for all states  - 
+In this case we say the state-data is homogenous, because for all states -
 `disconnected`, `connecting`, `connected` and `connectionError` - the associated state-data has the same shape (type).
 
 The machine manages the data as it runs, by providing a `data()` callback to generate data for the next state
@@ -125,29 +137,29 @@ The machine manages the data as it runs, by providing a `data()` callback to gen
 ```typescript {12-15,23-26}
 const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
   initialState: {
-    name: 'disconnected',
+    name: "disconnected",
     connectingStartedAt: -1,
-    connectionEstablishedAt: -1
+    connectionEstablishedAt: -1,
   },
   states: {
     disconnected: {
       on: {
         CONNECT: {
-          to: 'connecting',
+          to: "connecting",
           data: () => ({
             connectingStartedAt: Date.now(),
-            connectionEstablishedAt: -1
+            connectionEstablishedAt: -1,
           }),
         },
       },
     },
     connecting: {
       on: {
-        CONNECTED: { 
-          to: 'connected', 
+        CONNECTED: {
+          to: "connected",
           data: ({ state }) => ({
             connectingStartedAt: state.connectingStartedAt,
-            connectionEstablishedAt: -1
+            connectionEstablishedAt: -1,
           }),
         },
       },
@@ -164,10 +176,11 @@ const connection = connectionMachine.newInstance().start();
 
 // ... use the machine ...
 
-if (connection.state.name === 'connected') {
+if (connection.state.name === "connected") {
   console.log(
-    'It took %s milliseconds to establish the connection, and its uptime is %s millis', 
-    connection.state.connectionEstablishedAt - connection.state.connectingStartedAt,
+    "It took %s milliseconds to establish the connection, and its uptime is %s millis",
+    connection.state.connectionEstablishedAt -
+      connection.state.connectingStartedAt,
     Date.now() - connection.state.connectionEstablishedAt,
   );
 }
@@ -182,21 +195,21 @@ boilerplate `data()` callbacks that simply copy the state, eg
 
 ```typescript "data: ({ state }) => state"
 interface ToggleState {
-  readonly name: 'off' | 'on';
+  readonly name: "off" | "on";
   readonly onTimes: number;
 }
 
 interface ToggleEvent {
-  readonly type: 'TOGGLE';
+  readonly type: "TOGGLE";
 }
 
 const toggleMachine = defineMachine<ToggleState, ToggleEvent>({
-  initialState: { name: 'off', onTimes: 0 },
+  initialState: { name: "off", onTimes: 0 },
   states: {
     off: {
       on: {
         TOGGLE: {
-          to: 'on', 
+          to: "on",
           data: ({ state }) => ({ onTimes: state.onTimes + 1 }), // update state-data
         },
       },
@@ -204,7 +217,7 @@ const toggleMachine = defineMachine<ToggleState, ToggleEvent>({
     on: {
       on: {
         TOGGLE: {
-          to: 'off',
+          to: "off",
           data: ({ state }) => state, // :-( this isn't adding any value
         },
       },
@@ -220,19 +233,19 @@ In this case you can do
 ```typescript ins="enableCopyDataOnTransition: true" ins="TOGGLE: { to: 'off' }"
 const toggleMachine = defineMachine<ToggleState, ToggleEvent>({
   enableCopyDataOnTransition: true, // add this
-  initialState: { name: 'off', onTimes: 0 },
+  initialState: { name: "off", onTimes: 0 },
   states: {
     off: {
       on: {
         TOGGLE: {
-          to: 'on',
-          data: ({ state }) => ({ onTimes: state.onTimes + 1 }) // update state-data
+          to: "on",
+          data: ({ state }) => ({ onTimes: state.onTimes + 1 }), // update state-data
         },
       },
     },
     on: {
       on: {
-        TOGGLE: { to: 'off' }, // :-) state is now copied from `off` to `on`
+        TOGGLE: { to: "off" }, // :-) state is now copied from `off` to `on`
       },
     },
   },
@@ -240,7 +253,8 @@ const toggleMachine = defineMachine<ToggleState, ToggleEvent>({
 ```
 
 <Aside type="tip">
-See the [Health (game component) example](/examples/health/) for more realistic usage.
+  See the [Health (game component) example](/examples/health/) for more
+  realistic usage.
 </Aside>
 
 ## Heterogenous state data
@@ -248,7 +262,7 @@ See the [Health (game component) example](/examples/health/) for more realistic 
 If we like, we can define state types with different data
 
 ```typescript
-type ConnectionState = 
+type ConnectionState =
   | { readonly name: 'disconnected' }
   | { readonly name: 'connecting'; readonly connectingStartedAt: number; /* Date.now(); */ }
   | { readonly name: 'connected'; readonly connectingStartedAt: number; /* Date.now(); */; readonly connectionEstablishedAt: number; /* Date.now() */ }
@@ -268,7 +282,7 @@ const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
         CONNECT: {
           to: "connecting",
           data: () => ({
-            connectingStartedAt: Date.now()
+            connectingStartedAt: Date.now(),
           }),
         },
       },
@@ -294,6 +308,7 @@ const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
   },
 });
 ```
+
 Later we can query the data with complete type-safety
 
 ```typescript "connection.state.name === 'connected'" "connection.state.connectionEstablishedAt - connection.state.connectingStartedAt," "Date.now() - connection.state.connectionEstablishedAt," "connection.state.name === 'connectionError'"
@@ -301,14 +316,15 @@ const connection = connectionMachine.newInstance().start();
 
 // ... use the machine ...
 
-if (connection.state.name === 'connected') {
+if (connection.state.name === "connected") {
   console.log(
-    'It took %s milliseconds to establish the connection, and its uptime is %s millis', 
-    connection.state.connectionEstablishedAt - connection.state.connectingStartedAt,
+    "It took %s milliseconds to establish the connection, and its uptime is %s millis",
+    connection.state.connectionEstablishedAt -
+      connection.state.connectingStartedAt,
     Date.now() - connection.state.connectionEstablishedAt,
   );
-} else if (connection.state.name === 'connectionError') {
-  console.log('Connection failed: %s', connection.state.errorMessage);
+} else if (connection.state.name === "connectionError") {
+  console.log("Connection failed: %s", connection.state.errorMessage);
 }
 ```
 
@@ -318,6 +334,7 @@ if (connection.state.name === 'connected') {
 Never mutate state data in a `data()` callback.
 
 Always generate and return a new data object.
+
 </Aside>
 
 ## State lifecycle side-effects
@@ -330,8 +347,12 @@ const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
   states: {
     // ...
     connected: {
-      onEnter: ({ state }) => { console.log('now connected to %s', state.url )},
-      onExit: ({ state }) => { console.log('no longer connected to %s', state.url )},
+      onEnter: ({ state }) => {
+        console.log("now connected to %s", state.url);
+      },
+      onExit: ({ state }) => {
+        console.log("no longer connected to %s", state.url);
+      },
     },
     // ...
   },

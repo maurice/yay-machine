@@ -23,7 +23,9 @@ interface NewGameEvent {
 
 const incrementNumGuesses = ({
   state,
-}: { readonly state: GuessState }): GuessState => ({
+}: {
+  readonly state: GuessState;
+}): GuessState => ({
   ...state,
   numGuesses: state.numGuesses + 1,
 });

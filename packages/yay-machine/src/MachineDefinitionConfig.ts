@@ -1,6 +1,11 @@
 import type { ExtractEvent, MachineEvent } from "./MachineEvent";
 import type { Unsubscribe } from "./MachineInstance";
-import type { ExtractState, IsStateDataHomogenous, MachineState, StateData } from "./MachineState";
+import type {
+  ExtractState,
+  IsStateDataHomogenous,
+  MachineState,
+  StateData,
+} from "./MachineState";
 import type { OneOrMore } from "./OneOrMore";
 
 /**
@@ -9,11 +14,18 @@ import type { OneOrMore } from "./OneOrMore";
 export type MachineDefinitionConfig<
   StateType extends MachineState,
   EventType extends MachineEvent,
-> = IsStateDataHomogenous<StateType> extends true
-  ?
-      | HomogenousStateMachineDefinitionConfigCopyDataOnTransitionTrue<StateType, EventType>
-      | HomogenousStateMachineDefinitionConfigCopyDataOnTransitionFalse<StateType, EventType>
-  : HeterogenousStateMachineDefinitionConfig<StateType, EventType, false>;
+> =
+  IsStateDataHomogenous<StateType> extends true
+    ?
+        | HomogenousStateMachineDefinitionConfigCopyDataOnTransitionTrue<
+            StateType,
+            EventType
+          >
+        | HomogenousStateMachineDefinitionConfigCopyDataOnTransitionFalse<
+            StateType,
+            EventType
+          >
+    : HeterogenousStateMachineDefinitionConfig<StateType, EventType, false>;
 
 export interface HeterogenousStateMachineDefinitionConfig<
   StateType extends MachineState,
@@ -54,11 +66,17 @@ export interface HeterogenousStateMachineDefinitionConfig<
   readonly on?: AnyStateTransitionsConfig<StateType, EventType, StateType>;
 }
 
-export type MachineOnStartSideEffectFunction<StateType extends MachineState, EventType extends MachineEvent> = (
+export type MachineOnStartSideEffectFunction<
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+> = (
   param: MachineOnStartSideEffectParam<StateType, EventType>,
 ) => EffectReturnValue;
 
-export type MachineOnStartSideEffectParam<StateType extends MachineState, EventType extends MachineEvent> = {
+export type MachineOnStartSideEffectParam<
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+> = {
   readonly state: StateType;
   readonly send: SendFunction<EventType>;
 };
@@ -93,7 +111,11 @@ export interface HomogenousStateMachineDefinitionConfigCopyDataOnTransitionTrue<
 export interface HomogenousStateMachineDefinitionConfigCopyDataOnTransitionFalse<
   StateType extends MachineState,
   EventType extends MachineEvent,
-> extends HeterogenousStateMachineDefinitionConfig<StateType, EventType, false> {
+> extends HeterogenousStateMachineDefinitionConfig<
+    StateType,
+    EventType,
+    false
+  > {
   /**
    * If `true`, data is automatically copied between states when transitioning, and the
    * transition does not provide its own `data()` callback implementation.
@@ -130,13 +152,25 @@ export type StateConfig<
   /**
    * Define a map of transitions keyed by event `type`
    */
-  readonly on?: StateTransitionsConfig<StateType, EventType, CurrentState, CopyDataOnTransition>;
+  readonly on?: StateTransitionsConfig<
+    StateType,
+    EventType,
+    CurrentState,
+    CopyDataOnTransition
+  >;
 
   /**
    * Define one or more immediate transitions, that are always attempted when entering the state
    */
   readonly always?: OneOrMore<
-    TransitionConfig<StateType, EventType, CurrentState, undefined, CopyDataOnTransition, true>
+    TransitionConfig<
+      StateType,
+      EventType,
+      CurrentState,
+      undefined,
+      CopyDataOnTransition,
+      true
+    >
   >;
 
   /**
@@ -154,11 +188,17 @@ export type StateConfig<
   readonly onExit?: StateLifecycleSideEffectFunction<CurrentState, EventType>;
 };
 
-export type StateLifecycleSideEffectFunction<CurrentState extends MachineState, EventType extends MachineEvent> = (
+export type StateLifecycleSideEffectFunction<
+  CurrentState extends MachineState,
+  EventType extends MachineEvent,
+> = (
   param: StateLifecycleSideEffectParam<CurrentState, EventType>,
 ) => EffectReturnValue;
 
-export type StateLifecycleSideEffectParam<CurrentState extends MachineState, EventType extends MachineEvent> = {
+export type StateLifecycleSideEffectParam<
+  CurrentState extends MachineState,
+  EventType extends MachineEvent,
+> = {
   readonly state: CurrentState;
   readonly event: EventType | undefined;
   readonly send: SendFunction<EventType>;
@@ -171,7 +211,14 @@ export type StateTransitionsConfig<
   CopyDataOnTransition extends boolean,
 > = {
   readonly [Type in EventType["type"]]?: OneOrMore<
-    TransitionConfig<StateType, EventType, CurrentState, ExtractEvent<EventType, Type>, CopyDataOnTransition, false>
+    TransitionConfig<
+      StateType,
+      EventType,
+      CurrentState,
+      ExtractEvent<EventType, Type>,
+      CopyDataOnTransition,
+      false
+    >
   >;
 };
 
@@ -234,14 +281,23 @@ export interface BasicTransition<
    * @param param an object containing the current state and event
    * @returns true if the transition should be taken
    */
-  readonly when?: (param: { readonly state: CurrentState; readonly event: CurrentEvent }) => boolean;
+  readonly when?: (param: {
+    readonly state: CurrentState;
+    readonly event: CurrentEvent;
+  }) => boolean;
 
   /**
    * Optional side-effect, run when the transition is taken.
    * May return a tear-down function so any resources can be freed when
    * the state is exited.
    */
-  readonly onTransition?: OnTransitionSideEffectFunction<StateType, EventType, CurrentState, CurrentEvent, NextState>;
+  readonly onTransition?: OnTransitionSideEffectFunction<
+    StateType,
+    EventType,
+    CurrentState,
+    CurrentEvent,
+    NextState
+  >;
 }
 
 export type OnTransitionSideEffectFunction<
@@ -251,7 +307,13 @@ export type OnTransitionSideEffectFunction<
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
 > = (
-  param: OnTransitionSideEffectParam<StateType, CurrentState, CurrentEvent, NextState, EventType>,
+  param: OnTransitionSideEffectParam<
+    StateType,
+    CurrentState,
+    CurrentEvent,
+    NextState,
+    EventType
+  >,
 ) => EffectReturnValue;
 
 type OnTransitionSideEffectParam<
@@ -275,14 +337,41 @@ export type OtherTransition<
   NextState extends StateType,
   CopyDataOnTransition extends boolean,
   IsImmediateTransition extends boolean,
-> = BasicTransition<StateType, EventType, CurrentState, CurrentEvent, NextState> &
+> = BasicTransition<
+  StateType,
+  EventType,
+  CurrentState,
+  CurrentEvent,
+  NextState
+> &
   (NextState["name"] extends CurrentState["name"]
     ? IsImmediateTransition extends false
       ?
           | ReenterTransition<false>
-          | DataTransition<StateType, EventType, CurrentState, CurrentEvent, NextState, CopyDataOnTransition>
-      : DataTransition<StateType, EventType, CurrentState, CurrentEvent, NextState, CopyDataOnTransition>
-    : DataTransition<StateType, EventType, CurrentState, CurrentEvent, NextState, CopyDataOnTransition>);
+          | DataTransition<
+              StateType,
+              EventType,
+              CurrentState,
+              CurrentEvent,
+              NextState,
+              CopyDataOnTransition
+            >
+      : DataTransition<
+          StateType,
+          EventType,
+          CurrentState,
+          CurrentEvent,
+          NextState,
+          CopyDataOnTransition
+        >
+    : DataTransition<
+        StateType,
+        EventType,
+        CurrentState,
+        CurrentEvent,
+        NextState,
+        CopyDataOnTransition
+      >);
 
 export type DataTransition<
   StateType extends MachineState,
@@ -292,7 +381,15 @@ export type DataTransition<
   NextState extends StateType,
   CopyDataOnTransition extends boolean,
 > = CopyDataOnTransition extends true
-  ? Partial<TransitionData<StateType, EventType, CurrentState, CurrentEvent, NextState>>
+  ? Partial<
+      TransitionData<
+        StateType,
+        EventType,
+        CurrentState,
+        CurrentEvent,
+        NextState
+      >
+    >
   : TransitionData<StateType, EventType, CurrentState, CurrentEvent, NextState>;
 
 export interface ReenterTransition<Reenter extends boolean> {
@@ -314,13 +411,15 @@ export type TransitionData<
    * Generate state-data for the next state,
    * usually by combining existing state-data with the event-payload
    */
-  readonly data: (param: { readonly state: CurrentState; readonly event: CurrentEvent }) => StateData<
-    NextState,
-    NextState["name"]
-  >;
+  readonly data: (param: {
+    readonly state: CurrentState;
+    readonly event: CurrentEvent;
+  }) => StateData<NextState, NextState["name"]>;
 };
 
-export type SendFunction<EventType extends MachineEvent> = (event: EventType) => void;
+export type SendFunction<EventType extends MachineEvent> = (
+  event: EventType,
+) => void;
 
 // biome-ignore lint/suspicious/noConfusingVoidType: adding void to union as we don't want to force users to explicity return
 export type EffectReturnValue = Unsubscribe | undefined | null | void;
@@ -331,7 +430,12 @@ export type AnyStateTransitionsConfig<
   CurrentState extends StateType,
 > = {
   readonly [Type in EventType["type"]]?: OneOrMore<
-    AnyStateTransitionConfig<StateType, EventType, CurrentState, ExtractEvent<EventType, Type>>
+    AnyStateTransitionConfig<
+      StateType,
+      EventType,
+      CurrentState,
+      ExtractEvent<EventType, Type>
+    >
   >;
 };
 
@@ -341,9 +445,24 @@ export type AnyStateTransitionConfig<
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
 > = {
-  readonly [Name in StateType["name"]]: keyof Omit<ExtractState<StateType, Name>, "name"> extends never
-    ? AnyStateTransition<StateType, EventType, CurrentState, CurrentEvent, ExtractState<StateType, Name>>
-    : AnyStateTransitionWith<StateType, EventType, CurrentState, CurrentEvent, ExtractState<StateType, Name>>;
+  readonly [Name in StateType["name"]]: keyof Omit<
+    ExtractState<StateType, Name>,
+    "name"
+  > extends never
+    ? AnyStateTransition<
+        StateType,
+        EventType,
+        CurrentState,
+        CurrentEvent,
+        ExtractState<StateType, Name>
+      >
+    : AnyStateTransitionWith<
+        StateType,
+        EventType,
+        CurrentState,
+        CurrentEvent,
+        ExtractState<StateType, Name>
+      >;
 }[StateType["name"]];
 
 export interface AnyStateTransition<
@@ -363,7 +482,10 @@ export interface AnyStateTransition<
    * @param param the current state and event
    * @returns true if the transition should be taken
    */
-  readonly when?: (param: { readonly state: CurrentState; readonly event: CurrentEvent }) => boolean;
+  readonly when?: (param: {
+    readonly state: CurrentState;
+    readonly event: CurrentEvent;
+  }) => boolean;
 
   /**
    * Optional side-effect, run when the transition is taken.
@@ -383,7 +505,27 @@ export type AnyStateTransitionWith<
   CurrentState extends StateType,
   CurrentEvent extends EventType | undefined,
   NextState extends StateType,
-> = AnyStateTransition<StateType, EventType, CurrentState, CurrentEvent, NextState> &
+> = AnyStateTransition<
+  StateType,
+  EventType,
+  CurrentState,
+  CurrentEvent,
+  NextState
+> &
   (IsStateDataHomogenous<StateType> extends true
-    ? Partial<TransitionData<StateType, EventType, CurrentState, CurrentEvent, NextState>>
-    : TransitionData<StateType, EventType, CurrentState, CurrentEvent, NextState>);
+    ? Partial<
+        TransitionData<
+          StateType,
+          EventType,
+          CurrentState,
+          CurrentEvent,
+          NextState
+        >
+      >
+    : TransitionData<
+        StateType,
+        EventType,
+        CurrentState,
+        CurrentEvent,
+        NextState
+      >);

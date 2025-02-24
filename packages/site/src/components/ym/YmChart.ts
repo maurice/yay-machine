@@ -72,78 +72,80 @@ interface Transition {
 @customElement("ym-chart")
 export class YmChart extends LitElement {
   static styles = css`
-  :host {
-    display: block;
-  }
+    :host {
+      display: block;
+    }
 
-  .background {
-    width: 100%;
-    height: 100%;
-    background: white;
-    position: relative;
-    box-shadow: 0px 0px 4px 0px white;
-  }
-
-  .container {
-    --dark-grey: #333;
-    --medium-grey: #666;
-    --medium-blue: royalblue;
-
-    --chart-color: var(--dark-grey);
-
-    color: var(--chart-color);
-    position: relative;
-
-    &:before {
-      content: "";
-      position: absolute;
-      height: 100%;
+    .background {
       width: 100%;
-      background-size: 10px 10px;
-      background-image: linear-gradient(to right, #f2f2f28c 1px, transparent 1px),
-        linear-gradient(to bottom, #f2f2f28c 1px, transparent 1px);
-      background-position: center;
-      top: 0;
-      left: 0;
-    }
-
-    background-size: 50px 50px;
-    background-image: linear-gradient(to right, #d1d1d18c 1px, transparent 1px),
-      linear-gradient(to bottom, #d1d1d18c 1px, transparent 1px);
-    background-position: center;
-
-    svg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .start-node {
-      fill: var(--chart-color);
-    }
-
-    .chart {
+      height: 100%;
+      background: white;
       position: relative;
-      margin: 0 auto;
+      box-shadow: 0px 0px 4px 0px white;
     }
 
-    .chart.interactive {
-      --chart-color: var(--medium-grey);
-    }
+    .container {
+      --dark-grey: #333;
+      --medium-grey: #666;
+      --medium-blue: royalblue;
 
-    #arrow {
-      fill: var(--chart-color);
-    }
+      --chart-color: var(--dark-grey);
 
-    .transition-line {
-      fill: none;
-      stroke: var(--chart-color);
-      stroke-width: 2px;
-      marker-end: url(#arrow);
+      color: var(--chart-color);
+      position: relative;
+
+      &:before {
+        content: "";
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        background-size: 10px 10px;
+        background-image:
+          linear-gradient(to right, #f2f2f28c 1px, transparent 1px),
+          linear-gradient(to bottom, #f2f2f28c 1px, transparent 1px);
+        background-position: center;
+        top: 0;
+        left: 0;
+      }
+
+      background-size: 50px 50px;
+      background-image:
+        linear-gradient(to right, #d1d1d18c 1px, transparent 1px),
+        linear-gradient(to bottom, #d1d1d18c 1px, transparent 1px);
+      background-position: center;
+
+      svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .start-node {
+        fill: var(--chart-color);
+      }
+
+      .chart {
+        position: relative;
+        margin: 0 auto;
+      }
+
+      .chart.interactive {
+        --chart-color: var(--medium-grey);
+      }
+
+      #arrow {
+        fill: var(--chart-color);
+      }
+
+      .transition-line {
+        fill: none;
+        stroke: var(--chart-color);
+        stroke-width: 2px;
+        marker-end: url(#arrow);
+      }
     }
-  }
   `;
 
   @property({ type: String })
@@ -339,9 +341,15 @@ export class YmChart extends LitElement {
       if (
         state.name === this.current &&
         this.#previousCurrent &&
-        (this.#previousCurrent !== this.current || !deepEqual(this.#previousData, this.#data))
+        (this.#previousCurrent !== this.current ||
+          !deepEqual(this.#previousData, this.#data))
       ) {
-        state.animate(Math.random() < 0.6 ? WIGGLE_LEFT_KEY_FRAMES : WIGGLE_RIGHT_KEY_FRAMES, WIGGLE_ANIMATION);
+        state.animate(
+          Math.random() < 0.6
+            ? WIGGLE_LEFT_KEY_FRAMES
+            : WIGGLE_RIGHT_KEY_FRAMES,
+          WIGGLE_ANIMATION,
+        );
       }
     }
     this.#previousCurrent = this.#current;
@@ -405,12 +413,20 @@ export class YmChart extends LitElement {
     const states = this.querySelectorAll("ym-state");
     for (const state of states) {
       const rect = state.getBoundingClientRect();
-      g.setNode(state.name, { label: state.name, width: rect.width, height: rect.height });
+      g.setNode(state.name, {
+        label: state.name,
+        width: rect.width,
+        height: rect.height,
+      });
     }
     const start = this.renderRoot.querySelector(".start-node");
     if (start) {
       const rect = start.getBoundingClientRect();
-      g.setNode("start", { label: "start", width: rect.width, height: rect.height });
+      g.setNode("start", {
+        label: "start",
+        width: rect.width,
+        height: rect.height,
+      });
     }
 
     const transitions = this.querySelectorAll("ym-transition");
@@ -419,7 +435,12 @@ export class YmChart extends LitElement {
       g.setEdge(
         transition.from,
         transition.to,
-        { label: transition.label, width: rect.width, height: rect.height, labelpos: "c" },
+        {
+          label: transition.label,
+          width: rect.width,
+          height: rect.height,
+          labelpos: "c",
+        },
         `${transition.from}:${transition.to}:${transition.label}`,
       );
     }
@@ -443,13 +464,17 @@ export class YmChart extends LitElement {
     }
 
     const edges = g.edges();
-    const lines = Array.from(this.renderRoot.querySelectorAll(".transition-line"));
+    const lines = Array.from(
+      this.renderRoot.querySelectorAll(".transition-line"),
+    );
     for (let i = 0; i < transitions.length; i++) {
       const transition = transitions.item(i);
       const edge = g.edge(edges[i]);
       transition.style.top = `${edge.y - edge.height / 2}px`;
       transition.style.left = `${edge.x - edge.width / 2}px`;
-      if (edge.points.every((it) => !Number.isNaN(it.x) && !Number.isNaN(it.y))) {
+      if (
+        edge.points.every((it) => !Number.isNaN(it.x) && !Number.isNaN(it.y))
+      ) {
         const line = lines[i] as SVGPathElement;
         line.setAttribute("d", drawCurve(edge.points));
         clipPath(line, edge.points);
@@ -458,7 +483,9 @@ export class YmChart extends LitElement {
 
     if (this.start) {
       const edge = g.edge(edges[edges.length - 1]);
-      if (edge.points.every((it) => !Number.isNaN(it.x) && !Number.isNaN(it.y))) {
+      if (
+        edge.points.every((it) => !Number.isNaN(it.x) && !Number.isNaN(it.y))
+      ) {
         const line = lines[lines.length - 1] as SVGPathElement;
         line.setAttribute("d", drawCurve(edge.points));
         clipPath(line, edge.points);

@@ -1,11 +1,18 @@
 import type { CashDispenser } from "@yay-machine/example-machines";
 import { defineMachine } from "yay-machine";
 
-type CashDispenserState = { readonly name: "inactive" } | { readonly name: "dispensing"; readonly amount: number };
+type CashDispenserState =
+  | { readonly name: "inactive" }
+  | { readonly name: "dispensing"; readonly amount: number };
 
-type CashDispenserEvent = { readonly type: "DISPENSE"; readonly amount: number } | { readonly type: "DISPENSED" };
+type CashDispenserEvent =
+  | { readonly type: "DISPENSE"; readonly amount: number }
+  | { readonly type: "DISPENSED" };
 
-export const cashDispenserMachine = defineMachine<CashDispenserState, CashDispenserEvent>({
+export const cashDispenserMachine = defineMachine<
+  CashDispenserState,
+  CashDispenserEvent
+>({
   initialState: { name: "inactive" },
   states: {
     inactive: {

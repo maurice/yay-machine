@@ -16,22 +16,36 @@ This example models a controller for a group of co-located [elevators](/examples
 
 For example, a large office or apartment building might place 3 elevators together. The controller represents the buttons in the lobby that passengers use to initially request an elevator.
 
-This machine's state data includes *the elevator machine instances*, so it has easy access to them when dispatching them to various floors, and tracking their progress.
+This machine's state data includes _the elevator machine instances_, so it has easy access to them when dispatching them to various floors, and tracking their progress.
 
 In this machine's `onStart()` side-effect it subscribes to the elevators's states and if any reach a `doorsOpen` state and were requested by the controller, sends a `ELEVATOR_ARRIVED` event to the controller machine instance, which removes the floor-request from the pending queue.
 
 When a passenger requests an elevator it checks the existing pending requests and if one already exists for that floor, ignores it (ie, it doesn't add a duplicate request).
 
-When there are no existing requests for that floor, it ranks the elevators using a few simple rules to find the best one. It then creates an "internal" `REQUESTING_ELEVATOR` event whose payload carries the selected elevator, and *sends this event to itself* in the `onTransition()` side-effect, during the transition to the temporary `requesting` state. 
+When there are no existing requests for that floor, it ranks the elevators using a few simple rules to find the best one. It then creates an "internal" `REQUESTING_ELEVATOR` event whose payload carries the selected elevator, and _sends this event to itself_ in the `onTransition()` side-effect, during the transition to the temporary `requesting` state.
 
 The `requesting` state receives the `REQUESTING_ELEVATOR` event, and sends a `VISIT_FLOOR` event to the selected elevator. Then we return to the `busy` state (and potentially immediately to `idle` via a conditional immediate transition from `busy`) once more and wait for more requests.
 
 The `REQUESTING_ELEVATOR` event shows how we can share ephemeral data between states without having to add it (temporarily) to the machine's state-data.
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside } from "@astrojs/starlight/components";
 
 <Aside type="tip">
-View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/elevatorControllerMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/elevatorControllerMachine.test.ts" target="_blank">test</a> on GitHub
+  View this example's{" "}
+  <a
+    href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/elevatorControllerMachine.ts"
+    target="_blank"
+  >
+    source
+  </a>{" "}
+  and{" "}
+  <a
+    href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/elevatorControllerMachine.test.ts"
+    target="_blank"
+  >
+    test
+  </a>{" "}
+  on GitHub
 </Aside>
 
 ```typescript

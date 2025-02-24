@@ -9,7 +9,9 @@ export const CashDispenser: FC = () => {
 
   useEffect(() => {
     if (state.name === "dispensing") {
-      const noteEl = document.querySelector(".cash-dispenser .cash-slot .bank-note");
+      const noteEl = document.querySelector(
+        ".cash-dispenser .cash-slot .bank-note",
+      );
       noteEl?.animate(
         [
           { top: "-70px", clipPath: "inset(80px 0px 0px 0px)" },

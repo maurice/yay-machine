@@ -30,11 +30,11 @@ External contributions are welcome but please raise an issue or start a discussi
 
 To make a new release, start the manual [**release**](https://github.com/maurice/yay-machine/actions/workflows/release.yml) job in the project's Github Actions.
 
-This job uses [semantic-release](https://github.com/semantic-release/semantic-release) and 
+This job uses [semantic-release](https://github.com/semantic-release/semantic-release) and
 
-* tags the current version with the next semver according to the last commit message(s)
-* adds a GitHub Release with details of all the new changes
-* builds the package and publishes it to the public NPM registry,
+- tags the current version with the next semver according to the last commit message(s)
+- adds a GitHub Release with details of all the new changes
+- builds the package and publishes it to the public NPM registry,
 
 Credit goes to [this article](https://dev.to/sahanonp/how-to-setup-semantic-release-with-github-actions-31f3) for the steps used to set this up.
 
@@ -51,7 +51,7 @@ npm run site:build          # static build for deployment
 
 It's an [Astro Starlight](https://starlight.astro.build/) project using MDX for dynamic content.
 
-Use VS Code Live 
+Use VS Code Live
 
 Using watch-mode together with the [VS Code Live Server extension](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) is essentially all you need to get on-the-fly reloading whenever making local changes.
 
@@ -59,15 +59,14 @@ Using watch-mode together with the [VS Code Live Server extension](https://marke
 
 Coverage is published to COVERALLS
 
-* [Dashboard](https://coveralls.io/github/maurice/yay-machine)
+- [Dashboard](https://coveralls.io/github/maurice/yay-machine)
 
 ## Renovate
 
 This project is onboarded with Renovate for automatic dependency update PRs.
 
-* [Dashboard](https://developer.mend.io/github/maurice/yay-machine)
+- [Dashboard](https://developer.mend.io/github/maurice/yay-machine)
 
 ## Logo
 
 The logo is a screenshot of the [Google Fonts Nabla font](https://fonts.google.com/specimen/Nabla?preview.text=yay-machine%20&categoryFilters=Feeling:%2FExpressive%2FFuturistic).
-

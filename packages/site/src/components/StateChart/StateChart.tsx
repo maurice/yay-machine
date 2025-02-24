@@ -1,5 +1,12 @@
 import { type FC, memo } from "react";
-import type { Align, Direction, Ranker, YmChart, YmState, YmTransition } from "../ym";
+import type {
+  Align,
+  Direction,
+  Ranker,
+  YmChart,
+  YmState,
+  YmTransition,
+} from "../ym";
 import "../ym";
 
 declare global {
@@ -35,7 +42,18 @@ interface Props {
 }
 
 export const StateChart: FC<Props> = memo(
-  ({ className = "", current, data, start, states, transitions, direction, align, ranker, compact }) => {
+  ({
+    className = "",
+    current,
+    data,
+    start,
+    states,
+    transitions,
+    direction,
+    align,
+    ranker,
+    compact,
+  }) => {
     const classNames = `${className ?? ""} no-content`;
     return (
       // @ts-ignore
@@ -58,7 +76,12 @@ export const StateChart: FC<Props> = memo(
         ))}
         {transitions?.map((it: Transition) => (
           // @ts-ignore
-          <ym-transition key={`${it.from}${it.to}${it.label}`} from={it.from} to={it.to} label={it.label} />
+          <ym-transition
+            key={`${it.from}${it.to}${it.label}`}
+            from={it.from}
+            to={it.to}
+            label={it.label}
+          />
         ))}
         {/* @ts-ignore */}
       </ym-chart>

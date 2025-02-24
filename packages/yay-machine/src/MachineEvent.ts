@@ -13,17 +13,21 @@ export interface MachineEvent<Type extends string = string> {
 /**
  * Extracts the specific event type from a union of events.
  */
-export type ExtractEvent<EventType extends MachineEvent, Type extends EventType["type"]> = Extract<
-  EventType,
-  { type: Type }
-> extends never
-  ? ExtractComplexEvent<EventType, Type>
-  : Extract<EventType, { type: Type }>;
+export type ExtractEvent<
+  EventType extends MachineEvent,
+  Type extends EventType["type"],
+> =
+  Extract<EventType, { type: Type }> extends never
+    ? ExtractComplexEvent<EventType, Type>
+    : Extract<EventType, { type: Type }>;
 
 /**
  * Extracts a concrete event type from type whose `type` field is a `string` union
  */
-type ExtractComplexEvent<EventType extends MachineEvent, Type extends EventType["type"]> = EventType extends {
+type ExtractComplexEvent<
+  EventType extends MachineEvent,
+  Type extends EventType["type"],
+> = EventType extends {
   type: infer N;
 }
   ? Type extends N

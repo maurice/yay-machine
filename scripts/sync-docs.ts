@@ -20,12 +20,18 @@ const includeBundlephobia = args.includes("--includeBundlephobia");
 
 const log = (message: string, ...args: any[]) => console.log(message, ...args);
 
-const readMetadata = async (): Promise<PackagesMetadata> => await Bun.file(metadataFile).json();
+const readMetadata = async (): Promise<PackagesMetadata> =>
+  await Bun.file(metadataFile).json();
 
-const indexMetadata = (metadata: PackagesMetadata): Record<string, [string, keyof PackageMetadata]> => {
+const indexMetadata = (
+  metadata: PackagesMetadata,
+): Record<string, [string, keyof PackageMetadata]> => {
   return Object.fromEntries(
     Object.entries(metadata).flatMap(([packageName, packageMetadata]) =>
-      Object.entries(packageMetadata).map(([key, value]) => [value, [packageName, key]]),
+      Object.entries(packageMetadata).map(([key, value]) => [
+        value,
+        [packageName, key],
+      ]),
     ),
   );
 };
@@ -77,11 +83,16 @@ const captureBundlephobiaStats = async (): Promise<PackagesMetadata> => {
 const previousMetadata = await readMetadata();
 log("previous metadata", previousMetadata, indexMetadata(previousMetadata));
 
-const newMetadata = !includeBundlephobia ? previousMetadata : await captureBundlephobiaStats();
+const newMetadata = !includeBundlephobia
+  ? previousMetadata
+  : await captureBundlephobiaStats();
 
 let didChange = false;
 const files = (await readdir(docsDir, { recursive: true, withFileTypes: true }))
-  .filter((it) => it.isFile() && (it.name.endsWith(".md") || it.name.endsWith(".mdx")))
+  .filter(
+    (it) =>
+      it.isFile() && (it.name.endsWith(".md") || it.name.endsWith(".mdx")),
+  )
   .map((it) => `${it.parentPath}/${it.name}`)
   .concat(["packages/yay-machine/README.md"]);
 for (const fileName of files) {
@@ -90,7 +101,9 @@ for (const fileName of files) {
 
   // update any scraped text
   let newContent = content;
-  for (const [text, [packageName, key]] of Object.entries(indexMetadata(previousMetadata))) {
+  for (const [text, [packageName, key]] of Object.entries(
+    indexMetadata(previousMetadata),
+  )) {
     if (newContent.includes(text)) {
       const replacement = newMetadata[packageName][key];
       if (text === replacement) {
@@ -124,11 +137,16 @@ for (const fileName of files) {
         const exampleFile = result[1];
         log("found embedded example", exampleFile, index);
         const exampleSource = await readFile(exampleFile, { encoding: "utf8" });
-        const [definition, usage] = exampleSource.split("// Usage").map((it) => it.trim());
+        const [definition, usage] = exampleSource
+          .split("// Usage")
+          .map((it) => it.trim());
 
         const startDefinition = newContent.indexOf("```typescript", index);
         const endDefinition = newContent.indexOf("```", startDefinition + 3);
-        const startUsage = newContent.indexOf("```typescript", endDefinition + 3);
+        const startUsage = newContent.indexOf(
+          "```typescript",
+          endDefinition + 3,
+        );
         const endUsage = newContent.indexOf("```", startUsage + 3);
 
         newContent = [

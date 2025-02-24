@@ -7,7 +7,10 @@ type MachineEvent = { type: "EVENT" };
 
 test("no error for valid definition", () => {
   expect(() =>
-    defineMachine<MachineState, MachineEvent>({ initialState: { name: "machine", data: 0 }, states: {} }),
+    defineMachine<MachineState, MachineEvent>({
+      initialState: { name: "machine", data: 0 },
+      states: {},
+    }),
   ).not.toThrow();
 });
 

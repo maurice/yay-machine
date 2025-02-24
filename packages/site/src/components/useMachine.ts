@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import type { MachineEvent, MachineInstance, MachineState } from "yay-machine";
 
-export const useMachine = <StateType extends MachineState, EventType extends MachineEvent>(
+export const useMachine = <
+  StateType extends MachineState,
+  EventType extends MachineEvent,
+>(
   machine: MachineInstance<StateType, EventType>,
 ) => {
   const [state, setState] = useState(machine.state);

@@ -21,14 +21,22 @@ test("no data", () => {
 });
 
 test("data", () => {
-  const machine = defineMachine<{ name: "on" | "off"; times: number }, { type: "change" }>({
+  const machine = defineMachine<
+    { name: "on" | "off"; times: number },
+    { type: "change" }
+  >({
     initialState: { name: "off", times: 0 },
     states: {
       on: {
         on: { change: { to: "off", data: ({ state }) => state } },
       },
       off: {
-        on: { change: { to: "on", data: ({ state }) => ({ times: state.times + 1 }) } },
+        on: {
+          change: {
+            to: "on",
+            data: ({ state }) => ({ times: state.times + 1 }),
+          },
+        },
       },
     },
   })
@@ -44,7 +52,10 @@ test("data", () => {
 });
 
 test("homogenous data + enableCopyDataOnTransition", () => {
-  const machine = defineMachine<{ name: "on" | "off"; times: number }, { type: "change" }>({
+  const machine = defineMachine<
+    { name: "on" | "off"; times: number },
+    { type: "change" }
+  >({
     enableCopyDataOnTransition: true,
     initialState: { name: "off", times: 0 },
     states: {
@@ -52,7 +63,12 @@ test("homogenous data + enableCopyDataOnTransition", () => {
         on: { change: { to: "off" } },
       },
       off: {
-        on: { change: { to: "on", data: ({ state }) => ({ times: state.times + 1 }) } },
+        on: {
+          change: {
+            to: "on",
+            data: ({ state }) => ({ times: state.times + 1 }),
+          },
+        },
       },
     },
   })
@@ -68,7 +84,10 @@ test("homogenous data + enableCopyDataOnTransition", () => {
 });
 
 test("conditional specific state + event", () => {
-  const abcMachine = defineMachine<{ name: "a" | "b" | "c" }, { type: "goto"; next: "a" | "b" | "c" }>({
+  const abcMachine = defineMachine<
+    { name: "a" | "b" | "c" },
+    { type: "goto"; next: "a" | "b" | "c" }
+  >({
     initialState: { name: "a" },
     states: {
       a: {
@@ -96,7 +115,10 @@ test("conditional specific state + event", () => {
 });
 
 test("conditional any state + event", () => {
-  const abcMachine = defineMachine<{ name: "a" | "b" | "c" }, { type: "goto"; next: "a" | "b" | "c" }>({
+  const abcMachine = defineMachine<
+    { name: "a" | "b" | "c" },
+    { type: "goto"; next: "a" | "b" | "c" }
+  >({
     initialState: { name: "a" },
     on: {
       goto: [

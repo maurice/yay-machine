@@ -4,7 +4,9 @@
   "description": "Example state-machines with yay-machine",
   "private": true,
   "type": "module",
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "scripts": {
     "bench": "bun run src/bench.ts"
   },

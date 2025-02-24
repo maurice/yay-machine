@@ -22,10 +22,24 @@ The machine parses the input entirely with conditional immediate (always) transi
 
 It's safe to send the machine multiple `PARSE` events in a row, subscribing to state, and extracting each valid frame as the state changes.
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside } from "@astrojs/starlight/components";
 
 <Aside type="tip">
-View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/stompParserMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/stompParserMachine.test.ts" target="_blank">test</a> on GitHub
+  View this example's{" "}
+  <a
+    href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/stompParserMachine.ts"
+    target="_blank"
+  >
+    source
+  </a>{" "}
+  and{" "}
+  <a
+    href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/stompParserMachine.test.ts"
+    target="_blank"
+  >
+    test
+  </a>{" "}
+  on GitHub
 </Aside>
 
 ```typescript

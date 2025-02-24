@@ -13,12 +13,18 @@ type CardReaderEvent =
   | { readonly type: "EJECT_CARD" }
   | { readonly type: "CARD_EJECTED" };
 
-export const cardReaderMachine = defineMachine<CardReaderState, CardReaderEvent>({
+export const cardReaderMachine = defineMachine<
+  CardReaderState,
+  CardReaderEvent
+>({
   initialState: { name: "noCard" },
   states: {
     noCard: {
       on: {
-        CARD_INSERTED: { to: "cardInserted", data: ({ event }) => ({ cardNumber: event.cardNumber }) },
+        CARD_INSERTED: {
+          to: "cardInserted",
+          data: ({ event }) => ({ cardNumber: event.cardNumber }),
+        },
       },
     },
     cardInserted: {

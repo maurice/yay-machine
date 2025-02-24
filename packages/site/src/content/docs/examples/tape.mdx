@@ -23,10 +23,24 @@ In some states we use `onEnter()` side-effects, and the same `HardwareInterface`
 
 This machine's state data is homogenous and we're using `enableCopyDataOnTransition` to simplify some transitions that don't update the data.
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside } from "@astrojs/starlight/components";
 
 <Aside type="tip">
-View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/tapeMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/tapeMachine.test.ts" target="_blank">test</a> on GitHub
+  View this example's{" "}
+  <a
+    href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/tapeMachine.ts"
+    target="_blank"
+  >
+    source
+  </a>{" "}
+  and{" "}
+  <a
+    href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/tapeMachine.test.ts"
+    target="_blank"
+  >
+    test
+  </a>{" "}
+  on GitHub
 </Aside>
 
 ```typescript

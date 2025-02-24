@@ -1,5 +1,12 @@
 import { ArrowUUpLeft, FrameCorners } from "@phosphor-icons/react";
-import { type FC, type ReactNode, startTransition, useCallback, useRef, useState } from "react";
+import {
+  type FC,
+  type ReactNode,
+  startTransition,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 import { Tooltip } from "../Tooltip";
 import "./FullScreen.css";
@@ -41,7 +48,9 @@ export const FullScreen: FC<FullScreenProps> = ({ children }) => {
   }, []);
 
   const content = (
-    <div className={`full-screen not-content ${fullScreen ? "is-full-screen" : ""}`}>
+    <div
+      className={`full-screen not-content ${fullScreen ? "is-full-screen" : ""}`}
+    >
       <div>{children}</div>
       <div className="full-screen__controls">
         {/* biome-ignore lint/a11y/useKeyWithMouseEvents: <explanation> */}
@@ -54,7 +63,9 @@ export const FullScreen: FC<FullScreenProps> = ({ children }) => {
           {fullScreen ? <ArrowUUpLeft /> : <FrameCorners />}
         </button>
       </div>
-      {toggleHovered && <Tooltip>{fullScreen ? "Page view" : "Full screen"}</Tooltip>}
+      {toggleHovered && (
+        <Tooltip>{fullScreen ? "Page view" : "Full screen"}</Tooltip>
+      )}
     </div>
   );
 

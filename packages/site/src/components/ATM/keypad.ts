@@ -18,8 +18,14 @@ export const keypadMachine = defineMachine<KeypadState, KeypadEvent>({
   states: {
     inactive: {
       on: {
-        CHOOSE: { to: "choose", data: ({ event }) => ({ choices: event.choices }) },
-        NUMBER: { to: "number", data: ({ event }) => ({ value: "", mask: event.mask }) },
+        CHOOSE: {
+          to: "choose",
+          data: ({ event }) => ({ choices: event.choices }),
+        },
+        NUMBER: {
+          to: "number",
+          data: ({ event }) => ({ value: "", mask: event.mask }),
+        },
       },
     },
     choose: {
@@ -31,7 +37,8 @@ export const keypadMachine = defineMachine<KeypadState, KeypadEvent>({
           },
           {
             to: "done",
-            when: ({ state, event }) => state.choices.includes(Number(event.key)),
+            when: ({ state, event }) =>
+              state.choices.includes(Number(event.key)),
             data: ({ event }) => ({ value: event.key, mask: false }),
           },
         ],
@@ -52,12 +59,18 @@ export const keypadMachine = defineMachine<KeypadState, KeypadEvent>({
           {
             to: "number",
             when: ({ event }) => event.key === "DELETE",
-            data: ({ state, event }) => ({ value: [...state.value].slice(0, -1).join(""), mask: state.mask }),
+            data: ({ state, event }) => ({
+              value: [...state.value].slice(0, -1).join(""),
+              mask: state.mask,
+            }),
           },
           {
             to: "number",
             when: ({ event }) => !Number.isNaN(Number(event.key)),
-            data: ({ state, event }) => ({ value: `${state.value}${event.key}`, mask: state.mask }),
+            data: ({ state, event }) => ({
+              value: `${state.value}${event.key}`,
+              mask: state.mask,
+            }),
           },
         ],
       },

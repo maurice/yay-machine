@@ -16,7 +16,7 @@
 
   padding: 1em;
   border-radius: 10px;
-  filter: blur(.3px);
+  filter: blur(0.3px);
   white-space: pre;
 }
 

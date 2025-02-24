@@ -4,15 +4,20 @@
   "description": "A modern, simple, lightweight, zero-dependency, TypeScript state-machine library",
   "type": "module",
   "private": true,
-  "files": ["src", "dist"],
+  "files": [
+    "src",
+    "dist"
+  ],
   "scripts": {
     "prepare": "husky",
     "all": "bun run build && bun run fix && bun run check && bun run test",
-    "check": "bun run check:types && bun run check:lint",
+    "check": "bun run check:types && bun run check:lint && bun run check:format",
     "check:types": "turbo check:types",
     "check:lint": "npx @biomejs/biome check",
-    "fix": "bun run fix:lint",
+    "check:format": "npx prettier . --check",
+    "fix": "bun run fix:lint && bun run fix:format",
     "fix:lint": "npx @biomejs/biome check --write",
+    "fix:format": "npx prettier . --write --ignore-unknown",
     "test": "bun test",
     "test:watch": "bun test --watch",
     "test:ci": "turbo run test:ci",
@@ -48,7 +53,9 @@
     "url": "https://github.com/maurice/yay-machine/issues"
   },
   "homepage": "https://github.com/maurice/yay-machine#readme",
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@commitlint/cli": "^19.6.1",
@@ -59,10 +66,13 @@
     "bun-types": "^1.2.1",
     "husky": "^9.1.7",
     "playwright": "^1.49.1",
+    "prettier": "^3.5.2",
     "sharp": "^0.33.5",
     "turbo": "^2.3.3",
     "typescript": "^5.7.2"
   },
   "packageManager": "npm@11.1.0",
-  "trustedDependencies": ["@biomejs/biome"]
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ]
 }

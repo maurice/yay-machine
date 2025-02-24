@@ -22,7 +22,12 @@ interface CancelledState {
   readonly onCancelled: () => void;
 }
 
-type OrderState = ProcessingState | OutForDeliveryState | DeliveredState | CollectedState | CancelledState;
+type OrderState =
+  | ProcessingState
+  | OutForDeliveryState
+  | DeliveredState
+  | CollectedState
+  | CancelledState;
 
 interface SubmitEvent {
   readonly type: "SUBMIT";
@@ -41,7 +46,11 @@ interface CancelEvent {
   readonly onCancelled: () => void;
 }
 
-type OrderEvent = SubmitEvent | OutForDeliveryEvent | CompleteEvent | CancelEvent;
+type OrderEvent =
+  | SubmitEvent
+  | OutForDeliveryEvent
+  | CompleteEvent
+  | CancelEvent;
 
 const orderMachine = defineMachine<OrderState, OrderEvent>({
   initialState: { name: "processing" },

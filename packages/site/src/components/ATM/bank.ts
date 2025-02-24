@@ -1,4 +1,7 @@
-import { type Bank, BankWithdrawalErrorReason } from "@yay-machine/example-machines";
+import {
+  type Bank,
+  BankWithdrawalErrorReason,
+} from "@yay-machine/example-machines";
 import { defineMachine } from "yay-machine";
 
 type AccountBalances = Record<string, number>;
@@ -9,7 +12,10 @@ type BankState = {
   readonly name: "default" | "withdrawing";
   readonly accountBalances: AccountBalances;
   readonly cardPins: CardPins;
-  readonly pendingWithdrawal: Record<string, [cardNumber: string, amount: number]>;
+  readonly pendingWithdrawal: Record<
+    string,
+    [cardNumber: string, amount: number]
+  >;
   readonly notify?: () => void;
 };
 
@@ -44,19 +50,26 @@ export const bankMachine = defineMachine<BankState, BankEvent>({
         CHECK_WITHDRAWAL: [
           {
             to: "default",
-            when: ({ state: { cardPins }, event: { cardNumber } }) => !(cardNumber in cardPins),
-            onTransition: ({ event }) => event.onRejected(BankWithdrawalErrorReason.INVALID_CARD),
+            when: ({ state: { cardPins }, event: { cardNumber } }) =>
+              !(cardNumber in cardPins),
+            onTransition: ({ event }) =>
+              event.onRejected(BankWithdrawalErrorReason.INVALID_CARD),
           },
           {
             to: "default",
-            when: ({ state: { cardPins }, event: { cardNumber, pin } }) => cardPins[cardNumber] !== pin,
-            onTransition: ({ event }) => event.onRejected(BankWithdrawalErrorReason.INVALID_PIN),
+            when: ({ state: { cardPins }, event: { cardNumber, pin } }) =>
+              cardPins[cardNumber] !== pin,
+            onTransition: ({ event }) =>
+              event.onRejected(BankWithdrawalErrorReason.INVALID_PIN),
           },
           {
             to: "default",
-            when: ({ state: { accountBalances }, event: { cardNumber, amount } }) =>
-              accountBalances[cardNumber] < amount,
-            onTransition: ({ event }) => event.onRejected(BankWithdrawalErrorReason.INSUFFICIENT_FUNDS),
+            when: ({
+              state: { accountBalances },
+              event: { cardNumber, amount },
+            }) => accountBalances[cardNumber] < amount,
+            onTransition: ({ event }) =>
+              event.onRejected(BankWithdrawalErrorReason.INSUFFICIENT_FUNDS),
           },
           {
             to: "default",
@@ -75,7 +88,10 @@ export const bankMachine = defineMachine<BankState, BankEvent>({
         ],
         WITHDRAW: {
           to: "default",
-          when: ({ state: { pendingWithdrawal, accountBalances }, event: { transactionId } }) => {
+          when: ({
+            state: { pendingWithdrawal, accountBalances },
+            event: { transactionId },
+          }) => {
             const [cardNumber, amount] = pendingWithdrawal[transactionId];
             return accountBalances[cardNumber] >= amount;
           },
@@ -89,7 +105,10 @@ export const bankMachine = defineMachine<BankState, BankEvent>({
             } = state;
             return {
               ...state,
-              accountBalances: { ...accountBalances, [cardNumber]: accountBalances[cardNumber] - amount },
+              accountBalances: {
+                ...accountBalances,
+                [cardNumber]: accountBalances[cardNumber] - amount,
+              },
               pendingWithdrawal,
             };
           },
