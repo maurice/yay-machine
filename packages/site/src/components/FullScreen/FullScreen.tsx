@@ -63,9 +63,9 @@ export const FullScreen: FC<FullScreenProps> = ({ children }) => {
           {fullScreen ? <ArrowUUpLeft /> : <FrameCorners />}
         </button>
       </div>
-      {toggleHovered && (
-        <Tooltip>{fullScreen ? "Page view" : "Full screen"}</Tooltip>
-      )}
+      <Tooltip show={toggleHovered}>
+        {fullScreen ? "Page view" : "Full screen"}
+      </Tooltip>
     </div>
   );
 

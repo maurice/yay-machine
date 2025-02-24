@@ -5,11 +5,6 @@
   color: var(--sl-color-gray-6);
   font-size: smaller;
   z-index: 10;
-  opacity: 1;
-  transform: translateY(0);
-  transition:
-    opacity 0.5s,
-    transform 0.5s;
 
   .tooltip-body {
     background-color: var(--sl-color-gray-1);
@@ -27,9 +22,30 @@
     border-bottom: 5px solid transparent;
     border-left: 10px solid var(--sl-color-gray-1);
   }
+}
 
-  @starting-style {
-    opacity: 0;
-    transform: translateY(10%);
-  }
+.tooltip-enter {
+  opacity: 0;
+  transform: translateY(10%);
+}
+
+.tooltip-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.5s,
+    transform 0.5s;
+}
+
+.tooltip-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tooltip-exit-active {
+  opacity: 0;
+  transform: translateY(10%);
+  transition:
+    opacity 0.5s,
+    transform 0.5s;
 }
