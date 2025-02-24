@@ -3,7 +3,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 @customElement("ym-state")
-class YmState extends LitElement {
+export class YmState extends LitElement {
   static styles = css`
   :host {
     position: absolute;
@@ -39,7 +39,7 @@ class YmState extends LitElement {
   .name {
     color: var(--state-color);
     border-bottom: 2px solid var(--state-color);
-    padding: 0 0.2em;
+    padding: 0 1em;
     text-align: center;
   }
 
@@ -47,6 +47,11 @@ class YmState extends LitElement {
     color: var(--state-color);
     padding: 0 0.2em;
     line-height: normal;
+  }
+
+  .state.compact {
+    min-width: 80px;
+    min-height: 50px;
   }
 
   .current .name {
@@ -59,8 +64,11 @@ class YmState extends LitElement {
   @property({ type: String })
   name = "";
 
+  @property({ type: Boolean })
+  compact = false;
+
   @property({ type: Object })
-  data = {};
+  data: object | undefined = {};
 
   @state()
   interactive = false;
@@ -69,18 +77,15 @@ class YmState extends LitElement {
   current = false;
 
   render() {
+    const embeddedData = this.data
+      ? html`${Object.entries(this.data).map(([key, value]) => html`<div><em>${key}</em>: ${value}</div>`)}`
+      : "";
     return html`
-      <div class=${classMap({ state: true, interactive: this.interactive, current: this.current })}>
+      <div class=${classMap({ state: true, interactive: this.interactive, current: this.current, compact: this.compact })}>
         <div class="name">${this.name}</div>
-        <div class="data">${html`${Object.entries(this.data).map(([key, value]) => html`<div><em>${key}</em>: ${value}</div>`)}`}
+        <div class="data">${embeddedData}
         </div>
       </div>
     `;
-  }
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ym-state": YmState;
   }
 }

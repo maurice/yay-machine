@@ -74,7 +74,7 @@ import StateChart from "../../../components/StateChart/StateChart.astro";
 
         feedbackEl.classList.remove('correct');
         feedbackEl.classList.remove('incorrect');
-        if (state.name === 'init') {
+        if (state.name === 'pickNumber') {
             feedbackEl.innerHTML = "Let's go...";
         } else if (state.name === 'playing' && state.numGuesses > 0) {
             feedbackEl.classList.add('incorrect');
@@ -113,15 +113,15 @@ import StateChart from "../../../components/StateChart/StateChart.astro";
 </div>
 
 <StateChart
-  start="init"
-  initial="init"
-  states={['init', 'playing', 'guessedCorrectly', 'tooManyIncorrectGuesses']}
+  start="pickNumber"
+  initial="pickNumber"
+  states={['pickNumber', 'playing', 'guessedCorrectly', 'tooManyIncorrectGuesses']}
   transitions={[
-    { from: 'init', to: 'playing', label: '(immediate)' },
+    { from: 'pickNumber', to: 'playing', label: '(immediate)' },
     { from: 'playing', to: 'playing', label: 'GUESS' },
     { from: 'playing', to: 'guessedCorrectly', label: 'GUESS' },
     { from: 'playing', to: 'tooManyIncorrectGuesses', label: 'GUESS' },
-    { from: 'guessedCorrectly', to: 'init', label: 'NEW_GAME' },
-    { from: 'tooManyIncorrectGuesses', to: 'init', label: 'NEW_GAME' },
+    { from: 'guessedCorrectly', to: 'pickNumber', label: 'NEW_GAME' },
+    { from: 'tooManyIncorrectGuesses', to: 'pickNumber', label: 'NEW_GAME' },
   ]}
 />

@@ -1,9 +1,12 @@
 import starlight from "@astrojs/starlight";
-// @ts-check
 import { defineConfig } from "astro/config";
+import starlightLinksValidator from "starlight-links-validator";
+
+import react from "@astrojs/react";
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://yay-machine.js.org/",
   integrations: [
     starlight({
       title: "yay-machine",
@@ -42,7 +45,9 @@ export default defineConfig({
         src: "./src/assets/logo.png",
         replacesTitle: true,
       },
+      plugins: [starlightLinksValidator()],
     }),
+    react(),
   ],
   vite: {
     define: {

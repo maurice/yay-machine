@@ -1,0 +1,28 @@
+.atm {
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    align-items: center;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+    justify-content: center;
+  }
+
+  .atm-hardware {
+    display: inline-flex;
+    padding: 1em;
+    border: 2px solid var(--sl-color-gray-4);
+    border-radius: 5px;
+    background-color: var(--sl-color-gray-7);
+  }
+
+  .non-hardware {
+    gap: 3em;
+    padding-top: 40px;
+  }
+}

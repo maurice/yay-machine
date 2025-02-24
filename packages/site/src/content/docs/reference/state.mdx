@@ -173,7 +173,7 @@ if (connection.state.name === 'connected') {
 }
 ```
 
-We can also define [conditional transitions](../transitions/#conditional-transitions-when) that query both state-data and event-payloads to decide which transition to take.
+We can also define [conditional transitions](/reference/transitions/#conditional-transitions-when) that query both state-data and event-payloads to decide which transition to take.
 
 ### `enableCopyDataOnTransition`
 
@@ -240,7 +240,7 @@ const toggleMachine = defineMachine<ToggleState, ToggleEvent>({
 ```
 
 <Aside type="tip">
-See the [Health (game component) example](../../examples/health/) for more realistic usage.
+See the [Health (game component) example](/examples/health/) for more realistic usage.
 </Aside>
 
 ## Heterogenous state data
@@ -322,7 +322,7 @@ Always generate and return a new data object.
 
 ## State lifecycle side-effects
 
-States may define two optional [side-effect](../side-effects/#state-onenter-onexit) callbacks that are executed when the state is entered and exited respectively
+States may define two optional [side-effect](/reference/side-effects/#state-onenter-onexit) callbacks that are executed when the state is entered and exited respectively
 
 ```typescript {6,7}
 const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({

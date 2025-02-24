@@ -46,3 +46,16 @@ svg.inline-icon {
     margin: 0 calc(var(--sl-content-pad-x) * -1);
   }
 }
+
+.expressive-code.install-sh mark {
+  font-weight: bold !important;
+  background-image: linear-gradient(45deg, #d4d400, #ef6c00) !important;
+  background-size: 100% !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  background-clip: text !important;
+
+  &::before {
+    border: none !important;
+  }
+}

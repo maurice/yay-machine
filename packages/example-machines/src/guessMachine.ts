@@ -3,7 +3,7 @@ import { defineMachine } from "yay-machine";
 
 interface GuessState {
   readonly name:
-    | "init"
+    | "pickNumber"
     | "playing"
     | "guessedCorrectly"
     | "tooManyIncorrectGuesses";
@@ -35,9 +35,9 @@ export const guessMachine = defineMachine<
   GuessState,
   GuessEvent | NewGameEvent
 >({
-  initialState: { name: "init", answer: 0, numGuesses: 0, maxGuesses: 5 },
+  initialState: { name: "pickNumber", answer: 0, numGuesses: 0, maxGuesses: 5 },
   states: {
-    init: {
+    pickNumber: {
       always: {
         to: "playing",
         data: ({ state }) => ({
@@ -69,12 +69,12 @@ export const guessMachine = defineMachine<
     },
     guessedCorrectly: {
       on: {
-        NEW_GAME: { to: "init", data: ({ state }) => state },
+        NEW_GAME: { to: "pickNumber", data: ({ state }) => state },
       },
     },
     tooManyIncorrectGuesses: {
       on: {
-        NEW_GAME: { to: "init", data: ({ state }) => state },
+        NEW_GAME: { to: "pickNumber", data: ({ state }) => state },
       },
     },
   },
