@@ -54,7 +54,14 @@ export class YmState extends LitElement {
 
     .state.compact {
       min-width: 80px;
-      min-height: 50px;
+      min-height: fit-content;
+
+      .name {
+        border-bottom: none;
+      }
+      .data {
+        display: none;
+      }
     }
 
     .current .name {
