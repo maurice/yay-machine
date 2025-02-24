@@ -49,7 +49,7 @@ export const FullScreen: FC<FullScreenProps> = ({ children }) => {
 
   const content = (
     <div
-      className={`full-screen not-content ${fullScreen ? "is-full-screen" : ""}`}
+      className={`full-screen-wrapper not-content ${fullScreen ? "is-full-screen" : ""}`}
     >
       <div>{children}</div>
       <div className="full-screen__controls">

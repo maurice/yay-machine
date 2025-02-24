@@ -75,7 +75,7 @@ import StateChart from "../../../components/StateChart/StateChart.astro";
         feedbackEl.classList.remove('correct');
         feedbackEl.classList.remove('incorrect');
         if (state.name === 'pickNumber') {
-            feedbackEl.innerHTML = "Let's go...";
+            feedbackEl.innerHTML = "Let's play...";
         } else if (state.name === 'playing' && state.numGuesses > 0) {
             feedbackEl.classList.add('incorrect');
             feedbackEl.innerHTML = `Incorrect, try again (${state.maxGuesses - state.numGuesses} more attempts)`;

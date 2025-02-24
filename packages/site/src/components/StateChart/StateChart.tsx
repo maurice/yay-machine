@@ -81,6 +81,7 @@ export const StateChart: FC<Props> = memo(
             from={it.from}
             to={it.to}
             label={it.label}
+            compact={compact}
           />
         ))}
         {/* @ts-ignore */}

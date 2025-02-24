@@ -34,20 +34,24 @@ import StateChart from "../../../components/StateChart/StateChart.astro";
     {
       from: "connecting",
       to: "connectionError",
-      label: "ERROR (invalid auth)",
+      label: "ERROR\n(invalid auth)",
     },
-    { from: "connecting", to: "reattemptConnection", label: "ERROR (default)" },
+    {
+      from: "connecting",
+      to: "reattemptConnection",
+      label: "ERROR\n(default)",
+    },
     { from: "connected", to: "reattemptConnection", label: "ERROR" },
     { from: "connected", to: "connected", label: "SEND" },
     {
       from: "reattemptConnection",
       to: "connecting",
-      label: "(after delay ) CONNECT",
+      label: "(after delay)\nCONNECT",
     },
     {
       from: "reattemptConnection",
       to: "connectionError",
-      label: "(reached max connection attempts)",
+      label: "(reached max\nconnection attempts)",
     },
     { from: "connected", to: "disconnected", label: "DISCONNECTED" },
     { from: "connecting", to: "disconnected", label: "DISCONNECTED" },

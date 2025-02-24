@@ -33,6 +33,6 @@ import "../ym";
 <div>
     <ym-chart class={classNames} start={start} current={initial} direction={direction} align={align} ranker={ranker}>
         {states?.map((it: string | State) => <ym-state name={typeof it === 'string' ? it : it.name} compact={compact}/>)}
-        {transitions?.map((it: Transition) => <ym-transition from={it.from} to={it.to} label={it.label} />)}
+        {transitions?.map((it: Transition) => <ym-transition from={it.from} to={it.to} label={it.label} compact={compact} />)}
     </ym-chart>
 </div>
