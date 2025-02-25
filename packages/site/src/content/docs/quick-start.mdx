@@ -43,7 +43,7 @@ Finally what interactions would it need with the outside world?
 
 ### Outline States, Events and Transitions
 
-First, let's define all the **states**, **events** and **transitions** of the state-machine first. Let's ignore _state-data_ and _event-payloads_ right now.
+First, let's define all the **states**, **events** and **transitions** of the state-machine. Let's ignore _state-data_ and _event-payloads_ right now.
 
 This will give us an **outline** and we can **fill in the details later**.
 
@@ -152,7 +152,7 @@ Let's now add the _state-data_, _event-payloads_ and _side-effects_.
 
 First we expand the states and events so they contain the data we need to capture.
 
-```typescript ins={11-20} {35-50} ins={55-64} ins="enableCopyDataOnTransition: true"
+```typescript ins={11-20} ins={37,41,45,49} ins={55-64} ins={66}
 export interface AtmState {
   readonly name:
     | "waitingForCard"

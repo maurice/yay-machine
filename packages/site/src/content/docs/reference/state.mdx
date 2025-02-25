@@ -31,6 +31,8 @@ import StateChart from "../../../components/StateChart/StateChart.astro";
     { from: "connected", to: "disconnected" },
   ]}
   start="disconnected"
+  end="connectionError"
+  compact={true}
 />
 
 In this "connection" state-machine, the states are `disconnected`, `connecting`, `connected` and `connectionError`.

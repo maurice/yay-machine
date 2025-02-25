@@ -58,6 +58,7 @@ import StateChart from "../../../components/StateChart/StateChart.astro";
     { from: "reattemptConnection", to: "disconnected", label: "DISCONNECTED" },
   ]}
   start="disconnected"
+  end="connectionError"
   compact={true}
 />
 
@@ -65,23 +66,10 @@ import StateChart from "../../../components/StateChart/StateChart.astro";
 
 Here is the complete machine source. In the following sections we explore the various different transition techniques it uses.
 
-<Aside type="tip">
-  View this example's{" "}
-  <a
-    href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/connectionMachine.ts"
-    target="_blank"
-  >
-    source
-  </a>{" "}
-  and{" "}
-  <a
-    href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/connectionMachine.test.ts"
-    target="_blank"
-  >
-    test
-  </a>{" "}
-  on GitHub
-</Aside>
+{<Aside type="tip">
+View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/connectionMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/connectionMachine.test.ts" target="_blank">test</a> on GitHub
+
+</Aside>}
 
 ```typescript
 // connectionMachine.ts
@@ -372,6 +360,7 @@ In the above machine we see this for
   states={["disconnected", "connecting"]}
   transitions={[{ from: "disconnected", to: "connecting", label: "CONNECT" }]}
   direction="LR"
+  compact={true}
 />
 
 and
@@ -380,6 +369,7 @@ and
   states={["connecting", "connected"]}
   transitions={[{ from: "connecting", to: "connected", label: "CONNECTED" }]}
   direction="LR"
+  compact={true}
 />
 
 and
@@ -390,6 +380,7 @@ and
     { from: "connected", to: "reattemptConnection", label: "ERROR" },
   ]}
   direction="LR"
+  compact={true}
 />
 
 (And elsewhere.)
@@ -423,6 +414,7 @@ In the above machine we see this happens for
   states={["connected"]}
   transitions={[{ from: "connected", to: "connected", label: "SEND" }]}
   direction="LR"
+  compact={true}
 />
 
 This can be used to perform a **transition side-effect** and still keep any current **state entry side-effect** active (ie, not call their cleanup function, and allow them to continue to `send` events to the machine).
@@ -461,6 +453,7 @@ In the above machine we see this for
     { from: "<<any state>>", to: "disconnected", label: "DISCONNECT" },
   ]}
   direction="LR"
+  compact={true}
 />
 
 These types of transitions are defined at `on[EVENT_NAME]` in the definition config
@@ -489,6 +482,7 @@ In the above machine we see this for the `HEARTBEAT` event
     { from: "<<current state>>", to: "<<current state>>", label: "HEARTBEAT" },
   ]}
   direction="LR"
+  compact={true}
 />
 
 This technique is typically used to update state-data. For example, the connection machine updates the `lastHeartbeatTime` state-data property whenever it receives a `HEARTBEAT` event.
@@ -520,6 +514,7 @@ In the above machine we see this happens for
     },
     { from: "connecting", to: "reattemptConnection", label: "ERROR (default)" },
   ]}
+  compact={true}
 />
 
 The `when()` callback has a single parameter with fields for the current `state` and the `event`, and SHOULD be pure and deterministic, ie, only using `state` and `event` to decide which transition to take.
@@ -567,6 +562,7 @@ In the above machine we see this happens for
       label: "(reached max connection attempts)",
     },
   ]}
+  compact={true}
 />
 
 Immediate transitions belong to a state node in the definition config at `states[stateName].always`
