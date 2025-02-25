@@ -23,9 +23,9 @@ const WIGGLE_LEFT_KEY_FRAMES: Keyframe[] = [
   {
     transform: "rotate(0deg)",
   },
-];
-
-const WIGGLE_RIGHT_KEY_FRAMES: Keyframe[] = [
+  {
+    transform: "rotate(2deg)",
+  },
   {
     transform: "rotate(0deg)",
   },
@@ -35,13 +35,10 @@ const WIGGLE_RIGHT_KEY_FRAMES: Keyframe[] = [
   {
     transform: "rotate(0deg)",
   },
-  {
-    transform: "rotate(2deg)",
-  },
-  {
-    transform: "rotate(0deg)",
-  },
 ];
+
+const WIGGLE_RIGHT_KEY_FRAMES: Keyframe[] =
+  WIGGLE_LEFT_KEY_FRAMES.concat().reverse();
 
 const WIGGLE_ANIMATION: KeyframeAnimationOptions = {
   duration: 500,
@@ -126,6 +123,18 @@ export class YmChart extends LitElement {
         fill: var(--chart-color);
       }
 
+      .end-node {
+        circle:nth-child(1) {
+          stroke: var(--chart-color);
+          stroke-width: 2;
+          fill: #f9f9f9;
+        }
+        circle:nth-child(2) {
+          stroke: none;
+          fill: var(--chart-color);
+        }
+      }
+
       .chart {
         position: relative;
         margin: 0 auto;
@@ -135,12 +144,9 @@ export class YmChart extends LitElement {
         --chart-color: var(--medium-grey);
       }
 
-      #arrow {
-        fill: var(--chart-color);
-      }
-
       .transition-line {
-        fill: none;
+        fill: var(--chart-color);
+        fill-opacity: 0;
         stroke: var(--chart-color);
         stroke-width: 2px;
         marker-end: url(#arrow);
@@ -150,6 +156,20 @@ export class YmChart extends LitElement {
 
   @property({ type: String })
   start: string | undefined;
+
+  @property({
+    type: Array,
+    converter(value) {
+      return String(value)
+        .split(",")
+        .map((it) => it.trim());
+    },
+  })
+  end: string[] = [];
+
+  hasEnd(): boolean {
+    return this.end.length > 0;
+  }
 
   #previousCurrent: string | undefined;
   #current: string | undefined;
@@ -276,26 +296,33 @@ export class YmChart extends LitElement {
       if (transition) {
         const POP_KEY_FRAMES: Keyframe[] = [
           {
-            "--color": "var(--medium-blue)",
+            borderColor: "var(--medium-blue)",
+            color: "var(--medium-blue)",
+            // border: "2px solid var(--medium-blue)",
             transform: "scale(1)",
           },
           {
-            "--color": "var(--medium-blue)",
+            borderColor: "var(--medium-blue)",
+            color: "var(--medium-blue)",
+            // border: "2px solid var(--medium-blue)",
             transform: "scale(1.1)",
-            offset: 0.25,
+            // offset: 0.1,
           },
           {
+            // borderColor: "var(--medium-blue)",
+            // color: "var(--medium-blue)",
+            // border: "2px solid var(--medium-blue)",
             transform: "scale(1)",
-            offset: 0.75,
+            // offset: 1,
           },
         ];
 
         const POP_ANIMATION: KeyframeAnimationOptions = {
-          duration: 250,
-          easing: "ease-in-out",
-          // easing: "cubic-bezier(0.5, 1.8, 0.3, 0.8)", // ease-out-elastic
+          duration: 300,
+          easing: "ease-out",
+          // easing: "cubic-bezier(0.7, 0, 0.84, 0)", // ease-in-expo
           iterations: 1,
-          composite: "add",
+          // composite: "add",
         };
 
         transition.animate(POP_KEY_FRAMES, POP_ANIMATION);
@@ -307,16 +334,20 @@ export class YmChart extends LitElement {
         if (path) {
           const FADE_KEY_FRAMES: Keyframe[] = [
             {
+              fill: "var(--medium-blue)",
               stroke: "var(--medium-blue)",
             },
             {
+              fill: "var(--medium-blue)",
               stroke: "var(--medium-blue)",
             },
+            {},
           ];
 
           const FADE_ANIMATION: KeyframeAnimationOptions = {
-            duration: 250,
-            easing: "ease-in-out",
+            duration: 300,
+            easing: "ease-in",
+            // easing: "cubic-bezier(0.7, 0, 0.84, 0)", // ease-in-expo
             // easing: "cubic-bezier(0.5, 1.8, 0.3, 0.8)", // ease-out-elastic
             iterations: 1,
           };
@@ -374,23 +405,23 @@ export class YmChart extends LitElement {
                       markerWidth="6"
                       markerHeight="6"
                       orient="auto-start-reverse"
+                      stroke="context-stroke"
+                      fill="context-fill"
                   >
                     <path d="M 0 0 L 10 5 L 0 10 z" />
                   </marker>
-                  <marker
-                      id="active-arrow"
-                      viewBox="0 0 10 10"
-                      refX="5"
-                      refY="5"
-                      markerWidth="6"
-                      markerHeight="6"
-                      orient="auto-start-reverse">
-                    <path d="M 0 0 L 10 5 L 0 10 z" />
-                  </marker>
               </defs>
-              ${this.start ? svg`<circle class='start-node' r="10" cx=${this.graph?.node("start")?.x || 0} cy=${this.graph?.node("start").y || 0} />` : nothing}
+              ${this.start && svg`<circle class='start-node' r="10" cx=${this.graph?.node("start")?.x ?? 0} cy=${this.graph?.node("start").y ?? 0} />`}
+              ${
+                this.hasEnd() &&
+                svg`<g class='end-node'>
+                <circle r="10" cx=${this.graph?.node("end")?.x ?? 0} cy=${this.graph?.node("end").y ?? 0} />
+                <circle r="6" cx=${this.graph?.node("end")?.x ?? 0} cy=${this.graph?.node("end").y ?? 0} />
+                </g>`
+              }
               ${Array.from(this.querySelectorAll("ym-transition")).map?.(() => svg`<path class="transition-line" shape-rendering="auto" />`)}
-              ${this.start ? svg`<path class="transition-line" shape-rendering="auto" />` : nothing}
+              ${this.start && svg`<path class="transition-line" shape-rendering="auto" />`}
+              ${this.hasEnd() && svg`${this.end.map(() => svg`<path class="transition-line" shape-rendering="auto" />`)}`}
             </svg>
             <slot></slot>
           </div>
@@ -402,8 +433,8 @@ export class YmChart extends LitElement {
   #layout() {
     const g = new dagre.graphlib.Graph({ multigraph: true, directed: true });
     g.setGraph({
-      nodesep: 100,
-      edgesep: 30,
+      // nodesep: 100,
+      // edgesep: 30,
       rankdir: this.direction,
       align: this.align,
       ranker: this.ranker,
@@ -419,11 +450,22 @@ export class YmChart extends LitElement {
         height: rect.height,
       });
     }
+
     const start = this.renderRoot.querySelector(".start-node");
     if (start) {
       const rect = start.getBoundingClientRect();
       g.setNode("start", {
         label: "start",
+        width: rect.width,
+        height: rect.height,
+      });
+    }
+
+    const end = this.renderRoot.querySelector(".end-node");
+    if (end) {
+      const rect = end.getBoundingClientRect();
+      g.setNode("end", {
+        label: "end",
         width: rect.width,
         height: rect.height,
       });
@@ -444,8 +486,25 @@ export class YmChart extends LitElement {
         `${transition.from}:${transition.to}:${transition.label}`,
       );
     }
+
     if (this.start) {
-      g.setEdge("start", this.start, { label: undefined, labelpos: "c" });
+      g.setEdge(
+        "start",
+        this.start,
+        { label: undefined, labelpos: "c" },
+        "start",
+      );
+    }
+
+    if (this.end) {
+      for (const fromState of this.end) {
+        g.setEdge(
+          fromState,
+          "end",
+          { label: undefined, labelpos: "c" },
+          `${fromState}:end`,
+        );
+      }
     }
 
     dagre.layout(g);
@@ -467,7 +526,8 @@ export class YmChart extends LitElement {
     const lines = Array.from(
       this.renderRoot.querySelectorAll(".transition-line"),
     );
-    for (let i = 0; i < transitions.length; i++) {
+    let i = 0;
+    for (; i < transitions.length; i++) {
       const transition = transitions.item(i);
       const edge = g.edge(edges[i]);
       transition.style.top = `${edge.y - edge.height / 2}px`;
@@ -482,11 +542,22 @@ export class YmChart extends LitElement {
     }
 
     if (this.start) {
-      const edge = g.edge(edges[edges.length - 1]);
+      const edge = g.edge(edges[i++]);
       if (
         edge.points.every((it) => !Number.isNaN(it.x) && !Number.isNaN(it.y))
       ) {
-        const line = lines[lines.length - 1] as SVGPathElement;
+        const line = lines[i - 1] as SVGPathElement;
+        line.setAttribute("d", drawCurve(edge.points));
+        clipPath(line, edge.points);
+      }
+    }
+
+    if (this.end) {
+      const edge = g.edge(edges[i++]);
+      if (
+        edge.points.every((it) => !Number.isNaN(it.x) && !Number.isNaN(it.y))
+      ) {
+        const line = lines[i - 1] as SVGPathElement;
         line.setAttribute("d", drawCurve(edge.points));
         clipPath(line, edge.points);
       }

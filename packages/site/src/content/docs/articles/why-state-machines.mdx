@@ -14,12 +14,14 @@ State machines have some very desirable properties
 - relatively few concepts; as with all things there is a learning curve, but it's a **simple mental model**
 - they are **deterministic**: predictable and reliable
 - they are **safe**: we can ensure specific events are only handled in specific states and avoid those “this should never happen” bugs altogether
+- building a UI for a state-machine tends to result in simple, clean code, and since they are view-agnostic, the same machine could have an arbitrary number of different UIs
+- they are typically straightforward to unit test
 
 ## Example
 
 Here's an example state machine diagram for a "buy tickets" user-journey
 
-import StateChart from "../../../components/StateChart/StateChart.astro";
+import { StateChart } from "../../../components/StateChart";
 
 <StateChart
   states={[
@@ -38,9 +40,13 @@ import StateChart from "../../../components/StateChart/StateChart.astro";
     {
       from: "validateTickets",
       to: "selectTickets",
-      label: "<<immediate>> (invalid selection)",
+      label: "<<immediate>>\n(invalid selection)",
     },
-    { from: "validateTickets", to: "basket", label: "<<immediate>>" },
+    {
+      from: "validateTickets",
+      to: "basket",
+      label: "<<immediate>>\n(valid selection)",
+    },
     { from: "basket", to: "selectTickets", label: "CONTINUE_SHOPPING" },
     { from: "basket", to: "applyingVoucher", label: "APPLY_VOUCHER" },
     { from: "applyingVoucher", to: "basket" },
@@ -51,6 +57,8 @@ import StateChart from "../../../components/StateChart/StateChart.astro";
     { from: "processingPayment", to: "payment", label: "PAYMENT_FAILURE" },
   ]}
   start="selectTickets"
+  end="confirmation"
+  compact={true}
 />
 
 Next we're going to cover the basics of state-machines.

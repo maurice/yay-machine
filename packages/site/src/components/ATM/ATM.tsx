@@ -1,7 +1,6 @@
 import type { AtmState } from "@yay-machine/example-machines";
 import { ServiceMenu } from "@yay-machine/example-machines/src/atm/ServiceMenu";
 import type { FC } from "react";
-import { ReactStateChart } from "../StateChart";
 import { useMachine } from "../useMachine";
 import { CardReader } from "./CardReader";
 import { CashDispenser } from "./CashDispenser";
@@ -71,72 +70,6 @@ export const ATM: FC = () => {
           <Hints />
           <Wallet />
         </div>
-        {false && (
-          <ReactStateChart
-            states={[
-              "waitingForCard",
-              "readingCard",
-              "serviceMenu",
-              "enterPin",
-              "enterAmount",
-              "validateWithdrawal",
-              "dispenseCash",
-              "ejectCard",
-            ]}
-            transitions={[
-              {
-                from: "waitingForCard",
-                to: "readingCard",
-                label: "CARD_INSERTED",
-              },
-              { from: "readingCard", to: "serviceMenu", label: "CARD_READ" },
-              { from: "readingCard", to: "ejectCard", label: "CARD_INVALID" },
-              {
-                from: "serviceMenu",
-                to: "enterPin",
-                label: "START_WITHDRAWAL",
-              },
-              { from: "serviceMenu", to: "ejectCard", label: "USER_CANCELLED" },
-              { from: "enterPin", to: "enterAmount", label: "PIN_ENTERED" },
-              { from: "enterPin", to: "ejectCard", label: "USER_CANCELLED" },
-              {
-                from: "enterAmount",
-                to: "validateWithdrawal",
-                label: "AMOUNT_ENTERED",
-              },
-              { from: "enterAmount", to: "ejectCard", label: "USER_CANCELLED" },
-              {
-                from: "validateWithdrawal",
-                to: "dispenseCash",
-                label: "WITHDRAWAL_APPROVED",
-              },
-              {
-                from: "validateWithdrawal",
-                to: "enterPin",
-                label: "INVALID_PIN",
-              },
-              {
-                from: "validateWithdrawal",
-                to: "ejectCard",
-                label: "INSUFFICIENT_FUNDS",
-              },
-              {
-                from: "validateWithdrawal",
-                to: "ejectCard",
-                label: "(too many attempts)",
-              },
-              { from: "dispenseCash", to: "ejectCard", label: "(immediate)" },
-              {
-                from: "ejectCard",
-                to: "waitingForCard",
-                label: "CARD_EJECTED",
-              },
-            ]}
-            current={atm.state.name}
-            data={data}
-            direction="LR"
-          />
-        )}
       </div>
     </div>
   );

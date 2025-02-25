@@ -33,6 +33,7 @@ interface Props {
   readonly states?: readonly (State | string)[];
   readonly transitions?: readonly Transition[];
   readonly start?: string;
+  readonly end?: readonly string[];
   readonly current?: string;
   readonly data?: object;
   readonly direction?: Direction;
@@ -47,6 +48,7 @@ export const StateChart: FC<Props> = memo(
     current,
     data,
     start,
+    end,
     states,
     transitions,
     direction,
@@ -60,6 +62,7 @@ export const StateChart: FC<Props> = memo(
       <ym-chart
         class={classNames}
         start={start}
+        end={end}
         current={current}
         data={data}
         direction={direction}

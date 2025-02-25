@@ -11,31 +11,29 @@ export class YmTransition extends LitElement {
       margin: 0 !important;
       position: absolute;
       z-index: 1;
-      will-change: transform;
       transform: perspective(1px) translateZ(0);
+      will-change: transform;
+    }
+
+    :host([label]) {
+      color: var(--color);
+      border: 2px solid #eee;
+      background-color: #f9f9f9;
+      // border: 2px solid transparent;
+      border-radius: 3px;
     }
 
     .label {
-      color: var(--color);
-      font-size: 0.8em;
+      // font-size: 0.8em;
+      font-size: smaller;
       text-align: center;
       padding: 0.2em 0.5em;
-      min-width: 80px;
+      // min-width: 80px;
       line-height: 18px;
-      background-color: #f9f9f9;
-      box-shadow: 0px 0px 10px 0px rgb(0, 0, 0, 0.3);
-      border: 2px solid var(--color);
-      // border-radius: 5px;
+      // box-shadow: 0px 0px 10px 0px rgb(0, 0, 0, 0.3);
       transition: 200ms box-shadow;
       user-select: none;
       white-space: pre-line;
-    }
-
-    .label.compact {
-      box-shadow: none;
-      border: none;
-      background-color: #ffffffdd;
-      padding: 0;
     }
   `;
 

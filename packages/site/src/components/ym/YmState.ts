@@ -13,7 +13,7 @@ export class YmState extends LitElement {
     .state {
       --state-color: var(--dark-grey);
       border: 2px solid var(--state-color);
-      border-radius: 5px;
+      border-radius: 6px;
       background-color: #f9f9f9;
       min-width: 150px;
       min-height: 100px;

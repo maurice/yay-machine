@@ -68,7 +68,7 @@ import { Aside } from "@astrojs/starlight/components";
 
 These two _optional_ side-effects are run when a specific state is entered or exited
 
-```typescript {4,5}
+```typescript {4-9}
 const machine = defineMachine<State, Event>({
   states: {
     [stateName]: {
@@ -102,7 +102,7 @@ Like machine-lifecycle side-effects, they receive a single parameter containing 
 
 This _optional_ side-effect is run during a transition from a specific state or _any state_
 
-```typescript {7}
+```typescript {7-9}
 const machine = defineMachine<State, Event>({
   states: {
     [stateName]: {
@@ -122,7 +122,7 @@ const machine = defineMachine<State, Event>({
 
 And/or
 
-```typescript {5}
+```typescript {5-7}
 const machine = defineMachine<State, Event>({
   on: {
     [EVENT_TYPE]: {
