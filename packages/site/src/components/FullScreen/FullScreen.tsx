@@ -18,7 +18,7 @@ interface FullScreenProps {
 export const FullScreen: FC<FullScreenProps> = ({ children }) => {
   const [toggleHovered, setToggleHovered] = useState(false);
   const [fullScreen, setFullScreen] = useState(false);
-  const scrollTop = useRef(-1);
+  const scrollTop = useRef(0);
 
   const toggleFullScreen = useCallback(() => {
     startTransition(() => {

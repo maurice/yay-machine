@@ -56,7 +56,11 @@ import atmMachineOutline from "@yay-machine/example-machines/src/atm/atmMachineO
 
 ### Try visualizing it
 
-Drawing the state-chart might help to see what looks correct, and what is invalid or missing.
+Drawing the state-chart on paper or a whiteboard might help to see what looks correct, and what is invalid or missing.
+
+<Aside type="tip" title="It's alive">
+  This state machine diagram is interactive - try hovering and clicking around.
+</Aside>
 
 import StateChart from "../../components/StateChart/StateChart.astro";
 
@@ -111,6 +115,8 @@ import StateChart from "../../components/StateChart/StateChart.astro";
       { from: "ejectCard", to: "waitingForCard", label: "CARD_EJECTED" },
     ]}
     start="waitingForCard"
+    initial="waitingForCard"
+    interactive={true}
     compact={true}
   />
 </FullScreen>
