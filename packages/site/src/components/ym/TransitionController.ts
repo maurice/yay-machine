@@ -98,7 +98,7 @@ export class TransitionController implements ReactiveController {
       let index = -1;
       let transition: YmTransition | undefined;
       const transitions = this.host.querySelectorAll("ym-transition");
-      for (let i = 0; transitions.length; i++) {
+      for (let i = 0; i < transitions.length; i++) {
         const it = transitions.item(i);
         if (it.from === prev && it.to === next && it.label === label) {
           index = i;
