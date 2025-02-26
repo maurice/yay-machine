@@ -15,22 +15,39 @@ export class YmTransition extends LitElement {
       will-change: transform;
     }
 
+    :host([interactive]) {
+      --color: var(--light-grey);
+    }
+
+    :host(.next) {
+      --color: var(--medium-grey);
+    }
+
     :host([label]) {
       color: var(--color);
       border: 2px solid #eee;
       background-color: #f9f9f9;
-      // border: 2px solid transparent;
       border-radius: 3px;
     }
 
+    :host([label].next:not(.hovered)) {
+      border: 2px solid var(--light-grey);
+    }
+
+    :host(.hovered) {
+      cursor: pointer;
+      border: 2px solid var(--light-blue);
+
+      .label {
+        color: var(--light-blue);
+      }
+    }
+
     .label {
-      // font-size: 0.8em;
       font-size: smaller;
       text-align: center;
       padding: 0.2em 0.5em;
-      // min-width: 80px;
       line-height: 18px;
-      // box-shadow: 0px 0px 10px 0px rgb(0, 0, 0, 0.3);
       transition: 200ms box-shadow;
       user-select: none;
       white-space: pre-line;
@@ -46,13 +63,13 @@ export class YmTransition extends LitElement {
   @property({ type: String })
   label: string | undefined;
 
-  @property({ type: Boolean })
-  compact = false;
+  @property({ type: Boolean, reflect: true })
+  interactive = false;
 
   render() {
     return this.label
       ? // prettier-ignore
-        html`<div class=${classMap({ label: true, compact: this.compact })}>${this.label}</div> `
+        html`<div class=${classMap({ label: true })}>${this.label}</div> `
       : nothing;
   }
 }

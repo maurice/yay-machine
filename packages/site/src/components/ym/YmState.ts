@@ -1,6 +1,7 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, type PropertyValues, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
+import { AnimateStateController } from "./CurrentStateController";
 
 @customElement("ym-state")
 export class YmState extends LitElement {
@@ -8,10 +9,27 @@ export class YmState extends LitElement {
     :host {
       position: absolute;
       margin: 0 !important;
+      --state-color: var(--dark-grey);
+    }
+
+    :host([interactive]) {
+      --state-color: var(--light-grey);
+    }
+
+    :host([next]) {
+      --state-color: var(--medium-grey);
+    }
+
+    :host([current]) {
+      --state-color: var(--medium-blue);
+    }
+
+    :host(.hovered) {
+      --state-color: var(--light-blue);
+      cursor: pointer;
     }
 
     .state {
-      --state-color: var(--dark-grey);
       border: 2px solid var(--state-color);
       border-radius: 6px;
       background-color: #f9f9f9;
@@ -27,12 +45,12 @@ export class YmState extends LitElement {
       flex-direction: column;
     }
 
-    .state.interactive {
+    /* .state.live {
       --state-color: var(--medium-grey);
-    }
+    } */
 
     .state.current {
-      --state-color: var(--medium-blue);
+      /* --state-color: var(--medium-blue); */
       box-shadow:
         0px 0px 0px 1px rgb(143 214 255),
         0px 0px 0px 3px rgb(220 242 255),
@@ -63,12 +81,6 @@ export class YmState extends LitElement {
         display: none;
       }
     }
-
-    .current .name {
-      font-weight: bold;
-      /* background-color: rgb(238 249 255);
-    border-radius-top-left: 5px; */
-    }
   `;
 
   @property({ type: String })
@@ -80,11 +92,20 @@ export class YmState extends LitElement {
   @property({ type: Object })
   data: object | undefined = {};
 
-  @state()
+  @property({ type: Boolean, reflect: true })
+  current = false;
+
+  @property({ type: Boolean, reflect: true })
+  next = false;
+
+  @property({ type: Boolean, reflect: true })
   interactive = false;
 
-  @state()
-  current = false;
+  constructor() {
+    super();
+
+    new AnimateStateController(this);
+  }
 
   render() {
     const embeddedData = this.data

@@ -13,10 +13,14 @@
     "rules": {
       "recommended": true,
       "suspicious": {
+        "noAssignInExpressions": "off",
         "noConsoleLog": "error"
       },
       "complexity": {
         "noForEach": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
       }
     }
   },

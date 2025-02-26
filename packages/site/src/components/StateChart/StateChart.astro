@@ -21,9 +21,10 @@ interface Props {
   readonly align?: Align;
   readonly ranker?: Ranker;
   readonly compact?: boolean;
+  readonly interactive?: boolean;
 }
 
-const { className = "", initial, start, end, states, transitions, direction, align, ranker, compact } = Astro.props;
+const { className = "", initial, start, end, states, transitions, direction, align, ranker, compact, interactive } = Astro.props;
 const classNames = `${className ?? ""} no-content`;
 ---
 
@@ -32,7 +33,7 @@ import "../ym";
 </script>
 
 <div>
-    <ym-chart class={classNames} start={start} end={end} current={initial} direction={direction} align={align} ranker={ranker}>
+    <ym-chart class={classNames} start={start} end={end} current={initial} direction={direction} align={align} ranker={ranker} interactive={interactive}>
         {states?.map((it: string | State) => <ym-state name={typeof it === 'string' ? it : it.name} compact={compact}/>)}
         {transitions?.map((it: Transition) => <ym-transition from={it.from} to={it.to} label={it.label} compact={compact} />)}
     </ym-chart>
