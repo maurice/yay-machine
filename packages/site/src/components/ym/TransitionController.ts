@@ -81,8 +81,9 @@ export class TransitionController implements ReactiveController {
     if (!this.#isTransitioning && this.#transitionQueue.length) {
       this.#isTransitioning = true;
 
-      queueMicrotask(() => {
+      queueMicrotask(async () => {
         this.#doNextTransition();
+        await new Promise((resolve) => setTimeout(resolve, 50));
         this.#isTransitioning = false;
         this.#scheduleNextTransition();
       });
@@ -96,9 +97,9 @@ export class TransitionController implements ReactiveController {
     this.host.data = data ?? this.host.data;
     let index = -1;
     let transition: YmTransition | undefined;
-    const transitions = this.host.querySelectorAll("ym-transition");
+    const transitions = this.host.transitions ?? [];
     for (let i = 0; i < transitions.length; i++) {
-      const it = transitions.item(i);
+      const it = transitions[i];
       if (it.from === prev && it.to === next && it.label === label) {
         index = i;
         transition = it;
@@ -110,14 +111,14 @@ export class TransitionController implements ReactiveController {
     }
 
     if (index !== -1) {
-      const lines = this.host.renderRoot.querySelectorAll(".transition-line");
-      const path = lines.item(index);
+      const lines = this.host.transitionLines ?? [];
+      const path = lines[index];
       if (path) {
         path.animate(FADE_KEY_FRAMES, FADE_ANIMATION);
       }
     } else if (next === "end") {
-      const path = this.host.renderRoot.querySelector(
-        `.transition-line[data-from=${prev}][data-to=end]`,
+      const path = Array.from(this.host.transitionLines ?? []).find(
+        (it) => it.dataset["from"] === prev && it.dataset["to"] === "end",
       );
       if (path) {
         path.animate(FADE_KEY_FRAMES, FADE_ANIMATION);

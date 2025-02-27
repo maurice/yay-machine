@@ -1,9 +1,17 @@
 import { LitElement, type PropertyValues, css, html, svg } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import {
+  customElement,
+  property,
+  query,
+  queryAll,
+  queryAssignedElements,
+} from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { InteractionController } from "./InteractionController";
 import { LayoutController } from "./LayoutController";
 import { TransitionController } from "./TransitionController";
+import type { YmState } from "./YmState";
+import type { YmTransition } from "./YmTransition";
 import { Align, Direction, Ranker } from "./types";
 
 @customElement("ym-chart")
@@ -202,8 +210,20 @@ export class YmChart extends LitElement {
   @property({ type: Boolean })
   interactive = false;
 
-  @state()
-  clippedPaths: [] | undefined;
+  @queryAssignedElements({ selector: "ym-state" })
+  states: NodeListOf<YmState> | undefined;
+
+  @queryAssignedElements({ selector: "ym-transition" })
+  transitions: NodeListOf<YmTransition> | undefined;
+
+  @queryAll("g.transition-line")
+  transitionLines: NodeListOf<SVGGElement> | undefined;
+
+  @query(".start-node")
+  startNode: SVGCircleElement | undefined;
+
+  @query(".end-node")
+  endNode: SVGGElement | undefined;
 
   #layout: LayoutController;
   #transitions: TransitionController;
@@ -220,19 +240,13 @@ export class YmChart extends LitElement {
     this.#transitions.transition(next, data, label);
   }
 
+  protected firstUpdated(): void {
+    this.#syncChildren();
+  }
+
   protected willUpdate(changedProperties: PropertyValues<this>): void {
     if (changedProperties.has("current") || changedProperties.has("data")) {
-      const states = this.querySelectorAll("ym-state");
-      for (const state of states) {
-        state.interactive = !!this.current;
-        state.current = this.current === state.name;
-        state.data = this.current === state.name ? this.data : undefined;
-      }
-
-      const transitions = this.querySelectorAll("ym-transition");
-      for (const transition of transitions) {
-        transition.interactive = !!this.current;
-      }
+      this.#syncChildren();
     }
   }
 
@@ -284,5 +298,19 @@ export class YmChart extends LitElement {
         </div>
       </div>
     `;
+  }
+
+  #syncChildren() {
+    const states = this.states ?? [];
+    for (const state of states) {
+      state.interactive = !!this.current;
+      state.current = this.current === state.name;
+      state.data = this.current === state.name ? this.data : undefined;
+    }
+
+    const transitions = this.transitions ?? [];
+    for (const transition of transitions) {
+      transition.interactive = !!this.current;
+    }
   }
 }
