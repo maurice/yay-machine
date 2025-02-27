@@ -136,10 +136,14 @@ for (const fileName of files) {
       } else {
         const exampleFile = result[1];
         log("found embedded example", exampleFile, index);
-        const exampleSource = await readFile(exampleFile, { encoding: "utf8" });
-        const [definition, usage] = exampleSource
-          .split("// Usage")
-          .map((it) => it.trim());
+        const definition = (
+          await readFile(exampleFile, { encoding: "utf8" })
+        ).trim();
+        const usage = (
+          await readFile(exampleFile.replace(".ts", "Usage.ts"), {
+            encoding: "utf8",
+          })
+        ).trim();
 
         const startDefinition = newContent.indexOf("```typescript", index);
         const endDefinition = newContent.indexOf("```", startDefinition + 3);
