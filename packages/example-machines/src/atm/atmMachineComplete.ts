@@ -32,7 +32,7 @@ export type AtmEvent =
       readonly type:
         | "CARD_INSERTED"
         | "CARD_INVALID"
-        | "START_WITHDRAWAL"
+        | "WITHDRAWAL_SELECTED"
         | "USER_CANCELLED"
         | "INCORRECT_PIN"
         | "INSUFFICIENT_FUNDS"
@@ -108,7 +108,7 @@ export const atmMachine = defineMachine<AtmState, AtmEvent>({
         keypad.readChoice(SERVICE_IDS).then(
           (serviceId) => {
             if (getService(serviceId) === "Withdraw Cash") {
-              send({ type: "START_WITHDRAWAL" });
+              send({ type: "WITHDRAWAL_SELECTED" });
             }
             // handle other services here
           },
@@ -120,7 +120,7 @@ export const atmMachine = defineMachine<AtmState, AtmEvent>({
           to: "ejectCard",
           data: ({ state }) => ({ ...state, message: "" }),
         },
-        START_WITHDRAWAL: {
+        WITHDRAWAL_SELECTED: {
           to: "enterPin",
           data: ({ state }) => ({ ...state, withdrawalAttempts: 1 }),
         },

@@ -13,6 +13,9 @@ export class YmTransition extends LitElement {
       z-index: 1;
       transform: perspective(1px) translateZ(0);
       will-change: transform;
+      transition:
+        100ms color,
+        100ms border;
     }
 
     :host([interactive]) {

@@ -20,11 +20,10 @@ _📦 This package is the core state-machine library._
 
 ## Define the machine at compile-time
 
-> 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/guessMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/guessMachine.test.ts" target="_blank">test</a> on GitHub
+> 💡 View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/guess/guessMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/guess/__tests__/guessMachine.test.ts" target="_blank">test</a> on GitHub
 
 ```typescript
 // guessMachine.ts
-import assert from "assert";
 import { defineMachine } from "yay-machine";
 
 interface GuessState {
@@ -112,19 +111,7 @@ export const guessMachine = defineMachine<
 ## Create instances and operate them at run-time
 
 ```typescript
-const guess = guessMachine.newInstance().start();
 
-while (guess.state.name === "playing") {
-  guess.send({ type: "GUESS", guess: Math.ceil(Math.random() * 10) });
-}
-
-if (guess.state.name === "guessedCorrectly") {
-  console.log("yay, we won :)");
-} else if (guess.state.name === "tooManyIncorrectGuesses") {
-  console.log("boo, we lost :(");
-} else {
-  assert.fail(`Invalid state: ${guess.state.name}`);
-}
 ```
 
 # Where next?

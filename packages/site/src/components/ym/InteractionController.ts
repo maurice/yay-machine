@@ -10,6 +10,8 @@ export class InteractionController implements ReactiveController {
   host: YmChart;
   layout: LayoutController;
   transitions: TransitionController;
+  lineToHit: Map<SVGPathElement, SVGPathElement> = new Map();
+  hitToLine: Map<SVGPathElement, SVGPathElement> = new Map();
   lineToTransition: Map<SVGPathElement, YmTransition> = new Map();
   transitionToLine: Map<YmTransition, SVGPathElement> = new Map();
   transitionToState: Map<YmTransition, YmState> = new Map();
@@ -50,11 +52,13 @@ export class InteractionController implements ReactiveController {
         transition.addEventListener("mouseout", this.#onMouseOutTransition);
         transition.addEventListener("click", this.#onClickTransition);
 
-        const line = lines[i];
-        line.addEventListener("mouseover", this.#onMouseOverTransitionLine);
-        line.addEventListener("mouseout", this.#onMouseOutTransitionLine);
-        line.addEventListener("click", this.#onClickTransitionLine);
+        const [hit, line] = lines[i].getElementsByTagName("path");
+        hit.addEventListener("mouseover", this.#onMouseOverTransitionLine);
+        hit.addEventListener("mouseout", this.#onMouseOutTransitionLine);
+        hit.addEventListener("click", this.#onClickTransitionLine);
 
+        this.lineToHit.set(line, hit);
+        this.hitToLine.set(hit, line);
         this.transitionToLine.set(transition, line);
         this.lineToTransition.set(line, transition);
         this.transitionToState.set(
@@ -94,6 +98,11 @@ export class InteractionController implements ReactiveController {
           line.classList.remove("next");
         }
       }
+    }
+
+    if (this.host.current === "end") {
+      const end = this.host.renderRoot.querySelector<SVGGElement>(".end-node")!;
+      end.classList.add("reached");
     }
   }
 
@@ -184,12 +193,13 @@ export class InteractionController implements ReactiveController {
 
   #onMouseOverTransitionLine = (event: MouseEvent) => {
     const path = event.target as SVGPathElement;
-    const transition = this.lineToTransition.get(path)!;
+    const line = this.hitToLine.get(path)!;
+    const transition = this.lineToTransition.get(line)!;
     if (!this.#canTakeTransition(transition)) {
       return;
     }
 
-    this.#transitionLineHovered(path, transition);
+    this.#transitionLineHovered(line, transition);
   };
 
   #transitionLineHovered(path: SVGPathElement, transition: YmTransition) {
@@ -200,7 +210,8 @@ export class InteractionController implements ReactiveController {
 
   #onMouseOutTransitionLine = (event: MouseEvent) => {
     const path = event.target as SVGPathElement;
-    this.#transitionLineUnHovered(path);
+    const line = this.hitToLine.get(path)!;
+    this.#transitionLineUnHovered(line);
   };
 
   #transitionLineUnHovered(path: SVGPathElement) {
@@ -212,12 +223,13 @@ export class InteractionController implements ReactiveController {
 
   #onClickTransitionLine = (event: MouseEvent) => {
     const path = event.target as SVGPathElement;
-    const transition = this.lineToTransition.get(path)!;
+    const line = this.hitToLine.get(path)!;
+    const transition = this.lineToTransition.get(line)!;
     if (!this.#canTakeTransition(transition)) {
       return;
     }
 
-    this.#transitionLineUnHovered(path);
+    this.#transitionLineUnHovered(line);
     this.transitions.transition(transition.to, undefined, transition.label);
   };
 

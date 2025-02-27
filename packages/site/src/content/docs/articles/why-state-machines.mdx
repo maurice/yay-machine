@@ -19,9 +19,14 @@ State machines have some very desirable properties
 
 ## Example
 
-Here's an example state machine diagram for a "buy tickets" user-journey
+Here's an example state machine diagram for a "buy tickets" user-journey.
 
-import { StateChart } from "../../../components/StateChart";
+import { Aside } from "@astrojs/starlight/components";
+import { StateChart } from "../../../components";
+
+<Aside type="tip" title="It's alive">
+  This state machine diagram is interactive - try hovering and clicking around.
+</Aside>
 
 <StateChart
   states={[
@@ -57,8 +62,10 @@ import { StateChart } from "../../../components/StateChart";
     { from: "processingPayment", to: "payment", label: "PAYMENT_FAILURE" },
   ]}
   start="selectTickets"
+  initial="selectTickets"
   end="confirmation"
   compact={true}
+  interactive={true}
 />
 
 Next we're going to cover the basics of state-machines.

@@ -17,7 +17,7 @@ export type AtmEvent = {
     | "CARD_INSERTED"
     | "CARD_READ"
     | "CARD_INVALID"
-    | "START_WITHDRAWAL"
+    | "WITHDRAWAL_SELECTED"
     | "PIN_ENTERED"
     | "AMOUNT_ENTERED"
     | "USER_CANCELLED"
@@ -47,7 +47,7 @@ export const atmMachine = defineMachine<AtmState, AtmEvent>({
     serviceMenu: {
       on: {
         USER_CANCELLED: { to: "ejectCard" },
-        START_WITHDRAWAL: { to: "enterPin" },
+        WITHDRAWAL_SELECTED: { to: "enterPin" },
       },
     },
     enterPin: {
