@@ -30,10 +30,9 @@ export class InteractionController implements ReactiveController {
   }
 
   hostUpdated() {
-    const states = Array.from(this.host.querySelectorAll("ym-state"));
-    const transitions = Array.from(this.host.querySelectorAll("ym-transition"));
-    const lines =
-      this.host.renderRoot.querySelectorAll<SVGPathElement>(".transition-line");
+    const states = Array.from(this.host.states ?? []);
+    const transitions = Array.from(this.host.transitions ?? []);
+    const lines = this.host.transitionLines ?? [];
 
     if (this.host.interactive && !this.didAddEventListeners) {
       for (const state of states) {
@@ -101,8 +100,8 @@ export class InteractionController implements ReactiveController {
     }
 
     if (this.host.current === "end") {
-      const end = this.host.renderRoot.querySelector<SVGGElement>(".end-node")!;
-      end.classList.add("reached");
+      const end = this.host.endNode;
+      end?.classList.add("reached");
     }
   }
 

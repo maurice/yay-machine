@@ -63,7 +63,7 @@ export class LayoutController implements ReactiveController {
     (this as ReactiveController).hostUpdated = undefined;
 
     // invalidate layout on state element resize
-    const states = this.host.querySelectorAll("ym-state");
+    const states = this.host.states ?? [];
     for (const state of states) {
       this.resizeObserver.observe(state);
     }
@@ -73,8 +73,8 @@ export class LayoutController implements ReactiveController {
 
   #layout() {
     // build graph
-    const states = this.host.querySelectorAll("ym-state");
-    const transitions = this.host.querySelectorAll("ym-transition");
+    const states = this.host.states ?? [];
+    const transitions = this.host.transitions ?? [];
 
     const g = (this.graph = new dagre.graphlib.Graph({
       multigraph: true,
@@ -98,7 +98,7 @@ export class LayoutController implements ReactiveController {
       });
     }
 
-    const start = this.host.renderRoot.querySelector(".start-node");
+    const start = this.host.startNode;
     if (start) {
       const rect = start.getBoundingClientRect();
       g.setNode("start", {
@@ -108,7 +108,7 @@ export class LayoutController implements ReactiveController {
       });
     }
 
-    const end = this.host.renderRoot.querySelector(".end-node");
+    const end = this.host.endNode;
     if (end) {
       const rect = end.getBoundingClientRect();
       g.setNode("end", {
@@ -160,12 +160,10 @@ export class LayoutController implements ReactiveController {
     }
 
     const edges = g.edges();
-    const lines = Array.from(
-      this.host.renderRoot.querySelectorAll<SVGGElement>(".transition-line"),
-    );
+    const lines = Array.from(this.host.transitionLines ?? []);
     let i = 0;
     for (; i < transitions.length; i++) {
-      const transition = transitions.item(i);
+      const transition = transitions[i];
       const edge = g.edge(edges[i]);
       transition.style.top = `${edge.y - edge.height / 2}px`;
       transition.style.left = `${edge.x - edge.width / 2}px`;
