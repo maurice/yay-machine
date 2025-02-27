@@ -28,9 +28,9 @@ import { ATM, FullScreen } from "../../components";
   <ATM client:load />
 </FullScreen>
 
-import { Aside } from "@astrojs/starlight/components";
+### Build an outline
 
-### First steps
+import { Aside } from "@astrojs/starlight/components";
 
 <Aside type="note" title="How to start?">
 Take a moment to think about the problem domain. In this case, reflect on your own experiences using ATMs...
@@ -41,9 +41,7 @@ Finally what interactions would it need with the outside world?
 
 </Aside>
 
-### Outline States, Events and Transitions
-
-First, let's define all the **states**, **events** and **transitions** of the state-machine. Let's ignore _state-data_ and _event-payloads_ right now.
+Let's define all the **states**, **events** and **transitions** of the state-machine. Let's ignore _state-data_ and _event-payloads_ right now.
 
 This will give us an **outline** and we can **fill in the details later**.
 
@@ -52,7 +50,12 @@ In practice it usually takes several iterations on states and events, then machi
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 import atmMachineOutline from "@yay-machine/example-machines/src/atm/atmMachineOutline.ts?raw";
 
-<Code code={atmMachineOutline} lang="typescript" title="atmMachine.ts" />
+<Code
+  code={atmMachineOutline}
+  lang="typescript"
+  title="atmMachine.ts"
+  mark={[1, 31, 99, "defineMachine", "AtmState", "AtmEvent"]}
+/>
 
 ### Try visualizing it
 
@@ -81,7 +84,7 @@ import StateChart from "../../components/StateChart/StateChart.astro";
       { from: "readingCard", to: "serviceMenu", label: "CARD_READ" },
       { from: "readingCard", to: "ejectCard", label: "CARD_INVALID" },
       { from: "serviceMenu", to: "ejectCard", label: "USER_CANCELLED" },
-      { from: "serviceMenu", to: "enterPin", label: "START_WITHDRAWAL" },
+      { from: "serviceMenu", to: "enterPin", label: "WITHDRAWAL_SELECTED" },
       { from: "enterPin", to: "ejectCard", label: "USER_CANCELLED" },
       { from: "enterPin", to: "enterAmount", label: "PIN_ENTERED" },
       { from: "enterAmount", to: "ejectCard", label: "USER_CANCELLED" },
@@ -186,7 +189,7 @@ export type AtmEvent =
       readonly type:
         | "CARD_INSERTED"
         | "CARD_INVALID"
-        | "START_WITHDRAWAL"
+        | "WITHDRAWAL_SELECTED"
         | "USER_CANCELLED"
         | "INCORRECT_PIN"
         | "INSUFFICIENT_FUNDS"
@@ -309,7 +312,7 @@ In `enterPin` we use an `onEnter` side-effect function to request the user enter
         keypad.readChoice(SERVICE_IDS).then(
           (serviceId) => {
             if (getService(serviceId) === "Withdraw Cash") {
-              send({ type: "START_WITHDRAWAL" });
+              send({ type: "WITHDRAWAL_SELECTED" });
             }
             // handle other services here
           },
@@ -321,7 +324,7 @@ In `enterPin` we use an `onEnter` side-effect function to request the user enter
           to: "ejectCard",
           data: ({ state }) => ({ ...state, message: "" }),
         },
-        START_WITHDRAWAL: {
+        WITHDRAWAL_SELECTED: {
           to: "enterPin",
           data: ({ state }) => ({ ...state, withdrawalAttempts: 1 }),
         },

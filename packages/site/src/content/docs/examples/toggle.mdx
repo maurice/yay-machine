@@ -14,7 +14,7 @@ A state-machine modelling a binary control, demonstrating simple transitions.
 
 ## Try it
 
-import { Aside } from "@astrojs/starlight/components";
+import { Aside, Code } from "@astrojs/starlight/components";
 
 <Aside type="note" title='Did you see that?'>
 Try toggling **on** and **off**, and refreshing the page.
@@ -27,48 +27,18 @@ import Toggle from "./Toggle.astro";
 
 <Toggle />
 
-## Source
+## Definition
 
 {<Aside type="tip">
-View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/toggleMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/toggleMachine.test.ts" target="_blank">test</a> on GitHub
+View this and other example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/toggle/toggleMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/toggle/__tests__/toggleMachine.test.ts" target="_blank">test</a> on GitHub
 
 </Aside>}
 
-```typescript
-// toggleMachine.ts
-import assert from "assert";
-import { defineMachine } from "yay-machine";
+import toggleMachine from "@yay-machine/example-machines/src/toggle/toggleMachine.ts?raw";
+import toggleMachineUsage from "@yay-machine/example-machines/src/toggle/toggleMachineUsage.ts?raw";
 
-export interface ToggleState {
-  readonly name: "off" | "on";
-}
-
-export interface ToggleEvent {
-  readonly type: "TOGGLE";
-}
-
-export const toggleMachine = defineMachine<ToggleState, ToggleEvent>({
-  initialState: { name: "off" },
-  states: {
-    off: {
-      on: { TOGGLE: { to: "on" } },
-    },
-    on: {
-      on: { TOGGLE: { to: "off" } },
-    },
-  },
-});
-```
+<Code code={toggleMachine} lang="typescript" title="toggleMachine.ts" />
 
 ## Usage
 
-```typescript
-const toggle = toggleMachine.newInstance().start();
-assert.deepStrictEqual(toggle.state, { name: "off" });
-
-toggle.send({ type: "TOGGLE" });
-assert.deepStrictEqual(toggle.state, { name: "on" });
-
-toggle.send({ type: "TOGGLE" });
-assert.deepStrictEqual(toggle.state, { name: "off" });
-```
+<Code code={toggleMachineUsage} lang="typescript" />

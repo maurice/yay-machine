@@ -21,12 +21,12 @@ export class YmChart extends LitElement {
     }
 
     :host([current]) {
-      --chart-color: var(--medium-grey);
-    }
-
-    :host([interactive]) {
       --chart-color: var(--light-grey);
     }
+
+    /* :host([interactive]) {
+      --chart-color: var(--light-grey);
+    } */
 
     .background {
       width: 100%;
@@ -65,11 +65,10 @@ export class YmChart extends LitElement {
         top: 0;
         left: 0;
         pointer-events: none;
-        /* z-index: 1; */
 
-        g,
+        g.end-node,
         circle,
-        path {
+        path.hit-area {
           pointer-events: stroke;
         }
       }
@@ -90,22 +89,42 @@ export class YmChart extends LitElement {
         }
       }
 
+      .end-node.reached {
+        circle:nth-child(1) {
+          stroke: var(--dark-grey);
+        }
+        circle:nth-child(2) {
+          stroke: none;
+          fill: var(--dark-grey);
+        }
+      }
+
       .chart {
         position: relative;
         margin: 0 auto;
       }
 
       .transition-line {
-        fill: none;
-        stroke: var(--chart-color);
-        stroke-width: 2px;
-        marker-end: url(#arrow);
-
-        &.next {
-          stroke: var(--medium-grey);
+        .line {
+          fill: none;
+          stroke: var(--chart-color);
+          stroke-width: 2px;
+          marker-end: url(#arrow);
+          transition: 100ms stroke;
         }
 
-        &.hovered {
+        .hit-area {
+          fill: none;
+          stroke: transparent;
+          stroke-width: 18px;
+          cursor: pointer;
+        }
+
+        &.next .line {
+          stroke: var(--dark-grey);
+        }
+
+        .line.hovered {
           cursor: pointer;
           stroke: var(--light-blue);
         }
@@ -126,7 +145,7 @@ export class YmChart extends LitElement {
   })
   end: string[] = [];
 
-  @property({ type: String })
+  @property({ type: String, reflect: true })
   current: string | undefined;
 
   @property({ type: Object })
@@ -205,14 +224,14 @@ export class YmChart extends LitElement {
     if (changedProperties.has("current") || changedProperties.has("data")) {
       const states = this.querySelectorAll("ym-state");
       for (const state of states) {
-        state.interactive = !!this.interactive;
+        state.interactive = !!this.current;
         state.current = this.current === state.name;
         state.data = this.current === state.name ? this.data : undefined;
       }
 
       const transitions = this.querySelectorAll("ym-transition");
       for (const transition of transitions) {
-        transition.interactive = !!this.interactive;
+        transition.interactive = !!this.current;
       }
     }
   }
@@ -254,9 +273,12 @@ export class YmChart extends LitElement {
                 <circle r="6" cx=${this.#layout.endCx} cy=${this.#layout.endCy} />
                 </g>`
               }
-              ${Array.from(transitions).map(() => svg`<path class="transition-line" shape-rendering="auto" />`)}
-              ${this.start && svg`<path class="transition-line" shape-rendering="auto" />`}
-              ${this.end.length && svg`${this.end.map(() => svg`<path class="transition-line" shape-rendering="auto" />`)}`}
+              ${Array.from(transitions).map(
+                () =>
+                  svg`<g class="transition-line"><path class="hit-area"/><path class="line"/></g>`,
+              )}
+              ${this.start && svg`<g class="transition-line"><path class="hit-area"/><path class="line"/></g>`}
+              ${this.end.length && svg`${this.end.map((from) => svg`<g class="transition-line" data-from=${from} data-to="end">><path class="hit-area"/><path class="line"/></g>`)}`}
             </svg>
           </div>
         </div>

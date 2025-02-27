@@ -59,3 +59,7 @@ svg.inline-icon {
     border: none !important;
   }
 }
+
+.tablist-wrapper ~ [role="tabpanel"] {
+  margin: 0 !important;
+}

@@ -11,11 +11,16 @@ const curveDrawer = line<Point>()
 
 const drawCurve = (p: Points | undefined) => (p && curveDrawer(p)) || "";
 
-const clipPath = (path: SVGPathElement, points: Points) => {
-  const length = path.getTotalLength();
-  const end = path.getPointAtLength(length - 5);
+const clipPath = (paths: SVGGElement, points: Points) => {
+  const [hit, line] = paths.getElementsByTagName("path");
+  line.setAttribute("d", drawCurve(points));
+
+  const length = line.getTotalLength();
+  const end = line.getPointAtLength(length - 5);
   const newPoints = [...points.slice(0, -1), end];
-  path.setAttribute("d", drawCurve(newPoints));
+  const clippedCurve = drawCurve(newPoints);
+  line.setAttribute("d", clippedCurve);
+  hit.setAttribute("d", clippedCurve);
 };
 
 export class LayoutController implements ReactiveController {
@@ -156,7 +161,7 @@ export class LayoutController implements ReactiveController {
 
     const edges = g.edges();
     const lines = Array.from(
-      this.host.renderRoot.querySelectorAll<SVGPathElement>(".transition-line"),
+      this.host.renderRoot.querySelectorAll<SVGGElement>(".transition-line"),
     );
     let i = 0;
     for (; i < transitions.length; i++) {
@@ -168,7 +173,6 @@ export class LayoutController implements ReactiveController {
         edge.points.every((it) => !Number.isNaN(it.x) && !Number.isNaN(it.y))
       ) {
         const line = lines[i];
-        line.setAttribute("d", drawCurve(edge.points));
         clipPath(line, edge.points);
       }
     }

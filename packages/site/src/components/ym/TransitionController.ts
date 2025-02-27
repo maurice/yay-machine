@@ -94,31 +94,38 @@ export class TransitionController implements ReactiveController {
     const prev = this.host.current;
     this.host.current = next;
     this.host.data = data ?? this.host.data;
-    if (label) {
-      let index = -1;
-      let transition: YmTransition | undefined;
-      const transitions = this.host.querySelectorAll("ym-transition");
-      for (let i = 0; i < transitions.length; i++) {
-        const it = transitions.item(i);
-        if (it.from === prev && it.to === next && it.label === label) {
-          index = i;
-          transition = it;
-          break;
-        }
+    let index = -1;
+    let transition: YmTransition | undefined;
+    const transitions = this.host.querySelectorAll("ym-transition");
+    for (let i = 0; i < transitions.length; i++) {
+      const it = transitions.item(i);
+      if (it.from === prev && it.to === next && it.label === label) {
+        index = i;
+        transition = it;
+        break;
       }
-      if (transition) {
-        transition.animate(POP_KEY_FRAMES, POP_ANIMATION);
-      }
+    }
+    if (transition) {
+      transition.animate(POP_KEY_FRAMES, POP_ANIMATION);
+    }
 
-      if (index !== -1) {
-        const lines = this.host.renderRoot.querySelectorAll(
-          "path.transition-line",
-        );
-        const path = lines.item(index);
-        if (path) {
-          path.animate(FADE_KEY_FRAMES, FADE_ANIMATION);
-        }
+    if (index !== -1) {
+      const lines = this.host.renderRoot.querySelectorAll(".transition-line");
+      const path = lines.item(index);
+      if (path) {
+        path.animate(FADE_KEY_FRAMES, FADE_ANIMATION);
       }
+    } else if (next === "end") {
+      const path = this.host.renderRoot.querySelector(
+        `.transition-line[data-from=${prev}][data-to=end]`,
+      );
+      if (path) {
+        path.animate(FADE_KEY_FRAMES, FADE_ANIMATION);
+      }
+    }
+
+    if (this.host.end.includes(next)) {
+      this.transition("end");
     }
   }
 }

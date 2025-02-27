@@ -13,7 +13,7 @@ test("happy path, all the way through", () => {
   atm.send({ type: "CARD_READ" });
   expect(atm.state.name).toBe("serviceMenu");
 
-  atm.send({ type: "START_WITHDRAWAL" });
+  atm.send({ type: "WITHDRAWAL_SELECTED" });
   expect(atm.state.name).toBe("enterPin");
 
   atm.send({ type: "PIN_ENTERED" });
@@ -81,7 +81,7 @@ test("user cancels at enter pin", () => {
   atm.send({ type: "CARD_READ" });
   expect(atm.state.name).toBe("serviceMenu");
 
-  atm.send({ type: "START_WITHDRAWAL" });
+  atm.send({ type: "WITHDRAWAL_SELECTED" });
   expect(atm.state.name).toBe("enterPin");
 
   atm.send({ type: "USER_CANCELLED" });
@@ -103,7 +103,7 @@ test("user cancels at enter amount", () => {
   atm.send({ type: "CARD_READ" });
   expect(atm.state.name).toBe("serviceMenu");
 
-  atm.send({ type: "START_WITHDRAWAL" });
+  atm.send({ type: "WITHDRAWAL_SELECTED" });
   expect(atm.state.name).toBe("enterPin");
 
   atm.send({ type: "PIN_ENTERED" });
@@ -124,7 +124,7 @@ test("insufficient funds", () => {
 
   atm.send({ type: "CARD_INSERTED" });
   atm.send({ type: "CARD_READ" });
-  atm.send({ type: "START_WITHDRAWAL" });
+  atm.send({ type: "WITHDRAWAL_SELECTED" });
   atm.send({ type: "PIN_ENTERED" });
   atm.send({ type: "AMOUNT_ENTERED" });
   expect(atm.state.name).toBe("validateWithdrawal");
@@ -144,7 +144,7 @@ test("incorrect pin, then correct", () => {
 
   atm.send({ type: "CARD_INSERTED" });
   atm.send({ type: "CARD_READ" });
-  atm.send({ type: "START_WITHDRAWAL" });
+  atm.send({ type: "WITHDRAWAL_SELECTED" });
   atm.send({ type: "PIN_ENTERED" });
   atm.send({ type: "AMOUNT_ENTERED" });
   expect(atm.state.name).toBe("validateWithdrawal");

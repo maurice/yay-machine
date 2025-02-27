@@ -16,120 +16,20 @@ sidebar:
 
 A login machine example which uses **event data** for auth credentials, has different (heterogenous) **state data** for different states, and uses a state-`onEnter()` side-effect that sends a `LOGOUT` event to the machine instance, after a delay.
 
-import { Aside } from "@astrojs/starlight/components";
+import { Aside, Code } from "@astrojs/starlight/components";
+
+## Definition
 
 {<Aside type="tip">
-View this example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/loginMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/__tests__/loginMachine.test.ts" target="_blank">test</a> on GitHub
+View this and other example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/login/loginMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/login/__tests__/loginMachine.test.ts" target="_blank">test</a> on GitHub
 
 </Aside>}
 
-```typescript
-// loginMachine.ts
-import assert from "assert";
-import { defineMachine } from "yay-machine";
+import loginMachine from "@yay-machine/example-machines/src/login/loginMachine.ts?raw";
+import loginMachineUsage from "@yay-machine/example-machines/src/login/loginMachineUsage.ts?raw";
 
-interface UnauthenticatedState {
-  readonly name: "unauthenticated";
-}
-
-interface AuthenticatedState {
-  readonly name: "authenticated";
-  readonly username: string;
-  readonly rememberMe: boolean;
-}
-
-interface InvalidCredentialsState {
-  readonly name: "invalidCredentials";
-  readonly errorMessage: string;
-}
-
-interface BannedState {
-  readonly name: "banned";
-}
-
-type LoginState =
-  | UnauthenticatedState
-  | AuthenticatedState
-  | InvalidCredentialsState
-  | BannedState;
-
-interface LoginEvent {
-  readonly type: "LOGIN";
-  readonly username: string;
-  readonly password: string;
-  readonly rememberMe?: boolean;
-}
-
-interface LogoutEvent {
-  readonly type: "LOGOUT";
-  readonly fromSystem?: boolean;
-}
-
-/**
- * A silly example mainly demonstrating the use of conditional transitions.
- */
-export const loginMachine = defineMachine<LoginState, LoginEvent | LogoutEvent>(
-  {
-    initialState: { name: "unauthenticated" },
-    states: {
-      unauthenticated: {
-        on: {
-          LOGIN: [
-            {
-              to: "banned",
-              when: ({ event }) => event.username === "attacker",
-            },
-            {
-              to: "authenticated",
-              when: ({ event: { username, password } }) =>
-                username === "trustme" && password === "password123",
-              data: ({ event: { username, rememberMe } }) => ({
-                username,
-                rememberMe: !!rememberMe,
-              }),
-            },
-            {
-              to: "invalidCredentials",
-              when: ({ event: { username } }) => username === "trustme",
-              data: () => ({ errorMessage: "Incorrect password" }),
-            },
-            {
-              to: "invalidCredentials",
-              data: ({ event: { username } }) => ({
-                errorMessage: `Unknown username "${username}" or incorrect password`,
-              }),
-            },
-          ],
-        },
-      },
-      authenticated: {
-        onEnter: ({ send }) => {
-          const timer = setTimeout(
-            () => send({ type: "LOGOUT", fromSystem: true }),
-            1000 * 60 * 5,
-          ); // automatically log out after 5 minutes
-          return () => clearTimeout(timer);
-        },
-        on: {
-          LOGOUT: {
-            to: "unauthenticated",
-            when: ({ state: { rememberMe }, event: { fromSystem } }) =>
-              !fromSystem || !rememberMe,
-          },
-        },
-      },
-    },
-  },
-);
-```
+<Code code={loginMachine} lang="typescript" title="loginMachine.ts" />
 
 ## Usage
 
-```typescript
-const login = loginMachine.newInstance().start();
-login.send({ type: "LOGIN", username: "foo", password: "bar" });
-assert.deepStrictEqual(login.state, {
-  name: "invalidCredentials",
-  errorMessage: 'Unknown username "foo" or incorrect password',
-});
-```
+<Code code={loginMachineUsage} lang="typescript" />

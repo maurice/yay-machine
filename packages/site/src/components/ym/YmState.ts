@@ -10,6 +10,7 @@ export class YmState extends LitElement {
       position: absolute;
       margin: 0 !important;
       --state-color: var(--dark-grey);
+      --name-border-width: 2px;
     }
 
     :host([interactive]) {
@@ -17,7 +18,7 @@ export class YmState extends LitElement {
     }
 
     :host([next]) {
-      --state-color: var(--medium-grey);
+      --state-color: var(--dark-grey);
     }
 
     :host([current]) {
@@ -29,28 +30,29 @@ export class YmState extends LitElement {
       cursor: pointer;
     }
 
+    :host(:not([data])) .name {
+      --name-border-width: 0px;
+    }
+
     .state {
       border: 2px solid var(--state-color);
       border-radius: 6px;
       background-color: #f9f9f9;
-      min-width: 150px;
-      min-height: 100px;
+      /* min-width: 150px;
+      min-height: 100px; */
       box-shadow: 0px 0px 10px 0px rgb(0, 0, 0, 0.3);
       font-size: 0.8em;
       display: inline-block;
-      transition: 200ms box-shadow;
+      transition:
+        200ms box-shadow,
+        100ms border;
       user-select: none;
       will-change: transform;
       display: flex;
       flex-direction: column;
     }
 
-    /* .state.live {
-      --state-color: var(--medium-grey);
-    } */
-
     .state.current {
-      /* --state-color: var(--medium-blue); */
       box-shadow:
         0px 0px 0px 1px rgb(143 214 255),
         0px 0px 0px 3px rgb(220 242 255),
@@ -59,9 +61,12 @@ export class YmState extends LitElement {
 
     .name {
       color: var(--state-color);
-      border-bottom: 2px solid var(--state-color);
+      border-bottom-width: var(--name-border-width);
+      border-color: var(--state-color);
+      border-bottom-style: solid;
       padding: 0 1em;
       text-align: center;
+      transition: 100ms color;
     }
 
     .data {
@@ -89,7 +94,7 @@ export class YmState extends LitElement {
   @property({ type: Boolean })
   compact = false;
 
-  @property({ type: Object })
+  @property({ type: Object, reflect: true })
   data: object | undefined = {};
 
   @property({ type: Boolean, reflect: true })
