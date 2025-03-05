@@ -36,3 +36,12 @@ export interface MachineDefinition<
   StateType extends MachineState,
   EventType extends MachineEvent,
 > extends MachineInstanceProvider<StateType, EventType> {} //  & MachineStateFactories<StateType> & MachineEventFactories<EventType>;
+
+/**
+ * Infer type of MachineInstance for a machine definition
+ */
+// biome-ignore lint/suspicious/noExplicitAny: must be any
+export type MachineInstanceOf<Definition extends MachineDefinition<any, any>> =
+  Definition extends MachineDefinition<infer StateType, infer EventType>
+    ? MachineInstance<StateType, EventType>
+    : never;

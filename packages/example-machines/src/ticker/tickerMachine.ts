@@ -1,13 +1,13 @@
 import { defineMachine } from "yay-machine";
 import { type PriceMachine, priceMachine } from "../price/priceMachine";
 
-/*
- * Multi-symbol stock tickers machine modelling active subscriptions and API integration
- */
-
 interface CommonState {
   readonly url: string;
   readonly symbols: Record</* symbol */ string, PriceMachine>;
+  readonly subscriptions: Record<
+    /* subscriptionId */ string,
+    /* symbol */ string
+  >;
 }
 
 interface ConnectingState extends CommonState {
@@ -24,7 +24,10 @@ interface ConnectionErrorState extends CommonState {
   readonly errorMessage: string;
 }
 
-type TickersState = ConnectingState | ConnectedState | ConnectionErrorState;
+export type TickersState =
+  | ConnectingState
+  | ConnectedState
+  | ConnectionErrorState;
 
 interface ConnectedEvent {
   readonly type: "CONNECTED";
@@ -44,22 +47,31 @@ interface ReceivedDataEvent {
 interface AddTickerEvent {
   readonly type: "ADD_TICKER";
   readonly symbol: string;
+  readonly subscriptionId: string;
 }
 
 interface RemoveTickerEvent {
   readonly type: "REMOVE_TICKER";
-  readonly symbol: string;
+  readonly subscriptionId: string;
 }
 
-type TickersEvent =
+export type TickersEvent =
   | ConnectedEvent
   | ConnectionErrorEvent
   | ReceivedDataEvent
   | AddTickerEvent
   | RemoveTickerEvent;
 
+/**
+ * A multi-symbol, multi-client stock tickers machine modelling active subscriptions and API integration.
+ */
 export const tickerMachine = defineMachine<TickersState, TickersEvent>({
-  initialState: { name: "connecting", url: undefined!, symbols: {} },
+  initialState: {
+    name: "connecting",
+    url: undefined!,
+    symbols: {},
+    subscriptions: {},
+  },
   onStart: ({ state, send }) => {
     // connect to remote service and setup event handlers
     const socket = new WebSocket(state.url);
@@ -92,40 +104,79 @@ export const tickerMachine = defineMachine<TickersState, TickersEvent>({
     },
   },
   on: {
-    ADD_TICKER: {
-      when: ({ state, event }) => !(event.symbol in state.symbols),
-      data: ({ state, event }) => ({
-        ...state,
-        symbols: {
-          ...state.symbols,
-          [event.symbol]: priceMachine.newInstance().start(),
-        },
-      }),
-      onTransition: ({ state, event }) => {
-        if (state.name === "connected") {
-          // subscribe for the new symbol
-          state.socket.send(`subscribe:${event.symbol}`);
-        }
-      },
-    },
-    REMOVE_TICKER: {
-      when: ({ state, event }) => event.symbol in state.symbols,
-      data: ({ state, event }) => {
-        const newTickers = { ...state.symbols };
-        newTickers[event.symbol].stop();
-        delete newTickers[event.symbol];
-        return {
+    ADD_TICKER: [
+      {
+        when: ({ state, event }) => !(event.symbol in state.symbols),
+        data: ({ state, event }) => ({
           ...state,
-          symbols: newTickers,
-        };
+          symbols: {
+            ...state.symbols,
+            [event.symbol]: priceMachine.newInstance().start(),
+          },
+          subscriptions: {
+            ...state.subscriptions,
+            [event.subscriptionId]: event.symbol,
+          },
+        }),
+        onTransition: ({ state, event }) => {
+          if (state.name === "connected") {
+            // subscribe for the new symbol
+            state.socket.send(`subscribe:${event.symbol}`);
+          }
+        },
       },
-      onTransition: ({ state, event }) => {
-        if (state.name === "connected") {
-          // unsubscribe for the symbol
-          state.socket.send(`unsubscribe:${event.symbol}`);
-        }
+      {
+        data: ({ state, event }) => ({
+          ...state,
+          subscriptions: {
+            ...state.subscriptions,
+            [event.subscriptionId]: event.symbol,
+          },
+        }),
       },
-    },
+    ],
+    REMOVE_TICKER: [
+      {
+        when: ({ state, event }) => {
+          const symbol = state.subscriptions[event.subscriptionId];
+          const symbols = Object.values(state.subscriptions);
+          return (
+            event.subscriptionId in state.subscriptions &&
+            symbols.filter((it) => it === symbol).length === 1
+          );
+        },
+        data: ({ state, event }) => {
+          const { [event.subscriptionId]: symbol, ...subscriptions } =
+            state.subscriptions;
+          const { [symbol]: ticker, ...symbols } = state.symbols;
+          ticker.stop();
+          return {
+            ...state,
+            symbols,
+            subscriptions,
+          };
+        },
+        onTransition: ({ state, event }) => {
+          if (state.name === "connected") {
+            // unsubscribe for the symbol
+            state.socket.send(
+              `unsubscribe:${state.subscriptions[event.subscriptionId]}`,
+            );
+          }
+        },
+      },
+      {
+        when: ({ state, event }) => event.subscriptionId in state.subscriptions,
+        data: ({ state, event }) => {
+          const { [event.subscriptionId]: symbol, ...subscriptions } =
+            state.subscriptions;
+          return {
+            ...state,
+            subscriptions,
+          };
+        },
+      },
+    ],
     RECEIVED_DATA: {
       data: ({ state }) => state,
       onTransition: ({ state, event }) => {

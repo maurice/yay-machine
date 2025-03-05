@@ -6,12 +6,13 @@ const ticker = tickerMachine
       name: "connecting",
       url: "wss://yay-machine.js.org/prices",
       symbols: {},
+      subscriptions: {},
     },
   })
   .start();
 
-ticker.send({ type: "ADD_TICKER", symbol: "YAAY" });
-ticker.send({ type: "ADD_TICKER", symbol: "MCHN" });
+ticker.send({ type: "ADD_TICKER", symbol: "YAAY", subscriptionId: "sub-1" });
+ticker.send({ type: "ADD_TICKER", symbol: "MCHN", subscriptionId: "sub-2" });
 
 ticker.state.symbols["YAAY"].subscribe(({ state }) => {
   if (state.name === "live") {

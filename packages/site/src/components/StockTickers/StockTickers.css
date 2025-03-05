@@ -1,0 +1,13 @@
+.stock-tickers {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+
+  .dog-stocks {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+  }
+}
