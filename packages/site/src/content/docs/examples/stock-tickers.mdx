@@ -18,13 +18,22 @@ sidebar:
 
 ## About
 
-This example has two machines: (1) a per stock-symbol _price machine_, and (2) a _ticker machine_ that composes and manages zero or more _price machines_.
+This example has two machines:
+
+1. a per stock-symbol **price machine**, and
+2. a **ticker machine** composing zero or more **price machines**.
+
+## Try it
+
+import { StockTickers } from "../../../components";
+
+<StockTickers client:only="react" />
 
 ## Price machine
 
-Models a stock price, the change since the last price, how long the price is valid, etc. The machine's state name tells us if the price is `pending`, `live` or `stale`.
+Models the **realtime price** of a single stock. The machine's state name tells us if the price is `pending`, `live` or `stale`.
 
-When the machine receives a `TICK` event it updates its state and starts a timer with a state `onEntry()` side-effect. If a new price is not received within the current price's `timeValid`ms, the machine sends itself a `STALE` event, and it transitions to `stale` (trading terminology: it means the price is too old and cannot be used to place a trade).
+When the machine receives a `TICK` event it updates its state and starts a timer with a state `onEntry()` side-effect. If a new price is not received within the current price's `timeValid`ms, the machine sends itself a `STALE` event, and it transitions to `stale` (trading terminology: "stale" means the price is too old and cannot be used to place a trade).
 
 import { Aside, Code } from "@astrojs/starlight/components";
 
@@ -48,15 +57,17 @@ Models a stock price ticker, with ticking prices for zero or more symbols.
 
 The state name (`connecting`, `connected` and `connectionError`) tells us about the status of the connection to the fictional WebSocket price service.
 
-A machine `onStart()` side-effect initiates the web-socket client connection and setups up event listeners for lifecycle callbacks (`onopen`, `onerror` and `onmessage`). In fact all three of these web-socket events trigger the machine to send itself an equivalent event. The side-effect returns a cleanup function to close the connection when the machine is stopped.
+A machine `onStart()` side-effect initiates the WebSocket client connection and setups up event listeners for lifecycle callbacks (`onopen`, `onerror` and `onmessage`). In fact all three of these WebSocket events trigger the machine to send itself an equivalent event. The side-effect returns a cleanup function to close the connection when the machine is stopped.
 
 Client code can add/remove price-tickers by sending `ADD_TICKER` / `REMOVE_TICKER` events respectively. These events are handled in _any state_, and if the machine is currently `connected` they send "subscribe" or "unsubscribe" messages for the symbol to the remote service.
 
 As symbols are added/removed, the _tickers machine_ creates/destroys _price machines_ and adds/removes them to/from its own state data.
 
-Establishing a connection to a remote service is an async operation so if the client added tickers before the connection is ready, the machine subscribes for all current symbols when it enters the `connected` state, _but only if the triggering event is `CONNECTED`_. (If we didn't check the event, when a new symbol was added, we would re-subscribe for all previous symbols again.)
+Multiple clients can request symbols to be added/removed, and the machine uses reference-counting to share the _price machines_ and subscribe-to/unsubscribe-from the underlying WebSocket service just once per symbol.
 
-When the machine receives data from the remote service, it parses the string and extracts the prices for each symbol, and sends a `TICK` event to the relevant _price machines_.
+Establishing a connection to a WebSocket service is an async operation so if the client added tickers before the connection is ready, the machine subscribes for all current symbols when it enters the `connected` state, _but only if the triggering event is `CONNECTED`_. (If we didn't check the event, when a new symbol was added, we would re-subscribe for all previous symbols again.)
+
+When the machine receives data from the WebSocket service, it parses the string and extracts the prices for each symbol, and sends a `TICK` event to the relevant _price machines_.
 
 {<Aside type="tip">
 View this and other example's <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/ticker/tickerMachine.ts" target="_blank">source</a> and <a href="https://github.com/maurice/yay-machine/blob/main/packages/example-machines/src/ticker/__tests__/tickerMachine.test.ts" target="_blank">test</a> on GitHub

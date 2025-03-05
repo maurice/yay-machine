@@ -8,10 +8,16 @@
     "clientKind": "git",
     "useIgnoreFile": true
   },
+  "files": {
+    "ignore": ["packages/site/public/mockServiceWorker.js"]
+  },
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": true,
+      "a11y": {
+        "noSvgWithoutTitle": "off"
+      },
       "suspicious": {
         "noAssignInExpressions": "off",
         "noConsoleLog": "error"

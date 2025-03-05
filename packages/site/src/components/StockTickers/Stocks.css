@@ -1,0 +1,19 @@
+.stocks {
+  .tickers {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    max-width: fit-content;
+    grid-gap: 1px;
+    background-color: var(--sl-color-white);
+    border: 1px solid var(--sl-color-white);
+
+    .ticker-cell {
+      background-color: var(--sl-color-black);
+      height: 24px;
+    }
+
+    .ticker-price {
+      display: contents;
+    }
+  }
+}
