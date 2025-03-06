@@ -3,6 +3,14 @@
   flex-direction: row;
   gap: 10px;
   border-radius: 3px;
+
+  .ticker-cell {
+    padding: 0 4px;
+  }
+
+  .ticker-change {
+    padding-top: 3px;
+  }
 }
 
 .ticker-subscribe-unsubscribe button {
