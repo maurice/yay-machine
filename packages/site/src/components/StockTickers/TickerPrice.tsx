@@ -20,20 +20,20 @@ const getStateIcon = (state: PriceState | undefined) => {
     case "live":
       switch (state.change) {
         case "up":
-          return <ArrowFatUp size="24" weight="fill" fill="green" />;
+          return <ArrowFatUp size="18" weight="fill" fill="green" />;
 
         case "down":
-          return <ArrowFatDown size="24" weight="fill" fill="darkred" />;
+          return <ArrowFatDown size="18" weight="fill" fill="darkred" />;
 
         default:
           return null;
       }
 
     case "stale":
-      return <Prohibit size="24" fill="#666" />;
+      return <Prohibit size="18" fill="#666" />;
 
     case "pending":
-      return <HourglassHigh size="24" fill="#666" />;
+      return <HourglassHigh size="18" fill="#666" />;
 
     default:
       return null;

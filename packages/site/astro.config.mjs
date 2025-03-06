@@ -64,10 +64,6 @@ export default defineConfig({
               slug: "examples/health",
             },
             {
-              label: "Health (game component)",
-              slug: "examples/health",
-            },
-            {
               label: "Tape (VCR)",
               slug: "examples/tape",
             },
