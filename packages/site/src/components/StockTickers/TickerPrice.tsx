@@ -7,9 +7,9 @@ import {
   Prohibit,
 } from "@phosphor-icons/react";
 import type { PriceState } from "@yay-machine/example-machines";
-import { type FC, useContext, useEffect, useState } from "react";
-import { TickersContext } from "./TickersContext";
+import type { FC } from "react";
 import { useConnected } from "./connected";
+import { usePrice } from "./usePrice";
 import "./TickerPrice.css";
 
 const getStateIcon = (state: PriceState | undefined) => {
@@ -55,18 +55,7 @@ export const TickerPrice: FC<TickerPriceProps> = ({
   onUnsubscribe,
 }) => {
   const [connected] = useConnected();
-  const tickers = useContext(TickersContext);
-  const [price, setPrice] = useState<PriceState | undefined>();
-
-  useEffect(() => {
-    const price = subscribed && tickers?.state?.symbols[symbol];
-    if (!price) {
-      setPrice(undefined);
-      return;
-    }
-
-    return price.subscribe(({ state }) => setPrice(state));
-  }, [symbol, subscribed, tickers.state?.symbols[symbol]]);
+  const price = usePrice(subscribed ? symbol : "none");
 
   const onClickSubscribeUnsubscribe = () => {
     if (subscribed) {
