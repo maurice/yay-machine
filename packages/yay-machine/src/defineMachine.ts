@@ -1,13 +1,14 @@
 import type { MachineDefinition } from "./MachineDefinition";
-import type {
-  BasicTransition,
-  HomogenousStateMachineDefinitionConfigCopyDataOnTransitionFalse,
-  HomogenousStateMachineDefinitionConfigCopyDataOnTransitionTrue,
-  MachineDefinitionConfig,
-  ReenterTransition,
-  StateConfig,
-  TransitionConfig,
-  TransitionData,
+import {
+  type BasicTransition,
+  type HomogenousStateMachineDefinitionConfigCopyDataOnTransitionFalse,
+  type HomogenousStateMachineDefinitionConfigCopyDataOnTransitionTrue,
+  MDC,
+  type MachineDefinitionConfig,
+  type ReenterTransition,
+  type StateConfig,
+  type TransitionConfig,
+  type TransitionData,
 } from "./MachineDefinitionConfig";
 import type { MachineEvent } from "./MachineEvent";
 import type { MachineInstance, Subscriber } from "./MachineInstance";
@@ -402,6 +403,8 @@ export const defineMachine = <
             }
           };
         },
+
+        [MDC]: definitionConfig,
       };
       return machine;
     },

@@ -68,11 +68,7 @@ export class AnimateStateController implements ReactiveController {
   }
 
   hostUpdated(): void {
-    if (
-      this.host.current &&
-      ((this.previousData === undefined && this.host.data === undefined) ||
-        !deepEqual(this.previousData, this.host.data))
-    ) {
+    if (this.host.current || this.previousData !== this.host.data) {
       this.host.animate(
         WIGGLE_DIRECTION[AnimateStateController.direction++ % 2],
         WIGGLE_ANIMATION,

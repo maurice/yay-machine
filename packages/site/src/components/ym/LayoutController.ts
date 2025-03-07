@@ -81,8 +81,8 @@ export class LayoutController implements ReactiveController {
       directed: true,
     }));
     g.setGraph({
-      // nodesep: 100,
-      // edgesep: 30,
+      nodesep: this.host.nodesep,
+      edgesep: this.host.edgesep,
       rankdir: this.host.direction,
       align: this.host.align,
       ranker: this.host.ranker,

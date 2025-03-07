@@ -1,15 +1,15 @@
 import type { FC } from "react";
-import { StartStopControls } from "./StartStopControls";
+import { ConnectionControls } from "./ConnectionControls";
 import { Stocks } from "./Stocks";
 import { TickersProvider } from "./TickersProvider";
-// import { Visualizer } from "./Visualizer";
+import { Visualizer } from "./Visualizer";
 import "./StockTickers.css";
 
 export const StockTickers: FC = () => {
   return (
     <div className="stock-tickers not-content">
       <TickersProvider>
-        <StartStopControls />
+        <ConnectionControls />
         <div className="dog-stocks">
           <svg xmlns="http://www.w3.org/2000/svg" width="125" height="100">
             <path
@@ -36,7 +36,7 @@ export const StockTickers: FC = () => {
             />
           </svg>
         </div>
-        {/* <Visualizer /> */}
+        <Visualizer />
       </TickersProvider>
     </div>
   );

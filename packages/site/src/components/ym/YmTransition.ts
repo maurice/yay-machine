@@ -57,13 +57,13 @@ export class YmTransition extends LitElement {
     }
   `;
 
-  @property({ type: String })
+  @property({ type: String, reflect: true })
   from = "";
 
-  @property({ type: String })
+  @property({ type: String, reflect: true })
   to = "";
 
-  @property({ type: String })
+  @property({ type: String, reflect: true })
   label: string | undefined;
 
   @property({ type: Boolean, reflect: true })

@@ -25,9 +25,11 @@ This example has two machines:
 
 ## Try it
 
-import { StockTickers } from "../../../components";
+import { FullScreen, StockTickers } from "../../../components";
 
-<StockTickers client:only="react" />
+<FullScreen client:load>
+  <StockTickers client:only="react" />
+</FullScreen>
 
 ## Price machine
 

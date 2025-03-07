@@ -8,6 +8,8 @@ import type {
 } from "./MachineState";
 import type { OneOrMore } from "./OneOrMore";
 
+export const MDC = Symbol("MDC");
+
 /**
  * Machine definition configuration - the blueprint for the machine instances.
  */

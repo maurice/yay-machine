@@ -1,3 +1,4 @@
+import { MDC, type MachineDefinitionConfig } from "./MachineDefinitionConfig";
 import type { MachineEvent } from "./MachineEvent";
 import type { MachineState } from "./MachineState";
 
@@ -57,6 +58,11 @@ export interface MachineInstance<
    * @returns a function to remove the subscriber
    */
   subscribe(subscriber: Subscriber<StateType, EventType>): Unsubscribe;
+
+  /**
+   * Access the original machine definition config
+   */
+  [MDC]: MachineDefinitionConfig<StateType, EventType>;
 }
 
 /**

@@ -1,7 +1,7 @@
-import type React from "react";
 import type { YmChart } from "./YmChart";
 import type { YmState } from "./YmState";
 import type { YmTransition } from "./YmTransition";
+import type { YmViz } from "./YmViz";
 
 export interface Point {
   readonly x: number;
@@ -39,5 +39,7 @@ declare global {
     "ym-chart": YmChart;
     "ym-state": YmState;
     "ym-transition": YmTransition;
+    // biome-ignore lint/suspicious/noExplicitAny: should be fine
+    "ym-viz": YmViz<any, any>;
   }
 }
