@@ -151,7 +151,7 @@ export class YmChart extends LitElement {
         .map((it) => it.trim());
     },
   })
-  end: string[] = [];
+  end: readonly string[] = [];
 
   @property({ type: String, reflect: true })
   current: string | undefined;
@@ -206,6 +206,12 @@ export class YmChart extends LitElement {
     },
   })
   ranker: Ranker | undefined;
+
+  @property({ type: Number })
+  nodesep: number | undefined;
+
+  @property({ type: Number })
+  edgesep: number | undefined;
 
   @property({ type: Boolean })
   interactive = false;

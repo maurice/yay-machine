@@ -6,6 +6,7 @@ import {
 } from "@yay-machine/example-machines";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { MachineInstanceOf } from "yay-machine";
+import { useConnected } from "./connected";
 
 type TickerMachine = MachineInstanceOf<typeof tickerMachine>;
 
@@ -13,8 +14,6 @@ export interface Tickers {
   readonly machine?: TickerMachine;
   readonly state?: TickersState;
   readonly event?: TickersEvent;
-  readonly start?: TickerMachine["start"];
-  readonly stop?: TickerMachine["stop"];
   readonly send?: TickerMachine["send"];
 }
 
@@ -26,6 +25,7 @@ const getInitialState = (): TickersState => ({
 });
 
 export const useTickers = (): Tickers => {
+  const [connected] = useConnected();
   const [machine, setMachine] = useState<TickerMachine | undefined>();
   const [state, setState] = useState<TickersState | undefined>();
   const [event, setEvent] = useState<TickersEvent | undefined>();
@@ -42,14 +42,36 @@ export const useTickers = (): Tickers => {
     }
   }, []);
 
-  const initMachine = () => {
+  const resetMachine = () => {
+    if (machine) {
+      try {
+        machine.stop();
+      } catch (e) {
+        // ignore
+      }
+    }
+    unsubscribeFn.current();
+
     const tickers = tickerMachine.newInstance({
       initialState: getInitialState(),
     });
-    setMachine(tickers);
 
-    return tickers;
+    unsubscribeFn.current = tickers.subscribe(({ state, event }) => {
+      setState(state);
+      setEvent(event);
+    });
+
+    setMachine(tickers);
   };
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: it works
+  useEffect(() => {
+    if (connected) {
+      machine?.start();
+    } else {
+      resetMachine();
+    }
+  }, [connected]);
 
   const tickPrice = useCallback(
     (symbol: string, client: WebSocketClientConnection) => {
@@ -59,7 +81,7 @@ export const useTickers = (): Tickers => {
       client.send(`${symbol}:${newPrice.toFixed(2)}`);
       tickTimers[symbol] = setTimeout(
         () => tickPrice(symbol, client),
-        Math.random() * 6_000,
+        Math.random() * 8_000,
       );
     },
     [],
@@ -107,32 +129,10 @@ export const useTickers = (): Tickers => {
     return dispose;
   }, [tickPrice, dispose]);
 
-  const start = () => {
-    unsubscribeFn.current();
-    const machine = initMachine();
-    unsubscribeFn.current = machine.subscribe(({ state, event }) => {
-      setState(state);
-      setEvent(event);
-    });
-    return machine.start();
-  };
-
-  const stop = machine
-    ? () => {
-        unsubscribeFn.current();
-        machine.stop();
-        setMachine(undefined);
-        setState(undefined);
-        setEvent(undefined);
-      }
-    : undefined;
-
   return {
     machine,
     state,
     event,
     send: machine?.send,
-    start,
-    stop,
   };
 };

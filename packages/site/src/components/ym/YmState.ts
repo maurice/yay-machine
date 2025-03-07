@@ -73,6 +73,7 @@ export class YmState extends LitElement {
       color: var(--state-color);
       padding: 0 0.2em;
       line-height: normal;
+      white-space: pre;
     }
 
     .state.compact {
@@ -115,7 +116,9 @@ export class YmState extends LitElement {
   render() {
     const embeddedData = this.data
       ? html`${Object.entries(this.data).map(
-          ([key, value]) => html`<div><em>${key}</em>: ${value}</div>`,
+          ([key, value]) =>
+            // prettier-ignore
+            html`<div><em>${key}</em>: ${JSON.stringify(value, undefined, "  ")}</div>`,
         )}`
       : "";
     return html`

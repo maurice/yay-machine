@@ -44,7 +44,7 @@ const FADE_KEY_FRAMES: Keyframe[] = [
 ];
 
 const FADE_ANIMATION: KeyframeAnimationOptions = {
-  duration: 300,
+  duration: 1000,
   easing: "ease-in",
   // easing: "cubic-bezier(0.7, 0, 0.84, 0)", // ease-in-expo
   // easing: "cubic-bezier(0.5, 1.8, 0.3, 0.8)", // ease-out-elastic
@@ -113,16 +113,12 @@ export class TransitionController implements ReactiveController {
     if (index !== -1) {
       const lines = this.host.transitionLines ?? [];
       const path = lines[index];
-      if (path) {
-        path.animate(FADE_KEY_FRAMES, FADE_ANIMATION);
-      }
+      path?.querySelector(".line")?.animate(FADE_KEY_FRAMES, FADE_ANIMATION);
     } else if (next === "end") {
       const path = Array.from(this.host.transitionLines ?? []).find(
         (it) => it.dataset["from"] === prev && it.dataset["to"] === "end",
       );
-      if (path) {
-        path.animate(FADE_KEY_FRAMES, FADE_ANIMATION);
-      }
+      path?.querySelector(".line")?.animate(FADE_KEY_FRAMES, FADE_ANIMATION);
     }
 
     if (this.host.end.includes(next)) {

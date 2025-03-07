@@ -6,3 +6,4 @@ export * from "./MachineState";
 export * from "./createMachine";
 export * from "./defineMachine";
 export * from "./OneOrMore";
+export * from "./YayMachine";
