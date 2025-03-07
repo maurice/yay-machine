@@ -1,7 +1,7 @@
 import { switchMachine } from "@yay-machine/example-machines";
 import { useCallback, useEffect, useState } from "react";
 
-export const connected = switchMachine.newInstance().start();
+const connected = switchMachine.newInstance().start();
 
 export const useConnected = () => {
   const [on, setOn] = useState(false);
