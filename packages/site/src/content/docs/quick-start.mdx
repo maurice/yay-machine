@@ -266,9 +266,9 @@ export const atmMachine = defineMachine<AtmState, AtmEvent>({
 
 Now we can define real transitions, starting from the top.
 
-First on entering `readingCard` card we use an `onEnter` side-effect function request the `cardReader` device to read the card. Depending on the result we either send the machine a `CARD_READ` event with the card-number, or a `CARD_INVALID` event. These are handled in the `readingCard` state and in both cases, we populate additional state-data (either the card-number or an error message), which is committed when the state changes to the next state.
+First on entering `readingCard` card we use an `onEnter()` side-effect function request the `cardReader` device to read the card. Depending on the result we either send the machine a `CARD_READ` event with the card-number, or a `CARD_INVALID` event. These are handled in the while still in the `readingCard` state and in both cases, we populate additional state-data (either the card-number or an error message), which is committed when the state changes to the next state.
 
-```typescript "cardNumber" ins={8-13,17-20,24}
+```typescript "cardNumber" "message" ins={8-13,17-20,24}
   states: {
     waitingForCard: {
       on: {
@@ -300,11 +300,11 @@ First on entering `readingCard` card we use an `onEnter` side-effect function re
 
 Next we handle the `serviceMenu` and `enterPin` states.
 
-In `serviceMenu` we use an `onEnter` side-effect to instruct the keypad to enable specific service-menu choices and wait for the user-selection or cancellation.
+In `serviceMenu` we use an `onEnter()` side-effect to instruct the keypad to enable specific service-menu choices and wait for the user-selection or cancellation.
 
 If the user selects the cash-withdrawal service, we transition to `enterPin` and set the `withdrawalAttempts` state-data to `1` because this is their first attempt.
 
-In `enterPin` we use an `onEnter` side-effect function to request the user enters their PIN via the keypad. Once the pin is entered, the machine transitions to `enterAmount` with the pin saved to state-data for later.
+In `enterPin` we use an `onEnter()` side-effect function to request the user enters their PIN via the keypad. Once the pin is entered, the machine transitions to `enterAmount` with the pin saved to state-data for later.
 
 ```typescript "withdrawalAttempts: 1" "pin" ins={2-12,16,20,25-30,34,38}
     serviceMenu: {
@@ -399,7 +399,7 @@ If the amount is valid we proceed to `validateWithdrawal`.
     },
 ```
 
-The `validateWithdrawal` state is next and the `onEnter` side-effect contacts the bank to begin the cash-withdrawal transaction, sending the card-number and pin we captured earlier. If the bank approves, we send the machine a `WITHDRAWAL_APPROVED` with the `transactionId` which we store in state data when the event is handled during the transition to `dispenseCash`.
+The `validateWithdrawal` state is next and the `onEnter()` side-effect contacts the bank to begin the cash-withdrawal transaction, sending the card-number and pin we captured earlier. If the bank approves, we send the machine a `WITHDRAWAL_APPROVED` with the `transactionId` which we store in state data when the event is handled during the transition to `dispenseCash`.
 
 Also in the side-effect we're handling some unhappy paths when the promise rejects:
 
@@ -469,7 +469,7 @@ If the bank approves, we transition to `dispenseCash`.
     },
 ```
 
-In `dispenseCash` we again use an `onEnter` side-effect to dispense the cash and inform the bank. We then immediately transition to `ejectCard`.
+In `dispenseCash` we again use an `onEnter()` side-effect to dispense the cash and inform the bank. We then immediately transition to `ejectCard`.
 
 ```typescript ins={2-7}
     dispenseCash: {
@@ -483,7 +483,7 @@ In `dispenseCash` we again use an `onEnter` side-effect to dispense the cash and
     },
 ```
 
-Finally in `ejectCard` we use another `onEnter` side-effect to request the card-reader device to eject the card and when that completes, we return to `waitingForCard` and reset all the dynamic state-data for the next user-session.
+Finally in `ejectCard` we use another `onEnter()` side-effect to request the card-reader device to eject the card and when that completes, we return to `waitingForCard` and reset all the dynamic state-data for the next user-session.
 
 ```typescript ins={2-4,8-16}
     ejectCard: {
@@ -544,7 +544,7 @@ atm.send({ type: "CARD_INSERTED" });
 atm.send({ type: "CARD_READ", cardNumber: "555" });
 ```
 
-If you want to see how the demo above is implemented, the [demo source code is here](https://github.com/maurice/yay-machine/tree/main/packages/site/src/components/ATM) and the [complete ATM state-machine is here](https://github.com/maurice/yay-machine/tree/main/packages/example-machines/src/atm/atmMachineComplete.ts).
+If you want to see how the demo above is implemented, the [demo source code is here](https://github.com/maurice/yay-machine/tree/main/packages/site/src/components/ATM) and the [complete ATM state-machine is here](https://github.com/maurice/yay-machine/tree/main/packages/example-machines/src/atm/atmMachine.ts).
 
 ### Reflections
 
@@ -554,7 +554,7 @@ For instance we could have used [heterogenous state data](/reference/state/#hete
 
 We could have used global variables for the hardware-devices/bank-API and NOT added them to state-data. Having them in the state-data makes state-machines easier to unit test because such things can be mocked easily, but there's no right or wrong way.
 
-This state-machine is very much controlling the other sub-systems; it is **reactive** but also **active**. This isn't always the case and you might write some state-machines that are only **reactive**.
+This state-machine is very much controlling the other sub-systems; it is **reactive** but also **proactive**. This isn't always the case and you might write some state-machines that are only **reactive**.
 
 ### Finally
 

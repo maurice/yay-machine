@@ -36,35 +36,27 @@ Finite means the machine will only respond to these events; the machine would ig
 
 ```typescript
 type ConnectionEvent =
-  | ConnectEvent
-  | ConnectedEvent
-  | ErrorEvent
-  | DisconnectedEvent;
-
-interface ConnectEvent {
-  readonly type: "CONNECT";
-  readonly url: string;
-}
-
-interface ConnectedEvent {
-  readonly type: "CONNECTED";
-}
-
-interface DisconnectedEvent {
-  readonly type: "DISCONNECTED";
-}
-
-interface ErrorEvent {
-  readonly type: "ERROR";
-  readonly error: Error;
-}
+  | {
+      readonly type: "CONNECT";
+      readonly url: string;
+    }
+  | {
+      readonly type: "CONNECTED";
+    }
+  | {
+      readonly type: "DISCONNECTED";
+    }
+  | {
+      readonly type: "ERROR";
+      readonly error: Error;
+    };
 ```
 
 ## Sending an event to a machine
 
 To send an event to a machine, you'll need a running instance, then simply call it's `send()` method:
 
-```typescript {4}
+```typescript {6}
 const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
   /* ... */
 });
@@ -75,7 +67,7 @@ connection.send({ type: "CONNECT", url: "ws://localhost:9999/api" });
 
 Of course the machine is type-safe, so you'll get an error trying to send anything else
 
-```typescript "type: 'HELLO'"
+```typescript del='{ type: "HELLO" }'
 // ❌ ts(2322): Type '"HELLO"' is not assignable to type '"CONNECT" | "CONNECTED"' | "DISCONNECTED"' | "ERROR"'.
 connection.send({ type: "HELLO" });
 ```
@@ -87,7 +79,7 @@ When your events have a payload (any other properties apart from `type`), you ca
 - generate state data for the next state [in a transition](/reference/transitions/)
 - determine which [conditional transition](/reference/transitions/#conditional-transitions-when) to take
 
-```typescript "data: ({ event: { url } }) => ({ url })" "data: ({ event }) => ({ errorMessage: String(event.error) })" "url: 'ws://localhost:9999/api'"
+```typescript {14-15,19,28} 'url: "ws://localhost:9999/api"'
 type ConnectionState =
   | { readonly name: "disconnected" }
   | { readonly name: "connecting" | "connected"; readonly url: string }
@@ -98,10 +90,17 @@ const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
   states: {
     disconnected: {
       on: {
-        CONNECT: {
-          to: "connecting",
-          data: ({ event: { url } }) => ({ url }),
-        },
+        CONNECT: [
+          {
+            to: "connectionError",
+            when: ({ event }) => isInvalidUrl(event.url),
+            data: ({ event }) => ({ errorMessage: `Bad url: ${event.url}` }),
+          },
+          {
+            to: "connecting",
+            data: ({ event }) => ({ url: event.url }),
+          },
+        ],
       },
     },
     connecting: {
