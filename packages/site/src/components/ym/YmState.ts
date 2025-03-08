@@ -67,6 +67,7 @@ export class YmState extends LitElement {
       padding: 0 1em;
       text-align: center;
       transition: 100ms color;
+      white-space: nowrap;
     }
 
     .data {

@@ -186,9 +186,9 @@ In some cases it's more convenient to handle an event in _any state_.
 In the above machine we see this for
 
 <StateChart
-  states={["<<any state>>", "disconnected"]}
+  states={["«any state»", "disconnected"]}
   transitions={[
-    { from: "<<any state>>", to: "disconnected", label: "DISCONNECT" },
+    { from: "«any state»", to: "disconnected", label: "DISCONNECT" },
   ]}
   direction="LR"
   compact={true}
@@ -215,9 +215,9 @@ Sometimes we want to handle an event in _any state_ and then **return to the cur
 In the above machine we see this for the `HEARTBEAT` event
 
 <StateChart
-  states={["<<current state>>"]}
+  states={["«current state»"]}
   transitions={[
-    { from: "<<current state>>", to: "<<current state>>", label: "HEARTBEAT" },
+    { from: "«current state»", to: "«current state»", label: "HEARTBEAT" },
   ]}
   direction="LR"
   compact={true}

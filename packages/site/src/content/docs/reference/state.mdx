@@ -37,7 +37,7 @@ import StateChart from "../../../components/StateChart/StateChart.astro";
 
 In this "connection" state-machine, the states are `disconnected`, `connecting`, `connected` and `connectionError`.
 
-Finite means the machine will only ever be in one of these states; new states cannot be created dynamically (at run-time).
+The machine will only ever be in one of these states; new states cannot be created dynamically (at run-time).
 
 ## State is a type
 
@@ -45,7 +45,7 @@ In **yay-machine** the machine's state is a TypeScript type with a `name: string
 
 So we might start to build the above machine like
 
-```typescript {4-5}
+```typescript {4-10}
 // connectionMachine.ts
 import { defineMachine } from "yay-machine";
 
@@ -119,7 +119,7 @@ unsubscribe(); // callback no longer receives state changes
 
 As well as a `name`, state types can have additional data properties
 
-```typescript {3,4}
+```typescript {7-8}
 interface ConnectionState {
   readonly name:
     | "disconnected"
@@ -173,7 +173,7 @@ const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
 
 Later we could query the data
 
-```typescript "connection.state.name === 'connected'" "connection.state.connectionEstablishedAt - connection.state.connectingStartedAt" "connection.state.connectionEstablishedAt"
+```typescript 'connection.state.name === "connected"' "connection.state.connectionEstablishedAt" "connection.state.connectingStartedAt" "connection.state.connectionEstablishedAt"
 const connection = connectionMachine.newInstance().start();
 
 // ... use the machine ...
@@ -263,12 +263,22 @@ const toggleMachine = defineMachine<ToggleState, ToggleEvent>({
 
 If we like, we can define state types with different data
 
-```typescript
+```typescript {4-5,9-10,14}
 type ConnectionState =
   | { readonly name: 'disconnected' }
-  | { readonly name: 'connecting'; readonly connectingStartedAt: number; /* Date.now(); */ }
-  | { readonly name: 'connected'; readonly connectingStartedAt: number; /* Date.now(); */; readonly connectionEstablishedAt: number; /* Date.now() */ }
-  | { readonly name: 'connectionError'; readonly errorMessage: string };
+  | {
+      readonly name: 'connecting';
+      readonly connectingStartedAt: number; /* Date.now(); */
+    }
+  | {
+      readonly name: 'connected';
+      readonly connectingStartedAt: number; /* Date.now(); */;
+      readonly connectionEstablishedAt: number; /* Date.now() */
+    }
+  | {
+      readonly name: 'connectionError';
+      readonly errorMessage: string
+    };
 ```
 
 In this case we say the state-data is heterogenous, because for some or all states the associated state-data has a different shape (type).
@@ -313,7 +323,7 @@ const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
 
 Later we can query the data with complete type-safety
 
-```typescript "connection.state.name === 'connected'" "connection.state.connectionEstablishedAt - connection.state.connectingStartedAt," "Date.now() - connection.state.connectionEstablishedAt," "connection.state.name === 'connectionError'"
+```typescript 'connection.state.name === "connected"' "connection.state.connectionEstablishedAt" "connection.state.connectingStartedAt," "connection.state.connectionEstablishedAt," 'connection.state.name === "connectionError"' "connection.state.errorMessage"
 const connection = connectionMachine.newInstance().start();
 
 // ... use the machine ...
@@ -343,7 +353,7 @@ Always generate and return a new data object.
 
 States may define two optional [side-effect](/reference/side-effects/#state-onenter-onexit) callbacks that are executed when the state is entered and exited respectively
 
-```typescript {6,7}
+```typescript {6-8,9-11}
 const connectionMachine = defineMachine<ConnectionState, ConnectionEvent>({
   initialState: { name: "disconnected" },
   states: {

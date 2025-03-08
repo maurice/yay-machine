@@ -45,12 +45,12 @@ import { StateChart } from "../../../components";
     {
       from: "validateTickets",
       to: "selectTickets",
-      label: "<<immediate>>\n(invalid selection)",
+      label: "«immediate»\n(invalid selection)",
     },
     {
       from: "validateTickets",
       to: "basket",
-      label: "<<immediate>>\n(valid selection)",
+      label: "«immediate»\n(valid selection)",
     },
     { from: "basket", to: "selectTickets", label: "CONTINUE_SHOPPING" },
     { from: "basket", to: "applyingVoucher", label: "APPLY_VOUCHER" },

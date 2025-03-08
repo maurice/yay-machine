@@ -298,7 +298,7 @@ export class YmChart extends LitElement {
                   svg`<g class="transition-line"><path class="hit-area"/><path class="line"/></g>`,
               )}
               ${this.start && svg`<g class="transition-line"><path class="hit-area"/><path class="line"/></g>`}
-              ${this.end.length && svg`${this.end.map((from) => svg`<g class="transition-line" data-from=${from} data-to="end">><path class="hit-area"/><path class="line"/></g>`)}`}
+              ${this.end.length && svg`${this.end.map((from) => svg`<g class="transition-line" data-from=${from} data-to="end"><path class="hit-area"/><path class="line"/></g>`)}`}
             </svg>
           </div>
         </div>

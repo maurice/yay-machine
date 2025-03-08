@@ -1,5 +1,5 @@
 export * as atmMachineOutline from "./atmMachineOutline";
-export * from "./atmMachineComplete";
+export * from "./atmMachine";
 export * from "./Bank";
 export * from "./CardReader";
 export * from "./CashDispenser";
