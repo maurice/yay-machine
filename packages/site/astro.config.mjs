@@ -27,7 +27,8 @@ export default defineConfig({
         github: "https://github.com/maurice/yay-machine",
       },
       editLink: {
-        baseUrl: "https://github.com/maurice/yay-machine/edit/main/",
+        baseUrl:
+          "https://github.com/maurice/yay-machine/edit/main/packages/site/",
       },
       lastUpdated: true,
       sidebar: [
