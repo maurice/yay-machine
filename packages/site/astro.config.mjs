@@ -26,6 +26,10 @@ export default defineConfig({
       social: {
         github: "https://github.com/maurice/yay-machine",
       },
+      editLink: {
+        baseUrl: "https://github.com/maurice/yay-machine/edit/main/",
+      },
+      lastUpdated: true,
       sidebar: [
         {
           label: "Intro",
