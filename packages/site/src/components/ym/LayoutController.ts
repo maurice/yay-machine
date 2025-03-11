@@ -31,11 +31,17 @@ export class LayoutController implements ReactiveController {
   );
 
   get width() {
-    return this.graph?.graph()?.width ?? 0;
+    if (!this.graph || this.graph.graph().width === Number.NEGATIVE_INFINITY) {
+      return 0;
+    }
+    return this.graph.graph()?.width;
   }
 
   get height() {
-    return this.graph?.graph()?.height ?? 0;
+    if (!this.graph || this.graph.graph().height === Number.NEGATIVE_INFINITY) {
+      return 0;
+    }
+    return this.graph.graph().height;
   }
 
   get startCx() {
@@ -59,6 +65,10 @@ export class LayoutController implements ReactiveController {
   }
 
   hostUpdated = () => {
+    if (!this.host.states?.length) {
+      return;
+    }
+
     // only run once
     (this as ReactiveController).hostUpdated = undefined;
 

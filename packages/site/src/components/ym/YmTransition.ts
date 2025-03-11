@@ -13,9 +13,9 @@ export class YmTransition extends LitElement {
       z-index: 1;
       transform: perspective(1px) translateZ(0);
       will-change: transform;
-      transition:
+      /* transition:
         100ms color,
-        100ms border;
+        100ms border; */
     }
 
     :host([interactive]) {
@@ -51,7 +51,7 @@ export class YmTransition extends LitElement {
       text-align: center;
       padding: 0.2em 0.5em;
       line-height: 18px;
-      transition: 200ms box-shadow;
+      /* transition: 200ms box-shadow; */
       user-select: none;
       white-space: pre-line;
     }

@@ -276,3 +276,82 @@ test("requests to visit floors are inserted according to current state", () => {
 ]
 `);
 });
+
+test("pressing a different floor button inside the elevator adds floor to visit queue", () => {
+  const elevator = elevatorMachine.newInstance();
+  const subscriber = mock();
+  elevator.subscribe(subscriber);
+
+  // when the lift gets to the 5th floor, request the 9th
+  const unsubscribe = elevator.subscribe(({ state }) => {
+    if (state.name === "doorsOpen" && state.currentFloor === 5) {
+      elevator.send({ type: "VISIT_FLOOR", floor: 9 });
+      unsubscribe();
+    }
+  });
+
+  elevator.start();
+  expect(elevator.state).toEqual({
+    name: "doorsClosed",
+    currentFloor: 1,
+    fractionalFloor: 0,
+    floorsToVisit: [],
+  });
+
+  elevator.send({ type: "VISIT_FLOOR", floor: 5 });
+  expect(elevator.state).toEqual({
+    name: "goingUp",
+    currentFloor: 1,
+    fractionalFloor: 0,
+    floorsToVisit: [5],
+  });
+
+  clock.runAll();
+  expect(summarize(subscriber).filter((it) => it.startsWith("doorsOpen ")))
+    .toMatchInlineSnapshot(`
+    [
+      "doorsOpen @ 5",
+      "doorsOpen @ 5",
+      "doorsOpen @ 9",
+    ]
+  `);
+});
+
+test("pressing the same floor button inside the elevator does nothing", () => {
+  const elevator = elevatorMachine.newInstance();
+  const subscriber = mock();
+  elevator.subscribe(subscriber);
+
+  // when the lift gets to the 5th floor, request the 9th
+  const unsubscribe = elevator.subscribe(({ state }) => {
+    if (state.name === "doorsOpen" && state.currentFloor === 5) {
+      elevator.send({ type: "VISIT_FLOOR", floor: 5 });
+      unsubscribe();
+    }
+  });
+
+  elevator.start();
+  expect(elevator.state).toEqual({
+    name: "doorsClosed",
+    currentFloor: 1,
+    fractionalFloor: 0,
+    floorsToVisit: [],
+  });
+
+  elevator.send({ type: "VISIT_FLOOR", floor: 5 });
+  expect(elevator.state).toEqual({
+    name: "goingUp",
+    currentFloor: 1,
+    fractionalFloor: 0,
+    floorsToVisit: [5],
+  });
+
+  clock.runAll();
+  expect(summarize(subscriber).filter((it) => it.startsWith("doorsOpen ")))
+    .toMatchInlineSnapshot(`
+    [
+      "doorsOpen @ 5",
+      "doorsOpen @ 5",
+    ]
+  `);
+});

@@ -1,5 +1,5 @@
-import { LitElement, type PropertyValues, css, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { LitElement, css, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { AnimateStateController } from "./CurrentStateController";
 
@@ -27,11 +27,17 @@ export class YmState extends LitElement {
 
     :host(.hovered) {
       --state-color: var(--light-blue);
+      --transition: none;
       cursor: pointer;
     }
 
     :host(:not([data])) .name {
       --name-border-width: 0px;
+    }
+
+    :host(.animate) {
+      --transition:
+        200ms box-shadow, 300ms color ease-in, 300ms border-color ease-in;
     }
 
     .state {
@@ -43,9 +49,7 @@ export class YmState extends LitElement {
       box-shadow: 0px 0px 10px 0px rgb(0, 0, 0, 0.3);
       font-size: 0.8em;
       display: inline-block;
-      transition:
-        200ms box-shadow,
-        100ms border;
+      transition: var(--transition);
       user-select: none;
       will-change: transform;
       display: flex;
@@ -66,7 +70,7 @@ export class YmState extends LitElement {
       border-bottom-style: solid;
       padding: 0 1em;
       text-align: center;
-      transition: 100ms color;
+      transition: var(--transition);
       white-space: nowrap;
     }
 
