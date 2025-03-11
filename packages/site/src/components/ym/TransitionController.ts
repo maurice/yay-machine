@@ -33,7 +33,7 @@ const POP_ANIMATION: KeyframeAnimationOptions = {
   // composite: "add",
 };
 
-const FADE_KEY_FRAMES: Keyframe[] = [
+const FADE_LINE_KEY_FRAMES: Keyframe[] = [
   {
     stroke: "var(--medium-blue)",
   },
@@ -50,6 +50,19 @@ const FADE_ANIMATION: KeyframeAnimationOptions = {
   // easing: "cubic-bezier(0.5, 1.8, 0.3, 0.8)", // ease-out-elastic
   iterations: 1,
 };
+
+const FADE_STATE_KEY_FRAMES: Keyframe[] = [
+  {
+    "--state-color": "var(--medium-blue)",
+  },
+  {
+    "--state-color": "var(--medium-blue)",
+  },
+  {},
+  // {
+  //   "--state-color": "var(--light-grey)",
+  // },
+];
 
 interface Transition {
   readonly next: string;
@@ -92,7 +105,13 @@ export class TransitionController implements ReactiveController {
 
   #doNextTransition() {
     const { next, data, label } = this.#transitionQueue.shift()!;
-    const prev = this.host.current;
+    const prev = Array.from(this.host.states ?? []).find((it) => it.current);
+    if (prev) {
+      prev.classList.add("animate");
+      setTimeout(() => prev.classList.remove("animate"), 1000);
+      // prev.animate(FADE_STATE_KEY_FRAMES, { ...FADE_ANIMATION, duration: 200 });
+    }
+    const prevName = this.host.current;
     this.host.current = next;
     this.host.data = data ?? this.host.data;
     let index = -1;
@@ -100,7 +119,7 @@ export class TransitionController implements ReactiveController {
     const transitions = this.host.transitions ?? [];
     for (let i = 0; i < transitions.length; i++) {
       const it = transitions[i];
-      if (it.from === prev && it.to === next && it.label === label) {
+      if (it.from === prevName && it.to === next && it.label === label) {
         index = i;
         transition = it;
         break;
@@ -113,12 +132,16 @@ export class TransitionController implements ReactiveController {
     if (index !== -1) {
       const lines = this.host.transitionLines ?? [];
       const path = lines[index];
-      path?.querySelector(".line")?.animate(FADE_KEY_FRAMES, FADE_ANIMATION);
+      path
+        ?.querySelector(".line")
+        ?.animate(FADE_LINE_KEY_FRAMES, FADE_ANIMATION);
     } else if (next === "end") {
       const path = Array.from(this.host.transitionLines ?? []).find(
-        (it) => it.dataset["from"] === prev && it.dataset["to"] === "end",
+        (it) => it.dataset["from"] === prevName && it.dataset["to"] === "end",
       );
-      path?.querySelector(".line")?.animate(FADE_KEY_FRAMES, FADE_ANIMATION);
+      path
+        ?.querySelector(".line")
+        ?.animate(FADE_LINE_KEY_FRAMES, FADE_ANIMATION);
     }
 
     if (this.host.end.includes(next)) {

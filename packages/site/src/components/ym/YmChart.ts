@@ -125,7 +125,6 @@ export class YmChart extends LitElement {
           fill: none;
           stroke: transparent;
           stroke-width: 18px;
-          cursor: pointer;
         }
 
         &.next .line {
@@ -135,6 +134,13 @@ export class YmChart extends LitElement {
         .line.hovered {
           cursor: pointer;
           stroke: var(--light-blue);
+          transition: none;
+        }
+      }
+
+      .chart.interactive {
+        .transition-line .hit-area {
+          cursor: pointer;
         }
       }
     }
@@ -156,8 +162,16 @@ export class YmChart extends LitElement {
   @property({ type: String, reflect: true })
   current: string | undefined;
 
+  #data: object | undefined;
   @property({ type: Object })
-  data: object | undefined;
+  get data() {
+    return this.#data;
+  }
+
+  set data(v) {
+    const e = new Error();
+    this.#data = v;
+  }
 
   @property({
     type: String,

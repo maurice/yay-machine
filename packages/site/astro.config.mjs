@@ -16,6 +16,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "yay-machine",
+      favicon: "./src/assets/doggie-head.svg",
       customCss: [
         "./src/styles/custom.css",
         "../../node_modules/@phosphor-icons/web/src/regular/style.css",

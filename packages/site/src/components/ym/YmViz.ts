@@ -17,6 +17,11 @@ interface Transition {
   readonly label: string;
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: false positive
+const defaultMapData: MapData<any> = ({ name, ...data }) => {
+  return data;
+};
+
 export type MapData<StateType extends MachineState> = (
   state: StateType,
 ) => object;
@@ -127,12 +132,12 @@ export class YmViz<
 
     if (machine) {
       if (this.chart) {
-        this.chart.data = this.#mapData?.(machine.state) ?? machine.state;
+        this.chart.data = this.mapData(machine.state);
       }
       this.#unsubscribe = machine.subscribe(({ state, event }) => {
         this.chart?.transition(
           state.name,
-          this.#mapData?.(machine.state) ?? machine.state,
+          this.mapData(machine.state),
           event?.type || "(immediate)",
         );
       });
@@ -145,9 +150,13 @@ export class YmViz<
     this.#mapData = mapData;
     if (this.chart) {
       this.chart.data = this.#machine
-        ? this.#mapData?.(this.#machine.state)
+        ? this.mapData(this.#machine.state)
         : undefined;
     }
+  }
+
+  get mapData(): MapData<StateType> {
+    return this.#mapData ?? defaultMapData;
   }
 
   @property({
@@ -199,9 +208,7 @@ export class YmViz<
       edgesep=${ifDefined(this.edgesep)}
       start=${ifDefined(this.initial)}
       current=${ifDefined(this.current)}
-      .data=${this.machine
-        ? (this.#mapData?.(this.machine.state) ?? this.machine.state)
-        : undefined}
+      .data=${this.machine ? this.mapData(this.machine.state) : undefined}
       .end=${this.end}
     >
       ${this.states?.map(

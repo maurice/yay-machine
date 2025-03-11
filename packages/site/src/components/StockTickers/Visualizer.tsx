@@ -53,11 +53,7 @@ export const Visualizer: FC = () => {
             Object.entries(state.symbols).map(([symbol, price]) => (
               <div className="machine" key={symbol}>
                 <div className="machine-label">«priceMachine: {symbol}»</div>
-                <ReactYmViz
-                  machine={price}
-                  direction="LR"
-                  mapData={({ name, ...state }) => state}
-                />
+                <ReactYmViz machine={price} direction="LR" />
               </div>
             ))}
         </div>

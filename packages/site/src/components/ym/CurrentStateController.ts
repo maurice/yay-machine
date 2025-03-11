@@ -1,4 +1,3 @@
-import deepEqual from "fast-deep-equal";
 import type { ReactiveController } from "lit";
 import type { YmState } from "./YmState";
 

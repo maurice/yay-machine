@@ -117,7 +117,7 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
     },
     doorsClosed: {
       on: {
-        OPEN_DOORS: { to: "doorsOpening", data: ({ state }) => state },
+        OPEN_DOORS: { to: "doorsOpening" },
       },
       always: [
         {
@@ -146,10 +146,9 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
       on: {
         VISIT_FLOOR: {
           to: "doorsOpen",
+          when: ({ state, event }) => state.currentFloor === event.floor,
         },
-        CLOSE_DOORS: {
-          to: "doorsClosing",
-        },
+        CLOSE_DOORS: { to: "doorsClosing" },
       },
     },
     goingUp: {
