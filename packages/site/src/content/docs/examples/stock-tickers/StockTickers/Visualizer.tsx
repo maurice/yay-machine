@@ -1,7 +1,7 @@
 import type { TickersState } from "@yay-machine/example-machines";
 import { type FC, useContext, useState } from "react";
-import { ReactYmViz } from "../ReactYmViz";
-import type { MapData } from "../ym";
+import { ReactYmViz } from "../../../../../components/ReactYmViz";
+import type { MapData } from "../../../../../components/ym";
 import { TickersContext } from "./TickersContext";
 import "./Visualizer.css";
 

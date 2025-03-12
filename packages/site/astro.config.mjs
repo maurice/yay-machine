@@ -36,7 +36,7 @@ export default defineConfig({
         {
           label: "Intro",
           items: [
-            { label: "Quick Start", slug: "quick-start", badge: tryItBadge },
+            { label: "Quick Start", link: "quick-start/", badge: tryItBadge },
           ],
         },
         {
@@ -48,47 +48,47 @@ export default defineConfig({
           items: [
             {
               label: "Toggle (on/off)",
-              slug: "examples/toggle",
+              link: "examples/toggle/",
               badge: tryItBadge,
             },
             {
               label: "Counter (1, 2, 3 ...)",
-              slug: "examples/counter",
+              link: "examples/counter/",
               badge: tryItBadge,
             },
             {
               label: "Guess the number",
-              slug: "examples/guess",
+              link: "examples/guess/",
               badge: tryItBadge,
             },
             {
               label: "Login",
-              slug: "examples/login",
+              link: "examples/login/",
             },
             {
               label: "Health (game component)",
-              slug: "examples/health",
+              link: "examples/health/",
             },
             {
               label: "Tape (VCR)",
-              slug: "examples/tape",
+              link: "examples/tape/",
             },
             {
               label: "STOMP parser",
-              slug: "examples/stomp-parser",
+              link: "examples/stomp-parser/",
             },
             {
               label: "Stock tickers",
-              slug: "examples/stock-tickers",
+              link: "examples/stock-tickers/",
               badge: tryItBadge,
             },
             {
               label: "Elevator",
-              slug: "examples/elevator",
+              link: "examples/elevator/",
             },
             {
               label: "Elevators controller",
-              slug: "examples/elevators-controller",
+              link: "examples/elevators-controller/",
             },
           ],
         },

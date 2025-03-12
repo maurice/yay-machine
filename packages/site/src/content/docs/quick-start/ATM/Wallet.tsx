@@ -1,5 +1,5 @@
 import { type FC, useEffect, useState } from "react";
-import { useMachine } from "../useMachine";
+import { useMachine } from "../../../../components/useMachine";
 import { BankCard } from "./BankCard";
 import { BankCards } from "./BankCards";
 import { atmMachine } from "./atm";
