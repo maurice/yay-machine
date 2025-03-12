@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { useMachine } from "../useMachine";
+import { useMachine } from "../../../../components/useMachine";
 import { bankMachine } from "./bank";
 import { cardReaderMachine } from "./cardReader";
 import "./Hints.css";

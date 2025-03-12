@@ -1,7 +1,7 @@
 import type { AtmState } from "@yay-machine/example-machines";
 import { ServiceMenu } from "@yay-machine/example-machines/src/atm/ServiceMenu";
 import type { FC } from "react";
-import { useMachine } from "../useMachine";
+import { useMachine } from "../../../../components/useMachine";
 import { CardReader } from "./CardReader";
 import { CashDispenser } from "./CashDispenser";
 import { Hints } from "./Hints";

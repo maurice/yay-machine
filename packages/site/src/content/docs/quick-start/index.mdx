@@ -22,7 +22,8 @@ To keep it simple, it will only offer a **cash withdrawal** service, and skip so
 
 **This interactive demo is powered by the state-machine _we're going to build_.**
 
-import { ATM, FullScreen } from "../../components";
+import { FullScreen } from "../../../components";
+import { ATM } from "./ATM";
 
 <FullScreen client:load>
   <ATM client:load />
@@ -65,7 +66,7 @@ Drawing the state-chart on paper or a whiteboard might help to see what looks co
   This state machine diagram is interactive - try hovering and clicking around.
 </Aside>
 
-import StateChart from "../../components/StateChart/StateChart.astro";
+import StateChart from "../../../components/StateChart/StateChart.astro";
 
 <FullScreen client:load>
   <StateChart
