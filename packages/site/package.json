@@ -16,7 +16,7 @@
     "@dagrejs/dagre": "^1.1.4",
     "@lit/react": "^1.0.7",
     "@phosphor-icons/react": "^2.1.7",
-    "@phosphor-icons/web": "^2.1.1",
+    "@phosphor-icons/web": "^2.1.2",
     "@types/d3-shape": "^3.1.7",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
