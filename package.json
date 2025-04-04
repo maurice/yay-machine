@@ -67,8 +67,8 @@
     "husky": "^9.1.7",
     "playwright": "^1.51.1",
     "prettier": "^3.5.3",
-    "sharp": "^0.33.5",
-    "turbo": "^2.4.4",
+    "sharp": "^0.34.0",
+    "turbo": "^2.5.0",
     "typescript": "^5.8.2"
   },
   "packageManager": "npm@11.2.0",
