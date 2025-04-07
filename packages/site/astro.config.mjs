@@ -24,9 +24,13 @@ export default defineConfig({
         "../../node_modules/@phosphor-icons/web/src/duotone/style.css",
         "../../node_modules/@phosphor-icons/web/src/fill/style.css",
       ],
-      social: {
-        github: "https://github.com/maurice/yay-machine",
-      },
+      social: [
+        {
+          icon: "github",
+          label: "GitHub",
+          href: "https://github.com/maurice/yay-machine",
+        },
+      ],
       editLink: {
         baseUrl:
           "https://github.com/maurice/yay-machine/edit/main/packages/site/",
