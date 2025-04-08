@@ -30,7 +30,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-transition-group": "^4.4.5",
-    "sharp": "^0.34.0",
+    "sharp": "^0.34.1",
     "starlight-links-validator": "^0.15.0"
   },
   "devDependencies": {
