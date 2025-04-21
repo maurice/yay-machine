@@ -1,12 +1,13 @@
 import { elevatorMachine } from "../elevator/elevatorMachine";
 import { type Elevators, controllerMachine } from "./elevatorControllerMachine";
 
+// start-up
 const elevators: Elevators = [
   elevatorMachine.newInstance({
     initialState: {
       name: "doorsClosed",
       currentFloor: 1,
-      fractionalFloor: 0,
+      actionStarted: -1,
       floorsToVisit: [],
     },
   }),
@@ -14,7 +15,7 @@ const elevators: Elevators = [
     initialState: {
       name: "doorsClosed",
       currentFloor: 5,
-      fractionalFloor: 0,
+      actionStarted: -1,
       floorsToVisit: [],
     },
   }),
@@ -22,7 +23,7 @@ const elevators: Elevators = [
     initialState: {
       name: "doorsClosed",
       currentFloor: 9,
-      fractionalFloor: 0,
+      actionStarted: -1,
       floorsToVisit: [],
     },
   }),
@@ -40,3 +41,6 @@ const controller = controllerMachine
 controller.send({ type: "REQUEST_ELEVATOR", floor: 5 });
 controller.send({ type: "REQUEST_ELEVATOR", floor: 13 });
 controller.send({ type: "REQUEST_ELEVATOR", floor: 2 });
+
+// shutdown
+elevators.forEach((elevator) => elevator.stop());
