@@ -16,7 +16,7 @@ import { Align, Direction, Ranker } from "./types";
 
 @customElement("ym-chart")
 export class YmChart extends LitElement {
-  static styles = css`
+  static override styles = css`
     :host {
       display: block;
       --dark-grey: #333;
@@ -169,7 +169,6 @@ export class YmChart extends LitElement {
   }
 
   set data(v) {
-    const e = new Error();
     this.#data = v;
   }
 
@@ -260,17 +259,17 @@ export class YmChart extends LitElement {
     this.#transitions.transition(next, data, label);
   }
 
-  protected firstUpdated(): void {
+  protected override firstUpdated(): void {
     this.#syncChildren();
   }
 
-  protected willUpdate(changedProperties: PropertyValues<this>): void {
+  protected override willUpdate(changedProperties: PropertyValues<this>): void {
     if (changedProperties.has("current") || changedProperties.has("data")) {
       this.#syncChildren();
     }
   }
 
-  render() {
+  override render() {
     const transitions = this.querySelectorAll("ym-transition");
 
     return html`

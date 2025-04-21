@@ -4,7 +4,7 @@ import { classMap } from "lit/directives/class-map.js";
 
 @customElement("ym-transition")
 export class YmTransition extends LitElement {
-  static styles = css`
+  static override styles = css`
     :host {
       --color: var(--medium-grey);
       display: inline-block;
@@ -69,7 +69,7 @@ export class YmTransition extends LitElement {
   @property({ type: Boolean, reflect: true })
   interactive = false;
 
-  render() {
+  override render() {
     return this.label
       ? // prettier-ignore
         html`<div class=${classMap({ label: true })}>${this.label}</div> `

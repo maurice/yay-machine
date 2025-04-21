@@ -2,11 +2,11 @@ import type { FC } from "react";
 import "./BankCard.css";
 
 interface BankCardProps {
-  readonly className?: string;
+  readonly className?: string | undefined;
   readonly cardNumber: string;
   readonly hidden?: boolean;
-  readonly style?: "coral" | "blueviolet" | "darkcyan";
-  readonly onClick?: (cardNumber: string) => void;
+  readonly style?: "coral" | "blueviolet" | "darkcyan" | undefined;
+  readonly onClick?: ((cardNumber: string) => void) | undefined;
 }
 
 export const BankCard: FC<BankCardProps> = ({

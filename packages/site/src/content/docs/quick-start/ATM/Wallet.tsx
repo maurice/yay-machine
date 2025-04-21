@@ -2,7 +2,6 @@ import { type FC, useEffect, useState } from "react";
 import { useMachine } from "../../../../components/useMachine";
 import { BankCard } from "./BankCard";
 import { BankCards } from "./BankCards";
-import { atmMachine } from "./atm";
 import { cardReaderMachine } from "./cardReader";
 import "./Wallet.css";
 

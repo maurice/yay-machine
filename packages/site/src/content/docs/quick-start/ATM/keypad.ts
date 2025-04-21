@@ -59,7 +59,7 @@ export const keypadMachine = defineMachine<KeypadState, KeypadEvent>({
           {
             to: "number",
             when: ({ event }) => event.key === "DELETE",
-            data: ({ state, event }) => ({
+            data: ({ state }) => ({
               value: [...state.value].slice(0, -1).join(""),
               mask: state.mask,
             }),

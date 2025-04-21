@@ -44,15 +44,6 @@ export const ATM: FC = () => {
     text += `\n\n${mask ? "*".repeat(digits.length) : digits}_`;
   }
 
-  const {
-    name,
-    cardReader,
-    keypad: _,
-    cashDispenser,
-    bank,
-    ...data
-  } = atm.state;
-
   return (
     <div className="atm">
       <div className="col">

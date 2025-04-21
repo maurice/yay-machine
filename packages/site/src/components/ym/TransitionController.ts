@@ -51,23 +51,10 @@ const FADE_ANIMATION: KeyframeAnimationOptions = {
   iterations: 1,
 };
 
-const FADE_STATE_KEY_FRAMES: Keyframe[] = [
-  {
-    "--state-color": "var(--medium-blue)",
-  },
-  {
-    "--state-color": "var(--medium-blue)",
-  },
-  {},
-  // {
-  //   "--state-color": "var(--light-grey)",
-  // },
-];
-
 interface Transition {
   readonly next: string;
-  readonly data?: object;
-  readonly label?: string;
+  readonly data?: object | undefined;
+  readonly label?: string | undefined;
 }
 
 export class TransitionController implements ReactiveController {
@@ -79,6 +66,7 @@ export class TransitionController implements ReactiveController {
 
   hostUpdated = () => {
     // only run once
+    // @ts-expect-error: violates of `exactOptionalPropertyTypes`
     (this as ReactiveController).hostUpdated = undefined;
   };
 

@@ -1,4 +1,4 @@
-import { LitElement, html } from "lit";
+import { LitElement, type PropertyValues, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import {
@@ -32,19 +32,15 @@ export class YmViz<
   EventType extends MachineEvent,
 > extends LitElement {
   #unsubscribe: Unsubscribe | undefined;
-  #machine: MachineInstance<StateType, EventType> | undefined;
 
-  get machine(): MachineInstance<StateType, EventType> | undefined {
-    return this.#machine;
-  }
+  @property({ type: Object })
+  machine: MachineInstance<StateType, EventType> | undefined;
 
-  set machine(machine: MachineInstance<StateType, EventType> | undefined) {
+  #initMachine() {
     this.#unsubscribe?.();
     this.#unsubscribe = undefined;
 
-    this.#machine = machine;
-
-    const mdc = machine?.[YayMachine.subtle.MDC];
+    const mdc = this.machine?.[YayMachine.subtle.MDC];
     this.initial = mdc?.initialState.name;
     const states: string[] = [];
     const transitions: Transition[] = [];
@@ -128,36 +124,37 @@ export class YmViz<
         (it) => !transitions.some(({ from, to }) => from === it && to !== it),
       );
     }
-    this.current = machine?.state.name;
+    this.current = this.machine?.state.name;
 
-    if (machine) {
+    if (this.machine) {
       if (this.chart) {
-        this.chart.data = this.mapData(machine.state);
+        this.chart.data = this.mapData(this.machine.state);
       }
-      this.#unsubscribe = machine.subscribe(({ state, event }) => {
+      this.#unsubscribe = this.machine.subscribe(({ state, event }) => {
         this.chart?.transition(
           state.name,
-          this.mapData(machine.state),
+          this.mapData(this.machine!.state),
           event?.type || "(immediate)",
         );
       });
     }
   }
 
-  #mapData: MapData<StateType> | undefined;
+  @property()
+  mapData: MapData<StateType> = defaultMapData;
 
-  set mapData(mapData: MapData<StateType> | undefined) {
-    this.#mapData = mapData;
-    if (this.chart) {
-      this.chart.data = this.#machine
-        ? this.mapData(this.#machine.state)
-        : undefined;
-    }
-  }
+  // set mapData(mapData: MapData<StateType> | undefined) {
+  //   this.#mapData = mapData;
+  //   if (this.chart) {
+  //     this.chart.data = this.#machine
+  //       ? this.mapData(this.#machine.state)
+  //       : undefined;
+  //   }
+  // }
 
-  get mapData(): MapData<StateType> {
-    return this.#mapData ?? defaultMapData;
-  }
+  // get mapData(): MapData<StateType> {
+  //   return this.#mapData ?? defaultMapData;
+  // }
 
   @property({
     type: String,
@@ -201,7 +198,13 @@ export class YmViz<
   @query("ym-chart")
   chart: YmChart | undefined;
 
-  render() {
+  protected override willUpdate(changedProperties: PropertyValues): void {
+    if (changedProperties.has("machine")) {
+      this.#initMachine();
+    }
+  }
+
+  override render() {
     return html`<ym-chart
       direction=${this.direction}
       nodesep=${ifDefined(this.nodesep)}

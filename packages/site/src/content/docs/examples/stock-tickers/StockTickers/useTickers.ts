@@ -11,10 +11,10 @@ import { useConnected } from "./connected";
 type TickerMachine = MachineInstanceOf<typeof tickerMachine>;
 
 export interface Tickers {
-  readonly machine?: TickerMachine;
-  readonly state?: TickersState;
-  readonly event?: TickersEvent;
-  readonly send?: TickerMachine["send"];
+  readonly machine?: TickerMachine | undefined;
+  readonly state?: TickersState | undefined;
+  readonly event?: TickersEvent | undefined;
+  readonly send?: TickerMachine["send"] | undefined;
 }
 
 const getInitialState = (): TickersState => ({
