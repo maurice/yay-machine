@@ -17,15 +17,15 @@
 
 ---
 
-# Why you should learn and apply state-machines
+# Why you should learn and use state-machines
 
-![learn and apply repeat state-machines](https://github.com/user-attachments/assets/8c3b547a-21b8-48e2-a482-cbd1ddbc4359)
+![learn and use repeat state-machines](https://github.com/user-attachments/assets/8c3b547a-21b8-48e2-a482-cbd1ddbc4359)
 
 State-machines have many desirable qualities, eg
 
-- they can model many different problem domains
-- they are declarative, rather than imperative
-- they usually cram a lot of information into a small amount of co-located code
+- they are versatile, and can model many different problem domains
+- they are declarative, focusing on the important "what", "when", "how" and "why" questions
+- they are concise, conveying a lot of information in a small amount of co-located code
 - they are extremely predictable
 - and more
 
@@ -33,7 +33,7 @@ Read the [Why state-machines? article](https://yay-machine.js.org/articles/why-s
 
 # `yay-machine` is a TypeScript state-machine library for everyone
 
-Unlike other state-machine libraries that are complex and heavy, or overly simplistic, `yay-machine` gives you power and flexibility without cognitive load.
+Unlike other state-machine libraries that are complex and vast, or overly simplistic, `yay-machine` gives you power and flexibility without cognitive load.
 
 Read the [About **yay-machine** article](https://yay-machine.js.org/) for more on this.
 
