@@ -51,7 +51,7 @@ const summarize = (
 
       case "goingUp":
       case "goingDown":
-        return `${state.name} @ ${state.currentFloor}${state.fractionalFloor ? `.${state.fractionalFloor}` : ""} to ${state.floorsToVisit[0]}${state.floorsToVisit.length > 1 ? ` (then ${state.floorsToVisit.slice(1).join(", ")})` : ""}`;
+        return `${state.name} @ ${state.currentFloor} to ${state.floorsToVisit[0]}${state.floorsToVisit.length > 1 ? ` (then ${state.floorsToVisit.slice(1).join(", ")})` : ""}`;
 
       default:
         throw new Error(`invalid state: ${state.name}`);
@@ -64,7 +64,7 @@ test("controller sends elevators to requested floor", () => {
       initialState: {
         name: "doorsClosed",
         currentFloor: 1,
-        fractionalFloor: 0,
+        actionStarted: -1,
         floorsToVisit: [],
       },
     }),
@@ -72,7 +72,7 @@ test("controller sends elevators to requested floor", () => {
       initialState: {
         name: "doorsClosed",
         currentFloor: 5,
-        fractionalFloor: 0,
+        actionStarted: -1,
         floorsToVisit: [],
       },
     }),
@@ -80,7 +80,7 @@ test("controller sends elevators to requested floor", () => {
       initialState: {
         name: "doorsClosed",
         currentFloor: 9,
-        fractionalFloor: 0,
+        actionStarted: -1,
         floorsToVisit: [],
       },
     }),
@@ -125,19 +125,19 @@ test("controller sends elevators to requested floor", () => {
   expect(elevators[0].state).toEqual({
     name: "goingUp",
     currentFloor: 1,
-    fractionalFloor: 0,
+    actionStarted: expect.any(Number),
     floorsToVisit: [2],
   });
   expect(elevators[1].state).toEqual({
     name: "doorsOpening",
     currentFloor: 5,
-    fractionalFloor: 0,
+    actionStarted: expect.any(Number),
     floorsToVisit: [6, 7],
   });
   expect(elevators[2].state).toEqual({
     name: "goingUp",
     currentFloor: 9,
-    fractionalFloor: 0,
+    actionStarted: expect.any(Number),
     floorsToVisit: [11, 13],
   });
 

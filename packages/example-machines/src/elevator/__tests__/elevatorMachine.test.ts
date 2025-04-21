@@ -1,6 +1,7 @@
 import {
   type Mock,
   afterAll,
+  afterEach,
   beforeAll,
   beforeEach,
   expect,
@@ -8,7 +9,7 @@ import {
   test,
 } from "bun:test";
 import { type InstalledClock, install } from "@sinonjs/fake-timers";
-import type { Subscriber } from "yay-machine";
+import type { MachineInstanceOf, Subscriber } from "yay-machine";
 import {
   type ElevatorEvent,
   type ElevatorState,
@@ -16,6 +17,7 @@ import {
 } from "../elevatorMachine";
 import "../elevatorMachineUsage"; // sanity check the documented example
 
+const machines: MachineInstanceOf<typeof elevatorMachine>[] = [];
 let clock: InstalledClock;
 
 beforeAll(() => {
@@ -26,13 +28,24 @@ beforeEach(() => {
   clock.reset();
 });
 
+afterEach(() => {
+  for (const machine of machines) {
+    machine.stop();
+  }
+  machines.length = 0;
+});
+
 afterAll(() => {
   clock.uninstall();
 });
 
-/*
- * Elevator machine tests
- */
+const newMachine = (initialState?: ElevatorState) => {
+  const machine = elevatorMachine.newInstance(
+    initialState ? { initialState } : undefined,
+  );
+  machines.push(machine);
+  return machine;
+};
 
 const summarize = (
   subscriber: Mock<Subscriber<ElevatorState, ElevatorEvent>>,
@@ -47,7 +60,7 @@ const summarize = (
 
       case "goingUp":
       case "goingDown":
-        return `${state.name} @ ${state.currentFloor}${state.fractionalFloor ? `.${state.fractionalFloor}` : ""} to ${state.floorsToVisit[0]}${state.floorsToVisit.length > 1 ? ` (then ${state.floorsToVisit.slice(1).join(", ")})` : ""}`;
+        return `${state.name} @ ${state.currentFloor} to ${state.floorsToVisit[0]}${state.floorsToVisit.length > 1 ? ` (then ${state.floorsToVisit.slice(1).join(", ")})` : ""}`;
 
       default:
         throw new Error(`invalid state: ${state.name}`);
@@ -55,7 +68,7 @@ const summarize = (
   });
 
 test("elevator visits floors sensibly", () => {
-  const elevator = elevatorMachine.newInstance();
+  const elevator = newMachine();
   const subscriber = mock();
   elevator.subscribe(subscriber);
 
@@ -63,7 +76,7 @@ test("elevator visits floors sensibly", () => {
   expect(elevator.state).toEqual({
     name: "doorsClosed",
     currentFloor: 1,
-    fractionalFloor: 0,
+    actionStarted: expect.any(Number),
     floorsToVisit: [],
   });
 
@@ -71,7 +84,7 @@ test("elevator visits floors sensibly", () => {
   expect(elevator.state).toEqual({
     name: "goingUp",
     currentFloor: 1,
-    fractionalFloor: 0,
+    actionStarted: expect.any(Number),
     floorsToVisit: [5],
   });
 
@@ -79,122 +92,56 @@ test("elevator visits floors sensibly", () => {
   expect(elevator.state).toEqual({
     name: "goingUp",
     currentFloor: 1,
-    fractionalFloor: 0,
+    actionStarted: expect.any(Number),
     floorsToVisit: [3, 5],
   });
 
   clock.runAll();
-  expect(subscriber).toHaveBeenCalledTimes(53);
+  expect(subscriber).toHaveBeenCalledTimes(15);
   expect(summarize(subscriber)).toMatchInlineSnapshot(`
-[
-  "doorsClosed @ 1",
-  "doorsClosed @ 1",
-  "goingUp @ 1 to 5",
-  "goingUp @ 1 to 3 (then 5)",
-  "goingUp @ 1.1 to 3 (then 5)",
-  "goingUp @ 1.2 to 3 (then 5)",
-  "goingUp @ 1.3 to 3 (then 5)",
-  "goingUp @ 1.4 to 3 (then 5)",
-  "goingUp @ 1.5 to 3 (then 5)",
-  "goingUp @ 1.6 to 3 (then 5)",
-  "goingUp @ 1.7 to 3 (then 5)",
-  "goingUp @ 1.8 to 3 (then 5)",
-  "goingUp @ 1.9 to 3 (then 5)",
-  "goingUp @ 2 to 3 (then 5)",
-  "goingUp @ 2.1 to 3 (then 5)",
-  "goingUp @ 2.2 to 3 (then 5)",
-  "goingUp @ 2.3 to 3 (then 5)",
-  "goingUp @ 2.4 to 3 (then 5)",
-  "goingUp @ 2.5 to 3 (then 5)",
-  "goingUp @ 2.6 to 3 (then 5)",
-  "goingUp @ 2.7 to 3 (then 5)",
-  "goingUp @ 2.8 to 3 (then 5)",
-  "goingUp @ 2.9 to 3 (then 5)",
-  "goingUp @ 3 to 3 (then 5)",
-  "doorsOpening @ 3",
-  "doorsOpen @ 3",
-  "doorsClosing @ 3",
-  "doorsClosed @ 3",
-  "goingUp @ 3 to 5",
-  "goingUp @ 3.1 to 5",
-  "goingUp @ 3.2 to 5",
-  "goingUp @ 3.3 to 5",
-  "goingUp @ 3.4 to 5",
-  "goingUp @ 3.5 to 5",
-  "goingUp @ 3.6 to 5",
-  "goingUp @ 3.7 to 5",
-  "goingUp @ 3.8 to 5",
-  "goingUp @ 3.9 to 5",
-  "goingUp @ 4 to 5",
-  "goingUp @ 4.1 to 5",
-  "goingUp @ 4.2 to 5",
-  "goingUp @ 4.3 to 5",
-  "goingUp @ 4.4 to 5",
-  "goingUp @ 4.5 to 5",
-  "goingUp @ 4.6 to 5",
-  "goingUp @ 4.7 to 5",
-  "goingUp @ 4.8 to 5",
-  "goingUp @ 4.9 to 5",
-  "goingUp @ 5 to 5",
-  "doorsOpening @ 5",
-  "doorsOpen @ 5",
-  "doorsClosing @ 5",
-  "doorsClosed @ 5",
-]
-`);
+    [
+      "doorsClosed @ 1",
+      "doorsClosed @ 1",
+      "goingUp @ 1 to 5",
+      "goingUp @ 1 to 3 (then 5)",
+      "goingUp @ 2 to 3 (then 5)",
+      "doorsOpening @ 3",
+      "doorsOpen @ 3",
+      "doorsClosing @ 3",
+      "doorsClosed @ 3",
+      "goingUp @ 3 to 5",
+      "goingUp @ 4 to 5",
+      "doorsOpening @ 5",
+      "doorsOpen @ 5",
+      "doorsClosing @ 5",
+      "doorsClosed @ 5",
+    ]
+  `);
   expect(elevator.state).toEqual({
     name: "doorsClosed",
     currentFloor: 5,
-    fractionalFloor: 0,
+    actionStarted: expect.any(Number),
     floorsToVisit: [],
   });
 
   elevator.send({ type: "VISIT_FLOOR", floor: 2 });
   clock.runAll();
-  expect(summarize(subscriber).slice(53)).toMatchInlineSnapshot(`
-[
-  "doorsClosed @ 5",
-  "goingDown @ 5 to 2",
-  "goingDown @ 4.9 to 2",
-  "goingDown @ 4.8 to 2",
-  "goingDown @ 4.7 to 2",
-  "goingDown @ 4.6 to 2",
-  "goingDown @ 4.5 to 2",
-  "goingDown @ 4.4 to 2",
-  "goingDown @ 4.3 to 2",
-  "goingDown @ 4.2 to 2",
-  "goingDown @ 4.1 to 2",
-  "goingDown @ 4 to 2",
-  "goingDown @ 3.9 to 2",
-  "goingDown @ 3.8 to 2",
-  "goingDown @ 3.7 to 2",
-  "goingDown @ 3.6 to 2",
-  "goingDown @ 3.5 to 2",
-  "goingDown @ 3.4 to 2",
-  "goingDown @ 3.3 to 2",
-  "goingDown @ 3.2 to 2",
-  "goingDown @ 3.1 to 2",
-  "goingDown @ 3 to 2",
-  "goingDown @ 2.9 to 2",
-  "goingDown @ 2.8 to 2",
-  "goingDown @ 2.7 to 2",
-  "goingDown @ 2.6 to 2",
-  "goingDown @ 2.5 to 2",
-  "goingDown @ 2.4 to 2",
-  "goingDown @ 2.3 to 2",
-  "goingDown @ 2.2 to 2",
-  "goingDown @ 2.1 to 2",
-  "goingDown @ 2 to 2",
-  "doorsOpening @ 2",
-  "doorsOpen @ 2",
-  "doorsClosing @ 2",
-  "doorsClosed @ 2",
-]
-`);
+  expect(summarize(subscriber).slice(15)).toMatchInlineSnapshot(`
+    [
+      "doorsClosed @ 5",
+      "goingDown @ 5 to 2",
+      "goingDown @ 4 to 2",
+      "goingDown @ 3 to 2",
+      "doorsOpening @ 2",
+      "doorsOpen @ 2",
+      "doorsClosing @ 2",
+      "doorsClosed @ 2",
+    ]
+  `);
 });
 
 test("requests to visit floors are inserted according to current state", () => {
-  const elevator = elevatorMachine.newInstance();
+  const elevator = newMachine();
   const subscriber = mock();
   elevator.subscribe(subscriber);
 
@@ -205,7 +152,7 @@ test("requests to visit floors are inserted according to current state", () => {
   expect(elevator.state).toEqual({
     name: "doorsClosed",
     currentFloor: 5,
-    fractionalFloor: 0,
+    actionStarted: expect.any(Number),
     floorsToVisit: [],
   });
 
@@ -215,7 +162,7 @@ test("requests to visit floors are inserted according to current state", () => {
   expect(elevator.state).toEqual({
     name: "goingDown",
     currentFloor: 4,
-    fractionalFloor: 9,
+    actionStarted: expect.any(Number),
     floorsToVisit: [2],
   });
 
@@ -226,13 +173,13 @@ test("requests to visit floors are inserted according to current state", () => {
   expect(elevator.state).toEqual({
     name: "goingDown",
     currentFloor: 4,
-    fractionalFloor: 9,
+    actionStarted: expect.any(Number),
     floorsToVisit: [2, 1, 6, 9],
   });
 
   // where did it stop?
   clock.runAll();
-  expect(subscriber).toHaveBeenCalledTimes(191);
+  expect(subscriber).toHaveBeenCalledTimes(42);
   expect(summarize(subscriber).filter((it) => it.startsWith("doorsOpen ")))
     .toMatchInlineSnapshot(`
 [
@@ -249,8 +196,8 @@ test("requests to visit floors are inserted according to current state", () => {
   clock.next();
   expect(elevator.state).toEqual({
     name: "goingUp",
-    currentFloor: 9,
-    fractionalFloor: 1,
+    currentFloor: 10,
+    actionStarted: expect.any(Number),
     floorsToVisit: [14],
   });
 
@@ -264,7 +211,7 @@ test("requests to visit floors are inserted according to current state", () => {
   clock.runAll();
   expect(
     summarize(subscriber)
-      .slice(191)
+      .slice(42)
       .filter((it) => it.startsWith("doorsOpen ")),
   ).toMatchInlineSnapshot(`
 [
@@ -278,7 +225,7 @@ test("requests to visit floors are inserted according to current state", () => {
 });
 
 test("pressing a different floor button inside the elevator adds floor to visit queue", () => {
-  const elevator = elevatorMachine.newInstance();
+  const elevator = newMachine();
   const subscriber = mock();
   elevator.subscribe(subscriber);
 
@@ -294,7 +241,7 @@ test("pressing a different floor button inside the elevator adds floor to visit 
   expect(elevator.state).toEqual({
     name: "doorsClosed",
     currentFloor: 1,
-    fractionalFloor: 0,
+    actionStarted: expect.any(Number),
     floorsToVisit: [],
   });
 
@@ -302,7 +249,7 @@ test("pressing a different floor button inside the elevator adds floor to visit 
   expect(elevator.state).toEqual({
     name: "goingUp",
     currentFloor: 1,
-    fractionalFloor: 0,
+    actionStarted: expect.any(Number),
     floorsToVisit: [5],
   });
 
@@ -318,7 +265,7 @@ test("pressing a different floor button inside the elevator adds floor to visit 
 });
 
 test("pressing the same floor button inside the elevator does nothing", () => {
-  const elevator = elevatorMachine.newInstance();
+  const elevator = newMachine();
   const subscriber = mock();
   elevator.subscribe(subscriber);
 
@@ -334,7 +281,7 @@ test("pressing the same floor button inside the elevator does nothing", () => {
   expect(elevator.state).toEqual({
     name: "doorsClosed",
     currentFloor: 1,
-    fractionalFloor: 0,
+    actionStarted: expect.any(Number),
     floorsToVisit: [],
   });
 
@@ -342,7 +289,7 @@ test("pressing the same floor button inside the elevator does nothing", () => {
   expect(elevator.state).toEqual({
     name: "goingUp",
     currentFloor: 1,
-    fractionalFloor: 0,
+    actionStarted: expect.any(Number),
     floorsToVisit: [5],
   });
 
@@ -354,4 +301,324 @@ test("pressing the same floor button inside the elevator does nothing", () => {
       "doorsOpen @ 5",
     ]
   `);
+});
+
+test("appends higher destination floor to end of queue if opposite direction", () => {
+  const elevator1 = newMachine({
+    name: "doorsClosed",
+    currentFloor: 5,
+    actionStarted: -1,
+    floorsToVisit: [],
+  }).start();
+  const subscriber = mock();
+  elevator1.subscribe(subscriber);
+
+  elevator1.send({ type: "VISIT_FLOOR", floor: 1 });
+  elevator1.send({ type: "VISIT_FLOOR", floor: 3 });
+  elevator1.send({ type: "VISIT_FLOOR", floor: 2 });
+  elevator1.send({ type: "VISIT_FLOOR", floor: 4 });
+  expect(elevator1.state).toEqual({
+    name: "goingDown",
+    currentFloor: 5,
+    actionStarted: expect.any(Number),
+    floorsToVisit: [4, 3, 2, 1],
+  });
+
+  expect(elevator1.state).toEqual({
+    name: "goingDown",
+    currentFloor: 5,
+    actionStarted: expect.any(Number),
+    floorsToVisit: [4, 3, 2, 1],
+  });
+
+  clock.tick(1);
+  elevator1.send({ type: "VISIT_FLOOR", floor: 5 });
+  expect(elevator1.state).toEqual({
+    name: "goingDown",
+    currentFloor: 5,
+    actionStarted: expect.any(Number),
+    floorsToVisit: [4, 3, 2, 1, 5],
+  });
+});
+
+test("appends lower destination floor to end of queue if opposite direction", () => {
+  const elevator1 = newMachine({
+    name: "doorsClosed",
+    currentFloor: 1,
+    actionStarted: -1,
+    floorsToVisit: [],
+  }).start();
+  const subscriber = mock();
+  elevator1.subscribe(subscriber);
+
+  elevator1.send({ type: "VISIT_FLOOR", floor: 5 });
+  elevator1.send({ type: "VISIT_FLOOR", floor: 3 });
+  elevator1.send({ type: "VISIT_FLOOR", floor: 2 });
+  elevator1.send({ type: "VISIT_FLOOR", floor: 4 });
+  expect(elevator1.state).toEqual({
+    name: "goingUp",
+    currentFloor: 1,
+    actionStarted: expect.any(Number),
+    floorsToVisit: [2, 3, 4, 5],
+  });
+
+  expect(elevator1.state).toEqual({
+    name: "goingUp",
+    currentFloor: 1,
+    actionStarted: expect.any(Number),
+    floorsToVisit: [2, 3, 4, 5],
+  });
+
+  elevator1.send({ type: "VISIT_FLOOR", floor: 1 });
+  expect(elevator1.state).toEqual({
+    name: "goingUp",
+    currentFloor: 1,
+    actionStarted: expect.any(Number),
+    floorsToVisit: [2, 3, 4, 5, 1],
+  });
+});
+
+test("does not re-enter doorsOpening when requested to visit floor if already doorsOpening at floor", () => {
+  const elevator = newMachine({
+    name: "doorsClosed",
+    currentFloor: 1,
+    actionStarted: -1,
+    floorsToVisit: [],
+  }).start();
+  const subscriber = mock();
+  elevator.subscribe(subscriber);
+
+  elevator.send({ type: "VISIT_FLOOR", floor: 1 });
+  elevator.send({ type: "VISIT_FLOOR", floor: 1 });
+  expect(summarize(subscriber)).toMatchInlineSnapshot(`
+    [
+      "doorsClosed @ 1",
+      "doorsOpening @ 1",
+    ]
+  `);
+});
+
+test("does not stop once goingUp from current floor when requested to visit same floor", () => {
+  const elevator = newMachine({
+    name: "doorsClosed",
+    currentFloor: 1,
+    actionStarted: -1,
+    floorsToVisit: [],
+  }).start();
+  const subscriber = mock();
+  elevator.subscribe(subscriber);
+
+  elevator.send({ type: "VISIT_FLOOR", floor: 2 });
+  expect(summarize(subscriber)).toMatchInlineSnapshot(`
+    [
+      "doorsClosed @ 1",
+      "doorsClosed @ 1",
+      "goingUp @ 1 to 2",
+    ]
+  `);
+
+  elevator.send({ type: "VISIT_FLOOR", floor: 1 });
+  clock.next();
+  expect(summarize(subscriber)).toMatchInlineSnapshot(`
+    [
+      "doorsClosed @ 1",
+      "doorsClosed @ 1",
+      "goingUp @ 1 to 2",
+      "goingUp @ 1 to 2 (then 1)",
+      "doorsOpening @ 2",
+    ]
+  `);
+});
+
+test("does not stop once goingDown from current floor when requested to visit same floor", () => {
+  const elevator = newMachine({
+    name: "doorsClosed",
+    currentFloor: 5,
+    actionStarted: -1,
+    floorsToVisit: [],
+  }).start();
+  const subscriber = mock();
+  elevator.subscribe(subscriber);
+
+  elevator.send({ type: "VISIT_FLOOR", floor: 4 });
+  expect(summarize(subscriber)).toMatchInlineSnapshot(`
+    [
+      "doorsClosed @ 5",
+      "doorsClosed @ 5",
+      "goingDown @ 5 to 4",
+    ]
+  `);
+
+  elevator.send({ type: "VISIT_FLOOR", floor: 5 });
+  clock.next();
+  expect(summarize(subscriber)).toMatchInlineSnapshot(`
+    [
+      "doorsClosed @ 5",
+      "doorsClosed @ 5",
+      "goingDown @ 5 to 4",
+      "goingDown @ 5 to 4 (then 5)",
+      "doorsOpening @ 4",
+    ]
+  `);
+});
+
+test("it takes 5s to travel between each floor going down", () => {
+  const elevator = newMachine({
+    name: "doorsClosed",
+    currentFloor: 5,
+    actionStarted: -1,
+    floorsToVisit: [],
+  }).start();
+  const subscriber = mock();
+  elevator.subscribe(subscriber);
+
+  elevator.send({ type: "VISIT_FLOOR", floor: 3 });
+  expect(summarize(subscriber)).toEqual([
+    "doorsClosed @ 5",
+    "doorsClosed @ 5",
+    "goingDown @ 5 to 3",
+  ]);
+
+  clock.tick(2500);
+  expect(summarize(subscriber)).toEqual([
+    "doorsClosed @ 5",
+    "doorsClosed @ 5",
+    "goingDown @ 5 to 3",
+  ]);
+
+  clock.tick(2500);
+  expect(summarize(subscriber)).toEqual([
+    "doorsClosed @ 5",
+    "doorsClosed @ 5",
+    "goingDown @ 5 to 3",
+    "goingDown @ 4 to 3",
+  ]);
+
+  clock.tick(2500);
+  expect(summarize(subscriber)).toEqual([
+    "doorsClosed @ 5",
+    "doorsClosed @ 5",
+    "goingDown @ 5 to 3",
+    "goingDown @ 4 to 3",
+  ]);
+
+  clock.tick(2500);
+  expect(summarize(subscriber)).toEqual([
+    "doorsClosed @ 5",
+    "doorsClosed @ 5",
+    "goingDown @ 5 to 3",
+    "goingDown @ 4 to 3",
+    "doorsOpening @ 3",
+  ]);
+});
+
+test("it takes 5s to travel between each floor going up", () => {
+  const elevator = newMachine({
+    name: "doorsClosed",
+    currentFloor: 5,
+    actionStarted: -1,
+    floorsToVisit: [],
+  }).start();
+  const subscriber = mock();
+  elevator.subscribe(subscriber);
+
+  elevator.send({ type: "VISIT_FLOOR", floor: 7 });
+  expect(summarize(subscriber)).toEqual([
+    "doorsClosed @ 5",
+    "doorsClosed @ 5",
+    "goingUp @ 5 to 7",
+  ]);
+
+  clock.tick(2500);
+  expect(summarize(subscriber)).toEqual([
+    "doorsClosed @ 5",
+    "doorsClosed @ 5",
+    "goingUp @ 5 to 7",
+  ]);
+
+  clock.tick(2500);
+  expect(summarize(subscriber)).toEqual([
+    "doorsClosed @ 5",
+    "doorsClosed @ 5",
+    "goingUp @ 5 to 7",
+    "goingUp @ 6 to 7",
+  ]);
+
+  clock.tick(2500);
+  expect(summarize(subscriber)).toEqual([
+    "doorsClosed @ 5",
+    "doorsClosed @ 5",
+    "goingUp @ 5 to 7",
+    "goingUp @ 6 to 7",
+  ]);
+
+  clock.tick(2500);
+  expect(summarize(subscriber)).toEqual([
+    "doorsClosed @ 5",
+    "doorsClosed @ 5",
+    "goingUp @ 5 to 7",
+    "goingUp @ 6 to 7",
+    "doorsOpening @ 7",
+  ]);
+});
+
+test("it takes 5s to open doors when reaching a requested floor, 5s before doors start closing, and 5s to close doors at floor", () => {
+  const elevator = newMachine({
+    name: "doorsClosed",
+    currentFloor: 1,
+    actionStarted: -1,
+    floorsToVisit: [],
+  }).start();
+  const subscriber = mock();
+  elevator.subscribe(subscriber);
+
+  elevator.send({ type: "VISIT_FLOOR", floor: 2 });
+  clock.tick(5000);
+  expect(summarize(subscriber)).toEqual([
+    "doorsClosed @ 1",
+    "doorsClosed @ 1",
+    "goingUp @ 1 to 2",
+    "doorsOpening @ 2",
+  ]);
+
+  clock.tick(2500);
+  expect(summarize(subscriber).slice(4)).toEqual([]);
+
+  clock.tick(2500);
+  expect(summarize(subscriber).slice(4)).toEqual(["doorsOpen @ 2"]);
+
+  clock.tick(2500);
+  expect(summarize(subscriber).slice(5)).toEqual([]);
+
+  clock.tick(2500);
+  expect(summarize(subscriber).slice(5)).toEqual(["doorsClosing @ 2"]);
+
+  clock.tick(2500);
+  expect(summarize(subscriber).slice(6)).toEqual([]);
+
+  clock.tick(2500);
+  expect(summarize(subscriber).slice(6)).toEqual(["doorsClosed @ 2"]);
+});
+
+test("door open time can be extended by using the open-doors button in the elevator cab", () => {
+  const elevator = newMachine({
+    name: "doorsClosed",
+    currentFloor: 1,
+    actionStarted: -1,
+    floorsToVisit: [],
+  }).start();
+  const subscriber = mock();
+  elevator.subscribe(subscriber);
+
+  elevator.send({ type: "OPEN_DOORS" });
+  clock.tick(5000);
+  expect(elevator.state.name).toEqual("doorsOpen");
+
+  clock.tick(4999);
+  elevator.send({ type: "OPEN_DOORS" });
+  expect(elevator.state.name).toEqual("doorsOpen");
+
+  clock.tick(4999);
+  elevator.send({ type: "OPEN_DOORS" });
+  expect(elevator.state.name).toEqual("doorsOpen");
 });

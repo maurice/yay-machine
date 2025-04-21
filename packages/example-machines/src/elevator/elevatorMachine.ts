@@ -12,7 +12,7 @@ export interface ElevatorState {
     | "goingUp"
     | "goingDown";
   readonly currentFloor: number;
-  readonly fractionalFloor: number; // workaround for JS number precision; using two integers instead of a float
+  readonly actionStarted: number; // performance.now()
   readonly floorsToVisit: readonly number[];
 }
 
@@ -37,12 +37,8 @@ export interface OpenedDoorsEvent {
   readonly type: "OPENED_DOORS";
 }
 
-export interface MoveUpEvent {
-  readonly type: "MOVE_UP";
-}
-
-export interface MoveDownEvent {
-  readonly type: "MOVE_DOWN";
+export interface ReachedNextFloorEvent {
+  readonly type: "REACHED_NEXT_FLOOR";
 }
 
 export type ElevatorEvent =
@@ -51,50 +47,59 @@ export type ElevatorEvent =
   | ClosedDoorsEvent
   | OpenDoorsEvent
   | OpenedDoorsEvent
-  | MoveUpEvent
-  | MoveDownEvent;
+  | ReachedNextFloorEvent;
 
 const sleepThen =
   (
     doneEvent: ElevatorEvent,
-    time = 5000,
+    { time = 5000, restartTimer = false } = {},
   ): StateLifecycleSideEffectFunction<ElevatorState, ElevatorEvent> =>
-  ({ send }) => {
-    const timer = setTimeout(() => send(doneEvent), time);
-    return () => clearTimeout(timer);
+  ({ state, send }) => {
+    const elapsed = restartTimer ? 0 : performance.now() - state.actionStarted;
+    const delay = Math.max(time - elapsed, 0);
+    const timer = setTimeout(send, delay, doneEvent);
+    return () => {
+      clearTimeout(timer);
+    };
   };
 
+const compareFloorToCurrent = (state: ElevatorState, floor: number) =>
+  floor - state.currentFloor;
+
 const insertFloor = (state: ElevatorState, floor: number): ElevatorState => {
+  if (state.floorsToVisit.includes(floor)) {
+    const e = new Error();
+    console.warn("looks wrong we already have floor", floor, state, e.stack);
+    return state;
+  }
   const nextFloor = state.floorsToVisit[0];
-  let floorsToVisit = [...new Set([...state.floorsToVisit, floor])];
+  let floorsToVisit = [...state.floorsToVisit, floor];
   floorsToVisit.sort((a, b) => a - b);
   if (nextFloor !== undefined) {
-    if (nextFloor > state.currentFloor) {
-      const splitIndex = floorsToVisit.findLastIndex(
-        (floor) => floor <= state.currentFloor,
-      );
-      if (splitIndex !== -1) {
-        floorsToVisit = floorsToVisit
-          .slice(splitIndex + 1)
-          .concat(floorsToVisit.slice(0, splitIndex + 1).toReversed());
-      }
-    } else if (nextFloor < state.currentFloor) {
-      const splitIndex = floorsToVisit.findLastIndex(
-        (floor) => floor < state.currentFloor,
-      );
-      if (splitIndex !== -1) {
-        floorsToVisit = floorsToVisit
-          .slice(0, splitIndex + 1)
-          .toReversed()
-          .concat(floorsToVisit.slice(splitIndex + 1));
+    const direction = compareFloorToCurrent(state, nextFloor);
+    const splitIndex = floorsToVisit.findLastIndex((floor) =>
+      direction < 0 ? floor < state.currentFloor : floor <= state.currentFloor,
+    );
+    if (splitIndex !== -1) {
+      const [lowerFloors, upperFloors] = [
+        floorsToVisit.slice(0, splitIndex + 1),
+        floorsToVisit.slice(splitIndex + 1),
+      ];
+      if (direction > 0) {
+        floorsToVisit = upperFloors.concat(lowerFloors.toReversed());
+      } else {
+        floorsToVisit = lowerFloors.toReversed().concat(upperFloors);
       }
     }
   }
+
   return { ...state, floorsToVisit };
 };
 
 const isAtFloor = (state: ElevatorState, floor: number) =>
-  floor === state.currentFloor && state.fractionalFloor === 0;
+  floor === state.currentFloor &&
+  state.name !== "goingUp" &&
+  state.name !== "goingDown";
 
 /**
  * Models an elevator moving between floors
@@ -104,20 +109,34 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
   initialState: {
     name: "doorsClosed",
     currentFloor: 1,
-    fractionalFloor: 0,
+    actionStarted: -1,
     floorsToVisit: [],
   },
   states: {
     doorsClosing: {
       onEnter: sleepThen({ type: "CLOSED_DOORS" }),
       on: {
-        OPEN_DOORS: { to: "doorsOpening" },
+        OPEN_DOORS: {
+          to: "doorsOpening",
+          data: ({ state }) => ({
+            ...state,
+            actionStarted: 5000 - performance.now() - state.actionStarted,
+            floorsToVisit: state.floorsToVisit.toSpliced(0, 1),
+          }),
+        },
         CLOSED_DOORS: { to: "doorsClosed" },
       },
     },
     doorsClosed: {
       on: {
-        OPEN_DOORS: { to: "doorsOpening" },
+        OPEN_DOORS: {
+          to: "doorsOpening",
+          data: ({ state }) => ({
+            ...state,
+            actionStarted: performance.now(),
+            floorsToVisit: state.floorsToVisit.toSpliced(0, 1),
+          }),
+        },
       },
       always: [
         {
@@ -125,12 +144,14 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
           when: ({ state }) =>
             !!state.floorsToVisit[0] &&
             state.floorsToVisit[0] > state.currentFloor,
+          data: ({ state }) => ({ ...state, actionStarted: performance.now() }),
         },
         {
           to: "goingDown",
           when: ({ state }) =>
             !!state.floorsToVisit[0] &&
             state.floorsToVisit[0] < state.currentFloor,
+          data: ({ state }) => ({ ...state, actionStarted: performance.now() }),
         },
       ],
     },
@@ -138,71 +159,78 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
       onEnter: sleepThen({ type: "OPENED_DOORS" }),
       on: {
         OPENED_DOORS: { to: "doorsOpen" },
-        CLOSE_DOORS: { to: "doorsClosing" },
+        CLOSE_DOORS: {
+          to: "doorsClosing",
+          data: ({ state }) => ({ ...state, actionStarted: performance.now() }),
+        },
       },
     },
     doorsOpen: {
-      onEnter: sleepThen({ type: "CLOSE_DOORS" }),
+      onEnter: sleepThen({ type: "CLOSE_DOORS" }, { restartTimer: true }),
       on: {
+        OPEN_DOORS: {
+          to: "doorsOpen",
+        },
         VISIT_FLOOR: {
           to: "doorsOpen",
           when: ({ state, event }) => state.currentFloor === event.floor,
         },
-        CLOSE_DOORS: { to: "doorsClosing" },
+        CLOSE_DOORS: {
+          to: "doorsClosing",
+          data: ({ state }) => ({ ...state, actionStarted: performance.now() }),
+        },
       },
     },
     goingUp: {
-      onEnter: sleepThen({ type: "MOVE_UP" }, 500),
+      onEnter: sleepThen({ type: "REACHED_NEXT_FLOOR" }),
       on: {
-        MOVE_UP: {
-          to: "goingUp",
-          data: ({ state }) => ({
-            ...state,
-            currentFloor:
-              state.fractionalFloor === 9
-                ? state.currentFloor + 1
-                : state.currentFloor,
-            fractionalFloor:
-              state.fractionalFloor === 9 ? 0 : state.fractionalFloor + 1,
-          }),
-        },
-      },
-      always: {
-        to: "doorsOpening",
-        when: ({ state }) => state.currentFloor === state.floorsToVisit[0]!,
-        data: ({ state }) => ({
-          ...state,
-          currentFloor: state.floorsToVisit[0]!,
-          floorsToVisit: state.floorsToVisit.toSpliced(0, 1),
-        }),
+        REACHED_NEXT_FLOOR: [
+          {
+            to: "goingUp",
+            when: ({ state }) =>
+              state.floorsToVisit[0] !== state.currentFloor + 1,
+            data: ({ state }) => ({
+              ...state,
+              currentFloor: state.currentFloor + 1,
+              actionStarted: performance.now(),
+            }),
+          },
+          {
+            to: "doorsOpening",
+            data: ({ state }) => ({
+              ...state,
+              actionStarted: performance.now(),
+              currentFloor: state.floorsToVisit[0],
+              floorsToVisit: state.floorsToVisit.toSpliced(0, 1),
+            }),
+          },
+        ],
       },
     },
     goingDown: {
-      onEnter: sleepThen({ type: "MOVE_DOWN" }, 500),
+      onEnter: sleepThen({ type: "REACHED_NEXT_FLOOR" }),
       on: {
-        MOVE_DOWN: {
-          to: "goingDown",
-          data: ({ state }) => ({
-            ...state,
-            currentFloor:
-              state.fractionalFloor === 0
-                ? state.currentFloor - 1
-                : state.currentFloor,
-            fractionalFloor:
-              state.fractionalFloor === 0 ? 9 : state.fractionalFloor - 1,
-          }),
-        },
-      },
-      always: {
-        to: "doorsOpening",
-        when: ({ state }) =>
-          state.currentFloor === state.floorsToVisit[0]! &&
-          state.fractionalFloor === 0,
-        data: ({ state }) => ({
-          ...state,
-          currentFloor: state.floorsToVisit[0]!,
-          floorsToVisit: state.floorsToVisit.toSpliced(0, 1),
-        }),
+        REACHED_NEXT_FLOOR: [
+          {
+            to: "goingDown",
+            when: ({ state }) =>
+              state.floorsToVisit[0] !== state.currentFloor - 1,
+            data: ({ state }) => ({
+              ...state,
+              currentFloor: state.currentFloor - 1,
+              actionStarted: performance.now(),
+            }),
+          },
+          {
+            to: "doorsOpening",
+            data: ({ state }) => ({
+              ...state,
+              actionStarted: performance.now(),
+              currentFloor: state.floorsToVisit[0],
+              floorsToVisit: state.floorsToVisit.toSpliced(0, 1),
+            }),
+          },
+        ],
       },
     },
   },
@@ -210,11 +238,19 @@ export const elevatorMachine = defineMachine<ElevatorState, ElevatorEvent>({
     VISIT_FLOOR: [
       {
         to: "doorsOpening",
-        when: ({ state, event }) => isAtFloor(state, event.floor),
+        when: ({ state, event }) =>
+          isAtFloor(state, event.floor) && state.name !== "doorsOpening",
+        data: ({ state }) => ({
+          ...state,
+          actionStarted: performance.now(),
+          floorsToVisit: state.floorsToVisit.toSpliced(0, 1),
+        }),
       },
       {
         // to: *current-state*
         data: ({ state, event }) => insertFloor(state, event.floor),
+        when: ({ state, event }) =>
+          !isAtFloor(state, event.floor) || state.name !== "doorsOpening",
       },
     ],
   },
