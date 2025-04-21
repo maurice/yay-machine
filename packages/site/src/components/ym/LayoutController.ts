@@ -2,7 +2,7 @@ import dagre, { type graphlib } from "@dagrejs/dagre";
 import { curveBasis, line } from "d3-shape";
 import type { ReactiveController } from "lit";
 import type { YmChart } from "./YmChart";
-import { Align, Direction, type Point, type Points, Ranker } from "./types";
+import type { Point, Points } from "./types";
 
 const curveDrawer = line<Point>()
   .x((p) => p.x)
@@ -70,6 +70,7 @@ export class LayoutController implements ReactiveController {
     }
 
     // only run once
+    // @ts-expect-error: violates of `exactOptionalPropertyTypes`
     (this as ReactiveController).hostUpdated = undefined;
 
     // invalidate layout on state element resize
@@ -133,6 +134,7 @@ export class LayoutController implements ReactiveController {
       g.setEdge(
         transition.from,
         transition.to,
+        // @ts-expect-error: violates of `exactOptionalPropertyTypes`
         {
           label: transition.label,
           width: rect.width,
@@ -144,21 +146,11 @@ export class LayoutController implements ReactiveController {
     }
 
     if (this.host.start) {
-      g.setEdge(
-        "start",
-        this.host.start,
-        { label: undefined, labelpos: "c" },
-        "start",
-      );
+      g.setEdge("start", this.host.start, { labelpos: "c" }, "start");
     }
 
     for (const fromState of this.host.end) {
-      g.setEdge(
-        fromState,
-        "end",
-        { label: undefined, labelpos: "c" },
-        `${fromState}:end`,
-      );
+      g.setEdge(fromState, "end", { labelpos: "c" }, `${fromState}:end`);
     }
 
     dagre.layout(g);
@@ -175,8 +167,8 @@ export class LayoutController implements ReactiveController {
     for (; i < transitions.length; i++) {
       const transition = transitions[i];
       const edge = g.edge(edges[i]);
-      transition.style.top = `${edge.y - edge.height / 2}px`;
-      transition.style.left = `${edge.x - edge.width / 2}px`;
+      transition.style.top = `${edge["y"] - edge["height"] / 2}px`;
+      transition.style.left = `${edge["x"] - edge["width"] / 2}px`;
       if (
         edge.points.every((it) => !Number.isNaN(it.x) && !Number.isNaN(it.y))
       ) {
@@ -196,7 +188,7 @@ export class LayoutController implements ReactiveController {
       }
     }
 
-    for (const fromState of this.host.end) {
+    for (const _fromState of this.host.end) {
       const edge = g.edge(edges[i++]);
       if (
         edge.points.every((it) => !Number.isNaN(it.x) && !Number.isNaN(it.y))

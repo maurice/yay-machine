@@ -5,7 +5,7 @@ import { AnimateStateController } from "./CurrentStateController";
 
 @customElement("ym-state")
 export class YmState extends LitElement {
-  static styles = css`
+  static override styles = css`
     :host {
       position: absolute;
       margin: 0 !important;
@@ -118,7 +118,7 @@ export class YmState extends LitElement {
     new AnimateStateController(this);
   }
 
-  render() {
+  override render() {
     const embeddedData = this.data
       ? html`${Object.entries(this.data).map(
           ([key, value]) =>

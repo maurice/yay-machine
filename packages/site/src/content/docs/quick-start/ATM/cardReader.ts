@@ -28,7 +28,7 @@ export const cardReaderMachine = defineMachine<
       },
     },
     cardInserted: {
-      onEnter: ({ send, state, event }) => {
+      onEnter: ({ send, state }) => {
         const timeout = setTimeout(() => {
           if (!Number.isNaN(Number(state.cardNumber))) {
             send({ type: "CARD_READ" });
@@ -49,7 +49,7 @@ export const cardReaderMachine = defineMachine<
       },
     },
     ejectingCard: {
-      onEnter: ({ send, event }) => {
+      onEnter: ({ send }) => {
         const timeout = setTimeout(() => send({ type: "CARD_EJECTED" }), 4000);
         return () => clearTimeout(timeout);
       },
