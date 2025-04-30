@@ -8,10 +8,12 @@ export type Match<Value> = (
 ) => false | [value: Value, currentIndex: number];
 
 export class Matcher<Value> {
-  constructor(readonly doMatch: Match<Value>) {
+  constructor(doMatch: Match<Value>) {
+    this.doMatch = doMatch;
     this.lastMatch = false;
   }
 
+  private readonly doMatch: Match<Value>;
   private lastMatch: ReturnType<Match<Value>>;
 
   /**
