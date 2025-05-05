@@ -185,3 +185,18 @@ if (didChange) {
     await writeFile(metadataFile, JSON.stringify(newMetadata, undefined, "  "));
   }
 }
+
+// check msw script up-to-date
+const {
+  dependencies: { msw: mswVersion },
+} = JSON.parse(String(await readFile("packages/site/package.json")));
+const mswScript = String(
+  await readFile("packages/site/public/mockServiceWorker.js"),
+);
+const [, mswScriptVersion] = /const PACKAGE_VERSION = "(.+)"/.exec(mswScript)!;
+if (`^${mswScriptVersion}` !== mswVersion) {
+  log(
+    `msw 's mockServiceWorker.js version is out of date: msw="${mswVersion}" script="${mswScriptVersion}"`,
+  );
+  process.exit(1);
+}
