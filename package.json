@@ -9,7 +9,7 @@
     "dist"
   ],
   "scripts": {
-    "prepare": "husky",
+    "prepare": "husky && npm run -w @yay-machine/site prepare",
     "all": "bun run build && bun run fix && bun run check && bun run test",
     "check": "bun run check:types && bun run check:lint && bun run check:format",
     "check:types": "turbo check:types",
