@@ -3,7 +3,6 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "prepare": "msw init",
     "check:types": "tsc --noEmit",
     "dev": "astro dev",
     "start": "astro dev",
