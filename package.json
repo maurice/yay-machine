@@ -67,7 +67,7 @@
     "husky": "^9.1.7",
     "playwright": "^1.52.0",
     "prettier": "^3.5.3",
-    "sharp": "^0.34.1",
+    "sharp": "^0.34.2",
     "turbo": "^2.5.3",
     "typescript": "^5.8.3"
   },
