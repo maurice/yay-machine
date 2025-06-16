@@ -200,14 +200,12 @@ if (`^${mswScriptVersion}` !== mswVersion) {
     `MSW version mismatch: package.json has ${mswVersion}, but mockServiceWorker.js has ${mswScriptVersion}. Attempting to update...`,
   );
   try {
-    const process = Bun.spawnSync(["npx", "msw", "init", "."], {
-      cwd: "packages/site/public",
-      stdio: ["inherit", "inherit", "inherit"],
+    const msw = Bun.spawnSync(["npx", "msw", "init", "./public"], {
+      cwd: "packages/site",
+      stdio: ["ignore", "inherit", "inherit"],
     });
-    if (process.exitCode !== 0) {
-      throw new Error(
-        `'npx msw init' failed with exit code ${process.exitCode}`,
-      );
+    if (msw.exitCode !== 0) {
+      throw new Error(`'npx msw init' failed with exit code ${msw.exitCode}`);
     }
 
     mswScript = String(
@@ -226,7 +224,7 @@ if (`^${mswScriptVersion}` !== mswVersion) {
       );
     }
   } catch (error) {
-    log("Error updating mockServiceWorker.js:", error.message);
+    log("Error updating mockServiceWorker.js: ", String(error));
     process.exit(1);
   }
 } else {
