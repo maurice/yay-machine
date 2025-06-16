@@ -190,13 +190,43 @@ if (didChange) {
 const {
   dependencies: { msw: mswVersion },
 } = JSON.parse(String(await readFile("packages/site/package.json")));
-const mswScript = String(
+let mswScript = String(
   await readFile("packages/site/public/mockServiceWorker.js"),
 );
-const [, mswScriptVersion] = /const PACKAGE_VERSION = "(.+)"/.exec(mswScript)!;
+let [, mswScriptVersion] = /const PACKAGE_VERSION = "(.+)"/.exec(mswScript)!;
+
 if (`^${mswScriptVersion}` !== mswVersion) {
   log(
-    `msw 's mockServiceWorker.js version is out of date: msw="${mswVersion}" script="${mswScriptVersion}"`,
+    `MSW version mismatch: package.json has ${mswVersion}, but mockServiceWorker.js has ${mswScriptVersion}. Attempting to update...`,
   );
-  process.exit(1);
+  try {
+    const msw = Bun.spawnSync(["npx", "msw", "init", "./public"], {
+      cwd: "packages/site",
+      stdio: ["ignore", "inherit", "inherit"],
+    });
+    if (msw.exitCode !== 0) {
+      throw new Error(`'npx msw init' failed with exit code ${msw.exitCode}`);
+    }
+
+    mswScript = String(
+      await readFile("packages/site/public/mockServiceWorker.js"),
+    );
+    [, mswScriptVersion] = /const PACKAGE_VERSION = "(.+)"/.exec(mswScript)!;
+
+    if (`^${mswScriptVersion}` !== mswVersion) {
+      log(
+        `Still mismatched after update: msw="${mswVersion}" script="${mswScriptVersion}". Please update mockServiceWorker.js manually.`,
+      );
+      process.exit(1);
+    } else {
+      log(
+        `Successfully updated mockServiceWorker.js to version ${mswScriptVersion}.`,
+      );
+    }
+  } catch (error) {
+    log("Error updating mockServiceWorker.js: ", String(error));
+    process.exit(1);
+  }
+} else {
+  log("MSW version is up-to-date.");
 }
