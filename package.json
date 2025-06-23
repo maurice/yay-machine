@@ -57,21 +57,21 @@
     "packages/*"
   ],
   "devDependencies": {
-    "@biomejs/biome": "^2.0.4",
+    "@biomejs/biome": "^2.0.5",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@sinonjs/fake-timers": "^14.0.0",
     "@types/sinonjs__fake-timers": "^8.1.5",
-    "bun": "^1.2.15",
-    "bun-types": "^1.2.13",
+    "bun": "^1.2.17",
+    "bun-types": "^1.2.17",
     "husky": "^9.1.7",
     "playwright": "^1.53.1",
-    "prettier": "^3.5.3",
+    "prettier": "^3.6.0",
     "sharp": "^0.34.2",
     "turbo": "^2.5.4",
     "typescript": "^5.8.3"
   },
-  "packageManager": "npm@11.4.0",
+  "packageManager": "npm@11.4.2",
   "trustedDependencies": [
     "@biomejs/biome"
   ]
