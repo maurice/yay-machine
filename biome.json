@@ -1,15 +1,13 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
+  "$schema": "https://biomejs.dev/schemas/2.0.4/schema.json",
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "vcs": {
     "enabled": true,
     "clientKind": "git",
     "useIgnoreFile": true
   },
   "files": {
-    "ignore": ["packages/site/public/mockServiceWorker.js"]
+    "includes": ["*", "!packages/site/public/mockServiceWorker.js"]
   },
   "linter": {
     "enabled": true,
@@ -20,14 +18,24 @@
       },
       "suspicious": {
         "noAssignInExpressions": "off",
-        "noConsoleLog": "error"
+        "noConsole": { "level": "error", "options": { "allow": ["log"] } }
       },
       "complexity": {
         "noForEach": "off",
         "useLiteralKeys": "off"
       },
       "style": {
-        "noNonNullAssertion": "off"
+        "noNonNullAssertion": "off",
+        "noParameterAssign": "error",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error",
+        "noUnusedTemplateLiteral": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error",
+        "noUselessElse": "error"
       }
     }
   },
@@ -36,11 +44,11 @@
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 120,
-    "ignore": ["docs/assets/*"]
+    "includes": ["**", "!**/docs/assets/**/*"]
   },
   "overrides": [
     {
-      "include": ["**/*.test.ts"],
+      "includes": ["**/*.test.ts"],
       "linter": {
         "rules": {
           "style": {
@@ -53,7 +61,7 @@
       }
     },
     {
-      "include": ["packages/example-machines", "**/*.test.ts"],
+      "includes": ["packages/example-machines/**", "**/*.test.ts"],
       "linter": {
         "rules": {
           "style": {
@@ -63,7 +71,7 @@
       }
     },
     {
-      "include": ["packages/example-machines"],
+      "includes": ["packages/example-machines/**"],
       "formatter": {
         "lineWidth": 80
       },
@@ -76,23 +84,23 @@
             "useNodejsImportProtocol": "off"
           },
           "suspicious": {
-            "noConsoleLog": "off"
+            "noConsole": "off"
           }
         }
       }
     },
     {
-      "include": ["packages/bench"],
+      "includes": ["packages/bench/**"],
       "linter": {
         "rules": {
           "suspicious": {
-            "noConsoleLog": "off"
+            "noConsole": "off"
           }
         }
       }
     },
     {
-      "include": ["scripts/"],
+      "includes": ["scripts/**"],
       "linter": {
         "rules": {
           "style": {
