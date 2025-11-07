@@ -58,7 +58,7 @@
   ],
   "devDependencies": {
     "@biomejs/biome": "^2.0.4",
-    "@commitlint/cli": "^19.8.1",
+    "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
     "@sinonjs/fake-timers": "^14.0.0",
     "@types/sinonjs__fake-timers": "^8.1.5",
