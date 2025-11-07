@@ -2,10 +2,12 @@
   "$schema": "https://turbo.build/schema.json",
   "tasks": {
     "build": {
+      "cache": false,
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
     "check:types": {
+      "cache": false,
       "dependsOn": ["^check:types"]
     },
     "test:ci": {
