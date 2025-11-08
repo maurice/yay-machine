@@ -71,7 +71,7 @@
     "prettier": "^3.5.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "sharp": "^0.34.2",
+    "sharp": "^0.34.5",
     "turbo": "^2.6.0",
     "typescript": "^5.8.3"
   },
