@@ -1,5 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "allowedCommands": [
+    "npx --workspace @yay-machine/site msw init",
+    "npx @biomejs/biome migrate --write",
+    "npm run fix"
+  ],
   "rangeStrategy": "widen",
   "separateMinorPatch": true,
   "postUpgradeTasks": {
