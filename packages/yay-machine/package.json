@@ -50,7 +50,7 @@
   },
   "homepage": "https://github.com/maurice/yay-machine#readme",
   "devDependencies": {
-    "rimraf": "^6.0.1",
+    "rimraf": "^6.1.0",
     "typedoc": "^0.28.14",
     "typedoc-github-theme": "^0.3.0"
   }
