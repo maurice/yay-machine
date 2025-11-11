@@ -1,10 +1,11 @@
-name: Renovate Post-Upgrade Init Commit
+name: Post-Update Commands
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
       - renovate/**
+      - dependabot/**
 
 permissions:
   contents: read
@@ -15,7 +16,7 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout renovate branch
+      - name: Checkout branch
         uses: actions/checkout@v5
         with:
           ref: ${{ github.head_ref }}
@@ -27,6 +28,7 @@ jobs:
 
       - name: Run post-update commands
         run: |
+          npm ci
           npx --workspace @yay-machine/site msw init
           npx @biomejs/biome migrate --write
           npm run fix
@@ -36,9 +38,15 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git diff --quiet || git commit -m "chore: run post-update tasks"
+          # Commit only if there are changes
+          if ! git diff --quiet; then
+            git commit -m "chore: run post-update tasks"
+            git push
+          else
+            echo "No changes to commit"
+          fi
 
-      - name: Push changes
-        run: git push origin HEAD:${{ github.head_ref }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Push changes
+      #   run: git push origin HEAD:${{ github.head_ref }}
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
