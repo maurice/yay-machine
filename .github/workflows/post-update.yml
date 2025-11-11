@@ -47,6 +47,7 @@ jobs:
           git diff
 
       - name: Commit and Push changes
+        id: commit_and_push
         run: |
           # Commit only if there are changes
           if ! git diff --quiet; then
@@ -55,13 +56,16 @@ jobs:
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git commit -m "chore: run post-update tasks"
             git push origin HEAD:${{ github.head_ref }}
+            echo "committed=true" >> $GITHUB_OUTPUT
           else
             echo "No changes to commit"
+            echo "committed=false" >> $GITHUB_OUTPUT
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Trigger build workflow
+        if: steps.commit_and_push.outputs.committed == 'true'
         uses: actions/github-script@v7
         with:
           script: |
