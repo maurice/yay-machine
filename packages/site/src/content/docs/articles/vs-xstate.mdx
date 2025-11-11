@@ -190,39 +190,44 @@ In general **yay-machine** tries to offer a single way to do something, although
 
 ## Ecosystem at a glance
 
-import I from "./I.astro";
+import Yes from "./Yes.astro";
+import No from "./No.astro";
+import Planned from "./Planned.astro";
 
-|                                            | **XState**      | **yay-machine**                           |
-| ------------------------------------------ | --------------- | ----------------------------------------- |
-| Discord                                    | <I type="yes"/> | <I type="no"/>                            |
-| Visualizer                                 | <I type="yes"/> | <I type="no"/>                            |
-| Online editor                              | <I type="yes"/> | <I type="no"/>                            |
-| View library bindings (React, Vue, Svelte) | <I type="yes"/> | <I type="planned"/> <sup>(planned)</sup>  |
-| Docs                                       | <I type="yes"/> | <I type="yes"/> <sup>(more to come)</sup> |
+|                                            | **XState** | **yay-machine**                  |
+| ------------------------------------------ | ---------- | -------------------------------- |
+| Discord                                    | <Yes/>     | <No/>                            |
+| Visualizer                                 | <Yes/>     | <No/>                            |
+| Online editor                              | <Yes/>     | <No/>                            |
+| View library bindings (React, Vue, Svelte) | <Yes/>     | <Planned/> <sup>(planned)</sup>  |
+| Docs                                       | <Yes/>     | <Yes/> <sup>(more to come)</sup> |
 
 ## State-machine/chart features at a glance
 
-|                                                                         | **XState**      | **yay-machine**                                                                                    |
-| ----------------------------------------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------- |
-| Flat state-machines                                                     | <I type="yes"/> | <I type="yes"/>                                                                                    |
-| Declarative JSON configuration                                          | <I type="yes"/> | <I type="yes"/>                                                                                    |
-| Create independent machine instances                                    | <I type="yes"/> | <I type="yes"/>                                                                                    |
-| Initial state (and context/state-data) overridable per machine-instance | <I type="yes"/> | <I type="yes"/>                                                                                    |
-| Machine instance lifecycle: subscribe-to, start, send events, and stop  | <I type="yes"/> | <I type="yes"/>                                                                                    |
-| Context                                                                 | <I type="yes"/> | <I type="yes"/> <sup>(equivalent: [state data](/reference/state/))</sup>                           |
-| Actions                                                                 | <I type="yes"/> | <I type="yes"/> <sup>(equivalent: [side-effects](/reference/side-effects/))</sup>                  |
-| Invoke/spawn Actors within machine                                      | <I type="yes"/> | <I type="yes"/> <sup>(equivalent: [side-effects](/reference/side-effects/))</sup>                  |
-| Native `Promise`, `Observable`, `EventObservable` Actors                | <I type="yes"/> | <I type="explain"/> <sup>(not native, but easily done)</sup>                                       |
-| Eventless (always) transitions                                          | <I type="yes"/> | <I type="yes"/>                                                                                    |
-| Delayed (after) transitions                                             | <I type="yes"/> | <I type="explain"/> <sup>(easy via [side-effect](/reference/side-effects/) + `setTimeout()`)</sup> |
-| Guards (conditional transitions)                                        | <I type="yes"/> | <I type="yes"/>                                                                                    |
-| Reenter (aka internal) transitions                                      | <I type="yes"/> | <I type="yes"/>                                                                                    |
-| Parent/child states                                                     | <I type="yes"/> | <I type="no"/> <sup>(not yet, for now just flatten them)</sup>                                     |
-| Parallel states                                                         | <I type="yes"/> | <I type="no"/> <sup>(not yet, for now compose child machines)</sup>                                |
-| Final states                                                            | <I type="yes"/> | <I type="no"/> <sup>(nothing formal)</sup>                                                         |
-| History states                                                          | <I type="yes"/> | <I type="stop"/> <sup>(not a project goal)</sup>                                                   |
-| Persistence (serialization/deserialization)                             | <I type="yes"/> | <I type="stop"/> <sup>(not a project goal)</sup>                                                   |
-| SCXML                                                                   | <I type="yes"/> | <I type="stop"/> <sup>(not a project goal)</sup>                                                   |
+import Explain from "./Explain.astro";
+import Stop from "./Stop.astro";
+
+|                                                                         | **XState** | **yay-machine**                                                                           |
+| ----------------------------------------------------------------------- | ---------- | ----------------------------------------------------------------------------------------- |
+| Flat state-machines                                                     | <Yes/>     | <Yes/>                                                                                    |
+| Declarative JSON configuration                                          | <Yes/>     | <Yes/>                                                                                    |
+| Create independent machine instances                                    | <Yes/>     | <Yes/>                                                                                    |
+| Initial state (and context/state-data) overridable per machine-instance | <Yes/>     | <Yes/>                                                                                    |
+| Machine instance lifecycle: subscribe-to, start, send events, and stop  | <Yes/>     | <Yes/>                                                                                    |
+| Context                                                                 | <Yes/>     | <Yes/> <sup>(equivalent: [state data](/reference/state/))</sup>                           |
+| Actions                                                                 | <Yes/>     | <Yes/> <sup>(equivalent: [side-effects](/reference/side-effects/))</sup>                  |
+| Invoke/spawn Actors within machine                                      | <Yes/>     | <Yes/> <sup>(equivalent: [side-effects](/reference/side-effects/))</sup>                  |
+| Native `Promise`, `Observable`, `EventObservable` Actors                | <Yes/>     | <Explain/> <sup>(not native, but easily done)</sup>                                       |
+| Eventless (always) transitions                                          | <Yes/>     | <Yes/>                                                                                    |
+| Delayed (after) transitions                                             | <Yes/>     | <Explain/> <sup>(easy via [side-effect](/reference/side-effects/) + `setTimeout()`)</sup> |
+| Guards (conditional transitions)                                        | <Yes/>     | <Yes/>                                                                                    |
+| Reenter (aka internal) transitions                                      | <Yes/>     | <Yes/>                                                                                    |
+| Parent/child states                                                     | <Yes/>     | <No/> <sup>(not yet, for now just flatten them)</sup>                                     |
+| Parallel states                                                         | <Yes/>     | <No/> <sup>(not yet, for now compose child machines)</sup>                                |
+| Final states                                                            | <Yes/>     | <No/> <sup>(nothing formal)</sup>                                                         |
+| History states                                                          | <Yes/>     | <Stop/> <sup>(not a project goal)</sup>                                                   |
+| Persistence (serialization/deserialization)                             | <Yes/>     | <Stop/> <sup>(not a project goal)</sup>                                                   |
+| SCXML                                                                   | <Yes/>     | <Stop/> <sup>(not a project goal)</sup>                                                   |
 
 ## Coming soon...
 
