@@ -41,12 +41,9 @@ jobs:
           # Commit only if there are changes
           if ! git diff --quiet; then
             git commit -m "chore: run post-update tasks"
-            git push
+            git push origin HEAD:${{ github.head_ref }}
           else
             echo "No changes to commit"
           fi
-
-      # - name: Push changes
-      #   run: git push origin HEAD:${{ github.head_ref }}
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
