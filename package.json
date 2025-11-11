@@ -75,6 +75,9 @@
     "turbo": "^2.6.0",
     "typescript": "^5.9.3"
   },
+  "engines": {
+    "node": "24.x"
+  },
   "packageManager": "npm@11.6.2",
   "trustedDependencies": [
     "@biomejs/biome"
