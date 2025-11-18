@@ -22,7 +22,7 @@
   "homepage": "https://github.com/maurice/yay-machine#readme",
   "dependencies": {
     "benny": "^3.7.1",
-    "xstate": "^5.23.0",
+    "xstate": "^5.24.0",
     "yay-machine": "*"
   },
   "devDependencies": {
