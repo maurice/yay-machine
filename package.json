@@ -78,7 +78,7 @@
   "engines": {
     "node": "24.x"
   },
-  "packageManager": "npm@11.6.2",
+  "packageManager": "npm@11.6.3",
   "trustedDependencies": [
     "@biomejs/biome"
   ]
