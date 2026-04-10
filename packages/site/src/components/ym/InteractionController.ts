@@ -70,7 +70,8 @@ export class InteractionController implements ReactiveController {
     }
 
     if (this.host.current && this.layout.graph) {
-      this.outEdges = this.layout.graph.outEdges(this.host.current) || undefined;
+      this.outEdges =
+        this.layout.graph.outEdges(this.host.current) || undefined;
     }
 
     if (this.host.current && this.outEdges) {

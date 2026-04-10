@@ -169,7 +169,9 @@ export class LayoutController implements ReactiveController {
       transition.style.top = `${edge["y"] - edge["height"] / 2}px`;
       transition.style.left = `${edge["x"] - edge["width"] / 2}px`;
       if (
-        edge.points.every((it: Point) => !Number.isNaN(it.x) && !Number.isNaN(it.y))
+        edge.points.every(
+          (it: Point) => !Number.isNaN(it.x) && !Number.isNaN(it.y),
+        )
       ) {
         const line = lines[i];
         clipPath(line, edge.points);
@@ -179,7 +181,9 @@ export class LayoutController implements ReactiveController {
     if (this.host.start) {
       const edge = g.edge(edges[i++]);
       if (
-        edge.points.every((it: Point) => !Number.isNaN(it.x) && !Number.isNaN(it.y))
+        edge.points.every(
+          (it: Point) => !Number.isNaN(it.x) && !Number.isNaN(it.y),
+        )
       ) {
         const line = lines[i - 1] as SVGPathElement;
         line.setAttribute("d", drawCurve(edge.points));
@@ -190,7 +194,9 @@ export class LayoutController implements ReactiveController {
     for (const _fromState of this.host.end) {
       const edge = g.edge(edges[i++]);
       if (
-        edge.points.every((it: Point) => !Number.isNaN(it.x) && !Number.isNaN(it.y))
+        edge.points.every(
+          (it: Point) => !Number.isNaN(it.x) && !Number.isNaN(it.y),
+        )
       ) {
         const line = lines[i - 1] as SVGPathElement;
         line.setAttribute("d", drawCurve(edge.points));
