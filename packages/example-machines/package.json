@@ -11,7 +11,7 @@
     "src"
   ],
   "scripts": {
-    "check:types": "tsc --noEmit",
+    "check:types": "tsgo --noEmit",
     "test:ci": "bun test"
   },
   "repository": {
