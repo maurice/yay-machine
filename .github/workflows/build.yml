@@ -48,6 +48,16 @@ jobs:
       - name: Coveralls
         uses: coverallsapp/github-action@v2
 
+      - name: Validate MSW worker is up-to-date
+        run: |
+          npx --workspace @yay-machine/site msw init
+          npx oxfmt --write packages/site/public/mockServiceWorker.js
+          if ! git diff --quiet packages/site/public/mockServiceWorker.js; then
+            echo "::error::mockServiceWorker.js is out of date with the installed msw version. Run 'npx --workspace @yay-machine/site msw init && npx oxfmt --write packages/site/public/mockServiceWorker.js' and commit the result."
+            git diff packages/site/public/mockServiceWorker.js
+            exit 1
+          fi
+
       - name: Check docs
         run: |
           npm run docs:sync
