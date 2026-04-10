@@ -3,8 +3,8 @@
   "rangeStrategy": "replace",
   "packageRules": [
     {
-      "matchPackageNames": ["astro", "@astrojs/starlight"],
-      "groupName": "astro"
+      "matchPackagePatterns": ["^astro$", "^@astrojs/"],
+      "groupName": "Astro"
     }
   ]
 }
