@@ -115,6 +115,7 @@ export class YmState extends LitElement {
   constructor() {
     super();
 
+    // oxlint-disable-next-line no-new -- Lit reactive controller registers itself with the host
     new AnimateStateController(this);
   }
 

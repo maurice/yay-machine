@@ -40,11 +40,6 @@ jobs:
         run: |
           npx --workspace @yay-machine/site msw init
 
-      - name: Migrate Biome config
-        if: github.event_name == 'pull_request'
-        run: |
-          npx @biomejs/biome migrate --write
-
       - name: Fix formatting
         if: github.event_name == 'pull_request'
         run: |

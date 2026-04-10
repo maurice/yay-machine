@@ -8,8 +8,8 @@ import {
   type Unsubscribe,
   YayMachine,
 } from "yay-machine";
-import type { YmChart } from "./YmChart";
 import { Direction } from "./types";
+import type { YmChart } from "./YmChart";
 
 interface Transition {
   readonly from: string;

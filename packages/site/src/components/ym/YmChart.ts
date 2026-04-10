@@ -10,9 +10,9 @@ import { classMap } from "lit/directives/class-map.js";
 import { InteractionController } from "./InteractionController";
 import { LayoutController } from "./LayoutController";
 import { TransitionController } from "./TransitionController";
+import { Align, Direction, Ranker } from "./types";
 import type { YmState } from "./YmState";
 import type { YmTransition } from "./YmTransition";
-import { Align, Direction, Ranker } from "./types";
 
 @customElement("ym-chart")
 export class YmChart extends LitElement {
@@ -252,6 +252,7 @@ export class YmChart extends LitElement {
 
     this.#layout = new LayoutController(this);
     this.#transitions = new TransitionController(this);
+    // oxlint-disable-next-line no-new -- Lit reactive controller registers itself with the host
     new InteractionController(this, this.#layout, this.#transitions);
   }
 

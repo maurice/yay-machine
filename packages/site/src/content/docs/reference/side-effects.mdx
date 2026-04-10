@@ -22,9 +22,7 @@ The side-effect function MAY return a cleanup function, which you can use to fre
 ```typescript
 type Cleanup = () => void;
 
-type SideEffect = (param: {
-  /* ... */
-}) => Cleanup | null | undefined | void;
+type SideEffect = (param: { /* ... */ }) => Cleanup | null | undefined | void;
 ```
 
 ## Side-effect lifetime

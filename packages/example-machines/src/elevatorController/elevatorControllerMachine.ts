@@ -24,7 +24,7 @@ const findBestElevatorForRequestedFloor = (
         proximityScore(elevator.state, floor),
     ]),
   );
-  const scored = [...scores.entries()].sort((a, b) => a[1] - b[1]);
+  const scored = [...scores.entries()].toSorted((a, b) => a[1] - b[1]);
   return scored[0]![0];
 };
 
