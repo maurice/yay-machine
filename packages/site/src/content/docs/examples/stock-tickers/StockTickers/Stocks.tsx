@@ -1,8 +1,8 @@
 import { type FC, useContext, useState } from "react";
-import { TickerPrice } from "./TickerPrice";
-import { TickersContext } from "./TickersContext";
 import { getSubscriptionId } from "./getSubscriptionId";
 import { SYMBOLS } from "./symbols";
+import { TickerPrice } from "./TickerPrice";
+import { TickersContext } from "./TickersContext";
 import "./Stocks.css";
 
 export const Stocks: FC = () => {

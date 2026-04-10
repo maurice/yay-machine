@@ -40,7 +40,7 @@ export const useTickers = (): Tickers => {
       clearTimeout(timer);
       delete tickTimers[symbol];
     }
-  }, []);
+  }, []); // oxlint-disable-line react-hooks/exhaustive-deps -- tickTimers is a local mutable object, not a stable dependency
 
   const resetMachine = () => {
     if (machine) {
@@ -64,14 +64,13 @@ export const useTickers = (): Tickers => {
     setMachine(tickers);
   };
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: it works
   useEffect(() => {
     if (connected) {
       machine?.start();
     } else {
       resetMachine();
     }
-  }, [connected]);
+  }, [connected]); // oxlint-disable-line react-hooks/exhaustive-deps -- resetMachine and machine are intentionally excluded
 
   const tickPrice = useCallback(
     (symbol: string, client: WebSocketClientConnection) => {
@@ -84,7 +83,7 @@ export const useTickers = (): Tickers => {
         Math.random() * 8_000,
       );
     },
-    [],
+    [], // oxlint-disable-line react-hooks/exhaustive-deps -- prices and tickTimers are local mutable objects, not stable dependencies
   );
 
   useEffect(() => {
@@ -127,7 +126,7 @@ export const useTickers = (): Tickers => {
       });
 
     return dispose;
-  }, [tickPrice, dispose]);
+  }, [tickPrice, dispose]); // oxlint-disable-line react-hooks/exhaustive-deps -- tickTimers is a local mutable object, not a stable dependency
 
   return {
     machine,

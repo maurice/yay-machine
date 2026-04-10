@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
+import { defineMachine } from "../defineMachine";
 import type { SendFunction } from "../MachineDefinitionConfig";
 import type { MachineInstance } from "../MachineInstance";
-import { defineMachine } from "../defineMachine";
 
 test("when sending an event to the machine in onStart, the event is only handled after the machine has evaluated the initial state first", () => {
   const machine = defineMachine<{ name: "a" | "b" | "c" }, { type: "NEXT" }>({

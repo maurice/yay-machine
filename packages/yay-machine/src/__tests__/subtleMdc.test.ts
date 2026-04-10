@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
-import { YayMachine } from "../YayMachine";
 import { defineMachine } from "../defineMachine";
+import { YayMachine } from "../YayMachine";
 
 test("machine[YayMachine.subtle.MDC] is the original machine definition ", () => {
   const mdc = {

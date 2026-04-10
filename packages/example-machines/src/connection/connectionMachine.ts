@@ -101,8 +101,10 @@ export const connectionMachine = defineMachine<
       onEnter: ({ state: { log, transport, url }, send }) => {
         log(`connecting to ${url}`);
         const connection = transport.connect(url);
+        // oxlint-disable-next-line unicorn/prefer-add-event-listener -- custom interface, not a DOM element
         connection.onconnect = (connectionId) =>
           send({ type: "CONNECTED", connectionId, connection });
+        // oxlint-disable-next-line unicorn/prefer-add-event-listener -- custom interface, not a DOM element
         connection.onerror = (error) => send({ type: "ERROR", ...error });
       },
       on: {
@@ -133,7 +135,9 @@ export const connectionMachine = defineMachine<
     connected: {
       onEnter: ({ state: { log, url, connection, onReceive }, send }) => {
         log(`connected to ${url}`);
+        // oxlint-disable-next-line unicorn/prefer-add-event-listener -- custom interface, not a DOM element
         connection.onerror = (error) => send({ type: "ERROR", ...error });
+        // oxlint-disable-next-line unicorn/prefer-add-event-listener -- custom interface, not a DOM element
         connection.onmessage = (data) => {
           if (data === "❤️ HEARTBEAT") {
             send({ type: "HEARTBEAT" });

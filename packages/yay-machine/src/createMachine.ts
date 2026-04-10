@@ -1,8 +1,8 @@
+import { defineMachine } from "./defineMachine";
 import type { MachineDefinitionConfig } from "./MachineDefinitionConfig";
 import type { MachineEvent } from "./MachineEvent";
 import type { MachineInstance } from "./MachineInstance";
 import type { MachineState } from "./MachineState";
-import { defineMachine } from "./defineMachine";
 
 /**
  * Creates a machine instance.

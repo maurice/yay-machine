@@ -114,10 +114,10 @@ export interface HomogenousStateMachineDefinitionConfigCopyDataOnTransitionFalse
   StateType extends MachineState,
   EventType extends MachineEvent,
 > extends HeterogenousStateMachineDefinitionConfig<
-    StateType,
-    EventType,
-    false
-  > {
+  StateType,
+  EventType,
+  false
+> {
   /**
    * If `true`, data is automatically copied between states when transitioning, and the
    * transition does not provide its own `data()` callback implementation.

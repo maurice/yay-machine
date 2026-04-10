@@ -2,14 +2,14 @@ import type { AtmState } from "@yay-machine/example-machines";
 import { ServiceMenu } from "@yay-machine/example-machines/src/atm/ServiceMenu";
 import type { FC } from "react";
 import { useMachine } from "../../../../components/useMachine";
+import { atmMachine } from "./atm";
 import { CardReader } from "./CardReader";
 import { CashDispenser } from "./CashDispenser";
 import { Hints } from "./Hints";
 import { Keypad } from "./Keypad";
+import { keypadMachine } from "./keypad";
 import { Screen } from "./Screen";
 import { Wallet } from "./Wallet";
-import { atmMachine } from "./atm";
-import { keypadMachine } from "./keypad";
 import "./ATM.css";
 
 const screenText: Record<AtmState["name"], string> = {

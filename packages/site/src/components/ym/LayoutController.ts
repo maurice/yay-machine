@@ -1,8 +1,8 @@
 import dagre, { type graphlib } from "@dagrejs/dagre";
 import { curveBasis, line } from "d3-shape";
 import type { ReactiveController } from "lit";
-import type { YmChart } from "./YmChart";
 import type { Point, Points } from "./types";
+import type { YmChart } from "./YmChart";
 
 const curveDrawer = line<Point>()
   .x((p) => p.x)
@@ -191,7 +191,7 @@ export class LayoutController implements ReactiveController {
       }
     }
 
-    for (const _fromState of this.host.end) {
+    for (const _ of this.host.end) {
       const edge = g.edge(edges[i++]);
       if (
         edge.points.every(

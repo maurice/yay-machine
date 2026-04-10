@@ -1,9 +1,9 @@
-import type { Transport } from "./Transport";
 import { connectionMachine } from "./connectionMachine";
+import type { Transport } from "./Transport";
 
 const transport: Transport = {
   // @ts-expect-error - example code
-  connect(url: string) {
+  connect(_url: string) {
     return {
       /* ... */
     };

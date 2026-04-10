@@ -7,7 +7,7 @@ const OriginalWebSocket = global.WebSocket;
 globalThis.WebSocket = class extends OriginalWebSocket {
   constructor(url: string | URL) {
     super(url);
-    clientWs = this;
+    clientWs = this; // oxlint-disable-line no-this-alias
   }
 };
 
@@ -33,7 +33,7 @@ test("ticker machine manages multiple price machines for single subscribers", ()
   clientWs.send = mock();
   const sendMock = clientWs.send as Mock<WebSocket["send"]>;
 
-  clientWs.onopen!(new Event("open"));
+  clientWs.dispatchEvent(new Event("open"));
   expect(ticker.state).toEqual({
     name: "connected",
     url: "wss://yay-machine.js.org/prices",
@@ -66,7 +66,7 @@ test("ticker machine manages multiple price machines for single subscribers", ()
     ["subscribe:DDDD"],
   ]);
 
-  clientWs.onmessage!(
+  clientWs.dispatchEvent(
     new MessageEvent("message", {
       data: "BBBB:23.4,CCCC:234.1,BBBB:19.7,DDDD:256.1",
     }),
@@ -137,7 +137,7 @@ test("ticker machine manages price machines for multiple subscribers", () => {
   clientWs.send = mock();
   const sendMock = clientWs.send as Mock<WebSocket["send"]>;
 
-  clientWs.onopen!(new Event("open"));
+  clientWs.dispatchEvent(new Event("open"));
   expect(ticker.state).toEqual({
     name: "connected",
     url: "wss://yay-machine.js.org/prices",

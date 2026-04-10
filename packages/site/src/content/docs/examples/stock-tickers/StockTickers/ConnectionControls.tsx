@@ -1,6 +1,6 @@
 import { type FC, useContext } from "react";
-import { TickersContext } from "./TickersContext";
 import { useConnected } from "./connected";
+import { TickersContext } from "./TickersContext";
 import "./ConnectionControls.css";
 
 export const ConnectionControls: FC = () => {
