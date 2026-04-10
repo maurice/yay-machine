@@ -11,8 +11,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/react": "^4.4.2",
-    "@astrojs/starlight": "^0.34.4 || ^0.36.0",
+    "@astrojs/react": "^5.0.3",
+    "@astrojs/starlight": "^0.38.3",
     "@dagrejs/dagre": "^3.0.0",
     "@lit/react": "^1.0.8",
     "@phosphor-icons/react": "^2.1.10",
@@ -21,7 +21,7 @@
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.1.5",
     "@yay-machine/example-machines": "*",
-    "astro": "^5.15.9",
+    "astro": "^6.1.5",
     "d3-shape": "^3.2.0",
     "fast-deep-equal": "^3.1.3",
     "lit": "^3.3.1",
@@ -31,7 +31,7 @@
     "react-dom": "^19.1.0",
     "react-transition-group": "^4.4.5",
     "sharp": "^0.34.5",
-    "starlight-links-validator": "^0.19.1"
+    "starlight-links-validator": "^0.23.0"
   },
   "devDependencies": {
     "@types/react-transition-group": "^4.4.12"
