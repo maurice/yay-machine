@@ -5,6 +5,10 @@
     {
       "matchPackagePatterns": ["^astro$", "^@astrojs/"],
       "groupName": "Astro"
+    },
+    {
+      "matchPackagePatterns": ["^msw$", "^@mswjs/"],
+      "groupName": "MSW"
     }
   ]
 }
