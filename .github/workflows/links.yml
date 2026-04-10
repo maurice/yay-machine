@@ -24,9 +24,10 @@ jobs:
         if: steps.lychee.outputs.exit_code != 0
         uses: peter-evans/create-issue-from-file@v6
         with:
-          title: Link Checker Report
+          title: "Link Checker Report: Repository"
           content-filepath: ./lychee/out.md
           labels: report, automated issue
+          update-existing: true
 
   pages-site:
     runs-on: ubuntu-latest
@@ -46,6 +47,7 @@ jobs:
         if: steps.lychee.outputs.exit_code != 0
         uses: peter-evans/create-issue-from-file@v6
         with:
-          title: Link Checker Report
+          title: "Link Checker Report: Pages Site"
           content-filepath: ./lychee/out.md
           labels: report, automated issue
+          update-existing: true
