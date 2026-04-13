@@ -178,10 +178,10 @@ test("no error for reenter:true on state + event transition with data", () => {
         machine: {
           on: {
             EVENT: [
-              // @ts-expect-error: reenter:true not allowed here, but it is the actual behaviour
               {
                 to: "machine",
                 data: () => ({ data: 1 }),
+                // @ts-expect-error: reenter:true not allowed here, but it is the actual behaviour
                 reenter: true,
               },
             ],
