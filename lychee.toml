@@ -1,0 +1,3 @@
+# Base URL used by lychee to resolve root-relative links (e.g. /articles/foo/)
+# when checking local files
+base = "https://yay-machine.js.org"
