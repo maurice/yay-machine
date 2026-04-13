@@ -8,7 +8,16 @@
     "src"
   ],
   "scripts": {
-    "bench": "bun run src/bench.ts"
+    "bench": "bun run src/bench.ts",
+    "bench:toggle": "bun run src/bench.ts toggle",
+    "bench:counter": "bun run src/bench.ts counter",
+    "bench:guards": "bun run src/bench.ts guards",
+    "bench:always": "bun run src/bench.ts always",
+    "bench:defaultHandling": "bun run src/bench.ts defaultHandling",
+    "bench:effects": "bun run src/bench.ts effects",
+    "bench:lifecycle": "bun run src/bench.ts lifecycle",
+    "bench:multiInstance": "bun run src/bench.ts multiInstance",
+    "bench:complex": "bun run src/bench.ts complex"
   },
   "repository": {
     "type": "git",
