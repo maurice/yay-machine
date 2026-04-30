@@ -10,3 +10,8 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    groups:
+      commitlint:
+        patterns:
+          - "@commitlint/*"
+          - "commitlint"
