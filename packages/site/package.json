@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@astrojs/react": "^5.0.3",
-    "@astrojs/starlight": "^0.38.3",
+    "@astrojs/starlight": "^0.39.0",
     "@dagrejs/dagre": "^3.0.0",
     "@lit/react": "^1.0.8",
     "@phosphor-icons/react": "^2.1.10",
