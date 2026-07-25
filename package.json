@@ -71,7 +71,7 @@
     "playwright": "^1.53.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.3",
     "turbo": "^2.9.6",
     "typescript": "^5.9.3"
   },
