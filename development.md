@@ -2,25 +2,35 @@
 
 ## Bun
 
-This project uses npm for package management and other tasks.
+This project uses Bun for package management, scripts, tests, and builds.
 
-You'll need it on your PATH so install it as per their instructions.
+Install [Bun](https://bun.com/docs/installation) and use the version pinned in
+`package.json#packageManager`. CI reads the Bun version from the same file.
+Commit `bun.lock` when changing dependencies. CI uses `bun install --frozen-lockfile`.
+
+Node/npm are only required by the semantic-release publishing workflow, not for
+local development.
 
 ## Initial setup
 
 ```sh
-npm install                 # install dependencies
-npm run all                 # run all scripts - check, test, build
+bun install                 # install dependencies
+bun run all                 # fix, check, test, build
 ```
 
 ## Other scripts
 
 ```sh
-npm run check               # type-check, lint
-npm run test                # run tests once
-npm run test:watch          # run tests in watch-mode
-npm run build               # transpile TypeScript to dist/*.js, generate .d.ts files
+bun run check               # type-check, lint, format check
+bun run test                # run tests once
+bun run test:watch           # run tests in watch-mode
+bun run build               # bundle to dist/*.js, generate .d.ts files
 ```
+
+`bun run check:types` runs Bun's built-in `bun check` in each workspace via
+Turbo. It uses TypeScript 7 semantics; the `typescript` dependency is retained for
+`tsc` declaration generation (`build:types`) and editor support. `bun run check`
+remains the combined type, lint, and format check.
 
 ## Contributions
 
@@ -45,8 +55,8 @@ The documentation site [yay-machine.js.org/](https://yay-machine.js.org/) is dep
 To build the pages site locally
 
 ```sh
-npm run site:dev            # site dev server (watch mode)
-npm run site:build          # static build for deployment
+bun run site:dev            # site dev server (watch mode)
+bun run site:build          # static build for deployment
 ```
 
 It's an [Astro Starlight](https://starlight.astro.build/) project using MDX for dynamic content.
