@@ -153,17 +153,20 @@ test("error for reenter on state immediate transition", () => {
 });
 
 test("no error for reenter:true on state + event transition with data", () => {
+  // @ts-expect-error: Exercise forbidden reentry at runtime with both TS 5 and TS 7.
+  // oxlint-disable-next-line typescript/no-inferrable-types -- Intentional mismatch.
+  const reenter: false = true;
+
   expect(() =>
     defineMachine<MachineState, MachineEvent>({
       initialState: { name: "machine", data: 0 },
       states: {
         machine: {
           on: {
-            // @ts-expect-error: reenter:true not allowed here, but it is the actual behaviour
             EVENT: {
               to: "machine",
               data: () => ({ data: 1 }),
-              reenter: true,
+              reenter,
             },
           },
         },
@@ -178,11 +181,10 @@ test("no error for reenter:true on state + event transition with data", () => {
         machine: {
           on: {
             EVENT: [
-              // @ts-expect-error: reenter:true not allowed here, but it is the actual behaviour
               {
                 to: "machine",
                 data: () => ({ data: 1 }),
-                reenter: true,
+                reenter,
               },
             ],
           },

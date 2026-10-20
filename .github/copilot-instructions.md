@@ -6,7 +6,7 @@
 bun install                 # install dependencies from bun.lock
 bun run all                 # fix, check, test, build (full validation)
 bun run check               # type-check + lint + format check
-bun run check:types         # TypeScript only (turbo, all packages)
+bun run check:types         # bun check (turbo, all packages)
 bun run check:lint          # oxlint
 bun run check:format        # oxfmt
 bun run fix                 # auto-fix lint + format
@@ -62,6 +62,7 @@ This is a **zero-dependency TypeScript state-machine library** organized as a Bu
 - Data transformations use spread: `{ ...state, count: state.count + 1 }`.
 - Generic parameter order is always `<StateType, EventType>`.
 - The project uses `erasableSyntaxOnly` in tsconfig — no enums, decorators, or constructor parameter properties.
+- Type checking uses Bun's built-in `bun check` (TypeScript 7 semantics). Keep `tsc` for `.d.ts` generation; Bun's checker does not emit declarations.
 
 ### Testing
 

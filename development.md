@@ -27,6 +27,11 @@ bun run test:watch           # run tests in watch-mode
 bun run build               # bundle to dist/*.js, generate .d.ts files
 ```
 
+`bun run check:types` runs Bun's built-in `bun check` in each workspace via
+Turbo. It uses TypeScript 7 semantics; the `typescript` dependency is retained for
+`tsc` declaration generation (`build:types`) and editor support. `bun run check`
+remains the combined type, lint, and format check.
+
 ## Contributions
 
 External contributions are welcome but please raise an issue or start a discussion first to ensure the idea aligns with our [philosophy](https://yay-machine.js.org/articles/why-yay-machine/#philosophy) and [goals](https://yay-machine.js.org/articles/why-yay-machine/#goals).
