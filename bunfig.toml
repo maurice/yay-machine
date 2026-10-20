@@ -1,0 +1,3 @@
+[run]
+# Use Bun for package binaries with a Node.js shebang, too.
+bun = true

@@ -3,15 +3,16 @@
 ## Build, Test, and Lint
 
 ```sh
-npm run all                 # fix, check, test, build (full validation)
-npm run check               # type-check + lint + format check
-npm run check:types         # TypeScript only (turbo, all packages)
-npm run check:lint          # oxlint
-npm run check:format        # oxfmt
-npm run fix                 # auto-fix lint + format
-npm run test                # bun test (all packages)
-npm run test:watch          # bun test --watch
-npm run build               # turbo build (sequential, all packages)
+bun install                 # install dependencies from bun.lock
+bun run all                 # fix, check, test, build (full validation)
+bun run check               # type-check + lint + format check
+bun run check:types         # TypeScript only (turbo, all packages)
+bun run check:lint          # oxlint
+bun run check:format        # oxfmt
+bun run fix                 # auto-fix lint + format
+bun run test                # bun test (all packages)
+bun run test:watch          # bun test --watch
+bun run build               # turbo build (sequential, all packages)
 ```
 
 ### Running a single test
@@ -24,13 +25,13 @@ bun test --test-name-pattern "pattern" path/to/dir  # by test name regex
 ### Site (docs)
 
 ```sh
-npm run site:dev            # Astro Starlight dev server
-npm run site:build          # static build
+bun run site:dev            # Astro Starlight dev server
+bun run site:build          # static build
 ```
 
 ## Architecture
 
-This is a **zero-dependency TypeScript state-machine library** organized as an npm workspaces monorepo with Turbo orchestration.
+This is a **zero-dependency TypeScript state-machine library** organized as a Bun workspaces monorepo with Turbo orchestration.
 
 ### Packages
 
