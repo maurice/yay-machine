@@ -5,8 +5,8 @@
 This project uses Bun for package management, scripts, tests, and builds.
 
 Install [Bun](https://bun.com/docs/installation) and use the version pinned in
-`.bun-version` (also recorded in `package.json#packageManager`). Commit `bun.lock`
-when changing dependencies. CI uses `bun install --frozen-lockfile`.
+`package.json#packageManager`. CI reads the Bun version from the same file.
+Commit `bun.lock` when changing dependencies. CI uses `bun install --frozen-lockfile`.
 
 Node/npm are only required by the semantic-release publishing workflow, not for
 local development.
