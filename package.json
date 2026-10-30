@@ -59,7 +59,7 @@
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
-    "@sinonjs/fake-timers": "^15.0.0",
+    "@sinonjs/fake-timers": "^15.4.0",
     "@types/bun": "^1.4.3",
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.2",
