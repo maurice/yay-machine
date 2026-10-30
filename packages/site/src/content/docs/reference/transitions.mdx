@@ -167,9 +167,7 @@ const machine = defineMachine<State, Event>({
         [EVENT_NAME]: {
           to: stateName, // remain in current state
           reenter: false,
-          onTransition: ({ state, event }) => ({
-            /* ... */
-          }), // optional side-effect
+          onTransition: ({ state, event }) => ({/* ... */}), // optional side-effect
         },
         // ...
       },
@@ -309,13 +307,9 @@ Immediate transitions belong to a state node in the definition config at `states
 const machine = defineMachine<State, Event>({
   states: {
     [stateName]: {
-      always: {
-        /* a single transition */
-      },
+      always: {/* a single transition */},
       // OR
-      always: [
-        /* multiple potential transitions using `when()` */
-      ],
+      always: [/* multiple potential transitions using `when()` */],
     },
   },
   // ...
