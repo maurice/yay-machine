@@ -51,10 +51,7 @@ import { defineMachine } from "yay-machine";
 
 interface ConnectionState {
   readonly name:
-    | "disconnected"
-    | "connecting"
-    | "connected"
-    | "connectionError";
+    "disconnected" | "connecting" | "connected" | "connectionError";
 }
 
 interface ConnectionEvent {
@@ -122,10 +119,7 @@ As well as a `name`, state types can have additional data properties
 ```typescript {7-8}
 interface ConnectionState {
   readonly name:
-    | "disconnected"
-    | "connecting"
-    | "connected"
-    | "connectionError";
+    "disconnected" | "connecting" | "connected" | "connectionError";
   readonly connectingStartedAt: number; // Date.now();
   readonly connectionEstablishedAt: number; // Date.now();
 }
