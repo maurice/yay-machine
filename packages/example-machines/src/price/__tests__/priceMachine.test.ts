@@ -1,9 +1,9 @@
 import { afterAll, beforeAll, beforeEach, expect, test } from "bun:test";
-import { type InstalledClock, install } from "@sinonjs/fake-timers";
+import { type Clock, install } from "@sinonjs/fake-timers";
 import { priceMachine } from "../priceMachine";
 import "../priceMachineUsage"; // sanity check the documented example
 
-let clock: InstalledClock;
+let clock: Clock;
 
 beforeAll(() => {
   clock = install();
