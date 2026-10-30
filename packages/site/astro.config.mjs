@@ -1,3 +1,4 @@
+import { unified } from "@astrojs/markdown-remark";
 import react from "@astrojs/react";
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
@@ -13,6 +14,9 @@ const tryItBadge = {
 // https://astro.build/config
 export default defineConfig({
   site: "https://yay-machine.js.org/",
+  markdown: {
+    processor: unified(),
+  },
   integrations: [
     starlight({
       title: "yay-machine",
@@ -45,7 +49,7 @@ export default defineConfig({
         },
         {
           label: "Reference",
-          autogenerate: { directory: "reference" },
+          items: [{ autogenerate: { directory: "reference" } }],
         },
         {
           label: "Examples",
@@ -98,13 +102,13 @@ export default defineConfig({
         },
         {
           label: "Articles",
-          autogenerate: { directory: "articles" },
+          items: [{ autogenerate: { directory: "articles" } }],
         },
         {
           label: "Experiments",
           badge: { text: "WIP", variant: "danger" },
           collapsed: true,
-          autogenerate: { directory: "experiments" },
+          items: [{ autogenerate: { directory: "experiments" } }],
         },
       ],
       logo: {
