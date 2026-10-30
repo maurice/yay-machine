@@ -8,7 +8,7 @@ import {
   mock,
   test,
 } from "bun:test";
-import { type InstalledClock, install } from "@sinonjs/fake-timers";
+import { type Clock, install } from "@sinonjs/fake-timers";
 import type { MachineInstanceOf, Subscriber } from "yay-machine";
 import {
   type ElevatorEvent,
@@ -18,7 +18,7 @@ import {
 import "../elevatorMachineUsage"; // sanity check the documented example
 
 const machines: MachineInstanceOf<typeof elevatorMachine>[] = [];
-let clock: InstalledClock;
+let clock: Clock;
 
 beforeAll(() => {
   clock = install();

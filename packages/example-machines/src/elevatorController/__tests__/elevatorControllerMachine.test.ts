@@ -7,7 +7,7 @@ import {
   mock,
   test,
 } from "bun:test";
-import { type InstalledClock, install } from "@sinonjs/fake-timers";
+import { type Clock, install } from "@sinonjs/fake-timers";
 import type { Subscriber } from "yay-machine";
 import {
   type ElevatorEvent,
@@ -20,7 +20,7 @@ import {
 } from "../elevatorControllerMachine";
 import "../elevatorControllerMachineUsage"; // sanity check the documented example
 
-let clock: InstalledClock;
+let clock: Clock;
 
 beforeAll(() => {
   clock = install();
