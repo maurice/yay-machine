@@ -14,7 +14,7 @@
     "@astrojs/markdown-remark": "^7.3.5",
     "@astrojs/react": "^7.0.0",
     "@astrojs/starlight": "^0.42.7",
-    "@dagrejs/dagre": "^3.0.0",
+    "@dagrejs/dagre": "^3.1.3",
     "@lit/react": "^1.0.8",
     "@phosphor-icons/react": "^2.1.10",
     "@phosphor-icons/web": "^2.1.2",
