@@ -26,7 +26,7 @@ All commands are run from the root of the project, from a terminal:
 | `bun run site:dev`     | Starts local site dev server at `localhost:4321` |
 | `bun run site:build`   | Build your production site to `./dist/`          |
 | `bun run site:preview` | Preview your build locally, before deploying     |
-| `npm run site:test`    | Compare built state diagrams with screenshots    |
+| `bun run site:test`    | Compare built state diagrams with screenshots    |
 
 In the `packages/site` directory:
 
@@ -47,16 +47,17 @@ From the repository root:
 ```sh
 bunx playwright install --with-deps chromium
 bun run build --filter=@yay-machine/site
-npm run site:test
+bun run site:test
 ```
 
 The suite starts and stops its own Astro preview server on port 4322. It does not
 use the dev server or rebuild the site. Playwright files use `.pw.ts` so Bun's
 unit-test runner does not pick them up.
-Run this command with **npm**, not `bun run`: Playwright requires Node. The
-command rejects the repository's Bun shebang override with an explicit error
-instead of silently exiting without executing tests.
-Dependencies are still installed with Bun; no npm lockfile is needed.
+Playwright runs on Bun. The script sets `PW_DISABLE_TS_ESM=1` because
+Playwright's TypeScript ESM loader relies on Node's `module.register()` hooks,
+which Bun does not implement. Without that variable, Playwright waits forever
+for the loader and exits silently without running any tests. Bun transpiles the
+TypeScript config and tests natively, so the loader is not needed.
 
 Screenshots use Chromium on Linux, a fixed viewport, light theme, locale and time
 zone. Random demo values and subscription IDs are fixed in the test browser.
@@ -72,9 +73,9 @@ the renderer.
 Use Linux (as in CI) when reviewing or updating the committed baselines:
 
 ```sh
-npm run site:test -- --update-snapshots
-npm run site:test
-npx --no-install playwright show-report packages/site/playwright-report
+bun run site:test -- --update-snapshots
+bun run site:test
+bunx playwright show-report packages/site/playwright-report
 ```
 
 Review image changes before committing `e2e/__screenshots__/`. Never update

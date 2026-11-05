@@ -47,13 +47,8 @@ jobs:
       - name: Install Chromium for diagram screenshots
         run: bunx playwright install --with-deps chromium
 
-      - name: Setup Node for Playwright
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: package.json
-
       - name: Test documentation diagrams
-        run: npm run site:test
+        run: bun run site:test
 
       - name: Upload diagram test results
         if: failure()
