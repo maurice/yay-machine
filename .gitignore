@@ -5,6 +5,8 @@ coverage/
 benchmark/
 pages/
 .astro/
+playwright-report/
+test-results/
 
 # Turborepo
 .turbo

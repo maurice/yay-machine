@@ -1,0 +1,8 @@
+ym-chart {
+  width: max-content !important;
+}
+
+.right-sidebar-container,
+.full-screen__controls {
+  visibility: hidden !important;
+}
