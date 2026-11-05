@@ -44,6 +44,27 @@ jobs:
       - name: Test
         run: bun run test:ci
 
+      - name: Install Chromium for diagram screenshots
+        run: bunx playwright install --with-deps chromium
+
+      - name: Setup Node for Playwright
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: package.json
+
+      - name: Test documentation diagrams
+        run: npm run site:test
+
+      - name: Upload diagram test results
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: diagram-test-results
+          path: |
+            packages/site/playwright-report/
+            packages/site/test-results/
+          retention-days: 7
+
       - name: Coveralls
         uses: coverallsapp/github-action@v2
 
