@@ -68,6 +68,7 @@ This is a **zero-dependency TypeScript state-machine library** organized as a Bu
 
 - **Test runner**: Bun test (`import { expect, test, mock } from "bun:test"`).
 - **File naming**: `*.test.ts` in `__tests__/` subdirectories co-located with source.
+- **Playwright**: visual tests use `*.spec.ts` (in `packages/site/visual-tests/`), which `bunfig.toml` excludes from `bun test`. Run them with `bun run site:test`.
 - **Pattern**: Define machine → `newInstance()` → `start()` → `send()` events → assert `machine.state`.
 - Test files allow `no-non-null-assertion` and `no-explicit-any` via oxlint overrides.
 

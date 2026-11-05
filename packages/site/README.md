@@ -51,8 +51,9 @@ bun run site:test
 ```
 
 The suite starts and stops its own Astro preview server on port 4322. It does not
-use the dev server or rebuild the site. Playwright files use `.pw.ts` so Bun's
-unit-test runner does not pick them up.
+use the dev server or rebuild the site. Playwright tests use `*.spec.ts`; the
+root `bunfig.toml` ignores `*.spec.*`, so Bun's unit-test runner (which only
+runs `*.test.ts(x)`) does not pick them up.
 Playwright runs on Bun. The script sets `PW_DISABLE_TS_ESM=1` because
 Playwright's TypeScript ESM loader relies on Node's `module.register()` hooks,
 which Bun does not implement. Without that variable, Playwright waits forever
@@ -78,7 +79,7 @@ bun run site:test
 bunx playwright show-report packages/site/playwright-report
 ```
 
-Review image changes before committing `e2e/__screenshots__/`. Never update
+Review image changes before committing `visual-tests/__screenshots__/`. Never update
 baselines just to silence an unexpected regression. CI uploads the HTML report,
 traces, and expected/actual/diff images when tests fail.
 

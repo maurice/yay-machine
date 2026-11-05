@@ -2,8 +2,8 @@ import { fileURLToPath } from "node:url";
 import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
-  testDir: "./e2e",
-  testMatch: "**/*.pw.ts",
+  testDir: "./visual-tests",
+  testMatch: "**/*.spec.ts",
   snapshotPathTemplate: "{testDir}/__screenshots__/{projectName}/{arg}{ext}",
   forbidOnly: !!process.env.CI,
   retries: 0,
@@ -16,7 +16,7 @@ export default defineConfig({
       caret: "hide",
       maxDiffPixels: 0,
       stylePath: fileURLToPath(
-        new URL("./e2e/screenshot.css", import.meta.url),
+        new URL("./visual-tests/screenshot.css", import.meta.url),
       ),
     },
   },

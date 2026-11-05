@@ -1,3 +1,7 @@
 [run]
 # Use Bun for package binaries with a Node.js shebang, too.
 bun = true
+
+[test]
+# Unit tests use *.test.ts(x); *.spec.ts files are Playwright tests.
+pathIgnorePatterns = ["**/*.spec.*"]
