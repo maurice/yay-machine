@@ -86,8 +86,11 @@ traces, and expected/actual/diff images when tests fail.
 The initial baselines were captured from commit
 `45582b53a884e6089e82e73c1efafeb0d3b56945` (before the Dagre update), using
 `@dagrejs/dagre@3.0.0` and `@dagrejs/graphlib@4.0.1`. They intentionally preserve
-the old rendering so the Dagre 3.1.3 self-loop regression can be investigated
-without accepting its output as the reference.
+the old rendering so the Dagre 3.1.3 self-loop regression can be investigated.
+The renderer now restores the prior self-loop geometry. The
+`quick-start-diagram-1` and `reference-transitions-diagram-1` screenshots were
+updated to accept other Dagre 3.1.3 layout changes; all remaining screenshots
+continue to use the original baselines.
 
 ## Want to learn more?
 
