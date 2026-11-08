@@ -1,4 +1,4 @@
-import { type FC, useEffect, useState } from "react";
+import type { FC } from "react";
 import { useMachine } from "../../../../components/useMachine";
 import { BankCard } from "./BankCard";
 import { BankCards } from "./BankCards";
@@ -7,27 +7,21 @@ import "./Wallet.css";
 
 export const Wallet: FC = () => {
   const { state } = useMachine(cardReaderMachine);
-  const [insertedCard, setInsertedCard] = useState<string | undefined>();
+  const insertedCard = state.name === "noCard" ? undefined : state.cardNumber;
 
-  useEffect(() => {
-    if (state.name === "noCard") {
-      setInsertedCard(undefined);
-    }
-  }, [state]);
-
-  const onClickCard = insertedCard
-    ? undefined
-    : (cardNumber: string) => {
-        cardReaderMachine.send({ type: "CARD_INSERTED", cardNumber });
-        setInsertedCard(cardNumber);
-      };
+  const onClickCard =
+    insertedCard !== undefined
+      ? undefined
+      : (cardNumber: string) => {
+          cardReaderMachine.send({ type: "CARD_INSERTED", cardNumber });
+        };
 
   return (
     <div className="wallet">
       {Object.entries(BankCards).map(([cardNumber, style]) => (
         <BankCard
           key={cardNumber}
-          className={insertedCard ? "inert" : undefined}
+          className={insertedCard !== undefined ? "inert" : undefined}
           cardNumber={cardNumber}
           style={style}
           hidden={insertedCard === cardNumber}

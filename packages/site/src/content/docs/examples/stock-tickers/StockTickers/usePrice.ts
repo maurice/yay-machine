@@ -1,12 +1,16 @@
 import type { PriceState } from "@yay-machine/example-machines";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useSyncExternalStore } from "react";
 import { TickersContext } from "./TickersContext";
 
-export const usePrice = (symbol: string) => {
+export const usePrice = (symbol: string): PriceState | undefined => {
   const tickers = useContext(TickersContext);
-  const [price, setPrice] = useState<PriceState | undefined>();
-  useEffect(() => {
-    setPrice(tickers?.state?.symbols[symbol]?.state);
-  }, [tickers, symbol]);
-  return price;
+  const price = tickers?.state?.symbols[symbol];
+  const subscribe = useCallback(
+    (onStoreChange: () => void) =>
+      price?.subscribe(onStoreChange) ?? (() => {}),
+    [price],
+  );
+  const getSnapshot = useCallback(() => price?.state, [price]);
+
+  return useSyncExternalStore(subscribe, getSnapshot, () => undefined);
 };

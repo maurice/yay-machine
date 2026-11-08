@@ -1,12 +1,13 @@
-import type { WebSocketClientConnection } from "@mswjs/interceptors/WebSocket";
+import type { WebSocketInterceptor } from "@mswjs/interceptors/WebSocket";
 import {
   type TickersEvent,
   type TickersState,
   tickerMachine,
 } from "@yay-machine/example-machines";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { MachineInstanceOf } from "yay-machine";
 import { useConnected } from "./connected";
+import { createPriceFeed } from "./priceFeed";
 
 type TickerMachine = MachineInstanceOf<typeof tickerMachine>;
 
@@ -15,6 +16,7 @@ export interface Tickers {
   readonly state?: TickersState | undefined;
   readonly event?: TickersEvent | undefined;
   readonly send?: TickerMachine["send"] | undefined;
+  readonly interceptorError?: string | undefined;
 }
 
 const getInitialState = (): TickersState => ({
@@ -26,112 +28,104 @@ const getInitialState = (): TickersState => ({
 
 export const useTickers = (): Tickers => {
   const [connected] = useConnected();
-  const [machine, setMachine] = useState<TickerMachine | undefined>();
-  const [state, setState] = useState<TickersState | undefined>();
-  const [event, setEvent] = useState<TickersEvent | undefined>();
-  const unsubscribeFn = useRef(() => {});
+  const [interceptorReady, setInterceptorReady] = useState(false);
+  const [interceptorError, setInterceptorError] = useState<string>();
+  const [tickers, setTickers] = useState<Tickers | undefined>();
 
-  const prices: Record<string, number> = {};
-  const tickTimers: Record<string, ReturnType<typeof setTimeout>> = {};
-
-  const dispose = useCallback(() => {
-    unsubscribeFn.current();
-    for (const [symbol, timer] of Object.entries(tickTimers)) {
-      clearTimeout(timer);
-      delete tickTimers[symbol];
-    }
-  }, []); // oxlint-disable-line react-hooks/exhaustive-deps -- tickTimers is a local mutable object, not a stable dependency
-
-  const resetMachine = () => {
-    if (machine) {
-      try {
-        machine.stop();
-      } catch (e) {
-        // ignore
-      }
-    }
-    unsubscribeFn.current();
-
+  useEffect(() => {
     const tickers = tickerMachine.newInstance({
       initialState: getInitialState(),
     });
+    const started = connected && interceptorReady;
 
-    unsubscribeFn.current = tickers.subscribe(({ state, event }) => {
-      setState(state);
-      setEvent(event);
+    const unsubscribe = tickers.subscribe(({ state, event }) => {
+      setTickers({
+        machine: tickers,
+        state,
+        event,
+        send: started ? tickers.send : undefined,
+      });
     });
 
-    setMachine(tickers);
-  };
-
-  useEffect(() => {
-    if (connected) {
-      machine?.start();
-    } else {
-      resetMachine();
+    if (started) {
+      tickers.start();
     }
-  }, [connected]); // oxlint-disable-line react-hooks/exhaustive-deps -- resetMachine and machine are intentionally excluded
 
-  const tickPrice = useCallback(
-    (symbol: string, client: WebSocketClientConnection) => {
-      const prevPrice =
-        prices[symbol] ?? (prices[symbol] = Math.random() * 250);
-      const newPrice = (prices[symbol] = prevPrice + Math.random() * 2 - 1);
-      client.send(`${symbol}:${newPrice.toFixed(2)}`);
-      tickTimers[symbol] = setTimeout(
-        () => tickPrice(symbol, client),
-        Math.random() * 8_000,
-      );
-    },
-    [], // oxlint-disable-line react-hooks/exhaustive-deps -- prices and tickTimers are local mutable objects, not stable dependencies
-  );
+    return () => {
+      unsubscribe();
+      if (started) {
+        tickers.stop();
+        for (const price of Object.values(tickers.state.symbols)) {
+          price.stop();
+        }
+      }
+    };
+  }, [connected, interceptorReady]);
 
   useEffect(() => {
-    // SSR fail, so only do it CSR, in browser env
-    new Promise<void>((resolve) => {
-      const check = () => {
-        if ("window" in globalThis) {
-          resolve();
-        } else {
-          setTimeout(check, 1);
+    let active = true;
+    let interceptor: WebSocketInterceptor | undefined;
+    const prices: Record<string, number> = {};
+    const feeds = new Set<ReturnType<typeof createPriceFeed>>();
+
+    void import("@mswjs/interceptors/WebSocket").then(
+      ({ WebSocketInterceptor }) => {
+        if (!active) {
+          return;
         }
-      };
-      check();
-    })
-      .then(() => import("@mswjs/interceptors/WebSocket"))
-      .then(({ WebSocketInterceptor }) => {
-        const interceptor = new WebSocketInterceptor();
+
+        interceptor = new WebSocketInterceptor();
         interceptor.on("connection", ({ client, server }) => {
-          if (client.url.pathname.endsWith("stock-prices")) {
-            client.addEventListener("message", (event) => {
-              const message = String(event.data);
-              if (message.startsWith("subscribe:")) {
-                const symbols = message.slice(10).split(",");
-                for (const symbol of symbols) {
-                  setTimeout(() => tickPrice(symbol, client), 2_000);
-                }
-              } else if (message.startsWith("unsubscribe:")) {
-                const symbols = message.slice(12).split(",");
-                for (const symbol of symbols) {
-                  clearTimeout(tickTimers[symbol]);
-                  delete tickTimers[symbol];
-                }
-              }
-            });
-          } else {
+          if (!client.url.pathname.endsWith("stock-prices")) {
             server.connect();
+            return;
           }
+
+          const feed = createPriceFeed(
+            (message) => client.send(message),
+            prices,
+          );
+          feeds.add(feed);
+          client.addEventListener("message", (event) => {
+            const message = String(event.data);
+            if (message.startsWith("subscribe:")) {
+              for (const symbol of message.slice(10).split(",")) {
+                feed.subscribe(symbol);
+              }
+            } else if (message.startsWith("unsubscribe:")) {
+              for (const symbol of message.slice(12).split(",")) {
+                feed.unsubscribe(symbol);
+              }
+            }
+          });
+          client.addEventListener("close", () => {
+            feed.dispose();
+            feeds.delete(feed);
+          });
         });
         interceptor.apply();
-      });
+        setInterceptorReady(true);
+      },
+      (error: unknown) => {
+        if (active) {
+          setInterceptorError(
+            error instanceof Error ? error.message : String(error),
+          );
+        }
+      },
+    );
 
-    return dispose;
-  }, [tickPrice, dispose]); // oxlint-disable-line react-hooks/exhaustive-deps -- tickTimers is a local mutable object, not a stable dependency
+    return () => {
+      active = false;
+      for (const feed of feeds) {
+        feed.dispose();
+      }
+      feeds.clear();
+      interceptor?.dispose();
+    };
+  }, []);
 
-  return {
-    machine,
-    state,
-    event,
-    send: machine?.send,
-  };
+  return interceptorError !== undefined
+    ? { ...tickers, interceptorError }
+    : (tickers ?? {});
 };

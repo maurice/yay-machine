@@ -1,7 +1,8 @@
 import { readdirSync } from "node:fs";
 import { relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { expect, test, type Locator, type Page } from "@playwright/test";
+import { expect, test, type Locator } from "@playwright/test";
+import { openPage } from "./helpers";
 
 const dist = fileURLToPath(new URL("../dist/", import.meta.url));
 const routes = readdirSync(dist, { recursive: true, withFileTypes: true })
@@ -22,13 +23,6 @@ const routes = readdirSync(dist, { recursive: true, withFileTypes: true })
 if (!routes.includes("/")) {
   throw new Error("Build the static docs site before running site:test.");
 }
-
-const openPage = async (page: Page, route: string) => {
-  const response = await page.goto(route);
-  expect(response?.ok(), `Static page ${route} should load`).toBe(true);
-  await expect(page.locator("astro-island[ssr]")).toHaveCount(0);
-  await page.evaluate(() => document.fonts.ready);
-};
 
 const captureDiagram = async (diagram: Locator, name: string) => {
   await expect(diagram).toBeVisible();

@@ -7,8 +7,9 @@ import {
   Prohibit,
 } from "@phosphor-icons/react";
 import type { PriceState } from "@yay-machine/example-machines";
-import type { FC } from "react";
+import { type FC, useContext } from "react";
 import { useConnected } from "./connected";
+import { TickersContext } from "./TickersContext";
 import { usePrice } from "./usePrice";
 import "./TickerPrice.css";
 
@@ -55,6 +56,7 @@ export const TickerPrice: FC<TickerPriceProps> = ({
   onUnsubscribe,
 }) => {
   const [connected] = useConnected();
+  const tickers = useContext(TickersContext);
   const price = usePrice(subscribed ? symbol : "none");
 
   const onClickSubscribeUnsubscribe = () => {
@@ -72,7 +74,7 @@ export const TickerPrice: FC<TickerPriceProps> = ({
       <div className="ticker-subscribe-unsubscribe ticker-cell not-content">
         <button
           type="button"
-          disabled={!connected}
+          disabled={!connected || !tickers?.send}
           onClick={onClickSubscribeUnsubscribe}
         >
           {!subscribed ? <PlusCircle size="24" /> : <MinusCircle size="24" />}
