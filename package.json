@@ -26,7 +26,8 @@
     "docs:sync": "bun run scripts/sync-docs.ts",
     "site:dev": "bun run --filter @yay-machine/site dev",
     "site:build": "bun run --filter @yay-machine/site build",
-    "site:preview": "bun run --filter @yay-machine/site preview"
+    "site:preview": "bun run --filter @yay-machine/site preview",
+    "site:test": "PW_DISABLE_TS_ESM=1 bunx --bun playwright test --config packages/site/playwright.config.ts"
   },
   "repository": {
     "type": "git",
@@ -59,10 +60,11 @@
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
+    "@playwright/test": "1.65.0",
     "@sinonjs/fake-timers": "^15.4.0",
     "@types/bun": "^1.4.3",
     "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.2",
+    "@types/react-dom": "^19.3.0",
     "@types/sinonjs__fake-timers": "^15.0.1",
     "husky": "^9.1.7",
     "oxfmt": "^0.76.0",

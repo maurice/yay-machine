@@ -26,6 +26,7 @@ All commands are run from the root of the project, from a terminal:
 | `bun run site:dev`     | Starts local site dev server at `localhost:4321` |
 | `bun run site:build`   | Build your production site to `./dist/`          |
 | `bun run site:preview` | Preview your build locally, before deploying     |
+| `bun run site:test`    | Compare built state diagrams with screenshots    |
 
 In the `packages/site` directory:
 
@@ -33,6 +34,63 @@ In the `packages/site` directory:
 | :--------------------- | :----------------------------------------------- |
 | `bun run astro ...`    | Run CLI commands like `astro add`, `astro check` |
 | `bun run astro --help` | Get help using the Astro CLI                     |
+
+## Diagram visual tests
+
+The Playwright tests visit every HTML page in the **built static site** and
+capture each `ym-chart`, including charts inside shadow DOM. A diagram inventory
+also detects removed diagrams. A separate interaction covers the stock ticker's
+dynamically created price-machine diagram.
+
+From the repository root:
+
+```sh
+bunx playwright install --with-deps chromium
+bun run build --filter=@yay-machine/site
+bun run site:test
+```
+
+The suite starts and stops its own Astro preview server on port 4322. It does not
+use the dev server or rebuild the site. Playwright tests use `*.spec.ts`; the
+root `bunfig.toml` ignores `*.spec.*`, so Bun's unit-test runner (which only
+runs `*.test.ts(x)`) does not pick them up.
+Playwright runs on Bun. The script sets `PW_DISABLE_TS_ESM=1` because
+Playwright's TypeScript ESM loader relies on Node's `module.register()` hooks,
+which Bun does not implement. Without that variable, Playwright waits forever
+for the loader and exits silently without running any tests. Bun transpiles the
+TypeScript config and tests natively, so the loader is not needed.
+
+Screenshots use Chromium on Linux, a fixed viewport, light theme, locale and time
+zone. Random demo values and subscription IDs are fixed in the test browser.
+Tests wait for hydration, fonts and diagram paths; screenshot assertions
+wait for stable rendering and disable animations. The price-machine test pauses
+the clock before subscribing so random price ticks cannot change the image.
+Imperative Web Animations are finished immediately so Dagre never measures
+state bounds distorted by an in-progress wiggle.
+Screenshots target the full graph, not the page-width host (which clips wide
+diagrams such as the ATM). Screenshot-only CSS expands the chart background and
+hides the overlapping table of contents and full-screen button without changing
+the renderer.
+Use Linux (as in CI) when reviewing or updating the committed baselines:
+
+```sh
+bun run site:test -- --update-snapshots
+bun run site:test
+bunx playwright show-report packages/site/playwright-report
+```
+
+Review image changes before committing `visual-tests/__screenshots__/`. Never update
+baselines just to silence an unexpected regression. CI uploads the HTML report,
+traces, and expected/actual/diff images when tests fail.
+
+The initial baselines were captured from commit
+`45582b53a884e6089e82e73c1efafeb0d3b56945` (before the Dagre update), using
+`@dagrejs/dagre@3.0.0` and `@dagrejs/graphlib@4.0.1`. They intentionally preserve
+the old rendering so the Dagre 3.1.3 self-loop regression can be investigated.
+The renderer now restores the prior self-loop geometry. The
+`quick-start-diagram-1` and `reference-transitions-diagram-1` screenshots were
+updated to accept other Dagre 3.1.3 layout changes; all remaining screenshots
+continue to use the original baselines.
 
 ## Want to learn more?
 

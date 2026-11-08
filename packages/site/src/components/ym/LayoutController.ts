@@ -11,6 +11,85 @@ const curveDrawer = line<Point>()
 
 const drawCurve = (p: Points | undefined) => (p && curveDrawer(p)) || "";
 
+const intersectRect = (
+  node: { x: number; y: number; width: number; height: number },
+  point: Point,
+) => {
+  const dx = point.x - node.x;
+  const dy = point.y - node.y;
+  const scale = Math.min(
+    dx === 0 ? Number.POSITIVE_INFINITY : node.width / 2 / Math.abs(dx),
+    dy === 0 ? Number.POSITIVE_INFINITY : node.height / 2 / Math.abs(dy),
+  );
+  return { x: node.x + dx * scale, y: node.y + dy * scale };
+};
+
+const selfLoopPoints = (
+  node: { x: number; y: number; width: number; height: number },
+  edge: { x: number; y: number },
+  direction: "LR" | "TB" | undefined,
+): Points => {
+  if (direction === "LR") {
+    const side = node.y + node.height / 2;
+    const distance = edge.y - side;
+    const halfWidth = node.width / 2;
+    const first = {
+      x: node.x - halfWidth,
+      y: side + (2 * distance) / 3,
+    };
+    const second = {
+      x: node.x - halfWidth,
+      y: side + (5 * distance) / 6,
+    };
+    const third = {
+      x: node.x + halfWidth,
+      y: side + (5 * distance) / 6,
+    };
+    const fourth = {
+      x: node.x + halfWidth,
+      y: side + (2 * distance) / 3,
+    };
+    return [
+      intersectRect(node, first),
+      first,
+      second,
+      { x: node.x, y: edge.y },
+      third,
+      fourth,
+      intersectRect(node, fourth),
+    ];
+  }
+
+  const side = node.x + node.width / 2;
+  const distance = edge.x - side;
+  const halfHeight = node.height / 2;
+  const first = {
+    x: side + (2 * distance) / 3,
+    y: node.y - halfHeight,
+  };
+  const second = {
+    x: side + (5 * distance) / 6,
+    y: node.y - halfHeight,
+  };
+  const third = {
+    x: side + (5 * distance) / 6,
+    y: node.y + halfHeight,
+  };
+  const fourth = {
+    x: side + (2 * distance) / 3,
+    y: node.y + halfHeight,
+  };
+  return [
+    intersectRect(node, first),
+    first,
+    second,
+    { x: edge.x, y: node.y },
+    third,
+    fourth,
+    intersectRect(node, fourth),
+  ];
+};
+
 const clipPath = (paths: SVGGElement, points: Points) => {
   const [hit, line] = paths.getElementsByTagName("path");
   line.setAttribute("d", drawCurve(points));
@@ -166,6 +245,14 @@ export class LayoutController implements ReactiveController {
     for (; i < transitions.length; i++) {
       const transition = transitions[i];
       const edge = g.edge(edges[i]);
+      if (transition.from === transition.to) {
+        // Dagre 3.1 places self-loop spline points around the label, not the state.
+        edge.points = selfLoopPoints(
+          g.node(transition.from),
+          edge,
+          this.host.direction,
+        );
+      }
       transition.style.top = `${edge["y"] - edge["height"] / 2}px`;
       transition.style.left = `${edge["x"] - edge["width"] / 2}px`;
       if (
