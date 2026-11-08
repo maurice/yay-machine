@@ -20,7 +20,7 @@
     "@phosphor-icons/web": "^2.1.2",
     "@types/d3-shape": "^3.1.8",
     "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.1.5",
+    "@types/react-dom": "^19.3.0",
     "@yay-machine/example-machines": "*",
     "astro": "^7.4.2",
     "d3-shape": "^3.2.0",
