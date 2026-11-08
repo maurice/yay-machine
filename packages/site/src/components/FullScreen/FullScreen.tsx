@@ -4,7 +4,7 @@ import {
   type ReactNode,
   startTransition,
   useCallback,
-  useRef,
+  useEffect,
   useState,
 } from "react";
 import { createPortal } from "react-dom";
@@ -18,31 +18,35 @@ interface FullScreenProps {
 export const FullScreen: FC<FullScreenProps> = ({ children }) => {
   const [toggleHovered, setToggleHovered] = useState(false);
   const [fullScreen, setFullScreen] = useState(false);
-  const scrollTop = useRef(0);
+
+  const onKeypress = useCallback((event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      startTransition(() => {
+        setFullScreen(false);
+        setToggleHovered(false);
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!fullScreen) {
+      return undefined;
+    }
+
+    const scrollTop = document.documentElement.scrollTop;
+    document.body.classList.add("full-screen");
+    document.addEventListener("keydown", onKeypress, true);
+
+    return () => {
+      document.removeEventListener("keydown", onKeypress, true);
+      document.body.classList.remove("full-screen");
+      document.documentElement.scrollTop = scrollTop;
+    };
+  }, [fullScreen, onKeypress]);
 
   const toggleFullScreen = useCallback(() => {
     startTransition(() => {
-      setFullScreen((wasFullScreen) => {
-        const onKeypress = (event: KeyboardEvent) => {
-          if (event.key === "Escape") {
-            startTransition(() => {
-              setFullScreen(false);
-              setToggleHovered(false);
-            });
-          }
-        };
-
-        if (!wasFullScreen) {
-          scrollTop.current = document.documentElement.scrollTop;
-          document.body.classList.add("full-screen");
-          document.addEventListener("keydown", onKeypress, true);
-        } else {
-          document.body.classList.remove("full-screen");
-          document.documentElement.scrollTop = scrollTop.current;
-          document.removeEventListener("keydown", onKeypress, true);
-        }
-        return !wasFullScreen;
-      });
+      setFullScreen((wasFullScreen) => !wasFullScreen);
       setToggleHovered(false);
     });
   }, []);

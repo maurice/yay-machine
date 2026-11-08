@@ -40,7 +40,9 @@ In the `packages/site` directory:
 The Playwright tests visit every HTML page in the **built static site** and
 capture each `ym-chart`, including charts inside shadow DOM. A diagram inventory
 also detects removed diagrams. A separate interaction covers the stock ticker's
-dynamically created price-machine diagram.
+dynamically created price-machine diagram. Other browser tests exercise stock
+connection and subscription cleanup, fullscreen controls, and ATM card
+ejection.
 
 From the repository root:
 

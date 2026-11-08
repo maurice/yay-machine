@@ -17,7 +17,11 @@ export const ConnectionControls: FC = () => {
 
   return (
     <div className="start-stop">
-      <button type="button" disabled={connected} onClick={onConnect}>
+      <button
+        type="button"
+        disabled={connected || tickers?.interceptorError !== undefined}
+        onClick={onConnect}
+      >
         Connect
       </button>
       <button
@@ -30,6 +34,12 @@ export const ConnectionControls: FC = () => {
       >
         Disconnect
       </button>
+      {tickers?.interceptorError !== undefined && (
+        <p role="alert">
+          Unable to load the simulated price feed. Reload to try again.{" "}
+          {tickers.interceptorError}
+        </p>
+      )}
     </div>
   );
 };
