@@ -51,7 +51,7 @@ const captureBundlephobiaStats = async (): Promise<PackagesMetadata> => {
   const context = await browser.newContext(devices["Desktop Chrome"]);
   const page = await context.newPage();
 
-  const logoSmall = page.locator(".logo-small");
+  const logoSmall = page.locator(".ui-brand-logo");
   const statsContainer = page.locator(".stats-container");
   const autocompleteInput = page.locator(".autocomplete-input");
 
