@@ -11,7 +11,7 @@ How does **yay-machine** stack-up against [**XState**](https://xstate.js.org/)?
 
 Let's be clear **XState** is amazing is so many ways.
 
-- it's a feature-rich state-machine and state-chart library with ~1.5 million weekly downloads [from npmjs.com](https://www.npmjs.com/package/xstate)
+- it's a feature-rich state-machine and state-chart library with multi-million weekly downloads [from npmjs.com](https://www.npmjs.com/package/xstate)
 - it is well documented and supported by an active team of core and community contributors
 - it has an online editor and visualizer
 - it has IDE extensions
@@ -48,15 +48,13 @@ Stats from [**BUNDLE**PHOBIA](https://bundlephobia.com/) 🙏.
 
 ### Runtime performance
 
-**yay-machine** is more than 50X times faster than **XState** for the [most basic state-machine implementation](https://github.com/maurice/yay-machine/blob/main/packages/bench/src/bench.ts).
+**yay-machine** is faster than **XState** in all of [our benchmarks](/articles/benchmarks/), from realistic workloads to feature micro-benchmarks, and uses less memory per running machine.
 
-[![bench tests](../../../assets/bench.png)](https://github.com/maurice/yay-machine/blob/main/packages/bench/src/bench.ts)
+import BenchChart from "../../../components/BenchChart/BenchChart.astro";
 
-> 🤔 **Talking of basic...**
->
-> We know this benchmark test is not enough but we had to have _something_ for our 1.0 docs.
->
-> We want to add more benchmarks in future, with more realistic production-like state-machines, and comparisons with other libraries.
+<BenchChart name="overview" />
+
+The gap is smaller for app-like machines, where more of the time is spent in your own code. See [Benchmarks](/articles/benchmarks/) for every result, what each benchmark does, and how they're measured.
 
 ## Homogenous vs Heterogenous context/state-data
 

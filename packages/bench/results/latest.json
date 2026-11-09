@@ -1,0 +1,589 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-09T21:04:30.733Z",
+  "quick": false,
+  "environment": {
+    "runtime": "Bun 1.4.3",
+    "os": "Linux 6.18.54.1-microsoft-standard-WSL2 (x64)",
+    "cpu": "11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz",
+    "cores": 8,
+    "memoryGb": 8
+  },
+  "packages": {
+    "xstate": "5.33.3",
+    "yay-machine": "v1.5.0-297-g4179cf1"
+  },
+  "suites": [
+    {
+      "id": "form",
+      "title": "UI: sign-up form",
+      "category": "workload",
+      "kind": "throughput",
+      "description": "A subscribed UI form session: per-keystroke data updates, validation via an immediate transition, a failed then successful submit request (with abort cleanup), and reset.",
+      "variants": [
+        {
+          "id": "session",
+          "label": "form session (38 events)",
+          "op": "38 events",
+          "unit": "events/s",
+          "higherIsBetter": true,
+          "results": {
+            "xstate": {
+              "value": 162007.9811894516,
+              "rme": 6.492079511785179,
+              "samples": 84
+            },
+            "yay-machine": {
+              "value": 1304519.1926732513,
+              "rme": 5.400944811947488,
+              "samples": 98
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "stream",
+      "title": "Event stream: long-lived connection",
+      "category": "workload",
+      "kind": "throughput",
+      "description": "One long-lived connection machine replaying a realistic, mixed 1,000-event trace: sends, heartbeats, errors, reconnects (with resource cleanup) and stray events that are ignored.",
+      "variants": [
+        {
+          "id": "trace",
+          "label": "replay 1,000-event trace",
+          "op": "1000 events",
+          "unit": "events/s",
+          "higherIsBetter": true,
+          "results": {
+            "xstate": {
+              "value": 282952.43640297186,
+              "rme": 9.522201888135244,
+              "samples": 79
+            },
+            "yay-machine": {
+              "value": 5236374.351907297,
+              "rme": 5.684332948876949,
+              "samples": 100
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "fleet",
+      "title": "Fleet: 1,000 live connections",
+      "category": "workload",
+      "kind": "throughput",
+      "description": "1,000 long-lived connection machines in assorted states; each op delivers one event from the realistic trace to every instance.",
+      "variants": [
+        {
+          "id": "round-robin",
+          "label": "1 event to each of 1,000 instances",
+          "op": "1000 events",
+          "unit": "events/s",
+          "higherIsBetter": true,
+          "results": {
+            "xstate": {
+              "value": 192048.91108209765,
+              "rme": 9.012518407251523,
+              "samples": 76
+            },
+            "yay-machine": {
+              "value": 2180106.79701014,
+              "rme": 8.582620252684979,
+              "samples": 78
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "complex",
+      "title": "Login request",
+      "category": "workload",
+      "kind": "throughput",
+      "description": "A short-lived, per-request login workflow: create + start, LOGIN through a guarded immediate transition, LOGOUT/RETRY, stop. Includes entry/exit effects and a session resource.",
+      "variants": [
+        {
+          "id": "success",
+          "label": "login success + logout",
+          "op": "1 request (create, 2 events, stop)",
+          "unit": "requests/s",
+          "higherIsBetter": true,
+          "results": {
+            "xstate": {
+              "value": 18887.6881178286,
+              "rme": 10.185186843558295,
+              "samples": 90
+            },
+            "yay-machine": {
+              "value": 271473.77340402367,
+              "rme": 8.996382474525111,
+              "samples": 99
+            }
+          }
+        },
+        {
+          "id": "rejected",
+          "label": "login rejected + retry",
+          "op": "1 request (create, 2 events, stop)",
+          "unit": "requests/s",
+          "higherIsBetter": true,
+          "results": {
+            "yay-machine": {
+              "value": 320011.65255939175,
+              "rme": 4.937786336961361,
+              "samples": 103
+            },
+            "xstate": {
+              "value": 18013.745355841584,
+              "rme": 10.597444844441211,
+              "samples": 74
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "memory",
+      "title": "Memory per live instance",
+      "category": "workload",
+      "kind": "memory",
+      "description": "Retained heap per running connection machine, measured across 10,000 instances. Matters when a server holds one machine per client.",
+      "variants": [
+        {
+          "id": "idle",
+          "label": "started, idle (disconnected)",
+          "unit": "bytes/instance",
+          "higherIsBetter": false,
+          "results": {
+            "xstate": {
+              "value": 2749.8002,
+              "rme": 0.002430252505833224,
+              "samples": 5
+            },
+            "yay-machine": {
+              "value": 1255.0404,
+              "rme": 0.00015803320342938642,
+              "samples": 5
+            }
+          }
+        },
+        {
+          "id": "connected",
+          "label": "connected (with heartbeat resource)",
+          "unit": "bytes/instance",
+          "higherIsBetter": false,
+          "results": {
+            "xstate": {
+              "value": 4031.6368,
+              "rme": 0.0048581771759942955,
+              "samples": 5
+            },
+            "yay-machine": {
+              "value": 1357.3805,
+              "rme": 0.008323986481538193,
+              "samples": 5
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "toggle",
+      "title": "Toggle",
+      "category": "micro",
+      "kind": "throughput",
+      "description": "Two states, one event, no data or effects. Pure per-event dispatch overhead.",
+      "variants": [
+        {
+          "id": "toggle",
+          "label": "send TOGGLE",
+          "op": "1 event",
+          "unit": "events/s",
+          "higherIsBetter": true,
+          "results": {
+            "xstate": {
+              "value": 163922.99144349474,
+              "rme": 8.884549915136445,
+              "samples": 87
+            },
+            "yay-machine": {
+              "value": 3525420.965696031,
+              "rme": 8.756536809006485,
+              "samples": 93
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "counter",
+      "title": "Counter",
+      "category": "micro",
+      "kind": "throughput",
+      "description": "Guarded context/data updates from event payloads, with and without the guard rejecting the update.",
+      "variants": [
+        {
+          "id": "accepted",
+          "label": "INCREMENT + DECREMENT (guards pass)",
+          "op": "2 events",
+          "unit": "events/s",
+          "higherIsBetter": true,
+          "results": {
+            "xstate": {
+              "value": 253612.27689433272,
+              "rme": 10.069834132772575,
+              "samples": 78
+            },
+            "yay-machine": {
+              "value": 1350646.493606194,
+              "rme": 9.479188159951375,
+              "samples": 76
+            }
+          }
+        },
+        {
+          "id": "rejected",
+          "label": "INCREMENT beyond max (guard rejects)",
+          "op": "1 event",
+          "unit": "events/s",
+          "higherIsBetter": true,
+          "results": {
+            "yay-machine": {
+              "value": 9290357.767400583,
+              "rme": 11.78181236343071,
+              "samples": 71
+            },
+            "xstate": {
+              "value": 827563.038699035,
+              "rme": 10.02402953465689,
+              "samples": 91
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "guards",
+      "title": "Guards",
+      "category": "micro",
+      "kind": "throughput",
+      "description": "One event with five ordered, guarded candidate transitions. Measures guard evaluation as the match moves down the list.",
+      "variants": [
+        {
+          "id": "first",
+          "label": "1st guard matches",
+          "op": "1 event",
+          "unit": "events/s",
+          "higherIsBetter": true,
+          "results": {
+            "xstate": {
+              "value": 267720.1167252842,
+              "rme": 9.09346023182392,
+              "samples": 91
+            },
+            "yay-machine": {
+              "value": 2078426.107999321,
+              "rme": 11.165718423591544,
+              "samples": 82
+            }
+          }
+        },
+        {
+          "id": "middle",
+          "label": "3rd guard matches",
+          "op": "1 event",
+          "unit": "events/s",
+          "higherIsBetter": true,
+          "results": {
+            "yay-machine": {
+              "value": 1793906.3436401482,
+              "rme": 6.569647142081446,
+              "samples": 78
+            },
+            "xstate": {
+              "value": 287014.34530245914,
+              "rme": 5.990123256464855,
+              "samples": 101
+            }
+          }
+        },
+        {
+          "id": "fallthrough",
+          "label": "default (5th) matches",
+          "op": "1 event",
+          "unit": "events/s",
+          "higherIsBetter": true,
+          "results": {
+            "xstate": {
+              "value": 236338.0493869843,
+              "rme": 7.973614365832085,
+              "samples": 90
+            },
+            "yay-machine": {
+              "value": 1931019.5459811238,
+              "rme": 7.708696449119816,
+              "samples": 97
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "always",
+      "title": "Immediate transitions",
+      "category": "micro",
+      "kind": "throughput",
+      "description": "An event enters a transient decision state which immediately routes onwards via guarded 'always' transitions, then RESET.",
+      "variants": [
+        {
+          "id": "first",
+          "label": "routes via 1st branch",
+          "op": "2 events",
+          "unit": "events/s",
+          "higherIsBetter": true,
+          "results": {
+            "xstate": {
+              "value": 90971.18991949968,
+              "rme": 9.616073332596189,
+              "samples": 89
+            },
+            "yay-machine": {
+              "value": 1607398.9053680985,
+              "rme": 6.230675262062215,
+              "samples": 94
+            }
+          }
+        },
+        {
+          "id": "last",
+          "label": "routes via last branch",
+          "op": "2 events",
+          "unit": "events/s",
+          "higherIsBetter": true,
+          "results": {
+            "yay-machine": {
+              "value": 1270899.8285930962,
+              "rme": 8.871413779159688,
+              "samples": 91
+            },
+            "xstate": {
+              "value": 89336.12209245822,
+              "rme": 9.23729112450702,
+              "samples": 89
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "defaultHandling",
+      "title": "Event resolution",
+      "category": "micro",
+      "kind": "throughput",
+      "description": "An event handled by the current state, falling through to a machine-level handler, or not handled at all.",
+      "variants": [
+        {
+          "id": "state",
+          "label": "handled by current state",
+          "op": "1 event",
+          "unit": "events/s",
+          "higherIsBetter": true,
+          "results": {
+            "xstate": {
+              "value": 248970.6124724091,
+              "rme": 9.41437865371833,
+              "samples": 81
+            },
+            "yay-machine": {
+              "value": 1997147.1139904195,
+              "rme": 9.666269515497563,
+              "samples": 99
+            }
+          }
+        },
+        {
+          "id": "machine",
+          "label": "falls through to machine-level",
+          "op": "1 event",
+          "unit": "events/s",
+          "higherIsBetter": true,
+          "results": {
+            "yay-machine": {
+              "value": 2046193.9283467855,
+              "rme": 6.2193632900409845,
+              "samples": 97
+            },
+            "xstate": {
+              "value": 220747.16267194573,
+              "rme": 4.780323415316577,
+              "samples": 88
+            }
+          }
+        },
+        {
+          "id": "ignored",
+          "label": "not handled (ignored)",
+          "op": "1 event",
+          "unit": "events/s",
+          "higherIsBetter": true,
+          "results": {
+            "xstate": {
+              "value": 669513.0432109996,
+              "rme": 10.441690999156663,
+              "samples": 77
+            },
+            "yay-machine": {
+              "value": 28477083.622847628,
+              "rme": 4.187754222742673,
+              "samples": 89
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "effects",
+      "title": "State effects",
+      "category": "micro",
+      "kind": "throughput",
+      "description": "ACTIVATE then DEACTIVATE with data updates, running per-state entry/exit side-effects, or acquiring and releasing a state-scoped resource.",
+      "variants": [
+        {
+          "id": "actions",
+          "label": "entry + exit actions",
+          "op": "2 events",
+          "unit": "events/s",
+          "higherIsBetter": true,
+          "results": {
+            "xstate": {
+              "value": 128810.0977720985,
+              "rme": 7.230498838632412,
+              "samples": 89
+            },
+            "yay-machine": {
+              "value": 2009570.6180958059,
+              "rme": 8.299896365873897,
+              "samples": 95
+            }
+          }
+        },
+        {
+          "id": "resources",
+          "label": "state-scoped resource + cleanup",
+          "op": "2 events",
+          "unit": "events/s",
+          "higherIsBetter": true,
+          "results": {
+            "yay-machine": {
+              "value": 1962218.9732484038,
+              "rme": 9.216410382833585,
+              "samples": 95
+            },
+            "xstate": {
+              "value": 63890.676075210744,
+              "rme": 4.380341548396917,
+              "samples": 98
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "lifecycle",
+      "title": "Lifecycle",
+      "category": "micro",
+      "kind": "throughput",
+      "description": "Defining a 5-state machine, and create + start + stop of an instance with and without a machine-scoped resource.",
+      "variants": [
+        {
+          "id": "define",
+          "label": "define a 5-state machine",
+          "op": "1 definition",
+          "unit": "definitions/s",
+          "higherIsBetter": true,
+          "results": {
+            "xstate": {
+              "value": 37410.49497560861,
+              "rme": 4.934707034178926,
+              "samples": 96
+            },
+            "yay-machine": {
+              "value": 592928.8703756467,
+              "rme": 2.6674043745675657,
+              "samples": 103
+            }
+          }
+        },
+        {
+          "id": "bare",
+          "label": "create + start + stop",
+          "op": "1 lifecycle",
+          "unit": "lifecycles/s",
+          "higherIsBetter": true,
+          "results": {
+            "yay-machine": {
+              "value": 1177869.4834588538,
+              "rme": 2.16220890816616,
+              "samples": 105
+            },
+            "xstate": {
+              "value": 92671.81735117781,
+              "rme": 3.5671142391893786,
+              "samples": 102
+            }
+          }
+        },
+        {
+          "id": "resource",
+          "label": "... with machine-scoped resource",
+          "op": "1 lifecycle",
+          "unit": "lifecycles/s",
+          "higherIsBetter": true,
+          "results": {
+            "xstate": {
+              "value": 31077.45978703875,
+              "rme": 10.60071890615297,
+              "samples": 71
+            },
+            "yay-machine": {
+              "value": 1085535.1981025557,
+              "rme": 7.41950073919872,
+              "samples": 103
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "multiInstance",
+      "title": "Batch of short-lived instances",
+      "category": "micro",
+      "kind": "throughput",
+      "description": "Create + start 10 instances, send each one event, then stop them all.",
+      "variants": [
+        {
+          "id": "batch",
+          "label": "batch of 10",
+          "op": "10 lifecycles",
+          "unit": "lifecycles/s",
+          "higherIsBetter": true,
+          "results": {
+            "xstate": {
+              "value": 50320.29656577376,
+              "rme": 7.010929882659983,
+              "samples": 90
+            },
+            "yay-machine": {
+              "value": 870023.2710539922,
+              "rme": 1.5439897911330107,
+              "samples": 103
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,78 +1,84 @@
-import benny from "benny";
 import { createActor, createMachine } from "xstate";
 import { defineMachine } from "yay-machine";
+import type { ThroughputSuite } from "../types";
 
-// Multiple machine instances: creating and operating N independent instances
-// from the same machine definition.
+// A short-lived batch of instances from one definition: create and start 10,
+// send each one event, then stop them all (eg per-request machines).
 
 const INSTANCE_COUNT = 10;
+const TOGGLE = { type: "TOGGLE" } as const;
 
-// --- XState ---
 const xstateMachine = createMachine({
   id: "multi",
   initial: "inactive",
   states: {
-    inactive: {
-      on: { TOGGLE: "active" },
-    },
-    active: {
-      on: { TOGGLE: "inactive" },
-    },
+    inactive: { on: { TOGGLE: "active" } },
+    active: { on: { TOGGLE: "inactive" } },
   },
 });
 
-// --- yay-machine ---
-type MultiState = { readonly name: "active" | "inactive" };
-type MultiEvent = { readonly type: "TOGGLE" };
-
-const yayDefinition = defineMachine<MultiState, MultiEvent>({
+const yayDefinition = defineMachine<
+  { readonly name: "active" | "inactive" },
+  { readonly type: "TOGGLE" }
+>({
   initialState: { name: "inactive" },
   states: {
-    inactive: {
-      on: { TOGGLE: { to: "active" } },
-    },
-    active: {
-      on: { TOGGLE: { to: "inactive" } },
-    },
+    inactive: { on: { TOGGLE: { to: "active" } } },
+    active: { on: { TOGGLE: { to: "inactive" } } },
   },
 });
 
-export const multiInstance = () =>
-  benny.suite(
-    "Multi-instance — create, start, send, stop N instances",
-
-    benny.add(
-      `xstate: create + start + send + stop ${INSTANCE_COUNT} actors`,
-      () => {
-        const actors = Array.from({ length: INSTANCE_COUNT }, () =>
-          createActor(xstateMachine).start(),
-        );
-        for (const actor of actors) {
-          actor.send({ type: "TOGGLE" });
-        }
-        for (const actor of actors) {
-          actor.stop();
-        }
+export const multiInstance: ThroughputSuite = {
+  kind: "throughput",
+  id: "multiInstance",
+  title: "Batch of short-lived instances",
+  category: "micro",
+  description: `Create + start ${INSTANCE_COUNT} instances, send each one event, then stop them all.`,
+  variants: [
+    {
+      id: "batch",
+      label: `batch of ${INSTANCE_COUNT}`,
+      op: `${INSTANCE_COUNT} lifecycles`,
+      unit: "lifecycles/s",
+      unitsPerOp: INSTANCE_COUNT,
+      setup: {
+        xstate: () => {
+          let states: unknown[] = [];
+          return {
+            run: () => {
+              const actors = Array.from({ length: INSTANCE_COUNT }, () =>
+                createActor(xstateMachine).start(),
+              );
+              for (const actor of actors) {
+                actor.send(TOGGLE);
+              }
+              states = actors.map((actor) => actor.getSnapshot().value);
+              for (const actor of actors) {
+                actor.stop();
+              }
+            },
+            observe: () => states,
+          };
+        },
+        "yay-machine": () => {
+          let states: unknown[] = [];
+          return {
+            run: () => {
+              const machines = Array.from({ length: INSTANCE_COUNT }, () =>
+                yayDefinition.newInstance().start(),
+              );
+              for (const machine of machines) {
+                machine.send(TOGGLE);
+              }
+              states = machines.map((machine) => machine.state.name);
+              for (const machine of machines) {
+                machine.stop();
+              }
+            },
+            observe: () => states,
+          };
+        },
       },
-    ),
-
-    benny.add(
-      `yay-machine: create + start + send + stop ${INSTANCE_COUNT} instances`,
-      () => {
-        const instances = Array.from({ length: INSTANCE_COUNT }, () =>
-          yayDefinition.newInstance().start(),
-        );
-        for (const instance of instances) {
-          instance.send({ type: "TOGGLE" });
-        }
-        for (const instance of instances) {
-          instance.stop();
-        }
-      },
-    ),
-
-    benny.cycle(),
-    benny.complete(),
-    benny.save({ file: "multiInstance", version: "1.0.0" }),
-    benny.save({ file: "multiInstance", format: "chart.html" }),
-  );
+    },
+  ],
+};

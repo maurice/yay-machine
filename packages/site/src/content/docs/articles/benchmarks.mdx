@@ -1,0 +1,154 @@
+---
+title: Benchmarks
+description: How yay-machine compares with XState, from realistic workloads to feature micro-benchmarks
+sidebar:
+  order: 4
+---
+
+import { Aside } from "@astrojs/starlight/components";
+import BenchChart from "../../../components/BenchChart/BenchChart.astro";
+
+How fast is **yay-machine** compared with [**XState**](https://xstate.js.org/), and does it matter for _your_ app?
+
+We used to publish a single "toggle" benchmark. It's the most flattering test we have, and it doesn't tell you much about real apps. This page publishes **every** benchmark we run, including the realistic ones where the gap is smaller, along with how they're measured.
+
+<Aside type="note">
+  Every chart on this page was generated from the same run, and shows the
+  library versions and machine it ran on in its footer. The raw numbers are in
+  [`results/latest.json`](https://github.com/maurice/yay-machine/blob/main/packages/bench/results/latest.json).
+</Aside>
+
+## At a glance
+
+Each bar shows how many times faster (or, for memory, how many times leaner) **yay-machine** is than **XState** for the same work. 1× would mean the two are even.
+
+<BenchChart name="overview" />
+
+What we take from this:
+
+- **yay-machine** was faster in every benchmark, and used less memory per instance.
+- **The gap shrinks as more time is spent in _your_ code.** Building state-data, evaluating guards and running subscribers costs the same with either library, so benchmarks that do more of it (like the sign-up form, or counter updates) show smaller gaps than the bare toggle.
+- **The gap is biggest where yay-machine simply does less**: ignored events, starting and stopping machines, and acquiring and releasing resources.
+- **Will you notice?** In a typical UI handling a few events per second, probably not: both libraries handle each event in microseconds or less. It starts to matter when you send lots of events (streams, parsers, games), run lots of machines (one per connection, per request, per entity), or care about memory per instance.
+
+## Realistic workloads
+
+These model the kinds of machines people actually build, with state-data, guards, side-effects and subscribers, driven by realistic sequences of events.
+
+### UI: sign-up form
+
+A subscribed sign-up form, driven through a typical session of 38 events: typing into fields (with a state-data update per keystroke), validation via an immediate transition, a submit that fails, a submit that succeeds (with abort cleanup of the in-flight request), and reset. A subscriber derives a view-model from every state, like a UI component would.
+
+<BenchChart name="form" />
+
+### Event stream: long-lived connection
+
+One long-lived connection machine replaying a seeded, realistic trace of 1,000 events: mostly sends and heartbeats, with occasional errors and reconnects (each acquiring and releasing a connection resource), and some stray events that the current state ignores.
+
+<BenchChart name="stream" />
+
+### Fleet: 1,000 live connections
+
+The same connection machine, but 1,000 instances in assorted states, as a server holding one machine per client would. Each operation delivers the next event from the trace to every instance, which tests how each library behaves when its working set doesn't fit in the CPU's caches.
+
+<BenchChart name="fleet" />
+
+### Login request
+
+A short-lived machine per request: create and start, `LOGIN` through a guarded immediate transition, then `LOGOUT` (or a rejected login and `RETRY`), and stop. Includes entry/exit side-effects and a session resource that must be cleaned up.
+
+<BenchChart name="complex" />
+
+### Memory per live instance
+
+Retained heap per running connection machine, measured across 10,000 instances, idle and connected (holding a heartbeat resource). This matters when a server keeps one machine per client.
+
+<BenchChart name="memory" />
+
+## Feature micro-benchmarks
+
+These isolate individual features, so you can see where the time goes. They're useful for spotting regressions, but on their own they say little about real apps.
+
+### Toggle
+
+Two states, one event, no state-data or side-effects. Pure per-event overhead, and the benchmark we used to publish on its own.
+
+<BenchChart name="toggle" />
+
+### Counter
+
+State-data updated from event payloads, with the guard accepting or rejecting the update.
+
+<BenchChart name="counter" />
+
+### Guards
+
+One event with five ordered, guarded candidate transitions, matching on the first, third or last (default) candidate.
+
+<BenchChart name="guards" />
+
+### Immediate transitions
+
+An event enters a transient decision state, which immediately routes onwards via guarded [immediate transitions](/reference/transitions/#immediate-transitions-always) (`always` in both libraries).
+
+<BenchChart name="always" />
+
+### Event resolution
+
+An event handled by the current state, falling through to a machine-level handler, or not handled at all.
+
+<BenchChart name="defaultHandling" />
+
+### State effects
+
+Entering and leaving a state that has entry/exit side-effects, or that acquires and releases a resource for as long as it's active.
+
+<BenchChart name="effects" />
+
+### Lifecycle
+
+Defining a machine, and creating, starting and stopping an instance, with and without a machine-scoped resource.
+
+<BenchChart name="lifecycle" />
+
+### Batch of short-lived instances
+
+Create and start 10 instances, send each one an event, and stop them all.
+
+<BenchChart name="multiInstance" />
+
+## Methodology
+
+The [benchmark source](https://github.com/maurice/yay-machine/tree/main/packages/bench) is on GitHub. We tried hard to make the comparisons fair:
+
+- **Equivalent work.** Each benchmark has a hand-written **XState** and **yay-machine** implementation, written idiomatically for each library. A [test](https://github.com/maurice/yay-machine/blob/main/packages/bench/src/__tests__/equivalence.test.ts) checks that both reach the same states and state-data, and run the same side-effects and cleanups the same number of times, before and after each benchmark iteration.
+- **Production builds.** Both libraries run from their published, production builds.
+- **Isolation.** Each suite runs in a separate process, so JIT optimisations from one suite can't influence another, and the order of the two libraries alternates between variants.
+- **Throughput** is measured with [Benny](https://github.com/caderek/benny) (Benchmark.js), sampling each case for several seconds. Each chart shows the mean rate, and its relative margin of error at 95% confidence (±%).
+- **Memory** is measured in a fresh process per sample: warm up, garbage collect, create 10,000 instances, garbage collect, and divide the growth in heap size by the number of instances. The chart shows the median of 5 samples.
+
+### Caveats
+
+- A ratio can move by a third or more between runs, much more than the ±% error bars suggest: those only capture variation _within_ a run, not things like CPU frequency scaling between runs. Look at the overall picture, not the exact numbers.
+- These results come from one machine, running [Bun](https://bun.sh/) (JavaScriptCore). Results on Node.js or in the browser (V8) will differ, and so may the ratios.
+- The libraries don't behave identically, and we didn't try to hide that. For example, **XState** notifies subscribers about _every_ event, even when nothing changes, while **yay-machine** only notifies them when the machine transitions. That's a real cost of using **XState**, so it's included.
+- **XState** does more than **yay-machine**: actors, hierarchical and parallel states, delayed events, inspection, and more. You pay for some of that even when you don't use it, but if you need those features, the comparison isn't like-for-like.
+
+## Running the benchmarks
+
+We don't re-run the benchmarks on every docs build: they take a while, and need a quiet machine. Instead we re-run them when something significant changes, such as a new release of either library.
+
+```sh
+bun run bench:report  # run every suite, save the results, then render the charts
+bun run bench:charts  # just re-render the charts from the saved results
+```
+
+To try a single suite, or get a faster, rougher read while developing, run these in `packages/bench`:
+
+```sh
+bun run bench:toggle                     # a single suite
+bun run bench:quick                      # all suites, fewer samples
+bun run src/bench.ts form stream --quick # pick suites
+```
+
+Quick and partial runs aren't saved, unless you add `--save`.

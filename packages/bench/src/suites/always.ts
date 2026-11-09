@@ -1,64 +1,51 @@
-import benny from "benny";
 import { assign, createActor, createMachine } from "xstate";
 import { defineMachine } from "yay-machine";
+import type { Fixture, ThroughputSuite, ThroughputVariant } from "../types";
+import { observeXState, observeYay } from "../util";
 
-// Always (immediate) transitions: a transient decision state that
-// immediately routes to the correct target based on guards.
+// Immediate ("always") transitions: a transient decision state that
+// immediately routes onwards based on guards.
 
-// --- XState ---
-const xstateAlways = createActor(
-  createMachine({
-    id: "always",
-    initial: "idle",
-    context: { level: 0 },
-    states: {
-      idle: {
-        on: {
-          SET_LEVEL: {
-            target: "classify",
-            actions: assign({
-              level: ({ event }) =>
-                (event as { type: "SET_LEVEL"; level: number }).level,
-            }),
-          },
+type AlwaysEvent =
+  | { readonly type: "SET_LEVEL"; readonly level: number }
+  | { readonly type: "RESET" };
+
+const xstateAlways = createMachine({
+  types: {} as { events: AlwaysEvent },
+  id: "always",
+  initial: "idle",
+  context: { level: 0 },
+  states: {
+    idle: {
+      on: {
+        SET_LEVEL: {
+          target: "classify",
+          actions: assign({
+            level: ({ event }) =>
+              event.type === "SET_LEVEL" ? event.level : 0,
+          }),
         },
       },
-      classify: {
-        always: [
-          {
-            guard: ({ context }) => context.level >= 80,
-            target: "high",
-          },
-          {
-            guard: ({ context }) => context.level >= 40,
-            target: "medium",
-          },
-          {
-            target: "low",
-          },
-        ],
-      },
-      high: {
-        on: { RESET: { target: "idle", actions: assign({ level: 0 }) } },
-      },
-      medium: {
-        on: { RESET: { target: "idle", actions: assign({ level: 0 }) } },
-      },
-      low: {
-        on: { RESET: { target: "idle", actions: assign({ level: 0 }) } },
-      },
     },
-  }),
-).start();
+    classify: {
+      always: [
+        { guard: ({ context }) => context.level >= 80, target: "high" },
+        { guard: ({ context }) => context.level >= 40, target: "medium" },
+        { target: "low" },
+      ],
+    },
+    high: { on: { RESET: { target: "idle", actions: assign({ level: 0 }) } } },
+    medium: {
+      on: { RESET: { target: "idle", actions: assign({ level: 0 }) } },
+    },
+    low: { on: { RESET: { target: "idle", actions: assign({ level: 0 }) } } },
+  },
+});
 
-// --- yay-machine ---
 type AlwaysState = {
   readonly name: "idle" | "classify" | "high" | "medium" | "low";
   readonly level: number;
 };
-type AlwaysEvent =
-  | { readonly type: "SET_LEVEL"; readonly level: number }
-  | { readonly type: "RESET" };
 
 const yayAlways = defineMachine<AlwaysState, AlwaysEvent>({
   enableCopyDataOnTransition: true,
@@ -74,49 +61,65 @@ const yayAlways = defineMachine<AlwaysState, AlwaysEvent>({
     },
     classify: {
       always: [
-        {
-          to: "high",
-          when: ({ state }) => state.level >= 80,
-        },
-        {
-          to: "medium",
-          when: ({ state }) => state.level >= 40,
-        },
-        {
-          to: "low",
-        },
+        { to: "high", when: ({ state }) => state.level >= 80 },
+        { to: "medium", when: ({ state }) => state.level >= 40 },
+        { to: "low" },
       ],
     },
-    high: {
-      on: { RESET: { to: "idle", data: () => ({ level: 0 }) } },
-    },
-    medium: {
-      on: { RESET: { to: "idle", data: () => ({ level: 0 }) } },
-    },
-    low: {
-      on: { RESET: { to: "idle", data: () => ({ level: 0 }) } },
-    },
+    high: { on: { RESET: { to: "idle", data: () => ({ level: 0 }) } } },
+    medium: { on: { RESET: { to: "idle", data: () => ({ level: 0 }) } } },
+    low: { on: { RESET: { to: "idle", data: () => ({ level: 0 }) } } },
   },
-})
-  .newInstance()
-  .start();
+});
 
-export const always = () =>
-  benny.suite(
-    "Always — immediate (transient) transitions",
+const RESET = { type: "RESET" } as const;
 
-    benny.add("xstate: set level + always + reset", () => {
-      xstateAlways.send({ type: "SET_LEVEL", level: 90 });
-      xstateAlways.send({ type: "RESET" });
-    }),
+const variant = (
+  id: string,
+  label: string,
+  level: number,
+): ThroughputVariant => {
+  const setLevel: AlwaysEvent = { type: "SET_LEVEL", level };
+  return {
+    id,
+    label,
+    op: "2 events",
+    unit: "events/s",
+    unitsPerOp: 2,
+    setup: {
+      xstate: (): Fixture => {
+        const actor = createActor(xstateAlways).start();
+        return {
+          run: () => {
+            actor.send(setLevel);
+            actor.send(RESET);
+          },
+          observe: () => observeXState(actor),
+        };
+      },
+      "yay-machine": (): Fixture => {
+        const machine = yayAlways.newInstance().start();
+        return {
+          run: () => {
+            machine.send(setLevel);
+            machine.send(RESET);
+          },
+          observe: () => observeYay(machine),
+        };
+      },
+    },
+  };
+};
 
-    benny.add("yay-machine: set level + always + reset", () => {
-      yayAlways.send({ type: "SET_LEVEL", level: 90 });
-      yayAlways.send({ type: "RESET" });
-    }),
-
-    benny.cycle(),
-    benny.complete(),
-    benny.save({ file: "always", version: "1.0.0" }),
-    benny.save({ file: "always", format: "chart.html" }),
-  );
+export const always: ThroughputSuite = {
+  kind: "throughput",
+  id: "always",
+  title: "Immediate transitions",
+  category: "micro",
+  description:
+    "An event enters a transient decision state which immediately routes onwards via guarded 'always' transitions, then RESET.",
+  variants: [
+    variant("first", "routes via 1st branch", 90),
+    variant("last", "routes via last branch", 10),
+  ],
+};

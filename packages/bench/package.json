@@ -1,14 +1,22 @@
 {
   "name": "@yay-machine/bench",
   "version": "0.0.0",
-  "description": "Example state-machines with yay-machine",
+  "description": "Benchmarks comparing yay-machine with XState",
   "private": true,
   "type": "module",
   "files": [
     "src"
   ],
   "scripts": {
+    "check:types": "bun check",
     "bench": "bun run src/bench.ts",
+    "bench:quick": "bun run src/bench.ts --quick",
+    "charts": "bun run src/report/render.ts",
+    "bench:form": "bun run src/bench.ts form",
+    "bench:stream": "bun run src/bench.ts stream",
+    "bench:fleet": "bun run src/bench.ts fleet",
+    "bench:complex": "bun run src/bench.ts complex",
+    "bench:memory": "bun run src/bench.ts memory",
     "bench:toggle": "bun run src/bench.ts toggle",
     "bench:counter": "bun run src/bench.ts counter",
     "bench:guards": "bun run src/bench.ts guards",
@@ -16,8 +24,7 @@
     "bench:defaultHandling": "bun run src/bench.ts defaultHandling",
     "bench:effects": "bun run src/bench.ts effects",
     "bench:lifecycle": "bun run src/bench.ts lifecycle",
-    "bench:multiInstance": "bun run src/bench.ts multiInstance",
-    "bench:complex": "bun run src/bench.ts complex"
+    "bench:multiInstance": "bun run src/bench.ts multiInstance"
   },
   "repository": {
     "type": "git",
