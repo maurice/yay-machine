@@ -1,97 +1,151 @@
-import benny from "benny";
-import { createActor, createMachine } from "xstate";
+import { createActor, createMachine, fromCallback } from "xstate";
 import { defineMachine } from "yay-machine";
+import type { ThroughputSuite } from "../types";
+import {
+  defineXStateConnection,
+  defineYayConnection,
+  newConnectionCounts,
+} from "../workloads/connection";
 
-// Machine lifecycle: start/stop cycles measuring the overhead of
-// creating, starting, and stopping machine instances, including
-// onStart/onStop side effects and their cleanup.
-
-let _startCount = 0;
-let _stopCount = 0;
-let _startCleanupCount = 0;
-
-// --- Shared machine definitions (recreated per cycle) ---
-
-const xstateMachine = createMachine({
-  id: "lifecycle",
-  initial: "running",
-  states: {
-    running: {
-      on: { PING: "running" },
-    },
-  },
-});
+// Machine lifecycle costs: defining a machine, and creating/starting/stopping
+// instances, with and without a machine-scoped resource. XState has no
+// machine-level onStart/onStop, so the idiomatic equivalent of yay-machine's
+// `onStart` (returning a cleanup) is a root-level invoked callback actor.
 
 type LifecycleState = { readonly name: "running" };
 type LifecycleEvent = { readonly type: "PING" };
 
-const yayDefinition = defineMachine<LifecycleState, LifecycleEvent>({
-  initialState: { name: "running" },
-  onStart: () => {
-    _startCount++;
-    return () => {
-      _startCleanupCount++;
-    };
-  },
-  onStop: () => {
-    _stopCount++;
-  },
-  states: {
-    running: {
-      on: { PING: { to: "running" } },
-    },
-  },
-});
-
-// XState version with equivalent lifecycle hooks
-const xstateMachineWithEffects = createMachine({
-  id: "lifecycleEffects",
+const xstateBare = createMachine({
+  id: "lifecycle",
   initial: "running",
-  states: {
-    running: {
-      entry: () => {
-        _startCount++;
-        return () => {
-          _startCleanupCount++;
-        };
-      },
-      on: { PING: "running" },
-    },
-  },
+  states: { running: {} },
 });
 
-export const lifecycle = () =>
-  benny.suite(
-    "Lifecycle — start/stop cycles",
+const yayBare = defineMachine<LifecycleState, LifecycleEvent>({
+  initialState: { name: "running" },
+  states: { running: {} },
+});
 
-    benny.add("xstate: create actor + start + stop", () => {
-      const actor = createActor(xstateMachine);
-      actor.start();
-      actor.send({ type: "PING" });
-      actor.stop();
-    }),
+const resourceFixtures = () => {
+  const counts = { acquired: 0, released: 0, lifecycles: 0 };
+  const acquire = () => {
+    counts.acquired++;
+    return () => {
+      counts.released++;
+    };
+  };
+  const xstateMachine = createMachine({
+    id: "lifecycleResource",
+    initial: "running",
+    invoke: { src: fromCallback(acquire) },
+    states: { running: {} },
+  });
+  const yayDefinition = defineMachine<LifecycleState, LifecycleEvent>({
+    initialState: { name: "running" },
+    onStart: acquire,
+    states: { running: {} },
+  });
+  return { counts, xstateMachine, yayDefinition };
+};
 
-    benny.add("yay-machine: newInstance + start + stop", () => {
-      const instance = yayDefinition.newInstance().start();
-      instance.send({ type: "PING" });
-      instance.stop();
-    }),
-
-    benny.add("xstate: with entry effect + start + stop", () => {
-      const actor = createActor(xstateMachineWithEffects);
-      actor.start();
-      actor.send({ type: "PING" });
-      actor.stop();
-    }),
-
-    benny.add("yay-machine: with onStart/onStop + start + stop", () => {
-      const instance = yayDefinition.newInstance().start();
-      instance.send({ type: "PING" });
-      instance.stop();
-    }),
-
-    benny.cycle(),
-    benny.complete(),
-    benny.save({ file: "lifecycle", version: "1.0.0" }),
-    benny.save({ file: "lifecycle", format: "chart.html" }),
-  );
+export const lifecycle: ThroughputSuite = {
+  kind: "throughput",
+  id: "lifecycle",
+  title: "Lifecycle",
+  category: "micro",
+  description:
+    "Defining a 5-state machine, and create + start + stop of an instance with and without a machine-scoped resource.",
+  variants: [
+    {
+      id: "define",
+      label: "define a 5-state machine",
+      op: "1 definition",
+      unit: "definitions/s",
+      unitsPerOp: 1,
+      setup: {
+        xstate: () => {
+          const counts = newConnectionCounts();
+          let defined = 0;
+          return {
+            run: () => {
+              defineXStateConnection(counts);
+              defined++;
+            },
+            observe: () => ({ defined: defined > 0 }),
+          };
+        },
+        "yay-machine": () => {
+          const counts = newConnectionCounts();
+          let defined = 0;
+          return {
+            run: () => {
+              defineYayConnection(counts);
+              defined++;
+            },
+            observe: () => ({ defined: defined > 0 }),
+          };
+        },
+      },
+    },
+    {
+      id: "bare",
+      label: "create + start + stop",
+      op: "1 lifecycle",
+      unit: "lifecycles/s",
+      unitsPerOp: 1,
+      setup: {
+        xstate: () => {
+          let last: unknown;
+          return {
+            run: () => {
+              const actor = createActor(xstateBare).start();
+              last = actor.getSnapshot().value;
+              actor.stop();
+            },
+            observe: () => ({ last }),
+          };
+        },
+        "yay-machine": () => {
+          let last: unknown;
+          return {
+            run: () => {
+              const machine = yayBare.newInstance().start();
+              last = machine.state.name;
+              machine.stop();
+            },
+            observe: () => ({ last }),
+          };
+        },
+      },
+    },
+    {
+      id: "resource",
+      label: "... with machine-scoped resource",
+      op: "1 lifecycle",
+      unit: "lifecycles/s",
+      unitsPerOp: 1,
+      setup: {
+        xstate: () => {
+          const { counts, xstateMachine } = resourceFixtures();
+          return {
+            run: () => {
+              createActor(xstateMachine).start().stop();
+              counts.lifecycles++;
+            },
+            observe: () => counts,
+          };
+        },
+        "yay-machine": () => {
+          const { counts, yayDefinition } = resourceFixtures();
+          return {
+            run: () => {
+              yayDefinition.newInstance().start().stop();
+              counts.lifecycles++;
+            },
+            observe: () => counts,
+          };
+        },
+      },
+    },
+  ],
+};

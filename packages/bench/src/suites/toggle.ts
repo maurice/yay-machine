@@ -1,55 +1,64 @@
-import benny from "benny";
 import { createActor, createMachine } from "xstate";
 import { defineMachine } from "yay-machine";
+import type { ThroughputSuite } from "../types";
+import { observeXState, observeYay } from "../util";
 
-// --- XState ---
-const xstateToggle = createActor(
-  createMachine({
-    id: "toggle",
-    initial: "inactive",
-    states: {
-      inactive: {
-        on: { TOGGLE: "active" },
-      },
-      active: {
-        on: { TOGGLE: "inactive" },
-      },
-    },
-  }),
-).start();
+// The smallest possible machine: one event, two states, no data, no effects.
+// This is a pure measure of per-event dispatch overhead; it says very little
+// about real applications, which is why it is labelled as a micro-benchmark.
 
-// --- yay-machine ---
+const xstateToggle = createMachine({
+  id: "toggle",
+  initial: "inactive",
+  states: {
+    inactive: { on: { TOGGLE: "active" } },
+    active: { on: { TOGGLE: "inactive" } },
+  },
+});
+
 const yayToggle = defineMachine<
-  { readonly name: "on" | "off" },
+  { readonly name: "inactive" | "active" },
   { readonly type: "TOGGLE" }
 >({
-  initialState: { name: "off" },
+  initialState: { name: "inactive" },
   states: {
-    off: {
-      on: { TOGGLE: { to: "on" } },
-    },
-    on: {
-      on: { TOGGLE: { to: "off" } },
-    },
+    inactive: { on: { TOGGLE: { to: "active" } } },
+    active: { on: { TOGGLE: { to: "inactive" } } },
   },
-})
-  .newInstance()
-  .start();
+});
 
-export const toggle = () =>
-  benny.suite(
-    "Toggle — simple state transitions",
+const TOGGLE = { type: "TOGGLE" } as const;
 
-    benny.add("xstate", () => {
-      xstateToggle.send({ type: "TOGGLE" });
-    }),
-
-    benny.add("yay-machine", () => {
-      yayToggle.send({ type: "TOGGLE" });
-    }),
-
-    benny.cycle(),
-    benny.complete(),
-    benny.save({ file: "toggle", version: "1.0.0" }),
-    benny.save({ file: "toggle", format: "chart.html" }),
-  );
+export const toggle: ThroughputSuite = {
+  kind: "throughput",
+  id: "toggle",
+  title: "Toggle",
+  category: "micro",
+  description:
+    "Two states, one event, no data or effects. Pure per-event dispatch overhead.",
+  variants: [
+    {
+      id: "toggle",
+      label: "send TOGGLE",
+      op: "1 event",
+      unit: "events/s",
+      unitsPerOp: 1,
+      setup: {
+        xstate: () => {
+          const actor = createActor(xstateToggle).start();
+          return {
+            run: () => actor.send(TOGGLE),
+            observe: () => observeXState(actor),
+          };
+        },
+        "yay-machine": () => {
+          const machine = yayToggle.newInstance().start();
+          return {
+            run: () => machine.send(TOGGLE),
+            observe: () => observeYay(machine),
+          };
+        },
+      },
+    },
+  ],
+};

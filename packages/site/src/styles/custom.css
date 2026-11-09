@@ -28,6 +28,42 @@
   --sl-color-black: #ffffff;
 }
 
+/* Benchmark chart colors, keep in sync with packages/bench/src/report/charts.ts */
+:root {
+  --bench-bg: #17171b;
+  --bench-bg-top: #1f1f25;
+  --bench-border: #2f2f37;
+  --bench-grid: #2a2a31;
+  --bench-axis: #5a5a66;
+  --bench-text: #f4f4f5;
+  --bench-muted: #a1a1aa;
+  --bench-faint: #71717a;
+  --bench-yay: #f2b632;
+  --bench-yay-deep: #c98a06;
+  --bench-accent: #f2b632;
+  --bench-xstate: #8b95a7;
+  --bench-xstate-deep: #5f6879;
+  --bench-slower: #e0786b;
+  --bench-even: #a1a1aa;
+}
+:root[data-theme="light"] {
+  --bench-bg: #ffffff;
+  --bench-bg-top: #fafaf8;
+  --bench-border: #e4e4e7;
+  --bench-grid: #ececef;
+  --bench-axis: #a1a1aa;
+  --bench-text: #18181b;
+  --bench-muted: #52525b;
+  --bench-faint: #71717a;
+  --bench-yay: #f2b632;
+  --bench-yay-deep: #d99a0b;
+  --bench-accent: #876600;
+  --bench-xstate: #a3acbb;
+  --bench-xstate-deep: #6b7588;
+  --bench-slower: #c2410c;
+  --bench-even: #71717a;
+}
+
 html[data-theme="light"] p img {
   box-shadow: 0px 0px 8px 3px rgba(0, 0, 0, 0.2);
 }
