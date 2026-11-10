@@ -273,7 +273,7 @@ export const defineMachine = <
         } else {
           nextState = { name: transition.to ?? currentState.name } as NextState;
         }
-        transitionTo(nextState, event as CurrentEvent, transition.onTransition);
+        transitionTo(nextState, event, transition.onTransition);
         return true;
       };
 

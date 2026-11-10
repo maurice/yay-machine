@@ -20,5 +20,6 @@ export const useMachine = <
     };
   }, [machine]);
 
+  // oxlint-disable-next-line typescript/unbound-method -- machine methods are closures and never use `this`
   return { state, event, send: machine.send };
 };

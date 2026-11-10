@@ -22,8 +22,8 @@ const fleetFixture = <M>(
   const machines = Array.from({ length: FLEET_SIZE }, create);
   const cursors = new Int32Array(FLEET_SIZE);
   const advance = (i: number) => {
-    send(machines[i]!, STREAM_TRACE[cursors[i]!]!);
-    cursors[i] = (cursors[i]! + 1) % STREAM_TRACE.length;
+    send(machines[i], STREAM_TRACE[cursors[i]]);
+    cursors[i] = (cursors[i] + 1) % STREAM_TRACE.length;
   };
   for (let i = 0; i < FLEET_SIZE; i++) {
     const skip = (i * 7919) % STREAM_TRACE.length;

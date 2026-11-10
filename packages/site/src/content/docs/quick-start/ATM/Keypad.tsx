@@ -34,7 +34,7 @@ export const Keypad: FC = () => {
 
   useEffect(() => {
     if (state.name === "done" || state.name === "inactive") {
-      return;
+      return undefined;
     }
 
     const listener = (event: KeyboardEvent) => {

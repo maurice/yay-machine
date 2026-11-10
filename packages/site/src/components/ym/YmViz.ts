@@ -51,7 +51,7 @@ export class YmViz<
         for (const [name, state] of Object.entries<any>(mdc.states)) {
           states.push(name);
           if (state && "on" in state) {
-            for (const [event, stateTransitions] of Object.entries(state.on!)) {
+            for (const [event, stateTransitions] of Object.entries(state.on)) {
               const tr = Array.isArray(stateTransitions)
                 ? stateTransitions
                 : [stateTransitions];
@@ -85,7 +85,7 @@ export class YmViz<
 
       const allStatesTransitions: Pick<Transition, "to" | "label">[] = [];
       if ("on" in mdc) {
-        for (const [event, transitions] of Object.entries(mdc.on!)) {
+        for (const [event, transitions] of Object.entries(mdc.on)) {
           const tr = Array.isArray(transitions) ? transitions : [transitions];
           for (const t of tr) {
             const to = "to" in t && t.to;

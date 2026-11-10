@@ -17,7 +17,6 @@ export const ReactYmViz = <
   StateType extends MachineState,
   EventType extends MachineEvent,
 >(
-  // biome-ignore lint/complexity/noBannedTypes: fix later
-  props: ComponentProps<ReactWebComponent<YmViz<StateType, EventType>, {}>>,
+  props: ComponentProps<ReactWebComponent<YmViz<StateType, EventType>>>,
   // @ts-expect-error
 ) => <ReactYmVizElement {...props} />;
