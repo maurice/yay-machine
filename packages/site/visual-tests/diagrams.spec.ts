@@ -49,6 +49,7 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     Math.random = () => 0.5;
     // Dagre must not measure state bounds partway through a wiggle animation.
+    // oxlint-disable-next-line typescript/unbound-method -- always invoked via `.call(this, ...)` below
     const animate = Element.prototype.animate;
     Element.prototype.animate = function (keyframes, options) {
       const animation = animate.call(this, keyframes, options);

@@ -1,4 +1,4 @@
-import { ArrowUUpLeft, FrameCorners } from "@phosphor-icons/react";
+import { ArrowUUpLeftIcon, FrameCornersIcon } from "@phosphor-icons/react";
 import {
   type FC,
   type ReactNode,
@@ -64,7 +64,7 @@ export const FullScreen: FC<FullScreenProps> = ({ children }) => {
           onMouseOver={() => setToggleHovered(true)}
           onMouseOut={() => setToggleHovered(false)}
         >
-          {fullScreen ? <ArrowUUpLeft /> : <FrameCorners />}
+          {fullScreen ? <ArrowUUpLeftIcon /> : <FrameCornersIcon />}
         </button>
       </div>
       <Tooltip show={toggleHovered}>

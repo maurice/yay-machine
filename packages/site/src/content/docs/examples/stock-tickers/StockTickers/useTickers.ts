@@ -43,6 +43,7 @@ export const useTickers = (): Tickers => {
         machine: tickers,
         state,
         event,
+        // oxlint-disable-next-line typescript/unbound-method -- machine methods are closures and never use `this`
         send: started ? tickers.send : undefined,
       });
     });
@@ -87,7 +88,7 @@ export const useTickers = (): Tickers => {
           );
           feeds.add(feed);
           client.addEventListener("message", (event) => {
-            const message = String(event.data);
+            const message = typeof event.data === "string" ? event.data : "";
             if (message.startsWith("subscribe:")) {
               for (const symbol of message.slice(10).split(",")) {
                 feed.subscribe(symbol);

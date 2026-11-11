@@ -37,7 +37,7 @@ export const heaterMachine = defineMachine<HeaterState, HeaterEvent>({
     },
     selfCheck: {
       onEnter: ({ send, state }) => {
-        isHeaterOk(state).then((ok) => {
+        void isHeaterOk(state).then((ok) => {
           if (!ok) {
             send({ type: "CHECK_FAILED" });
           } else {

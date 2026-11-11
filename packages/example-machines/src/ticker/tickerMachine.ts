@@ -76,8 +76,8 @@ export const tickerMachine = defineMachine<TickersState, TickersEvent>({
     // connect to remote service and setup event handlers
     const socket = new WebSocket(state.url);
     socket.addEventListener("open", () => send({ type: "CONNECTED", socket }));
-    socket.addEventListener("error", (e) =>
-      send({ type: "CONNECTION_ERROR", errorMessage: String(e) }),
+    socket.addEventListener("error", () =>
+      send({ type: "CONNECTION_ERROR", errorMessage: "WebSocket error" }),
     );
     socket.addEventListener("message", (e) =>
       send({ type: "RECEIVED_DATA", data: e.data }),

@@ -315,7 +315,7 @@ export const renderOverview = (report: BenchReport) => {
   const ratios = report.suites.flatMap((s) => s.variants.map(advantage));
   const lo =
     niceTicks.toReversed().find((t) => t <= Math.min(1, ...ratios) * 0.9) ??
-    niceTicks[0]!;
+    niceTicks[0];
   const hi =
     niceTicks.find((t) => t >= Math.max(1, ...ratios) * 1.15) ??
     niceTicks.at(-1)!;

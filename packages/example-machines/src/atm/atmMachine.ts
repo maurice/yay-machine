@@ -245,13 +245,13 @@ export const atmMachine = defineMachine<AtmState, AtmEvent>({
         state: { withdrawalAmount, transactionId, cashDispenser, bank },
       }) => {
         bank.commitCashWithdrawn(transactionId);
-        cashDispenser.dispenseCash(withdrawalAmount);
+        void cashDispenser.dispenseCash(withdrawalAmount);
       },
       always: { to: "ejectCard" },
     },
     ejectCard: {
       onEnter: ({ state: { cardReader }, send }) => {
-        cardReader.ejectCard().then(() => send({ type: "CARD_EJECTED" }));
+        void cardReader.ejectCard().then(() => send({ type: "CARD_EJECTED" }));
       },
       on: {
         CARD_EJECTED: {

@@ -29,6 +29,7 @@ export const form: ThroughputSuite = {
           const actor = createActor(defineXStateForm(counts));
           let view: FormView | undefined;
           actor.subscribe((snapshot) => {
+            // oxlint-disable-next-line typescript/no-base-to-string -- the form machine is flat, so the value is always a state name
             view = renderForm(String(snapshot.value), snapshot.context);
           });
           actor.start();

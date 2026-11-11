@@ -15,7 +15,7 @@ const readReport = async (): Promise<BenchReport> => {
     console.error(
       `No benchmark results found at ${RESULTS_FILE}\nRun \`bun run bench\` first.`,
     );
-    process.exit(1);
+    return process.exit(1);
   }
 };
 

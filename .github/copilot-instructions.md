@@ -7,7 +7,7 @@ bun install                 # install dependencies from bun.lock
 bun run all                 # fix, check, test, build (full validation)
 bun run check               # type-check + lint + format check
 bun run check:types         # bun check (turbo, all packages)
-bun run check:lint          # oxlint
+bun run check:lint          # oxlint (type-aware)
 bun run check:format        # oxfmt
 bun run fix                 # auto-fix lint + format
 bun run test                # bun test (all packages)
@@ -40,6 +40,8 @@ This is a **zero-dependency TypeScript state-machine library** organized as a Bu
 - **`packages/site`** — Documentation site ([yay-machine.js.org](https://yay-machine.js.org/)) built with Astro Starlight + MDX. Interactive demos use React. Deployed to GitHub Pages on push to `main`.
 - **`packages/bench`** — Performance benchmarks comparing yay-machine vs xstate using Benny.
 
+Within the monorepo, TypeScript resolves `yay-machine` imports to `packages/yay-machine/src` through the `@yay-machine/source` export condition (enabled via `customConditions` in the root and site tsconfigs), so type-checking and type-aware lint don't need the library to be built. Runtimes (Bun, Vite) ignore that condition and still load `dist`, so on a clean checkout run `bun run build` before tests or the site; the site's type-check also needs the Astro types that the build generates.
+
 ### Key source files (core library)
 
 - `defineMachine.ts` — Factory function implementing the state-machine runtime (transition resolution, guards, effects, subscriptions).
@@ -70,11 +72,13 @@ This is a **zero-dependency TypeScript state-machine library** organized as a Bu
 - **File naming**: `*.test.ts` in `__tests__/` subdirectories co-located with source.
 - **Playwright**: visual tests use `*.spec.ts` (in `packages/site/visual-tests/`), which `bunfig.toml` excludes from `bun test`. Run them with `bun run site:test`.
 - **Pattern**: Define machine → `newInstance()` → `start()` → `send()` events → assert `machine.state`.
-- Test files allow `no-non-null-assertion` and `no-explicit-any` via oxlint overrides.
+- Test files allow `no-non-null-assertion`, `no-explicit-any` and `unbound-method` via oxlint overrides.
 
 ### Linting and formatting
 
 - **Linter**: oxlint (Rust-based) with typescript, react, and unicorn plugins. Config: `.oxlintrc.json`.
+- **Type-aware lint**: `.oxlintrc.json` sets `options.typeAware` (via the `oxlint-tsgolint` devDependency), so rules that need type information run in the normal lint pass. `typescript/no-deprecated` flags any use of a `@deprecated` symbol, so use the replacement named in the diagnostic (e.g. `WarningCircleIcon` instead of the deprecated `WarningCircle`). `no-unsafe-type-assertion` and `no-unnecessary-type-parameters` are off because the library deliberately uses casts and generic internals, and `restrict-template-expressions` allows `never` for exhaustive `default` branches.
+- Suppress a justified finding with `// oxlint-disable-next-line <rule> -- <reason>`. Avoid this in example machines, which are embedded verbatim in the docs via `?raw` imports; prefer a small code change (e.g. `void` on a deliberately unawaited promise).
 - **Formatter**: oxfmt (Rust-based). 80 char print width, import sorting enabled (no newlines between groups). Config: `.oxfmtrc.json`.
 - `no-param-reassign` is enforced. Unused vars prefixed with `_` are allowed.
 

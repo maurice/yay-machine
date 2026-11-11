@@ -25,7 +25,7 @@ const findBestElevatorForRequestedFloor = (
     ]),
   );
   const scored = [...scores.entries()].toSorted((a, b) => a[1] - b[1]);
-  return scored[0]![0];
+  return scored[0][0];
 };
 
 export interface ControllerState {

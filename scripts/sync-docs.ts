@@ -63,7 +63,7 @@ const captureBundlephobiaStats = async (): Promise<PackagesMetadata> => {
     await takeScreenshot(logoSmall, "bundlephobia-logo.png");
 
     await statsContainer.waitFor();
-    autocompleteInput.waitFor();
+    await autocompleteInput.waitFor();
     const [name, version] = (await autocompleteInput.inputValue()).split("@");
 
     const screenshotFile = `bundlephobia-${name}.png`;
@@ -97,7 +97,7 @@ const files = (await readdir(docsDir, { recursive: true, withFileTypes: true }))
   .concat(["packages/yay-machine/README.md"]);
 for (const fileName of files) {
   log(fileName);
-  const content = (await readFile(fileName, { encoding: "utf8" })).toString();
+  const content = await readFile(fileName, { encoding: "utf8" });
 
   // update any scraped text
   let newContent = content;

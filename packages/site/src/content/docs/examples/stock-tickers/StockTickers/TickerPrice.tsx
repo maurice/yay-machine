@@ -1,10 +1,10 @@
 import {
-  ArrowFatDown,
-  ArrowFatUp,
-  HourglassHigh,
-  MinusCircle,
-  PlusCircle,
-  Prohibit,
+  ArrowFatDownIcon,
+  ArrowFatUpIcon,
+  HourglassHighIcon,
+  MinusCircleIcon,
+  PlusCircleIcon,
+  ProhibitIcon,
 } from "@phosphor-icons/react";
 import type { PriceState } from "@yay-machine/example-machines";
 import { type FC, useContext } from "react";
@@ -22,20 +22,20 @@ const getStateIcon = (state: PriceState | undefined) => {
     case "live":
       switch (state.change) {
         case "up":
-          return <ArrowFatUp size="18" weight="fill" fill="green" />;
+          return <ArrowFatUpIcon size="18" weight="fill" fill="green" />;
 
         case "down":
-          return <ArrowFatDown size="18" weight="fill" fill="darkred" />;
+          return <ArrowFatDownIcon size="18" weight="fill" fill="darkred" />;
 
         default:
           return null;
       }
 
     case "stale":
-      return <Prohibit size="18" fill="#666" />;
+      return <ProhibitIcon size="18" fill="#666" />;
 
     case "pending":
-      return <HourglassHigh size="18" fill="#666" />;
+      return <HourglassHighIcon size="18" fill="#666" />;
 
     default:
       return null;
@@ -77,7 +77,11 @@ export const TickerPrice: FC<TickerPriceProps> = ({
           disabled={!connected || !tickers?.send}
           onClick={onClickSubscribeUnsubscribe}
         >
-          {!subscribed ? <PlusCircle size="24" /> : <MinusCircle size="24" />}
+          {!subscribed ? (
+            <PlusCircleIcon size="24" />
+          ) : (
+            <MinusCircleIcon size="24" />
+          )}
         </button>
       </div>
       <div className="ticker-symbol ticker-cell not-content">{symbol}</div>

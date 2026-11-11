@@ -13,7 +13,7 @@ const declaredVars = (css: string, selector: string) => {
         ...block
           .slice(0, block.indexOf("}"))
           .matchAll(/(--bench-[\w-]+):\s*([^;]+);/g),
-      ].map(([, name, value]) => [name, value!.trim()]),
+      ].map(([, name, value]) => [name, value.trim()]),
     ),
   );
 };

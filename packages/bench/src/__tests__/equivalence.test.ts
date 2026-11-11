@@ -45,9 +45,9 @@ describe("benchmark equivalence", () => {
       counts[event.type] = (counts[event.type] ?? 0) + 1;
     }
     expect(STREAM_TRACE).toHaveLength(1000);
-    expect(STREAM_TRACE[0]!.type).toBe("CONNECT");
+    expect(STREAM_TRACE[0].type).toBe("CONNECT");
     expect(STREAM_TRACE.at(-1)!.type).toBe("DISCONNECT");
-    expect(counts["SEND"]! / STREAM_TRACE.length).toBeGreaterThan(0.5);
+    expect(counts["SEND"] / STREAM_TRACE.length).toBeGreaterThan(0.5);
     expect(counts["ERROR"]).toBeGreaterThan(0);
     expect(counts["RETRY"]).toBeGreaterThan(0);
   });

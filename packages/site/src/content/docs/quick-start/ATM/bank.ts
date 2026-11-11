@@ -124,7 +124,7 @@ export const bank: Bank = {
   async beginCashWithdrawal(cardNumber, pin, amount) {
     // simulate delay
     return new Promise((resolve, reject) => {
-      new Promise((resolve) => setTimeout(resolve, 3000)).then(() =>
+      void new Promise((resolve) => setTimeout(resolve, 3000)).then(() =>
         bankMachine.send({
           type: "CHECK_WITHDRAWAL",
           cardNumber,
