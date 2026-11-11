@@ -40,6 +40,8 @@ This is a **zero-dependency TypeScript state-machine library** organized as a Bu
 - **`packages/site`** — Documentation site ([yay-machine.js.org](https://yay-machine.js.org/)) built with Astro Starlight + MDX. Interactive demos use React. Deployed to GitHub Pages on push to `main`.
 - **`packages/bench`** — Performance benchmarks comparing yay-machine vs xstate using Benny.
 
+Within the monorepo, TypeScript resolves `yay-machine` imports to `packages/yay-machine/src` through the `@yay-machine/source` export condition (enabled via `customConditions` in the root and site tsconfigs), so type-checking and type-aware lint don't need the library to be built. Runtimes (Bun, Vite) ignore that condition and still load `dist`, so on a clean checkout run `bun run build` before tests or the site; the site's type-check also needs the Astro types that the build generates.
+
 ### Key source files (core library)
 
 - `defineMachine.ts` — Factory function implementing the state-machine runtime (transition resolution, guards, effects, subscriptions).
