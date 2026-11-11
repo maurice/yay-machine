@@ -1,4 +1,5 @@
 import { ArrowUUpLeftIcon, FrameCornersIcon } from "@phosphor-icons/react";
+import * as stylex from "@stylexjs/stylex";
 import {
   type FC,
   type ReactNode,
@@ -8,12 +9,40 @@ import {
   useState,
 } from "react";
 import { createPortal } from "react-dom";
+import { colors } from "../../styles/starlight.stylex";
+import { notContent } from "../notContent";
 import { Tooltip } from "../Tooltip";
-import "./FullScreen.css";
 
 interface FullScreenProps {
   readonly children?: ReactNode;
 }
+
+const styles = stylex.create({
+  wrapper: {
+    position: "relative",
+    marginTop: "1rem",
+  },
+  fullScreen: {
+    marginBottom: "1rem",
+    marginInline: "1rem",
+  },
+  controls: {
+    position: "absolute",
+    top: "0.5em",
+    right: "0.5em",
+  },
+  button: {
+    opacity: { default: 0.5, ":hover": 1 },
+    transition: "0.3s opacity",
+    cursor: "pointer",
+    width: "26px",
+    height: "26px",
+    color: colors.textInvert,
+    backgroundColor: colors.textAccent,
+    borderStyle: "none",
+    borderRadius: "3px",
+  },
+});
 
 export const FullScreen: FC<FullScreenProps> = ({ children }) => {
   const [toggleHovered, setToggleHovered] = useState(false);
@@ -53,13 +82,19 @@ export const FullScreen: FC<FullScreenProps> = ({ children }) => {
 
   const content = (
     <div
-      className={`full-screen-wrapper not-content ${fullScreen ? "is-full-screen" : ""}`}
+      {...notContent(styles.wrapper, fullScreen && styles.fullScreen)}
+      data-testid="full-screen"
     >
       <div>{children}</div>
-      <div className="full-screen__controls">
+      <div
+        {...stylex.props(styles.controls)}
+        data-testid="full-screen-controls"
+      >
         {/* biome-ignore lint/a11y/useKeyWithMouseEvents: <explanation> */}
         <button
           type="button"
+          data-testid="full-screen-toggle"
+          {...stylex.props(styles.button)}
           onClick={toggleFullScreen}
           onMouseOver={() => setToggleHovered(true)}
           onMouseOut={() => setToggleHovered(false)}

@@ -150,7 +150,7 @@ test("fullscreen exits cleanly using Escape and the toggle", async ({
   page,
 }) => {
   await openPage(page, "/examples/stock-tickers/");
-  const toggle = page.locator(".full-screen__controls button").first();
+  const toggle = page.getByTestId("full-screen-toggle").first();
   await toggle.scrollIntoViewIfNeeded();
   const scrollTop = await page.evaluate(
     () => document.documentElement.scrollTop,
@@ -166,7 +166,7 @@ test("fullscreen exits cleanly using Escape and the toggle", async ({
 
   await toggle.click();
   await expect(page.locator("body")).toHaveClass(/full-screen/);
-  await page.locator(".full-screen__controls button").click();
+  await page.getByTestId("full-screen-toggle").click();
   await expect(page.locator("body")).not.toHaveClass(/full-screen/);
 });
 
