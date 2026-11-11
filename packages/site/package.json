@@ -19,6 +19,7 @@
     "@lit/react": "^1.0.8",
     "@phosphor-icons/react": "^2.1.10",
     "@phosphor-icons/web": "^2.1.2",
+    "@stylexjs/stylex": "^0.19.1",
     "@types/d3-shape": "^3.1.8",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.3.0",
@@ -36,6 +37,8 @@
     "starlight-links-validator": "^0.27.0"
   },
   "devDependencies": {
+    "@stylexjs/eslint-plugin": "^0.19.1",
+    "@stylexjs/unplugin": "^0.19.1",
     "@types/react-transition-group": "^4.4.12"
   },
   "msw": {
