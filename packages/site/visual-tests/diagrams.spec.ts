@@ -93,7 +93,7 @@ test("stock ticker dynamically generated price diagram", async ({ page }) => {
   await page.clock.pauseAt(new Date());
   await page.getByRole("button", { name: "Connect", exact: true }).click();
   await page.clock.runFor(100);
-  await page.locator(".ticker-subscribe-unsubscribe button").first().click();
+  await page.getByTestId("ticker-subscribe-unsubscribe").first().click();
   await page.clock.runFor(500);
   const diagrams = page.locator("ym-chart");
   await expect(diagrams).toHaveCount(2);

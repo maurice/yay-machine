@@ -1,9 +1,50 @@
+import * as stylex from "@stylexjs/stylex";
 import type { TickersState } from "@yay-machine/example-machines";
 import { type FC, useContext, useState } from "react";
 import { ReactYmViz } from "../../../../../components/ReactYmViz";
 import type { MapData } from "../../../../../components/ym";
+import { colors } from "../../../../../styles/starlight.stylex";
 import { TickersContext } from "./TickersContext";
-import "./Visualizer.css";
+
+const styles = stylex.create({
+  visualizer: {
+    width: "100%",
+    marginTop: "1em",
+    borderTopWidth: "1px",
+    borderTopStyle: "dashed",
+    borderTopColor: "lightgray",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  machines: {
+    display: "inline-grid",
+    gridTemplateColumns: "min-content 1fr",
+    borderWidth: "1px",
+    borderStyle: "solid",
+    borderColor: colors.gray4,
+  },
+  machine: {
+    display: "contents",
+  },
+  machineLabel: {
+    writingMode: "sideways-lr",
+    padding: "1em",
+    textAlign: "center",
+    borderRightWidth: "1px",
+    borderRightStyle: "solid",
+    borderRightColor: colors.gray4,
+  },
+  viz: {
+    padding: "1em",
+    display: "inline-block",
+  },
+  notFirst: {
+    borderTopWidth: "1px",
+    borderTopStyle: "solid",
+    borderTopColor: colors.gray4,
+  },
+});
 
 const mapData: MapData<TickersState> = (state) => ({
   symbols: Object.fromEntries(
@@ -26,8 +67,8 @@ export const Visualizer: FC = () => {
 
   return (
     <>
-      <div className="visualizer">
-        <div className="viz-controls">
+      <div {...stylex.props(styles.visualizer)}>
+        <div>
           <label>
             <input
               type="checkbox"
@@ -37,12 +78,18 @@ export const Visualizer: FC = () => {
             &nbsp; Show visualizer
           </label>
         </div>
-        <div className="machines">
+        <div {...stylex.props(styles.machines)}>
           {showViz &&
             (machine ? (
-              <div className="machine">
-                <div className="machine-label">«tickerMachine»</div>
-                <ReactYmViz machine={machine} mapData={mapData} />
+              <div {...stylex.props(styles.machine)}>
+                <div {...stylex.props(styles.machineLabel)}>
+                  «tickerMachine»
+                </div>
+                <ReactYmViz
+                  {...stylex.props(styles.viz)}
+                  machine={machine}
+                  mapData={mapData}
+                />
               </div>
             ) : (
               <div>Not started</div>
@@ -51,9 +98,15 @@ export const Visualizer: FC = () => {
             state &&
             Object.keys(state.symbols).length > 0 &&
             Object.entries(state.symbols).map(([symbol, price]) => (
-              <div className="machine" key={symbol}>
-                <div className="machine-label">«priceMachine: {symbol}»</div>
-                <ReactYmViz machine={price} direction="LR" />
+              <div {...stylex.props(styles.machine)} key={symbol}>
+                <div {...stylex.props(styles.machineLabel, styles.notFirst)}>
+                  «priceMachine: {symbol}»
+                </div>
+                <ReactYmViz
+                  {...stylex.props(styles.viz, styles.notFirst)}
+                  machine={price}
+                  direction="LR"
+                />
               </div>
             ))}
         </div>

@@ -6,12 +6,35 @@ import {
   PlusCircleIcon,
   ProhibitIcon,
 } from "@phosphor-icons/react";
+import * as stylex from "@stylexjs/stylex";
 import type { PriceState } from "@yay-machine/example-machines";
 import { type FC, useContext } from "react";
+import { notContent } from "../../../../../components/notContent";
+import { colors } from "../../../../../styles/starlight.stylex";
 import { useConnected } from "./connected";
 import { TickersContext } from "./TickersContext";
 import { usePrice } from "./usePrice";
-import "./TickerPrice.css";
+
+const styles = stylex.create({
+  price: {
+    display: "contents",
+  },
+  cell: {
+    backgroundColor: colors.black,
+    height: "24px",
+    padding: "0 4px",
+  },
+  change: {
+    paddingTop: "3px",
+  },
+  button: {
+    backgroundColor: "transparent",
+    borderStyle: "none",
+    height: "24px",
+    color: { default: colors.gray5, ":not(:disabled)": colors.gray1 },
+    cursor: { default: null, ":not(:disabled)": "pointer" },
+  },
+});
 
 const getStateIcon = (state: PriceState | undefined) => {
   if (!state) {
@@ -68,12 +91,12 @@ export const TickerPrice: FC<TickerPriceProps> = ({
   };
 
   return (
-    <div
-      className={`ticker-price ticker-price__${price?.name ?? ""} ${price?.name === "stale" ? "ticker-price__stale" : ""} ${price?.name === "live" ? `ticker-price__${price.change}` : ""} not-content`}
-    >
-      <div className="ticker-subscribe-unsubscribe ticker-cell not-content">
+    <div {...notContent(styles.price)} data-testid="ticker-price">
+      <div {...notContent(styles.cell)}>
         <button
           type="button"
+          data-testid="ticker-subscribe-unsubscribe"
+          {...stylex.props(styles.button)}
           disabled={!connected || !tickers?.send}
           onClick={onClickSubscribeUnsubscribe}
         >
@@ -84,11 +107,11 @@ export const TickerPrice: FC<TickerPriceProps> = ({
           )}
         </button>
       </div>
-      <div className="ticker-symbol ticker-cell not-content">{symbol}</div>
-      <div className="ticker-value ticker-cell not-content">
+      <div {...notContent(styles.cell)}>{symbol}</div>
+      <div {...notContent(styles.cell)} data-testid="ticker-value">
         {!price || price?.name === "pending" ? "" : price.price}
       </div>
-      <div className="ticker-change ticker-cell not-content">
+      <div {...notContent(styles.cell, styles.change)}>
         {getStateIcon(price)}
       </div>
     </div>

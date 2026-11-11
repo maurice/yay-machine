@@ -33,9 +33,9 @@ test("stock subscriptions wait for the interceptor to load", async ({
 
     await page.getByRole("button", { name: "Connect", exact: true }).click();
     const stock = page
-      .locator(".stocks")
+      .getByTestId("stocks")
       .first()
-      .locator(".ticker-price")
+      .getByTestId("ticker-price")
       .first();
     const subscribe = stock.locator("button");
     await expect(subscribe).toBeDisabled();
@@ -44,7 +44,7 @@ test("stock subscriptions wait for the interceptor to load", async ({
     await expect(subscribe).toBeEnabled();
     await subscribe.click();
     await page.clock.runFor(2_500);
-    await expect(stock.locator(".ticker-value")).not.toHaveText("");
+    await expect(stock.getByTestId("ticker-value")).not.toHaveText("");
     expect(errors).toEqual([]);
   } finally {
     interceptorBlocked.resolve();
@@ -79,9 +79,9 @@ test("stock subscriptions share prices and clean up independently", async ({
     name: "Disconnect",
     exact: true,
   });
-  const stocks = page.locator(".stocks");
-  const first = stocks.nth(0).locator(".ticker-price").first();
-  const second = stocks.nth(1).locator(".ticker-price").first();
+  const stocks = page.getByTestId("stocks");
+  const first = stocks.nth(0).getByTestId("ticker-price").first();
+  const second = stocks.nth(1).getByTestId("ticker-price").first();
 
   await connect.click();
   await expect(first.locator("button")).toBeEnabled();
@@ -90,15 +90,15 @@ test("stock subscriptions share prices and clean up independently", async ({
   await second.locator("button").click();
   await expect(disconnect).toBeDisabled();
   await page.clock.runFor(2_000);
-  await expect(first.locator(".ticker-value")).not.toHaveText("");
-  const firstPrice = await first.locator(".ticker-value").innerText();
-  await expect(second.locator(".ticker-value")).toHaveText(firstPrice);
+  await expect(first.getByTestId("ticker-value")).not.toHaveText("");
+  const firstPrice = await first.getByTestId("ticker-value").innerText();
+  await expect(second.getByTestId("ticker-value")).toHaveText(firstPrice);
 
   await first.locator("button").click();
-  await expect(first.locator(".ticker-value")).toHaveText("");
-  await expect(second.locator(".ticker-value")).toHaveText(firstPrice);
+  await expect(first.getByTestId("ticker-value")).toHaveText("");
+  await expect(second.getByTestId("ticker-value")).toHaveText(firstPrice);
   await page.clock.runFor(8_000);
-  await expect(second.locator(".ticker-value")).not.toHaveText(firstPrice);
+  await expect(second.getByTestId("ticker-value")).not.toHaveText(firstPrice);
 
   await second.locator("button").click();
   await expect(disconnect).toBeEnabled();
@@ -109,7 +109,7 @@ test("stock subscriptions share prices and clean up independently", async ({
   await page.clock.runFor(100);
   await first.locator("button").click();
   await page.clock.runFor(2_500);
-  await expect(first.locator(".ticker-value")).not.toHaveText("");
+  await expect(first.getByTestId("ticker-value")).not.toHaveText("");
   expect(errors).toEqual([]);
 });
 
@@ -128,9 +128,9 @@ test("a stock connection can be restarted before its socket opens", async ({
     exact: true,
   });
   const stock = page
-    .locator(".stocks")
+    .getByTestId("stocks")
     .first()
-    .locator(".ticker-price")
+    .getByTestId("ticker-price")
     .first();
   await connect.click();
   await expect(stock.locator("button")).toBeEnabled();
@@ -142,7 +142,7 @@ test("a stock connection can be restarted before its socket opens", async ({
   await stock.locator("button").click();
   await page.clock.runFor(2_500);
 
-  await expect(stock.locator(".ticker-value")).not.toHaveText("");
+  await expect(stock.getByTestId("ticker-value")).not.toHaveText("");
   expect(errors).toEqual([]);
 });
 
