@@ -82,6 +82,15 @@ Within the monorepo, TypeScript resolves `yay-machine` imports to `packages/yay-
 - **Formatter**: oxfmt (Rust-based). 80 char print width, import sorting enabled (no newlines between groups). Config: `.oxfmtrc.json`.
 - `no-param-reassign` is enforced. Unused vars prefixed with `_` are allowed.
 
+### Site styling (StyleX)
+
+- Custom React components in `packages/site` are styled with StyleX (`stylex.create` + `stylex.props`), co-located in the component file. Don't add per-component `.css` files. `src/styles/custom.css` is only for global Starlight overrides; Lit `ym-*` elements and Astro components keep their own `css` templates and scoped `<style>` blocks.
+- `packages/site/stylex.integration.mjs` wires StyleX into Astro and fails `site:build` if StyleX's CSS doesn't reach every page. It relies on a `@stylexjs/unplugin` internal (`__stylexCollectCss`), so check it first when upgrading `@stylexjs/*` (dependabot groups them).
+- Use `notContent(...)` instead of `stylex.props(...)` on elements inside docs prose, to keep Starlight's `not-content` class.
+- StyleX rejects some shorthands (`border`, `background`, `animation`): use longhands. Style values are validated by `@stylexjs/eslint-plugin` (`stylex/valid-styles`), which oxlint runs as a JS plugin; TypeScript doesn't check them.
+- Starlight colour tokens are in `src/styles/starlight.stylex.ts`. `defineConsts`, `defineVars` and `defineMarker` must be exported from a `*.stylex.ts` file.
+- Class names are generated, so Playwright tests select by `data-testid`, never by class.
+
 ### Commits
 
 - **Conventional commits** enforced by commitlint + husky. Format: `type(scope): subject`.

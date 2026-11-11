@@ -12,9 +12,27 @@ Images can be added to `src/assets/` and embedded in Markdown with a relative li
 
 Static assets, like favicons, can be placed in the `public/` directory.
 
-We have some custom CSS styles in `src/styles/custom.css`.
+We have some global CSS styles (Starlight theme overrides) in `src/styles/custom.css`.
 
-Custom components (increasingly mostly React) are in `src/components`.
+Custom components (increasingly mostly React) are in `src/components`. They are
+styled with [StyleX](https://stylexjs.com/) (`stylex.create` and `stylex.props`),
+wired into Astro by `stylex.integration.mjs`:
+
+- Use `notContent(...)` instead of `stylex.props(...)` on elements rendered inside
+  docs prose, so Starlight's `not-content` class is kept.
+- StyleX rejects some shorthands (`border`, `background`, `animation`). Use the
+  longhands instead (`borderWidth`/`borderStyle`/`borderColor`, `backgroundColor`,
+  and so on). The build fails rather than silently dropping them.
+- Starlight colour tokens (`--sl-color-*`) are mapped in
+  `src/styles/starlight.stylex.ts`. `defineConsts`, `defineVars` and
+  `defineMarker` must be exported from a `*.stylex.ts` file.
+- Class names are generated, so Playwright tests select by `data-testid`.
+- The Lit `ym-*` elements keep their own `css` templates and Astro components keep
+  their scoped `<style>` blocks.
+- The site build fails if StyleX's CSS doesn't reach every page, rather than
+  shipping unstyled components. It checks via an internal of `@stylexjs/unplugin`,
+  so look at `stylex.integration.mjs` first if an upgrade of `@stylexjs/*` breaks
+  the build.
 
 ## Commands
 
