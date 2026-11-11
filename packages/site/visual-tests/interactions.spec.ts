@@ -177,15 +177,17 @@ test("the wallet restores an invalid card after it is ejected", async ({
   await page.clock.install();
   await page.clock.pauseAt(new Date());
 
-  const wallet = page.locator(".wallet");
-  const card = wallet.locator(".bank-card").filter({ hasText: "1*?" });
+  const wallet = page.getByTestId("wallet");
+  const card = wallet.getByTestId("bank-card").filter({ hasText: "1*?" });
+  const inertCards = wallet.locator('[data-testid="bank-card"][data-inert]');
+  const cardInReader = page.getByTestId("card-reader").getByTestId("bank-card");
   await card.click();
-  await expect(card).toHaveClass(/hidden/);
-  await expect(wallet.locator(".bank-card.inert")).toHaveCount(3);
-  await expect(page.locator(".card-reader .bank-card")).toHaveText("1*?");
+  await expect(card).toHaveCSS("visibility", "hidden");
+  await expect(inertCards).toHaveCount(3);
+  await expect(cardInReader).toHaveText("1*?");
 
   await page.clock.runFor(6_000);
-  await expect(card).not.toHaveClass(/hidden/);
-  await expect(wallet.locator(".bank-card.inert")).toHaveCount(0);
-  await expect(page.locator(".card-reader .bank-card")).toHaveCount(0);
+  await expect(card).toHaveCSS("visibility", "visible");
+  await expect(inertCards).toHaveCount(0);
+  await expect(cardInReader).toHaveCount(0);
 });

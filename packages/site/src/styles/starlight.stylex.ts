@@ -7,6 +7,7 @@ export const colors = stylex.defineConsts({
   gray4: "var(--sl-color-gray-4)",
   gray5: "var(--sl-color-gray-5)",
   gray6: "var(--sl-color-gray-6)",
+  gray7: "var(--sl-color-gray-7)",
   textAccent: "var(--sl-color-text-accent)",
   textInvert: "var(--sl-color-text-invert)",
 });
