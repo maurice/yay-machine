@@ -19,3 +19,8 @@ updates:
       stylex:
         patterns:
           - "@stylexjs/*"
+      astro:
+        patterns:
+          - "astro"
+          - "@astrojs/*"
+          - "starlight-*"
