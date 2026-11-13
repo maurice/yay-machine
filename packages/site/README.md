@@ -56,11 +56,9 @@ The suite starts and stops its own Astro preview server on port 4322. It does no
 use the dev server or rebuild the site. Playwright tests use `*.spec.ts`; the
 root `bunfig.toml` ignores `*.spec.*`, so Bun's unit-test runner (which only
 runs `*.test.ts(x)`) does not pick them up.
-Playwright runs on Bun. The script sets `PW_DISABLE_TS_ESM=1` because
-Playwright's TypeScript ESM loader relies on Node's `module.register()` hooks,
-which Bun does not implement. Without that variable, Playwright waits forever
-for the loader and exits silently without running any tests. Bun transpiles the
-TypeScript config and tests natively, so the loader is not needed.
+Playwright runs on Bun (`bunx --bun playwright test`), which Playwright
+supports natively since v1.65: it detects Bun and skips its Node-specific
+TypeScript ESM loader, letting Bun transpile the config and tests itself.
 
 Screenshots use Chromium on Linux, a fixed viewport, light theme, locale and time
 zone. Random demo values and subscription IDs are fixed in the test browser.
