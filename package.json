@@ -62,7 +62,7 @@
   "devDependencies": {
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
-    "@playwright/test": "1.65.0",
+    "@playwright/test": "1.65.1",
     "@sinonjs/fake-timers": "^15.4.0",
     "@types/bun": "^1.4.4",
     "@types/react": "^19.2.14",
