@@ -95,9 +95,10 @@ export const ElevatorLobby: FC = () => {
   return (
     <div {...notContent(styles.wrapper)}>
       <div {...stylex.props(styles.scene)} data-testid="elevator-lobby-scene">
-        <div {...stylex.props(styles.carpet)} />
-        <img {...stylex.props(styles.lobby)} src={lobbyUrl} alt="" />
+        {/* The lobby facade is drawn last: its transparent doorway shows the cab
+            and doors, and its walls hide the doors as they slide open. */}
         <img {...stylex.props(styles.cab)} src={cabUrl} alt="" />
+        <div {...stylex.props(styles.carpet)} />
         <img
           {...stylex.props(styles.leftDoor, doorsOpen && styles.leftOpen)}
           src={doorUrl}
@@ -108,6 +109,7 @@ export const ElevatorLobby: FC = () => {
           src={doorUrl}
           alt=""
         />
+        <img {...stylex.props(styles.lobby)} src={lobbyUrl} alt="" />
       </div>
       <button
         {...stylex.props(styles.button)}
