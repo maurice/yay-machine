@@ -1,0 +1,1230 @@
+{
+  "afghan-hound-red": {
+    "walking": {
+      "file": "afghan-hound-red-Walking-Sheet.png",
+      "metrics": {
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 1, "y": 11, "width": 62, "height": 53 },
+          { "x": 1, "y": 11, "width": 61, "height": 53 },
+          { "x": 1, "y": 10, "width": 62, "height": 54 },
+          { "x": 1, "y": 10, "width": 60, "height": 54 },
+          { "x": 1, "y": 11, "width": 62, "height": 52 },
+          { "x": 1, "y": 11, "width": 60, "height": 53 },
+          { "x": 1, "y": 10, "width": 61, "height": 54 },
+          { "x": 1, "y": 10, "width": 62, "height": 54 }
+        ],
+        "visible": { "x": 1, "y": 10, "width": 62, "height": 54 },
+        "restFrame": 0,
+        "rest": { "x": 1, "y": 11, "width": 62, "height": 53 },
+        "anchor": { "x": 30, "y": 64 },
+        "touchedEdges": ["bottom"]
+      },
+      "linedUp": {
+        "offset": { "x": 0, "y": 1 },
+        "mismatch": 0.183,
+        "shift": -2
+      }
+    },
+    "standing": {
+      "file": "afghan-hound-red-Standing-Sheet.png",
+      "metrics": {
+        "frameCount": 3,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 1, "y": 10, "width": 58, "height": 54 },
+          { "x": 1, "y": 10, "width": 54, "height": 54 },
+          { "x": 1, "y": 10, "width": 59, "height": 54 }
+        ],
+        "visible": { "x": 1, "y": 10, "width": 59, "height": 54 },
+        "restFrame": 0,
+        "rest": { "x": 1, "y": 10, "width": 58, "height": 54 },
+        "anchor": { "x": 30, "y": 64 },
+        "touchedEdges": ["bottom"]
+      }
+    },
+    "sitting": {
+      "file": "afghan-hound-red-Sitting-Sheet.png",
+      "metrics": {
+        "frameCount": 9,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 0, "y": 10, "width": 58, "height": 54 },
+          { "x": 2, "y": 10, "width": 61, "height": 54 },
+          { "x": 2, "y": 10, "width": 56, "height": 54 },
+          { "x": 2, "y": 10, "width": 62, "height": 54 },
+          { "x": 2, "y": 10, "width": 59, "height": 54 },
+          { "x": 2, "y": 10, "width": 56, "height": 54 },
+          { "x": 2, "y": 10, "width": 62, "height": 54 },
+          { "x": 2, "y": 10, "width": 59, "height": 54 },
+          { "x": 2, "y": 10, "width": 61, "height": 54 }
+        ],
+        "visible": { "x": 0, "y": 10, "width": 64, "height": 54 },
+        "restFrame": 0,
+        "rest": { "x": 0, "y": 10, "width": 58, "height": 54 },
+        "anchor": { "x": 29, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": { "offset": { "x": -1, "y": 0 }, "mismatch": 0, "shift": 0 }
+    },
+    "sleeping": {
+      "file": "afghan-hound-red-Sleeping-Sheet.png",
+      "metrics": {
+        "frameCount": 14,
+        "frameWidth": 74,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 6, "y": 10, "width": 58, "height": 54 },
+          { "x": 8, "y": 10, "width": 61, "height": 54 },
+          { "x": 8, "y": 14, "width": 63, "height": 50 },
+          { "x": 3, "y": 27, "width": 69, "height": 36 },
+          { "x": 3, "y": 33, "width": 71, "height": 30 },
+          { "x": 0, "y": 45, "width": 73, "height": 18 },
+          { "x": 0, "y": 45, "width": 73, "height": 18 },
+          { "x": 0, "y": 44, "width": 73, "height": 19 },
+          { "x": 0, "y": 44, "width": 73, "height": 19 },
+          { "x": 0, "y": 45, "width": 73, "height": 18 },
+          { "x": 0, "y": 45, "width": 73, "height": 18 },
+          { "x": 3, "y": 33, "width": 71, "height": 30 },
+          { "x": 3, "y": 27, "width": 69, "height": 36 },
+          { "x": 8, "y": 10, "width": 61, "height": 54 }
+        ],
+        "visible": { "x": 0, "y": 10, "width": 74, "height": 54 },
+        "restFrame": 0,
+        "rest": { "x": 6, "y": 10, "width": 58, "height": 54 },
+        "anchor": { "x": 35, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": { "offset": { "x": 5, "y": 0 }, "mismatch": 0, "shift": 0 }
+    },
+    "lying": {
+      "file": "afghan-hound-red-LayingDown-Sheet.png",
+      "metrics": {
+        "frameCount": 11,
+        "frameWidth": 70,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 3, "y": 10, "width": 58, "height": 54 },
+          { "x": 5, "y": 10, "width": 61, "height": 54 },
+          { "x": 5, "y": 14, "width": 63, "height": 50 },
+          { "x": 0, "y": 27, "width": 69, "height": 36 },
+          { "x": 0, "y": 27, "width": 70, "height": 36 },
+          { "x": 0, "y": 27, "width": 68, "height": 36 },
+          { "x": 0, "y": 27, "width": 69, "height": 36 },
+          { "x": 0, "y": 27, "width": 70, "height": 36 },
+          { "x": 0, "y": 27, "width": 68, "height": 36 },
+          { "x": 5, "y": 14, "width": 63, "height": 50 },
+          { "x": 5, "y": 10, "width": 61, "height": 54 }
+        ],
+        "visible": { "x": 0, "y": 10, "width": 70, "height": 54 },
+        "restFrame": 0,
+        "rest": { "x": 3, "y": 10, "width": 58, "height": 54 },
+        "anchor": { "x": 32, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": { "offset": { "x": 2, "y": 0 }, "mismatch": 0, "shift": 0 }
+    }
+  },
+  "bernese-mountain-dog": {
+    "walking": {
+      "file": "bernese_mountain_dog-Walking-Sheet.png",
+      "metrics": {
+        "frameCount": 8,
+        "frameWidth": 68,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 0, "y": 6, "width": 68, "height": 58 },
+          { "x": 0, "y": 6, "width": 67, "height": 58 },
+          { "x": 0, "y": 6, "width": 67, "height": 58 },
+          { "x": 0, "y": 5, "width": 67, "height": 59 },
+          { "x": 0, "y": 5, "width": 68, "height": 58 },
+          { "x": 0, "y": 6, "width": 67, "height": 58 },
+          { "x": 0, "y": 6, "width": 68, "height": 58 },
+          { "x": 0, "y": 6, "width": 68, "height": 58 }
+        ],
+        "visible": { "x": 0, "y": 5, "width": 68, "height": 59 },
+        "restFrame": 0,
+        "rest": { "x": 0, "y": 6, "width": 68, "height": 58 },
+        "anchor": { "x": 31, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": {
+        "offset": { "x": 0, "y": 1 },
+        "mismatch": 0.0336,
+        "shift": -3
+      }
+    },
+    "standing": {
+      "file": "bernese_mountain_dog-Standing-Sheet.png",
+      "metrics": {
+        "frameCount": 4,
+        "frameWidth": 65,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 0, "y": 5, "width": 63, "height": 59 },
+          { "x": 0, "y": 5, "width": 64, "height": 59 },
+          { "x": 0, "y": 5, "width": 65, "height": 59 },
+          { "x": 0, "y": 5, "width": 64, "height": 59 }
+        ],
+        "visible": { "x": 0, "y": 5, "width": 65, "height": 59 },
+        "restFrame": 0,
+        "rest": { "x": 0, "y": 5, "width": 63, "height": 59 },
+        "anchor": { "x": 31, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      }
+    },
+    "sitting": {
+      "file": "bernese_mountain_dog-Sitting-Sheet.png",
+      "metrics": {
+        "frameCount": 12,
+        "frameWidth": 72,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 0, "y": 5, "width": 63, "height": 59 },
+          { "x": 2, "y": 7, "width": 70, "height": 57 },
+          { "x": 3, "y": 10, "width": 68, "height": 54 },
+          { "x": 3, "y": 10, "width": 65, "height": 54 },
+          { "x": 3, "y": 10, "width": 61, "height": 54 },
+          { "x": 3, "y": 10, "width": 68, "height": 54 },
+          { "x": 3, "y": 10, "width": 65, "height": 54 },
+          { "x": 3, "y": 10, "width": 61, "height": 54 },
+          { "x": 3, "y": 10, "width": 68, "height": 54 },
+          { "x": 3, "y": 10, "width": 65, "height": 54 },
+          { "x": 2, "y": 7, "width": 70, "height": 57 },
+          { "x": 0, "y": 5, "width": 63, "height": 59 }
+        ],
+        "visible": { "x": 0, "y": 5, "width": 72, "height": 59 },
+        "restFrame": 0,
+        "rest": { "x": 0, "y": 5, "width": 63, "height": 59 },
+        "anchor": { "x": 31, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": { "offset": { "x": 0, "y": 0 }, "mismatch": 0, "shift": 0 }
+    },
+    "sleeping": {
+      "file": "bernese_mountain_dog-Sleeping-Sheet.png",
+      "metrics": {
+        "frameCount": 16,
+        "frameWidth": 85,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 10, "y": 5, "width": 63, "height": 59 },
+          { "x": 12, "y": 7, "width": 70, "height": 57 },
+          { "x": 15, "y": 13, "width": 70, "height": 51 },
+          { "x": 0, "y": 29, "width": 77, "height": 35 },
+          { "x": 0, "y": 42, "width": 65, "height": 22 },
+          { "x": 0, "y": 42, "width": 65, "height": 22 },
+          { "x": 0, "y": 41, "width": 65, "height": 23 },
+          { "x": 0, "y": 41, "width": 65, "height": 23 },
+          { "x": 0, "y": 42, "width": 65, "height": 22 },
+          { "x": 0, "y": 42, "width": 65, "height": 22 },
+          { "x": 0, "y": 41, "width": 65, "height": 23 },
+          { "x": 0, "y": 41, "width": 65, "height": 23 },
+          { "x": 0, "y": 29, "width": 77, "height": 35 },
+          { "x": 15, "y": 13, "width": 70, "height": 51 },
+          { "x": 12, "y": 7, "width": 70, "height": 57 },
+          { "x": 10, "y": 5, "width": 63, "height": 59 }
+        ],
+        "visible": { "x": 0, "y": 5, "width": 85, "height": 59 },
+        "restFrame": 0,
+        "rest": { "x": 10, "y": 5, "width": 63, "height": 59 },
+        "anchor": { "x": 41, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": { "offset": { "x": 10, "y": 0 }, "mismatch": 0, "shift": 0 }
+    },
+    "lying": {
+      "file": "bernese_mountain_dog-LayingDown-Sheet.png",
+      "metrics": {
+        "frameCount": 12,
+        "frameWidth": 75,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 0, "y": 5, "width": 63, "height": 59 },
+          { "x": 2, "y": 7, "width": 70, "height": 57 },
+          { "x": 5, "y": 13, "width": 70, "height": 51 },
+          { "x": 1, "y": 23, "width": 73, "height": 41 },
+          { "x": 1, "y": 23, "width": 71, "height": 41 },
+          { "x": 1, "y": 23, "width": 69, "height": 41 },
+          { "x": 1, "y": 23, "width": 71, "height": 41 },
+          { "x": 1, "y": 23, "width": 73, "height": 41 },
+          { "x": 1, "y": 23, "width": 73, "height": 41 },
+          { "x": 1, "y": 23, "width": 71, "height": 41 },
+          { "x": 5, "y": 13, "width": 70, "height": 51 },
+          { "x": 2, "y": 7, "width": 70, "height": 57 }
+        ],
+        "visible": { "x": 0, "y": 5, "width": 75, "height": 59 },
+        "restFrame": 0,
+        "rest": { "x": 0, "y": 5, "width": 63, "height": 59 },
+        "anchor": { "x": 31, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": { "offset": { "x": 0, "y": 0 }, "mismatch": 0, "shift": 0 }
+    }
+  },
+  "bloodhound-orange": {
+    "walking": {
+      "file": "bloodhound-orange-Walking-Sheet.png",
+      "metrics": {
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 5, "y": 11, "width": 55, "height": 49 },
+          { "x": 5, "y": 11, "width": 55, "height": 49 },
+          { "x": 5, "y": 10, "width": 57, "height": 50 },
+          { "x": 5, "y": 10, "width": 54, "height": 50 },
+          { "x": 5, "y": 11, "width": 55, "height": 49 },
+          { "x": 5, "y": 11, "width": 55, "height": 49 },
+          { "x": 5, "y": 11, "width": 56, "height": 49 },
+          { "x": 5, "y": 11, "width": 54, "height": 49 }
+        ],
+        "visible": { "x": 5, "y": 10, "width": 57, "height": 50 },
+        "restFrame": 0,
+        "rest": { "x": 5, "y": 11, "width": 55, "height": 49 },
+        "anchor": { "x": 32, "y": 60 },
+        "touchedEdges": []
+      },
+      "linedUp": {
+        "offset": { "x": 1, "y": 1 },
+        "mismatch": 0.1852,
+        "shift": 0
+      }
+    },
+    "standing": {
+      "file": "bloodhound-orange-Standing-Sheet.png",
+      "metrics": {
+        "frameCount": 4,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 4, "y": 10, "width": 55, "height": 51 },
+          { "x": 4, "y": 10, "width": 55, "height": 51 },
+          { "x": 4, "y": 10, "width": 58, "height": 51 },
+          { "x": 4, "y": 10, "width": 55, "height": 51 }
+        ],
+        "visible": { "x": 4, "y": 10, "width": 58, "height": 51 },
+        "restFrame": 0,
+        "rest": { "x": 4, "y": 10, "width": 55, "height": 51 },
+        "anchor": { "x": 31, "y": 61 },
+        "touchedEdges": []
+      }
+    },
+    "sitting": {
+      "file": "bloodhound-orange-Sitting-Sheet.png",
+      "metrics": {
+        "frameCount": 9,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 3, "y": 9, "width": 55, "height": 51 },
+          { "x": 3, "y": 10, "width": 51, "height": 48 },
+          { "x": 3, "y": 11, "width": 59, "height": 47 },
+          { "x": 3, "y": 11, "width": 60, "height": 47 },
+          { "x": 3, "y": 11, "width": 54, "height": 47 },
+          { "x": 3, "y": 11, "width": 60, "height": 47 },
+          { "x": 3, "y": 11, "width": 59, "height": 47 },
+          { "x": 3, "y": 10, "width": 51, "height": 48 },
+          { "x": 3, "y": 9, "width": 55, "height": 51 }
+        ],
+        "visible": { "x": 3, "y": 9, "width": 60, "height": 51 },
+        "restFrame": 0,
+        "rest": { "x": 3, "y": 9, "width": 55, "height": 51 },
+        "anchor": { "x": 30, "y": 60 },
+        "touchedEdges": []
+      },
+      "linedUp": { "offset": { "x": -1, "y": -1 }, "mismatch": 0, "shift": 0 }
+    },
+    "sleeping": {
+      "file": "bloodhound-orange-Sleeping-Sheet.png",
+      "metrics": {
+        "frameCount": 13,
+        "frameWidth": 82,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 17, "y": 9, "width": 55, "height": 51 },
+          { "x": 17, "y": 10, "width": 51, "height": 48 },
+          { "x": 17, "y": 11, "width": 57, "height": 47 },
+          { "x": 11, "y": 21, "width": 71, "height": 34 },
+          { "x": 7, "y": 29, "width": 75, "height": 26 },
+          { "x": 6, "y": 34, "width": 76, "height": 21 },
+          { "x": 3, "y": 34, "width": 79, "height": 21 },
+          { "x": 0, "y": 34, "width": 82, "height": 21 },
+          { "x": 0, "y": 32, "width": 82, "height": 23 },
+          { "x": 11, "y": 21, "width": 71, "height": 34 },
+          { "x": 17, "y": 11, "width": 57, "height": 47 },
+          { "x": 17, "y": 10, "width": 51, "height": 48 },
+          { "x": 17, "y": 9, "width": 55, "height": 51 }
+        ],
+        "visible": { "x": 0, "y": 9, "width": 82, "height": 51 },
+        "restFrame": 0,
+        "rest": { "x": 17, "y": 9, "width": 55, "height": 51 },
+        "anchor": { "x": 44, "y": 60 },
+        "touchedEdges": ["right", "left"]
+      },
+      "linedUp": { "offset": { "x": 13, "y": -1 }, "mismatch": 0, "shift": 0 }
+    },
+    "lying": {
+      "file": "bloodhound-orange-LayingDown-Sheet.png",
+      "metrics": {
+        "frameCount": 10,
+        "frameWidth": 73,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 7, "y": 9, "width": 55, "height": 51 },
+          { "x": 7, "y": 10, "width": 51, "height": 48 },
+          { "x": 7, "y": 11, "width": 57, "height": 47 },
+          { "x": 1, "y": 21, "width": 71, "height": 34 },
+          { "x": 1, "y": 21, "width": 71, "height": 34 },
+          { "x": 1, "y": 21, "width": 71, "height": 34 },
+          { "x": 1, "y": 21, "width": 71, "height": 34 },
+          { "x": 7, "y": 11, "width": 57, "height": 47 },
+          { "x": 7, "y": 10, "width": 51, "height": 48 },
+          { "x": 7, "y": 9, "width": 55, "height": 51 }
+        ],
+        "visible": { "x": 1, "y": 9, "width": 71, "height": 51 },
+        "restFrame": 0,
+        "rest": { "x": 7, "y": 9, "width": 55, "height": 51 },
+        "anchor": { "x": 34, "y": 60 },
+        "touchedEdges": []
+      },
+      "linedUp": { "offset": { "x": 3, "y": -1 }, "mismatch": 0, "shift": 0 }
+    }
+  },
+  "dalmatian-black": {
+    "walking": {
+      "file": "dalmation-black-Walking-Sheet.png",
+      "metrics": {
+        "frameCount": 7,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 7, "y": 18, "width": 49, "height": 38 },
+          { "x": 7, "y": 18, "width": 49, "height": 38 },
+          { "x": 7, "y": 17, "width": 49, "height": 39 },
+          { "x": 7, "y": 17, "width": 49, "height": 39 },
+          { "x": 7, "y": 18, "width": 49, "height": 38 },
+          { "x": 7, "y": 18, "width": 49, "height": 38 },
+          { "x": 7, "y": 18, "width": 49, "height": 38 }
+        ],
+        "visible": { "x": 7, "y": 17, "width": 49, "height": 39 },
+        "restFrame": 0,
+        "rest": { "x": 7, "y": 18, "width": 49, "height": 38 },
+        "anchor": { "x": 31, "y": 56 },
+        "touchedEdges": []
+      },
+      "linedUp": {
+        "offset": { "x": 5, "y": -4 },
+        "mismatch": 0.5695,
+        "shift": 0
+      }
+    },
+    "standing": {
+      "file": "dalmation-black-Standing-Sheet.png",
+      "metrics": {
+        "frameCount": 9,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 3, "y": 14, "width": 46, "height": 46 },
+          { "x": 3, "y": 19, "width": 56, "height": 41 },
+          { "x": 3, "y": 19, "width": 55, "height": 41 },
+          { "x": 3, "y": 19, "width": 56, "height": 41 },
+          { "x": 3, "y": 14, "width": 46, "height": 46 },
+          { "x": 3, "y": 19, "width": 56, "height": 41 },
+          { "x": 3, "y": 19, "width": 55, "height": 41 },
+          { "x": 3, "y": 19, "width": 56, "height": 41 },
+          { "x": 3, "y": 14, "width": 46, "height": 46 }
+        ],
+        "visible": { "x": 3, "y": 14, "width": 56, "height": 46 },
+        "restFrame": 0,
+        "rest": { "x": 3, "y": 14, "width": 46, "height": 46 },
+        "anchor": { "x": 26, "y": 60 },
+        "touchedEdges": []
+      }
+    },
+    "sitting": {
+      "file": "dalmation-black-Sitting-Sheet.png",
+      "metrics": {
+        "frameCount": 10,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 4, "y": 12, "width": 46, "height": 46 },
+          { "x": 5, "y": 18, "width": 58, "height": 39 },
+          { "x": 7, "y": 19, "width": 51, "height": 39 },
+          { "x": 7, "y": 19, "width": 51, "height": 39 },
+          { "x": 7, "y": 19, "width": 52, "height": 39 },
+          { "x": 7, "y": 19, "width": 51, "height": 39 },
+          { "x": 7, "y": 19, "width": 51, "height": 39 },
+          { "x": 7, "y": 19, "width": 51, "height": 39 },
+          { "x": 5, "y": 18, "width": 58, "height": 39 },
+          { "x": 4, "y": 12, "width": 46, "height": 46 }
+        ],
+        "visible": { "x": 4, "y": 12, "width": 59, "height": 46 },
+        "restFrame": 0,
+        "rest": { "x": 4, "y": 12, "width": 46, "height": 46 },
+        "anchor": { "x": 27, "y": 58 },
+        "touchedEdges": []
+      },
+      "linedUp": { "offset": { "x": 1, "y": -2 }, "mismatch": 0, "shift": 0 }
+    },
+    "sleeping": {
+      "file": "dalmation-black-Sleeping-Sheet.png",
+      "metrics": {
+        "frameCount": 14,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 3, "y": 12, "width": 46, "height": 46 },
+          { "x": 4, "y": 18, "width": 58, "height": 39 },
+          { "x": 6, "y": 19, "width": 51, "height": 39 },
+          { "x": 8, "y": 24, "width": 51, "height": 34 },
+          { "x": 8, "y": 34, "width": 50, "height": 24 },
+          { "x": 5, "y": 40, "width": 53, "height": 18 },
+          { "x": 2, "y": 40, "width": 56, "height": 18 },
+          { "x": 2, "y": 40, "width": 56, "height": 18 },
+          { "x": 0, "y": 40, "width": 58, "height": 18 },
+          { "x": 1, "y": 40, "width": 57, "height": 18 },
+          { "x": 8, "y": 34, "width": 50, "height": 24 },
+          { "x": 8, "y": 24, "width": 51, "height": 34 },
+          { "x": 4, "y": 18, "width": 58, "height": 39 },
+          { "x": 3, "y": 12, "width": 46, "height": 46 }
+        ],
+        "visible": { "x": 0, "y": 12, "width": 62, "height": 46 },
+        "restFrame": 0,
+        "rest": { "x": 3, "y": 12, "width": 46, "height": 46 },
+        "anchor": { "x": 26, "y": 58 },
+        "touchedEdges": ["left"]
+      },
+      "linedUp": { "offset": { "x": 0, "y": -2 }, "mismatch": 0, "shift": 0 }
+    },
+    "lying": {
+      "file": "dalmation-black-LayingDown-Sheet.png",
+      "metrics": {
+        "frameCount": 10,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 3, "y": 9, "width": 46, "height": 46 },
+          { "x": 4, "y": 15, "width": 58, "height": 39 },
+          { "x": 6, "y": 16, "width": 51, "height": 39 },
+          { "x": 8, "y": 21, "width": 51, "height": 34 },
+          { "x": 8, "y": 31, "width": 50, "height": 24 },
+          { "x": 8, "y": 31, "width": 50, "height": 24 },
+          { "x": 8, "y": 31, "width": 50, "height": 24 },
+          { "x": 7, "y": 21, "width": 51, "height": 34 },
+          { "x": 4, "y": 15, "width": 58, "height": 39 },
+          { "x": 3, "y": 9, "width": 46, "height": 46 }
+        ],
+        "visible": { "x": 3, "y": 9, "width": 59, "height": 46 },
+        "restFrame": 0,
+        "rest": { "x": 3, "y": 9, "width": 46, "height": 46 },
+        "anchor": { "x": 26, "y": 55 },
+        "touchedEdges": []
+      },
+      "linedUp": { "offset": { "x": 0, "y": -5 }, "mismatch": 0, "shift": 0 }
+    }
+  },
+  "doberman-gray": {
+    "walking": {
+      "file": "doberman-gray-Walking-Sheet.png",
+      "metrics": {
+        "frameCount": 8,
+        "frameWidth": 66,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 0, "y": 1, "width": 63, "height": 63 },
+          { "x": 0, "y": 1, "width": 66, "height": 63 },
+          { "x": 0, "y": 0, "width": 65, "height": 64 },
+          { "x": 0, "y": 0, "width": 62, "height": 64 },
+          { "x": 0, "y": 1, "width": 61, "height": 62 },
+          { "x": 0, "y": 1, "width": 60, "height": 63 },
+          { "x": 0, "y": 0, "width": 66, "height": 64 },
+          { "x": 0, "y": 0, "width": 63, "height": 64 }
+        ],
+        "visible": { "x": 0, "y": 0, "width": 66, "height": 64 },
+        "restFrame": 0,
+        "rest": { "x": 0, "y": 1, "width": 63, "height": 63 },
+        "anchor": { "x": 32, "y": 64 },
+        "touchedEdges": ["top", "right", "bottom", "left"]
+      },
+      "linedUp": { "offset": { "x": 0, "y": 0 }, "mismatch": 0.064, "shift": 1 }
+    },
+    "standing": {
+      "file": "doberman-gray-Standing-Sheet.png",
+      "metrics": {
+        "frameCount": 5,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 0, "y": 1, "width": 64, "height": 63 },
+          { "x": 0, "y": 1, "width": 64, "height": 63 },
+          { "x": 0, "y": 1, "width": 64, "height": 63 },
+          { "x": 0, "y": 1, "width": 64, "height": 63 },
+          { "x": 0, "y": 1, "width": 64, "height": 63 }
+        ],
+        "visible": { "x": 0, "y": 1, "width": 64, "height": 63 },
+        "restFrame": 0,
+        "rest": { "x": 0, "y": 1, "width": 64, "height": 63 },
+        "anchor": { "x": 32, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      }
+    },
+    "sitting": {
+      "file": "doberman-gray-Sitting-Sheet.png",
+      "metrics": {
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 0, "y": 1, "width": 64, "height": 63 },
+          { "x": 2, "y": 4, "width": 58, "height": 60 },
+          { "x": 2, "y": 4, "width": 60, "height": 60 },
+          { "x": 2, "y": 4, "width": 60, "height": 60 },
+          { "x": 2, "y": 4, "width": 60, "height": 60 },
+          { "x": 2, "y": 4, "width": 60, "height": 60 },
+          { "x": 2, "y": 4, "width": 58, "height": 60 },
+          { "x": 0, "y": 1, "width": 64, "height": 63 }
+        ],
+        "visible": { "x": 0, "y": 1, "width": 64, "height": 63 },
+        "restFrame": 0,
+        "rest": { "x": 0, "y": 1, "width": 64, "height": 63 },
+        "anchor": { "x": 32, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": {
+        "offset": { "x": 0, "y": 0 },
+        "mismatch": 0.0049,
+        "shift": 0
+      }
+    },
+    "sleeping": {
+      "file": "doberman-gray-Sleeping-Sheet.png",
+      "metrics": {
+        "frameCount": 16,
+        "frameWidth": 68,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 4, "y": 1, "width": 64, "height": 63 },
+          { "x": 6, "y": 4, "width": 58, "height": 60 },
+          { "x": 6, "y": 4, "width": 60, "height": 60 },
+          { "x": 6, "y": 20, "width": 62, "height": 44 },
+          { "x": 2, "y": 26, "width": 66, "height": 38 },
+          { "x": 0, "y": 36, "width": 68, "height": 28 },
+          { "x": 0, "y": 41, "width": 68, "height": 23 },
+          { "x": 0, "y": 41, "width": 68, "height": 23 },
+          { "x": 0, "y": 40, "width": 68, "height": 24 },
+          { "x": 0, "y": 40, "width": 68, "height": 24 },
+          { "x": 0, "y": 41, "width": 68, "height": 23 },
+          { "x": 0, "y": 41, "width": 68, "height": 23 },
+          { "x": 6, "y": 20, "width": 62, "height": 44 },
+          { "x": 6, "y": 4, "width": 60, "height": 60 },
+          { "x": 6, "y": 4, "width": 58, "height": 60 },
+          { "x": 4, "y": 1, "width": 64, "height": 63 }
+        ],
+        "visible": { "x": 0, "y": 1, "width": 68, "height": 63 },
+        "restFrame": 0,
+        "rest": { "x": 4, "y": 1, "width": 64, "height": 63 },
+        "anchor": { "x": 36, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": {
+        "offset": { "x": 4, "y": 0 },
+        "mismatch": 0.0049,
+        "shift": 0
+      }
+    },
+    "lying": {
+      "file": "doberman-gray-LayingDown-Sheet.png",
+      "metrics": {
+        "frameCount": 11,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 0, "y": 1, "width": 64, "height": 63 },
+          { "x": 2, "y": 4, "width": 58, "height": 60 },
+          { "x": 2, "y": 4, "width": 60, "height": 60 },
+          { "x": 2, "y": 20, "width": 62, "height": 44 },
+          { "x": 2, "y": 20, "width": 62, "height": 44 },
+          { "x": 2, "y": 20, "width": 62, "height": 44 },
+          { "x": 2, "y": 20, "width": 62, "height": 44 },
+          { "x": 2, "y": 20, "width": 62, "height": 44 },
+          { "x": 2, "y": 4, "width": 60, "height": 60 },
+          { "x": 2, "y": 4, "width": 58, "height": 60 },
+          { "x": 0, "y": 1, "width": 64, "height": 63 }
+        ],
+        "visible": { "x": 0, "y": 1, "width": 64, "height": 63 },
+        "restFrame": 0,
+        "rest": { "x": 0, "y": 1, "width": 64, "height": 63 },
+        "anchor": { "x": 32, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": {
+        "offset": { "x": 0, "y": 0 },
+        "mismatch": 0.0049,
+        "shift": 0
+      }
+    }
+  },
+  "german-shepherd-gray": {
+    "walking": {
+      "file": "german-shepherd-gray-Walking-Sheet.png",
+      "metrics": {
+        "frameCount": 8,
+        "frameWidth": 73,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 0, "y": 9, "width": 70, "height": 53 },
+          { "x": 0, "y": 9, "width": 72, "height": 53 },
+          { "x": 0, "y": 8, "width": 73, "height": 54 },
+          { "x": 0, "y": 8, "width": 73, "height": 54 },
+          { "x": 0, "y": 9, "width": 70, "height": 53 },
+          { "x": 0, "y": 9, "width": 71, "height": 53 },
+          { "x": 0, "y": 8, "width": 73, "height": 54 },
+          { "x": 0, "y": 8, "width": 73, "height": 54 }
+        ],
+        "visible": { "x": 0, "y": 8, "width": 73, "height": 54 },
+        "restFrame": 0,
+        "rest": { "x": 0, "y": 9, "width": 70, "height": 53 },
+        "anchor": { "x": 31, "y": 62 },
+        "touchedEdges": ["right", "left"]
+      },
+      "linedUp": {
+        "offset": { "x": 0, "y": 0 },
+        "mismatch": 0.072,
+        "shift": -4
+      }
+    },
+    "standing": {
+      "file": "german-shepherd-gray-Standing-Sheet.png",
+      "metrics": {
+        "frameCount": 5,
+        "frameWidth": 67,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 0, "y": 9, "width": 63, "height": 53 },
+          { "x": 0, "y": 8, "width": 64, "height": 54 },
+          { "x": 0, "y": 9, "width": 67, "height": 53 },
+          { "x": 0, "y": 8, "width": 64, "height": 54 },
+          { "x": 0, "y": 9, "width": 63, "height": 53 }
+        ],
+        "visible": { "x": 0, "y": 8, "width": 67, "height": 54 },
+        "restFrame": 0,
+        "rest": { "x": 0, "y": 9, "width": 63, "height": 53 },
+        "anchor": { "x": 31, "y": 62 },
+        "touchedEdges": ["right", "left"]
+      }
+    },
+    "sitting": {
+      "file": "german-shepherd-gray-Sitting-Sheet.png",
+      "metrics": {
+        "frameCount": 11,
+        "frameWidth": 67,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 0, "y": 9, "width": 63, "height": 53 },
+          { "x": 0, "y": 10, "width": 67, "height": 52 },
+          { "x": 4, "y": 10, "width": 63, "height": 52 },
+          { "x": 3, "y": 10, "width": 63, "height": 52 },
+          { "x": 4, "y": 10, "width": 60, "height": 52 },
+          { "x": 4, "y": 10, "width": 63, "height": 52 },
+          { "x": 4, "y": 10, "width": 62, "height": 52 },
+          { "x": 4, "y": 10, "width": 60, "height": 52 },
+          { "x": 0, "y": 10, "width": 67, "height": 52 },
+          { "x": 0, "y": 9, "width": 63, "height": 53 },
+          { "x": 0, "y": 9, "width": 63, "height": 53 }
+        ],
+        "visible": { "x": 0, "y": 9, "width": 67, "height": 53 },
+        "restFrame": 0,
+        "rest": { "x": 0, "y": 9, "width": 63, "height": 53 },
+        "anchor": { "x": 31, "y": 62 },
+        "touchedEdges": ["right", "left"]
+      },
+      "linedUp": { "offset": { "x": 0, "y": 0 }, "mismatch": 0, "shift": 0 }
+    },
+    "sleeping": {
+      "file": "german-shepherd-gray-Sleeping-Sheet.png",
+      "metrics": {
+        "frameCount": 15,
+        "frameWidth": 79,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 4, "y": 9, "width": 63, "height": 53 },
+          { "x": 4, "y": 10, "width": 67, "height": 52 },
+          { "x": 4, "y": 15, "width": 68, "height": 47 },
+          { "x": 2, "y": 19, "width": 77, "height": 43 },
+          { "x": 0, "y": 35, "width": 76, "height": 29 },
+          { "x": 0, "y": 37, "width": 66, "height": 27 },
+          { "x": 0, "y": 37, "width": 66, "height": 27 },
+          { "x": 0, "y": 36, "width": 66, "height": 28 },
+          { "x": 0, "y": 36, "width": 66, "height": 28 },
+          { "x": 0, "y": 37, "width": 66, "height": 27 },
+          { "x": 0, "y": 35, "width": 76, "height": 29 },
+          { "x": 2, "y": 19, "width": 77, "height": 43 },
+          { "x": 4, "y": 15, "width": 68, "height": 47 },
+          { "x": 4, "y": 10, "width": 67, "height": 52 },
+          { "x": 4, "y": 9, "width": 63, "height": 53 }
+        ],
+        "visible": { "x": 0, "y": 9, "width": 79, "height": 55 },
+        "restFrame": 0,
+        "rest": { "x": 4, "y": 9, "width": 63, "height": 53 },
+        "anchor": { "x": 35, "y": 62 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": { "offset": { "x": 4, "y": 0 }, "mismatch": 0, "shift": 0 }
+    },
+    "lying": {
+      "file": "german-shepherd-gray-LayingDown-Sheet.png",
+      "metrics": {
+        "frameCount": 11,
+        "frameWidth": 79,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 4, "y": 9, "width": 63, "height": 53 },
+          { "x": 4, "y": 10, "width": 67, "height": 52 },
+          { "x": 4, "y": 15, "width": 68, "height": 47 },
+          { "x": 2, "y": 19, "width": 77, "height": 43 },
+          { "x": 0, "y": 21, "width": 76, "height": 43 },
+          { "x": 0, "y": 21, "width": 66, "height": 43 },
+          { "x": 0, "y": 21, "width": 66, "height": 43 },
+          { "x": 0, "y": 21, "width": 76, "height": 43 },
+          { "x": 4, "y": 15, "width": 68, "height": 47 },
+          { "x": 4, "y": 10, "width": 67, "height": 52 },
+          { "x": 4, "y": 9, "width": 63, "height": 53 }
+        ],
+        "visible": { "x": 0, "y": 9, "width": 79, "height": 55 },
+        "restFrame": 0,
+        "rest": { "x": 4, "y": 9, "width": 63, "height": 53 },
+        "anchor": { "x": 35, "y": 62 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": { "offset": { "x": 4, "y": 0 }, "mismatch": 0, "shift": 0 }
+    }
+  },
+  "greyhound-tan": {
+    "walking": {
+      "file": "greyhound-tan-Walking-Sheet.png",
+      "metrics": {
+        "frameCount": 8,
+        "frameWidth": 65,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 0, "y": 5, "width": 61, "height": 59 },
+          { "x": 0, "y": 5, "width": 63, "height": 59 },
+          { "x": 0, "y": 4, "width": 65, "height": 60 },
+          { "x": 0, "y": 4, "width": 63, "height": 60 },
+          { "x": 0, "y": 5, "width": 60, "height": 58 },
+          { "x": 0, "y": 5, "width": 61, "height": 59 },
+          { "x": 0, "y": 4, "width": 61, "height": 60 },
+          { "x": 0, "y": 4, "width": 61, "height": 60 }
+        ],
+        "visible": { "x": 0, "y": 4, "width": 65, "height": 60 },
+        "restFrame": 0,
+        "rest": { "x": 0, "y": 5, "width": 61, "height": 59 },
+        "anchor": { "x": 30, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": {
+        "offset": { "x": 0, "y": 0 },
+        "mismatch": 0.0864,
+        "shift": 0
+      }
+    },
+    "standing": {
+      "file": "greyhound-tan-Standing-Sheet.png",
+      "metrics": {
+        "frameCount": 4,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 0, "y": 5, "width": 60, "height": 59 },
+          { "x": 0, "y": 5, "width": 63, "height": 59 },
+          { "x": 0, "y": 5, "width": 64, "height": 59 },
+          { "x": 0, "y": 5, "width": 60, "height": 59 }
+        ],
+        "visible": { "x": 0, "y": 5, "width": 64, "height": 59 },
+        "restFrame": 0,
+        "rest": { "x": 0, "y": 5, "width": 60, "height": 59 },
+        "anchor": { "x": 30, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      }
+    },
+    "sitting": {
+      "file": "greyhound-tan-Sitting-Sheet.png",
+      "metrics": {
+        "frameCount": 11,
+        "frameWidth": 70,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 0, "y": 5, "width": 60, "height": 59 },
+          { "x": 3, "y": 7, "width": 66, "height": 57 },
+          { "x": 4, "y": 8, "width": 65, "height": 56 },
+          { "x": 5, "y": 9, "width": 65, "height": 55 },
+          { "x": 5, "y": 9, "width": 60, "height": 55 },
+          { "x": 5, "y": 9, "width": 63, "height": 55 },
+          { "x": 5, "y": 9, "width": 65, "height": 55 },
+          { "x": 5, "y": 9, "width": 60, "height": 55 },
+          { "x": 5, "y": 9, "width": 63, "height": 55 },
+          { "x": 4, "y": 8, "width": 65, "height": 56 },
+          { "x": 3, "y": 7, "width": 66, "height": 57 }
+        ],
+        "visible": { "x": 0, "y": 5, "width": 70, "height": 59 },
+        "restFrame": 0,
+        "rest": { "x": 0, "y": 5, "width": 60, "height": 59 },
+        "anchor": { "x": 30, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": {
+        "offset": { "x": 0, "y": 0 },
+        "mismatch": 0.0168,
+        "shift": 0
+      }
+    },
+    "sleeping": {
+      "file": "greyhound-tan-Sleeping-Sheet.png",
+      "metrics": {
+        "frameCount": 15,
+        "frameWidth": 77,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 5, "y": 5, "width": 60, "height": 59 },
+          { "x": 8, "y": 7, "width": 66, "height": 57 },
+          { "x": 9, "y": 8, "width": 65, "height": 56 },
+          { "x": 0, "y": 26, "width": 77, "height": 38 },
+          { "x": 2, "y": 32, "width": 75, "height": 32 },
+          { "x": 2, "y": 45, "width": 75, "height": 19 },
+          { "x": 0, "y": 45, "width": 77, "height": 19 },
+          { "x": 0, "y": 45, "width": 77, "height": 19 },
+          { "x": 0, "y": 44, "width": 77, "height": 20 },
+          { "x": 0, "y": 44, "width": 77, "height": 20 },
+          { "x": 0, "y": 45, "width": 77, "height": 19 },
+          { "x": 0, "y": 45, "width": 77, "height": 19 },
+          { "x": 2, "y": 32, "width": 75, "height": 32 },
+          { "x": 9, "y": 8, "width": 65, "height": 56 },
+          { "x": 8, "y": 7, "width": 66, "height": 57 }
+        ],
+        "visible": { "x": 0, "y": 5, "width": 77, "height": 59 },
+        "restFrame": 0,
+        "rest": { "x": 5, "y": 5, "width": 60, "height": 59 },
+        "anchor": { "x": 35, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": {
+        "offset": { "x": 5, "y": 0 },
+        "mismatch": 0.0168,
+        "shift": 0
+      }
+    },
+    "lying": {
+      "file": "greyhound-tan-LayingDown-Sheet.png",
+      "metrics": {
+        "frameCount": 11,
+        "frameWidth": 77,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 5, "y": 5, "width": 60, "height": 59 },
+          { "x": 8, "y": 7, "width": 66, "height": 57 },
+          { "x": 9, "y": 8, "width": 65, "height": 56 },
+          { "x": 0, "y": 26, "width": 77, "height": 38 },
+          { "x": 2, "y": 27, "width": 75, "height": 37 },
+          { "x": 2, "y": 27, "width": 75, "height": 37 },
+          { "x": 2, "y": 27, "width": 75, "height": 37 },
+          { "x": 2, "y": 27, "width": 75, "height": 37 },
+          { "x": 2, "y": 27, "width": 75, "height": 37 },
+          { "x": 9, "y": 8, "width": 65, "height": 56 },
+          { "x": 8, "y": 7, "width": 66, "height": 57 }
+        ],
+        "visible": { "x": 0, "y": 5, "width": 77, "height": 59 },
+        "restFrame": 0,
+        "rest": { "x": 5, "y": 5, "width": 60, "height": 59 },
+        "anchor": { "x": 35, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": {
+        "offset": { "x": 5, "y": 0 },
+        "mismatch": 0.0168,
+        "shift": 0
+      }
+    }
+  },
+  "husky-gray": {
+    "walking": {
+      "file": "husky-gray-Walking-Sheet.png",
+      "metrics": {
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 2, "y": 10, "width": 62, "height": 50 },
+          { "x": 2, "y": 10, "width": 62, "height": 50 },
+          { "x": 2, "y": 9, "width": 62, "height": 51 },
+          { "x": 2, "y": 9, "width": 62, "height": 51 },
+          { "x": 2, "y": 10, "width": 62, "height": 50 },
+          { "x": 2, "y": 10, "width": 62, "height": 49 },
+          { "x": 2, "y": 9, "width": 62, "height": 51 },
+          { "x": 2, "y": 9, "width": 61, "height": 51 }
+        ],
+        "visible": { "x": 2, "y": 9, "width": 62, "height": 51 },
+        "restFrame": 0,
+        "rest": { "x": 2, "y": 10, "width": 62, "height": 50 },
+        "anchor": { "x": 32, "y": 60 },
+        "touchedEdges": ["right"]
+      },
+      "linedUp": {
+        "offset": { "x": 0, "y": 0 },
+        "mismatch": 0.187,
+        "shift": -1
+      }
+    },
+    "standing": {
+      "file": "husky-gray-Standing-Sheet.png",
+      "metrics": {
+        "frameCount": 5,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 2, "y": 10, "width": 60, "height": 51 },
+          { "x": 2, "y": 10, "width": 60, "height": 51 },
+          { "x": 2, "y": 10, "width": 62, "height": 51 },
+          { "x": 2, "y": 10, "width": 60, "height": 51 },
+          { "x": 2, "y": 10, "width": 60, "height": 51 }
+        ],
+        "visible": { "x": 2, "y": 10, "width": 62, "height": 51 },
+        "restFrame": 0,
+        "rest": { "x": 2, "y": 10, "width": 60, "height": 51 },
+        "anchor": { "x": 32, "y": 61 },
+        "touchedEdges": ["right"]
+      }
+    },
+    "sitting": {
+      "file": "husky-gray-Sitting-Sheet.png",
+      "metrics": {
+        "frameCount": 10,
+        "frameWidth": 65,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 2, "y": 8, "width": 60, "height": 51 },
+          { "x": 4, "y": 11, "width": 60, "height": 48 },
+          { "x": 8, "y": 11, "width": 57, "height": 52 },
+          { "x": 8, "y": 11, "width": 51, "height": 53 },
+          { "x": 8, "y": 11, "width": 47, "height": 51 },
+          { "x": 8, "y": 11, "width": 47, "height": 51 },
+          { "x": 8, "y": 11, "width": 47, "height": 51 },
+          { "x": 8, "y": 11, "width": 51, "height": 53 },
+          { "x": 4, "y": 11, "width": 60, "height": 48 },
+          { "x": 2, "y": 8, "width": 60, "height": 51 }
+        ],
+        "visible": { "x": 2, "y": 8, "width": 63, "height": 56 },
+        "restFrame": 0,
+        "rest": { "x": 2, "y": 8, "width": 60, "height": 51 },
+        "anchor": { "x": 32, "y": 59 },
+        "touchedEdges": ["right", "bottom"]
+      },
+      "linedUp": {
+        "offset": { "x": 0, "y": -2 },
+        "mismatch": 0.0251,
+        "shift": 0
+      }
+    },
+    "sleeping": {
+      "file": "husky-gray-Sleeping-Sheet.png",
+      "metrics": {
+        "frameCount": 14,
+        "frameWidth": 67,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 2, "y": 7, "width": 60, "height": 51 },
+          { "x": 4, "y": 10, "width": 60, "height": 48 },
+          { "x": 10, "y": 12, "width": 57, "height": 52 },
+          { "x": 10, "y": 17, "width": 52, "height": 47 },
+          { "x": 12, "y": 29, "width": 51, "height": 32 },
+          { "x": 8, "y": 40, "width": 55, "height": 21 },
+          { "x": 9, "y": 40, "width": 54, "height": 21 },
+          { "x": 8, "y": 39, "width": 55, "height": 22 },
+          { "x": 9, "y": 39, "width": 54, "height": 22 },
+          { "x": 9, "y": 40, "width": 54, "height": 21 },
+          { "x": 12, "y": 29, "width": 51, "height": 32 },
+          { "x": 10, "y": 17, "width": 52, "height": 47 },
+          { "x": 4, "y": 10, "width": 60, "height": 48 },
+          { "x": 2, "y": 7, "width": 60, "height": 51 }
+        ],
+        "visible": { "x": 2, "y": 7, "width": 65, "height": 57 },
+        "restFrame": 0,
+        "rest": { "x": 2, "y": 7, "width": 60, "height": 51 },
+        "anchor": { "x": 32, "y": 58 },
+        "touchedEdges": ["right", "bottom"]
+      },
+      "linedUp": {
+        "offset": { "x": 0, "y": -3 },
+        "mismatch": 0.0251,
+        "shift": 0
+      }
+    },
+    "lying": {
+      "file": "husky-gray-LayingDown-Sheet.png",
+      "metrics": {
+        "frameCount": 10,
+        "frameWidth": 65,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 2, "y": 9, "width": 60, "height": 51 },
+          { "x": 4, "y": 12, "width": 60, "height": 48 },
+          { "x": 8, "y": 12, "width": 57, "height": 52 },
+          { "x": 8, "y": 17, "width": 52, "height": 47 },
+          { "x": 10, "y": 29, "width": 51, "height": 32 },
+          { "x": 10, "y": 29, "width": 51, "height": 32 },
+          { "x": 10, "y": 29, "width": 51, "height": 32 },
+          { "x": 8, "y": 17, "width": 52, "height": 47 },
+          { "x": 4, "y": 12, "width": 60, "height": 48 },
+          { "x": 2, "y": 9, "width": 60, "height": 51 }
+        ],
+        "visible": { "x": 2, "y": 9, "width": 63, "height": 55 },
+        "restFrame": 0,
+        "rest": { "x": 2, "y": 9, "width": 60, "height": 51 },
+        "anchor": { "x": 32, "y": 60 },
+        "touchedEdges": ["right", "bottom"]
+      },
+      "linedUp": {
+        "offset": { "x": 0, "y": -1 },
+        "mismatch": 0.0251,
+        "shift": 0
+      }
+    }
+  },
+  "shiba-orange": {
+    "walking": {
+      "file": "shiba-orange-Walking-Sheet.png",
+      "metrics": {
+        "frameCount": 8,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 4, "y": 13, "width": 58, "height": 51 },
+          { "x": 4, "y": 13, "width": 57, "height": 51 },
+          { "x": 4, "y": 12, "width": 58, "height": 52 },
+          { "x": 4, "y": 12, "width": 58, "height": 52 },
+          { "x": 4, "y": 13, "width": 58, "height": 50 },
+          { "x": 4, "y": 13, "width": 56, "height": 50 },
+          { "x": 4, "y": 12, "width": 56, "height": 52 },
+          { "x": 4, "y": 12, "width": 56, "height": 52 }
+        ],
+        "visible": { "x": 4, "y": 12, "width": 58, "height": 52 },
+        "restFrame": 0,
+        "rest": { "x": 4, "y": 13, "width": 58, "height": 51 },
+        "anchor": { "x": 33, "y": 64 },
+        "touchedEdges": ["bottom"]
+      },
+      "linedUp": {
+        "offset": { "x": 0, "y": 0 },
+        "mismatch": 0.0066,
+        "shift": 0
+      }
+    },
+    "standing": {
+      "file": "shiba-orange-Standing-Sheet.png",
+      "metrics": {
+        "frameCount": 3,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 4, "y": 13, "width": 58, "height": 51 },
+          { "x": 4, "y": 13, "width": 57, "height": 51 },
+          { "x": 4, "y": 13, "width": 55, "height": 51 }
+        ],
+        "visible": { "x": 4, "y": 13, "width": 58, "height": 51 },
+        "restFrame": 0,
+        "rest": { "x": 4, "y": 13, "width": 58, "height": 51 },
+        "anchor": { "x": 33, "y": 64 },
+        "touchedEdges": ["bottom"]
+      }
+    },
+    "sitting": {
+      "file": "shiba-orange-Sitting-Sheet.png",
+      "metrics": {
+        "frameCount": 9,
+        "frameWidth": 64,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 2, "y": 13, "width": 58, "height": 51 },
+          { "x": 4, "y": 15, "width": 56, "height": 49 },
+          { "x": 5, "y": 16, "width": 58, "height": 48 },
+          { "x": 5, "y": 16, "width": 54, "height": 48 },
+          { "x": 5, "y": 16, "width": 59, "height": 48 },
+          { "x": 5, "y": 16, "width": 58, "height": 48 },
+          { "x": 5, "y": 16, "width": 54, "height": 48 },
+          { "x": 5, "y": 16, "width": 59, "height": 48 },
+          { "x": 4, "y": 15, "width": 56, "height": 49 }
+        ],
+        "visible": { "x": 2, "y": 13, "width": 62, "height": 51 },
+        "restFrame": 0,
+        "rest": { "x": 2, "y": 13, "width": 58, "height": 51 },
+        "anchor": { "x": 31, "y": 64 },
+        "touchedEdges": ["right", "bottom"]
+      },
+      "linedUp": { "offset": { "x": -2, "y": 0 }, "mismatch": 0, "shift": 0 }
+    },
+    "sleeping": {
+      "file": "shiba-orange-Sleeping-Sheet.png",
+      "metrics": {
+        "frameCount": 14,
+        "frameWidth": 65,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 2, "y": 13, "width": 58, "height": 51 },
+          { "x": 2, "y": 15, "width": 56, "height": 49 },
+          { "x": 3, "y": 16, "width": 58, "height": 48 },
+          { "x": 0, "y": 31, "width": 65, "height": 33 },
+          { "x": 2, "y": 37, "width": 56, "height": 27 },
+          { "x": 1, "y": 39, "width": 50, "height": 24 },
+          { "x": 1, "y": 39, "width": 50, "height": 24 },
+          { "x": 1, "y": 39, "width": 50, "height": 24 },
+          { "x": 1, "y": 39, "width": 50, "height": 24 },
+          { "x": 1, "y": 39, "width": 50, "height": 24 },
+          { "x": 1, "y": 39, "width": 50, "height": 24 },
+          { "x": 2, "y": 37, "width": 56, "height": 27 },
+          { "x": 0, "y": 31, "width": 65, "height": 33 },
+          { "x": 2, "y": 15, "width": 56, "height": 49 }
+        ],
+        "visible": { "x": 0, "y": 13, "width": 65, "height": 51 },
+        "restFrame": 0,
+        "rest": { "x": 2, "y": 13, "width": 58, "height": 51 },
+        "anchor": { "x": 31, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": { "offset": { "x": -2, "y": 0 }, "mismatch": 0, "shift": 0 }
+    },
+    "lying": {
+      "file": "shiba-orange-LayingDown-Sheet.png",
+      "metrics": {
+        "frameCount": 12,
+        "frameWidth": 71,
+        "frameHeight": 64,
+        "frames": [
+          { "x": 0, "y": 13, "width": 58, "height": 51 },
+          { "x": 2, "y": 15, "width": 56, "height": 49 },
+          { "x": 3, "y": 16, "width": 58, "height": 48 },
+          { "x": 1, "y": 31, "width": 65, "height": 33 },
+          { "x": 1, "y": 31, "width": 68, "height": 33 },
+          { "x": 1, "y": 31, "width": 70, "height": 33 },
+          { "x": 1, "y": 31, "width": 68, "height": 33 },
+          { "x": 1, "y": 31, "width": 65, "height": 33 },
+          { "x": 1, "y": 31, "width": 68, "height": 33 },
+          { "x": 1, "y": 31, "width": 70, "height": 33 },
+          { "x": 3, "y": 16, "width": 58, "height": 48 },
+          { "x": 2, "y": 15, "width": 56, "height": 49 }
+        ],
+        "visible": { "x": 0, "y": 13, "width": 71, "height": 51 },
+        "restFrame": 0,
+        "rest": { "x": 0, "y": 13, "width": 58, "height": 51 },
+        "anchor": { "x": 29, "y": 64 },
+        "touchedEdges": ["right", "bottom", "left"]
+      },
+      "linedUp": { "offset": { "x": -4, "y": 0 }, "mismatch": 0, "shift": 0 }
+    }
+  }
+}

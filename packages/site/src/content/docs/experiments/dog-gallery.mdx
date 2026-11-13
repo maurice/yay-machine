@@ -1,0 +1,72 @@
+---
+title: Dog gallery
+description: Every dog sprite sheet, measured and lined up on the same ground
+draft: true
+---
+
+import { FullScreen } from "../../../components";
+import { DogGallery } from "./DogGallery";
+
+Every dog sprite sheet we have, measured and lined up on the same ground, ready
+for the elevator demos.
+
+The sheets come from a pixel-art pack and don't quite agree with each other.
+Frames are 64 to 85 pixels wide, the dogs inside them are different sizes, and
+some leave a gap of up to 8 pixels under their paws. So rather than trusting the
+frame, each sheet is measured, and every dog stands on its **anchor**: the
+middle of the dog, just under its paws as it stands still in the sheet's first
+frame. Sitting and sleeping dogs can curl their tails below their paws, so the
+other frames don't count.
+
+The measuring happens ahead of time, not in your browser, in a package of its
+own, `packages/sprite-prep`. It saves what it finds in the site's
+`src/assets/dogs/measurements.json`, and packs every sheet into one file,
+`dogs.kennel`. The pack's licence lets us use the sheets but not hand them
+out, so the kennel scrambles them: it isn't an image anyone can open or save,
+and git doesn't keep the PNGs at all. A page loads the kennel and the numbers,
+and nothing else.
+
+Switch _Stand on_ to _Frame_ to see what happens when you trust the frame
+instead.
+
+## Lining up animations
+
+Every sitting, sleeping and lying sheet starts with the dog standing still, but
+not always in the same spot as its standing sheet, and a tail or a stretched-out
+leg can make the dog look wider than it is. So each sheet's first frame is
+matched against the standing dog's head and body (not its legs, which move the
+most), and its anchor goes under the same part of the dog. The walking sheets
+are matched too, though they're drawn a little differently. _Lined up_ says how
+well each sheet matched, and the _Rest pose_ guide draws the standing dog behind
+it, so you can see for yourself.
+
+Sitting, sleeping and lying are round trips: the dog gets down, stays down for a
+few frames, then gets up again. Those middle frames are its **hold**, which a
+waiting dog will loop for as long as it waits. _Frames_ plays a sheet the way
+the pack's GIFs do (_All_), the way a waiting dog will (_Wait_), or just its
+hold, to check it loops without a jump (_Hold_). Open _Whole sheet_ to see each
+frame's number, with the hold underlined in green.
+
+<FullScreen client:load>
+  <DogGallery client:only="react" />
+</FullScreen>
+
+## Adding a sheet
+
+1. Copy the pack's `<breed>/<colour>/spritesheet/<Animation>-Sheet.png` into
+   `packages/sprite-prep/sheets/`, putting the dog's name in front, e.g.
+   `husky-gray-Sitting-Sheet.png`. Git ignores that folder, so it stays on your
+   machine.
+2. Add it to `packages/site/src/sprites/dogCatalog.ts` with its frame count,
+   which is how many frames are in the pack's GIF of it.
+3. Run `bun run site:sprites` to put it in the kennel and measure it. It takes
+   the PNGs in `packages/sprite-prep/sheets` and keeps the rest of the kennel as
+   it was, so you only need the PNGs you're adding or replacing. Unit tests
+   check that the kennel holds every sheet in the catalog, each divides into
+   whole frames, and `measurements.json` is up to date, so run it again
+   whenever a sheet, its frame count, its `facing` or the catalog's
+   `restAnimation` changes.
+4. If the dog gets down and up again, give it a `hold`: the first and last
+   frames it stays down for, counting from 0.
+5. If a dog still looks a bit off, give its sheet a `nudge`. Holds and nudges
+   are added as the page loads, so they don't need measuring again.
