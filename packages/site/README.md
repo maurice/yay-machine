@@ -45,6 +45,7 @@ All commands are run from the root of the project, from a terminal:
 | `bun run site:build`   | Build your production site to `./dist/`          |
 | `bun run site:preview` | Preview your build locally, before deploying     |
 | `bun run site:test`    | Compare built state diagrams with screenshots    |
+| `bun run site:sprites` | Scramble and measure the dog sprite sheets       |
 
 In the `packages/site` directory:
 

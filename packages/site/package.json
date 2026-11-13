@@ -2,6 +2,9 @@
   "name": "@yay-machine/site",
   "type": "module",
   "private": true,
+  "exports": {
+    "./sprites/*": "./src/sprites/*.ts"
+  },
   "scripts": {
     "check:types": "bun check",
     "dev": "astro dev",

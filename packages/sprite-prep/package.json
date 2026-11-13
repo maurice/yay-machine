@@ -1,0 +1,16 @@
+{
+  "name": "@yay-machine/sprite-prep",
+  "version": "0.0.0",
+  "description": "Kennels and measures the site's dog sprite sheets ahead of time",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check:types": "bun check",
+    "sprites": "bun run src/prepareDogSheets.ts",
+    "test:ci": "bun test src"
+  },
+  "dependencies": {
+    "@yay-machine/site": "*",
+    "sharp": "^0.35.4"
+  }
+}

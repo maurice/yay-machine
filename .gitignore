@@ -10,3 +10,7 @@ test-results/
 
 # Turborepo
 .turbo
+
+# The purchased dog sprites can be used but not handed out, so git only keeps
+# them scrambled in packages/site/src/assets/dogs/dogs.kennel
+packages/sprite-prep/sheets/

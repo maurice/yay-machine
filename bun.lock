@@ -78,6 +78,14 @@
         "@types/react-transition-group": "^4.4.12",
       },
     },
+    "packages/sprite-prep": {
+      "name": "@yay-machine/sprite-prep",
+      "version": "0.0.0",
+      "dependencies": {
+        "@yay-machine/site": "*",
+        "sharp": "^0.35.4",
+      },
+    },
     "packages/yay-machine": {
       "name": "yay-machine",
       "version": "0.0.0",
@@ -660,6 +668,8 @@
     "@yay-machine/example-machines": ["@yay-machine/example-machines@workspace:packages/example-machines"],
 
     "@yay-machine/site": ["@yay-machine/site@workspace:packages/site"],
+
+    "@yay-machine/sprite-prep": ["@yay-machine/sprite-prep@workspace:packages/sprite-prep"],
 
     "acorn": ["acorn@8.19.0", "", { "bin": { "acorn": "bin/acorn" } }, "sha512-oJlA3XiRm7Cyk6qFD2Jn8ak9B7jSy0qy00ADO3+8dpT0LSjFihQYv4C02LFCSYJV3Q37xYwwRy5m+IpIiUzqWw=="],
 

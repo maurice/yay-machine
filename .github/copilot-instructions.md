@@ -27,6 +27,7 @@ bun test --test-name-pattern "pattern" path/to/dir  # by test name regex
 ```sh
 bun run site:dev            # Astro Starlight dev server
 bun run site:build          # static build
+bun run site:sprites        # scramble dog sprite sheets into dogs.kennel, measure into measurements.json
 ```
 
 ## Architecture
@@ -39,6 +40,7 @@ This is a **zero-dependency TypeScript state-machine library** organized as a Bu
 - **`packages/example-machines`** — 18+ reference state-machine implementations (toggle, counter, login, elevator, ATM, STOMP parser, etc.). Each example lives in its own directory with a machine definition, usage file, and tests.
 - **`packages/site`** — Documentation site ([yay-machine.js.org](https://yay-machine.js.org/)) built with Astro Starlight + MDX. Interactive demos use React. Deployed to GitHub Pages on push to `main`.
 - **`packages/bench`** — Performance benchmarks comparing yay-machine vs xstate using Benny.
+- **`packages/sprite-prep`** — Build-time tooling, never shipped: scrambles the purchased dog sprite sheets (gitignored, in `sheets/`) into the site's `dogs.kennel` and measures them into `measurements.json`. Depends one way on the site's `@yay-machine/site/sprites/*` contract; the site never imports it.
 
 Within the monorepo, TypeScript resolves `yay-machine` imports to `packages/yay-machine/src` through the `@yay-machine/source` export condition (enabled via `customConditions` in the root and site tsconfigs), so type-checking and type-aware lint don't need the library to be built. Runtimes (Bun, Vite) ignore that condition and still load `dist`, so on a clean checkout run `bun run build` before tests or the site; the site's type-check also needs the Astro types that the build generates.
 
