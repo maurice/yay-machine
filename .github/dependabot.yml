@@ -15,3 +15,7 @@ updates:
         patterns:
           - "@commitlint/*"
           - "commitlint"
+      # The compiler, the unplugin and the lint plugin must stay in step
+      stylex:
+        patterns:
+          - "@stylexjs/*"

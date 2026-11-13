@@ -1,18 +1,56 @@
-import { type FC, useEffect } from "react";
+import * as stylex from "@stylexjs/stylex";
+import { type FC, useEffect, useRef } from "react";
 import { useMachine } from "../../../../components/useMachine";
+import { colors } from "../../../../styles/starlight.stylex";
 import { BankCard } from "./BankCard";
 import { BankCards } from "./BankCards";
 import { cardReaderMachine } from "./cardReader";
-import "./CardReader.css";
+
+const styles = stylex.create({
+  slot: {
+    width: "200px",
+    height: "20px",
+    backgroundColor: colors.gray5,
+    position: "relative",
+  },
+  slotTop: {
+    borderWidth: "1px",
+    borderStyle: "solid",
+    borderColor: colors.gray1,
+    borderTopLeftRadius: "3px",
+    borderTopRightRadius: "3px",
+    height: "10px",
+  },
+  slotBottom: {
+    borderWidth: "0 1px 1px 1px",
+    borderStyle: "solid",
+    borderColor: colors.gray1,
+    borderBottomLeftRadius: "3px",
+    borderBottomRightRadius: "3px",
+    height: "10px",
+  },
+  inSlot: {
+    position: "absolute",
+    left: "25px",
+    transform: "rotate(270deg) scale(2.4)",
+    zIndex: 1,
+    clipPath: "inset(0px 112px 0px 0px)",
+    top: "-120px",
+  },
+  ejecting: {
+    top: "-80px",
+    clipPath: "inset(0px 96px 0px 0px)",
+  },
+});
 
 export const CardReader: FC = () => {
   const { state } = useMachine(cardReaderMachine);
   const cardNumber = state.name !== "noCard" ? state.cardNumber : undefined;
+  const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (state.name === "cardInserted") {
-      const cardEl = document.querySelector(".bank-card.in-slot");
-      cardEl?.animate(
+      cardRef.current?.animate(
         [
           { top: "-78px", clipPath: "inset(0px 95px 0px 0px)" },
           { top: "-120px", clipPath: "inset(0px 112px 0px 0px)" },
@@ -24,8 +62,7 @@ export const CardReader: FC = () => {
 
   useEffect(() => {
     if (state.name === "ejectingCard") {
-      const cardEl = document.querySelector(".bank-card.in-slot");
-      cardEl?.animate(
+      cardRef.current?.animate(
         [
           { top: "-120px", clipPath: "inset(0px 112px 0px 0px)" },
           { top: "-78px", clipPath: "inset(0px 95px 0px 0px)" },
@@ -36,17 +73,21 @@ export const CardReader: FC = () => {
   });
 
   return (
-    <div className="card-reader">
-      <div className="card-slot">
-        <div className="card-slot-top" />
+    <div data-testid="card-reader">
+      <div {...stylex.props(styles.slot)}>
+        <div {...stylex.props(styles.slotTop)} />
         {cardNumber ? (
           <BankCard
+            ref={cardRef}
             cardNumber={cardNumber}
             style={BankCards[cardNumber]}
-            className={`in-slot ${state.name === "ejectingCard" ? "ejecting" : ""}`}
+            xstyle={[
+              styles.inSlot,
+              state.name === "ejectingCard" && styles.ejecting,
+            ]}
           />
         ) : null}
-        <div className="card-slot-bottom" />
+        <div {...stylex.props(styles.slotBottom)} />
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import react from "@astrojs/react";
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 import starlightLinksValidator from "starlight-links-validator";
+import { stylexIntegration } from "./stylex.integration.mjs";
 
 const tryItBadge = {
   text: "",
@@ -118,6 +119,7 @@ export default defineConfig({
       plugins: [starlightLinksValidator()],
     }),
     react(),
+    stylexIntegration(),
   ],
   vite: {
     define: {

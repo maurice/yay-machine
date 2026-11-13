@@ -1,7 +1,15 @@
+import * as stylex from "@stylexjs/stylex";
 import { type FC, useContext } from "react";
 import { useConnected } from "./connected";
 import { TickersContext } from "./TickersContext";
-import "./ConnectionControls.css";
+
+const styles = stylex.create({
+  startStop: {
+    display: "flex",
+    gap: "10px",
+    justifyContent: "center",
+  },
+});
 
 export const ConnectionControls: FC = () => {
   const tickers = useContext(TickersContext);
@@ -16,7 +24,7 @@ export const ConnectionControls: FC = () => {
   };
 
   return (
-    <div className="start-stop">
+    <div {...stylex.props(styles.startStop)}>
       <button
         type="button"
         disabled={connected || tickers?.interceptorError !== undefined}

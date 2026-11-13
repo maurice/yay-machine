@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "plugins": ["typescript", "react", "unicorn"],
+  "jsPlugins": [{ "name": "stylex", "specifier": "@stylexjs/eslint-plugin" }],
   "categories": {
     "correctness": "error",
     "suspicious": "error",
@@ -39,7 +40,9 @@
     "typescript/no-inferrable-types": "error",
     "no-else-return": "error",
     "no-shadow": "off",
-    "react/exhaustive-deps": "warn"
+    "react/exhaustive-deps": "warn",
+    "stylex/valid-styles": "error",
+    "stylex/no-unused": "error"
   },
   "overrides": [
     {

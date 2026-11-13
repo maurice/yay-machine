@@ -3,6 +3,6 @@ ym-chart {
 }
 
 .right-sidebar-container,
-.full-screen__controls {
+[data-testid="full-screen-controls"] {
   visibility: hidden !important;
 }

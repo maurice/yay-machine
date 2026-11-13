@@ -99,3 +99,8 @@ svg.inline-icon {
 .tablist-wrapper ~ [role="tabpanel"] {
   margin: 0 !important;
 }
+
+/* Starlight's page chrome isn't ours to style via StyleX, see FullScreen. */
+body.full-screen .page {
+  display: none;
+}

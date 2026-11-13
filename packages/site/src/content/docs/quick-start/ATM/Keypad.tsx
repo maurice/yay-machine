@@ -1,7 +1,39 @@
+import * as stylex from "@stylexjs/stylex";
 import { type FC, useEffect, useState } from "react";
 import { useMachine } from "../../../../components/useMachine";
+import { colors } from "../../../../styles/starlight.stylex";
 import { keypadMachine } from "./keypad";
-import "./Keypad.css";
+
+const styles = stylex.create({
+  keypad: {
+    display: "grid",
+    gridTemplateColumns: "0.5fr 0.5fr 0.5fr 1fr",
+    gridTemplateRows: "0.5fr 0.5fr 0.5fr 0.5fr",
+    gap: "0px 0px",
+    gridTemplateAreas: '". . . ." ". . . ." ". . . ." ". . . ."',
+  },
+  button: {
+    cursor: "pointer",
+    margin: "2px",
+    backgroundColor: colors.gray5,
+    borderWidth: "1px",
+    borderStyle: "solid",
+    borderColor: colors.gray1,
+    borderRadius: "3px",
+  },
+  disabled: {
+    backgroundColor: colors.gray6,
+    borderColor: colors.gray5,
+    color: colors.gray5,
+    cursor: "default",
+  },
+  enabled: {
+    backgroundColor: { default: colors.gray5, ":hover": colors.gray5 },
+  },
+  active: {
+    backgroundColor: colors.gray7,
+  },
+});
 
 interface ButtonProps {
   readonly value: string;
@@ -13,7 +45,11 @@ const Button: FC<ButtonProps> = ({ value, disabled, onPress }) => {
   const [active, setActive] = useState(false);
   return (
     <button
-      className={`keypad-button ${disabled ? "disabled" : ""} ${active ? "active" : ""}`}
+      {...stylex.props(
+        styles.button,
+        disabled ? styles.disabled : styles.enabled,
+        !disabled && active && styles.active,
+      )}
       type="button"
       value={value}
       onClick={() => onPress(value)}
@@ -48,7 +84,7 @@ export const Keypad: FC = () => {
   }, [state, send]);
 
   return (
-    <div className="keypad">
+    <div {...stylex.props(styles.keypad)}>
       <Button
         value="7"
         disabled={

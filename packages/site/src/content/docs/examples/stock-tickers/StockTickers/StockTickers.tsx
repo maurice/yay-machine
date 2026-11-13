@@ -1,16 +1,32 @@
+import * as stylex from "@stylexjs/stylex";
 import type { FC } from "react";
+import { notContent } from "../../../../../components/notContent";
 import { ConnectionControls } from "./ConnectionControls";
 import { Stocks } from "./Stocks";
 import { TickersProvider } from "./TickersProvider";
 import { Visualizer } from "./Visualizer";
-import "./StockTickers.css";
+
+const styles = stylex.create({
+  stockTickers: {
+    marginTop: "1rem",
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
+    alignItems: "center",
+  },
+  dogStocks: {
+    display: "flex",
+    alignItems: "center",
+    gap: "1em",
+  },
+});
 
 export const StockTickers: FC = () => {
   return (
-    <div className="stock-tickers not-content">
+    <div {...notContent(styles.stockTickers)} data-testid="stock-tickers">
       <TickersProvider>
         <ConnectionControls />
-        <div className="dog-stocks">
+        <div {...stylex.props(styles.dogStocks)}>
           <svg xmlns="http://www.w3.org/2000/svg" width="125" height="100">
             <path
               xmlns="http://www.w3.org/2000/svg"
@@ -23,7 +39,7 @@ export const StockTickers: FC = () => {
           </svg>
           <Stocks />
         </div>
-        <div className="dog-stocks">
+        <div {...stylex.props(styles.dogStocks)}>
           <Stocks />
           <svg xmlns="http://www.w3.org/2000/svg" width="141" height="105">
             <path

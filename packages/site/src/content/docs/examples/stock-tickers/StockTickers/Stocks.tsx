@@ -1,9 +1,24 @@
+import * as stylex from "@stylexjs/stylex";
 import { type FC, useContext, useState } from "react";
+import { notContent } from "../../../../../components/notContent";
+import { colors } from "../../../../../styles/starlight.stylex";
 import { getSubscriptionId } from "./getSubscriptionId";
 import { SYMBOLS } from "./symbols";
 import { TickerPrice } from "./TickerPrice";
 import { TickersContext } from "./TickersContext";
-import "./Stocks.css";
+
+const styles = stylex.create({
+  tickers: {
+    display: "grid",
+    gridTemplateColumns: "repeat(4, 1fr)",
+    maxWidth: "fit-content",
+    gap: "1px",
+    backgroundColor: colors.gray4,
+    borderWidth: "1px",
+    borderStyle: "solid",
+    borderColor: colors.gray4,
+  },
+});
 
 export const Stocks: FC = () => {
   const [subscribed, setSubscribed] = useState<
@@ -29,8 +44,8 @@ export const Stocks: FC = () => {
   };
 
   return (
-    <div className="stocks not-content">
-      <div className="tickers">
+    <div {...notContent()} data-testid="stocks">
+      <div {...stylex.props(styles.tickers)}>
         {SYMBOLS.map((symbol) => (
           <TickerPrice
             key={symbol}
