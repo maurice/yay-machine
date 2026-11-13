@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { ButtonGroup, GroupButton } from "./ButtonGroup";
+import { Control } from "./Control";
 
 export interface Option<T> {
   readonly value: T;
@@ -20,20 +22,18 @@ export const Choice = <T extends string | number>({
   options,
   onChange,
 }: ChoiceProps<T>) => (
-  <fieldset className="dog-gallery__control">
-    <legend>{label}</legend>
-    <div className="dog-gallery__buttons">
+  <Control label={label}>
+    <ButtonGroup>
       {options.map((option) => (
-        <button
+        <GroupButton
           key={option.value}
-          type="button"
-          aria-pressed={option.value === value}
+          pressed={option.value === value}
           title={option.title}
           onClick={() => onChange(option.value)}
         >
           {option.label}
-        </button>
+        </GroupButton>
       ))}
-    </div>
-  </fieldset>
+    </ButtonGroup>
+  </Control>
 );

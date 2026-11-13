@@ -1,6 +1,21 @@
+import * as stylex from "@stylexjs/stylex";
 import { type FC, useLayoutEffect, useRef } from "react";
 import type { LoadedDogSheet } from "../../../../sprites";
 import { type Backdrop, drawSheet, type Guides, sheetHeight } from "./drawing";
+
+const styles = stylex.create({
+  strip: {
+    maxWidth: "100%",
+    marginTop: "0.4rem",
+    overflowX: "auto",
+  },
+  canvas: {
+    display: "block",
+    borderRadius: "0.25rem",
+    imageRendering: "pixelated",
+  },
+  size: (width: number, height: number) => ({ width, height }),
+});
 
 interface SheetStripProps {
   readonly loaded: LoadedDogSheet;
@@ -38,12 +53,15 @@ export const SheetStrip: FC<SheetStripProps> = ({
   }, [image, metrics, frame, guides, backdrop, hold, scale, pixelRatio]);
 
   return (
-    <div className="dog-gallery__strip">
+    <div {...stylex.props(styles.strip)}>
       <canvas
+        {...stylex.props(
+          styles.canvas,
+          styles.size(width * zoom, height * zoom),
+        )}
         ref={canvasRef}
         width={width * scale}
         height={height * scale}
-        style={{ width: width * zoom, height: height * zoom }}
         role="img"
         aria-label={`${dog.breed} sheet, ${metrics.frameCount} frames, frame ${frame} highlighted`}
       />

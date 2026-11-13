@@ -90,7 +90,8 @@ Within the monorepo, TypeScript resolves `yay-machine` imports to `packages/yay-
 - `packages/site/stylex.integration.mjs` wires StyleX into Astro and fails `site:build` if StyleX's CSS doesn't reach every page. It relies on a `@stylexjs/unplugin` internal (`__stylexCollectCss`), so check it first when upgrading `@stylexjs/*` (dependabot groups them).
 - Use `notContent(...)` instead of `stylex.props(...)` on elements inside docs prose, to keep Starlight's `not-content` class.
 - StyleX rejects some shorthands (`border`, `background`, `animation`): use longhands. Style values are validated by `@stylexjs/eslint-plugin` (`stylex/valid-styles`), which oxlint runs as a JS plugin; TypeScript doesn't check them.
-- Starlight colour tokens are in `src/styles/starlight.stylex.ts`. `defineConsts`, `defineVars` and `defineMarker` must be exported from a `*.stylex.ts` file.
+- Starlight's colour and text-size tokens are in `src/styles/starlight.stylex.ts` (`colors`, `textSizes`); add any others you need there rather than writing `var(--sl-…)` in components. `defineConsts`, `defineVars` and `defineMarker` must be exported from a `*.stylex.ts` file.
+- Sizes and colours computed at runtime use dynamic styles (`size: (width: number) => ({ width })`; numbers get `px`) rather than a `style` prop. A parent can't style its children (like `.card canvas`), so give each element its own styles, and pick conditional ones from props or state (`pressed && styles.pressed`) rather than attribute selectors.
 - Class names are generated, so Playwright tests select by `data-testid`, never by class.
 
 ### Commits

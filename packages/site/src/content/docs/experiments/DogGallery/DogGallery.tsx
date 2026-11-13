@@ -5,13 +5,9 @@ import {
   PauseIcon,
   PlayIcon,
 } from "@phosphor-icons/react";
-import {
-  type CSSProperties,
-  type FC,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import * as stylex from "@stylexjs/stylex";
+import { type FC, useEffect, useMemo, useState } from "react";
+import { notContent } from "../../../../components/notContent";
 import {
   dogAnimations,
   type Facing,
@@ -19,12 +15,78 @@ import {
   loadDogs,
   restAnimation,
 } from "../../../../sprites";
+import { colors, textSizes } from "../../../../styles/starlight.stylex";
+import { ButtonGroup, GroupButton } from "./ButtonGroup";
 import { Choice } from "./Choice";
+import { Control } from "./Control";
 import { DogCard, MissingSheet } from "./DogCard";
 import { type Backdrop, type Guide, type Guides, guideStyles } from "./drawing";
 import { type AlignBy, cellLayout } from "./layout";
 import type { Playback } from "./playback";
-import "./DogGallery.css";
+import { Swatch } from "./Swatch";
+
+const styles = stylex.create({
+  gallery: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
+    marginBlock: "1.5rem",
+    fontSize: textSizes.sm,
+  },
+  controls: {
+    display: "flex",
+    flexWrap: "wrap",
+    rowGap: "0.75rem",
+    columnGap: "1rem",
+    paddingBlock: "0.75rem",
+    paddingLeft: "1rem",
+    // leaves room for the FullScreen toggle in the top-right corner
+    paddingRight: "2.75rem",
+    borderWidth: "2px",
+    borderStyle: "dashed",
+    borderColor: colors.gray5,
+    borderRadius: "0.75rem",
+  },
+  fps: {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+    fontVariantNumeric: "tabular-nums",
+  },
+  fpsSlider: {
+    width: "7rem",
+    accentColor: colors.accent,
+  },
+  guides: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, auto)",
+    rowGap: "0.15rem",
+    columnGap: "0.85rem",
+  },
+  guide: {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.35rem",
+    whiteSpace: "nowrap",
+    cursor: "pointer",
+  },
+  guideCheckbox: {
+    accentColor: colors.accent,
+  },
+  status: {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+    margin: 0,
+    color: colors.gray3,
+    fontSize: textSizes.base,
+  },
+  grid: (cellWidth: number) => ({
+    display: "grid",
+    gridTemplateColumns: `repeat(auto-fill, minmax(${cellWidth}px, 1fr))`,
+    gap: "1rem",
+  }),
+});
 
 type SortBy = "catalog" | "height" | "length";
 
@@ -131,8 +193,8 @@ export const DogGallery: FC = () => {
   };
 
   return (
-    <div className="dog-gallery not-content">
-      <div className="dog-gallery__controls">
+    <div {...notContent(styles.gallery)}>
+      <div {...stylex.props(styles.controls)}>
         {animations.length > 1 && (
           <Choice
             label="Animation"
@@ -173,19 +235,13 @@ export const DogGallery: FC = () => {
             setTick(0);
           }}
         />
-        <fieldset className="dog-gallery__control">
-          <legend>Play</legend>
-          <div className="dog-gallery__buttons">
-            <button
-              type="button"
-              title="Previous frame"
-              onClick={() => step(-1)}
-            >
+        <Control label="Play">
+          <ButtonGroup>
+            <GroupButton title="Previous frame" onClick={() => step(-1)}>
               <CaretLeftIcon aria-label="Previous frame" weight="bold" />
-            </button>
-            <button
-              type="button"
-              aria-pressed={playing}
+            </GroupButton>
+            <GroupButton
+              pressed={playing}
               title={playing ? "Pause" : "Play"}
               onClick={() => setPlaying((previous) => !previous)}
             >
@@ -194,13 +250,14 @@ export const DogGallery: FC = () => {
               ) : (
                 <PlayIcon aria-label="Play" weight="fill" />
               )}
-            </button>
-            <button type="button" title="Next frame" onClick={() => step(1)}>
+            </GroupButton>
+            <GroupButton title="Next frame" onClick={() => step(1)}>
               <CaretRightIcon aria-label="Next frame" weight="bold" />
-            </button>
-          </div>
-          <label className="dog-gallery__fps">
+            </GroupButton>
+          </ButtonGroup>
+          <label {...stylex.props(styles.fps)}>
             <input
+              {...stylex.props(styles.fpsSlider)}
               type="range"
               min={1}
               max={24}
@@ -209,7 +266,7 @@ export const DogGallery: FC = () => {
             />
             {fps} fps
           </label>
-        </fieldset>
+        </Control>
         <Choice
           label="Zoom"
           value={zoom}
@@ -263,12 +320,16 @@ export const DogGallery: FC = () => {
           ]}
           onChange={setBackdrop}
         />
-        <fieldset className="dog-gallery__control">
-          <legend>Guides</legend>
-          <div className="dog-gallery__guides">
+        <Control label="Guides">
+          <div {...stylex.props(styles.guides)}>
             {(Object.keys(guideStyles) as Guide[]).map((guide) => (
-              <label key={guide} title={guideStyles[guide].hint}>
+              <label
+                {...stylex.props(styles.guide)}
+                key={guide}
+                title={guideStyles[guide].hint}
+              >
                 <input
+                  {...stylex.props(styles.guideCheckbox)}
                   type="checkbox"
                   checked={guides[guide]}
                   onChange={(event) => {
@@ -279,34 +340,26 @@ export const DogGallery: FC = () => {
                     }));
                   }}
                 />
-                <span
-                  className="dog-gallery__swatch"
-                  style={{ background: guideStyles[guide].colour }}
-                />
+                <Swatch colour={guideStyles[guide].colour} />
                 {guideStyles[guide].label}
               </label>
             ))}
           </div>
-        </fieldset>
+        </Control>
       </div>
 
       {loaded && "error" in loaded && (
-        <p className="dog-gallery__status" role="alert">
+        <p {...stylex.props(styles.status)} role="alert">
           Couldn't load the dogs: {loaded.error}
         </p>
       )}
       {!loaded && (
-        <p className="dog-gallery__status">
+        <p {...stylex.props(styles.status)}>
           <DogIcon aria-hidden weight="duotone" /> Rounding up the dogs…
         </p>
       )}
       {sorted && layout && (
-        <div
-          className="dog-gallery__grid"
-          style={
-            { "--dog-cell-width": `${layout.width * zoom}px` } as CSSProperties
-          }
-        >
+        <div {...stylex.props(styles.grid(layout.width * zoom))}>
           {sorted.map(({ dog, sheets }) => {
             const sheet = sheets[animation];
             return sheet ? (
