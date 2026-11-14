@@ -6,14 +6,14 @@ draft: true
 
 import { ElevatorLobby } from "./ElevatorLobby/ElevatorLobby";
 
-This is the first piece of the elevator scene: one floor, the old hand-drawn
-lobby with its big floor number, a call button, a lift position indicator, and
-a cab tucked behind its doors. The doors open and close and the call button
-changes from grey to white when pressed so we can check the composition before
-adding dogs, floor changes, or lift behaviour. Until then, the indicator always
-shows the lift at floor 12, going down.
+The lift starts at floor 2. Use **Up one floor** or **Down one floor** to ride
+between neighbouring floors. The existing elevator state machine controls the
+trip and landing-door cycle while the building scrolls past a centered cab.
+Every floor has its own doors; they stay closed while the lift is travelling.
 
-This preview is cropped to one floor. The scrolling camera and glimpses of
-neighbouring floors will come later; this isn't the final camera framing.
+The view shows one full lobby and partial floors above and below. The wall
+position indicators are still static art samples showing floor 12, going down;
+the status below the scene reports the actual lift state. The call button is
+still a visual toggle.
 
 <ElevatorLobby client:load />
