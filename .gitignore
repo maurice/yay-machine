@@ -14,3 +14,7 @@ test-results/
 # The purchased dog sprites can be used but not handed out, so git only keeps
 # them scrambled in packages/site/src/assets/dogs/dogs.kennel
 packages/sprite-prep/sheets/
+
+# Aseprite working files can hold those dogs and third-party reference art, so
+# git only keeps the pieces exported from them
+*.aseprite

@@ -7,8 +7,13 @@ draft: true
 import { ElevatorLobby } from "./ElevatorLobby/ElevatorLobby";
 
 This is the first piece of the elevator scene: one floor, the old hand-drawn
-lobby with its big floor number, and a cab tucked behind its doors. The doors
-open and close so we can check the composition before adding dogs, floor
-changes, or lift behaviour.
+lobby with its big floor number, a call button, a lift position indicator, and
+a cab tucked behind its doors. The doors open and close and the call button
+changes from grey to white when pressed so we can check the composition before
+adding dogs, floor changes, or lift behaviour. Until then, the indicator always
+shows the lift at floor 12, going down.
+
+This preview is cropped to one floor. The scrolling camera and glimpses of
+neighbouring floors will come later; this isn't the final camera framing.
 
 <ElevatorLobby client:load />
