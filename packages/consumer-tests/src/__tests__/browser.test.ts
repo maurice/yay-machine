@@ -7,7 +7,7 @@ import {
   test,
 } from "bun:test";
 import { join, normalize } from "node:path";
-import { type Browser, chromium } from "playwright";
+import { type Browser, chromium } from "@playwright/test";
 import { build as viteBuild } from "vite";
 import { createConsumer, removeConsumers } from "../consumerProject";
 import { browserSource, EXPECTED_STATE } from "../consumerSources";
