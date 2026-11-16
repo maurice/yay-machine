@@ -25,11 +25,12 @@ export const run = async (
   return { exitCode, output: `${stdout}${stderr}`.trim() };
 };
 
+let packDestination: string | undefined;
 let tarball: Promise<string> | undefined;
 
 /**
  * Packs yay-machine with `npm pack`, exactly as `@semantic-release/npm`
- * would publish it. Packed once per test run.
+ * would publish it. Packed once per test file.
  */
 export const packLibrary = (): Promise<string> =>
   (tarball ??= (async () => {
@@ -39,6 +40,7 @@ export const packLibrary = (): Promise<string> =>
       );
     }
     const destination = await mkdtemp(join(tmpdir(), "yay-machine-pack-"));
+    packDestination = destination;
     const { exitCode, output } = await run(
       ["npm", "pack", "--json", "--pack-destination", destination],
       libraryDir,
@@ -91,10 +93,15 @@ export const createConsumer = async (
   return { dir, run: (cmd) => run(cmd, dir) };
 };
 
+/** Removes the consumer projects and the packed tarball. */
 export const removeConsumers = async (): Promise<void> => {
+  const dirs = consumerDirs.splice(0);
+  if (packDestination) {
+    dirs.push(packDestination);
+  }
+  packDestination = undefined;
+  tarball = undefined;
   await Promise.all(
-    consumerDirs
-      .splice(0)
-      .map((dir) => rm(dir, { recursive: true, force: true })),
+    dirs.map((dir) => rm(dir, { recursive: true, force: true })),
   );
 };
