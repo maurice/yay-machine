@@ -24,3 +24,9 @@ updates:
           - "astro"
           - "@astrojs/*"
           - "starlight-*"
+      # playwright and @playwright/test must share one playwright-core, or
+      # `playwright install` downloads a browser build the other can't launch
+      playwright:
+        patterns:
+          - "playwright"
+          - "@playwright/*"
