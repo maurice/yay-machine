@@ -14,6 +14,11 @@
       "description": "playwright and @playwright/test must share one playwright-core, or `playwright install` downloads a browser build the other can't launch",
       "matchPackageNames": ["playwright", "@playwright/**"],
       "groupName": "Playwright"
+    },
+    {
+      "description": "consumer-tests also type-checks with TypeScript 5.x via the typescript-5 npm alias; don't let it follow the main typescript dependency onto 7.x",
+      "matchDepNames": ["typescript-5"],
+      "allowedVersions": "<6"
     }
   ]
 }
