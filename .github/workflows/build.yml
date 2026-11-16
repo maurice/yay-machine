@@ -41,11 +41,11 @@ jobs:
       - name: Check lint
         run: bun run check:lint
 
+      - name: Install Chromium for browser consumer tests and diagram screenshots
+        run: bunx playwright install --with-deps chromium
+
       - name: Test
         run: bun run test:ci
-
-      - name: Install Chromium for diagram screenshots
-        run: bunx playwright install --with-deps chromium
 
       - name: Test documentation diagrams
         run: bun run site:test

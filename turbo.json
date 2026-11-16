@@ -12,7 +12,7 @@
     },
     "test:ci": {
       "cache": false,
-      "dependsOn": ["build"]
+      "dependsOn": ["build", "^build"]
     },
     "bench": {
       "cache": false,

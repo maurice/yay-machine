@@ -1,0 +1,26 @@
+{
+  "name": "@yay-machine/consumer-tests",
+  "version": "0.0.0",
+  "description": "Installs the packed yay-machine tarball into isolated consumer projects and checks it type-checks, runs, bundles and works in a browser",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check:types": "bun check",
+    "test:ci": "bun test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maurice/yay-machine.git"
+  },
+  "author": "maurice@mauricenicholson.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maurice/yay-machine/issues"
+  },
+  "homepage": "https://github.com/maurice/yay-machine#readme",
+  "devDependencies": {
+    "typescript-5": "npm:typescript@~5.9.3",
+    "vite": "^8.3.8",
+    "yay-machine": "*"
+  }
+}
